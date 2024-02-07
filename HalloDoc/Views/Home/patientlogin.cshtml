@@ -2,8 +2,8 @@
     ViewData["Title"] = "Patient Login";
     Layout = "NewLayout";
 }
-
-
+@model Aspnetuser
+<Partial name="_Notification" />
 <div class="bg-img">
     <img src="~/images/11116016_415.jpg" alt="">
 </div>
@@ -23,22 +23,24 @@
                 <span>Back</span>
             </a>
             <h2>Login To Your Account</h2>
-            <div class="form-floating mb-3 mt-4">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                <label for="floatingInput">Email address</label>
-                <i class="fa-regular fa-user icon"></i>
-            </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="togpass" placeholder="Password">
-                <label for="togpass">Password</label>
-                <i id="passicon" class="fa-solid fa-eye-slash icon" onclick="passtoggle()"></i>
-            </div>
-            <div class="button mt-4 logbtn">
-                <button type="submit">Login</button>
-            </div>
-            <div class="forget mt-4">
-                <a asp-controller="Home" asp-action="patientreset">Forget Password?</a>
-            </div>
+            <form asp-action="validate">
+                <div class="form-floating mb-3 mt-4">
+                    <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">Email address</label>
+                    <i class="fa-regular fa-user icon"></i>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Passwordhash" type="password" class="form-control" id="togpass" placeholder="Password">
+                    <label for="togpass">Password</label>
+                    <i id="passicon" class="fa-solid fa-eye-slash icon" onclick="passtoggle()"></i>
+                </div>
+                <div class="button mt-4 logbtn">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+                <div class="forget mt-4">
+                    <a asp-controller="Home" asp-action="patientreset">Forget Password?</a>
+                </div>
         </div>
         <footer>
             <a href="#">Terms Of Conditions</a>

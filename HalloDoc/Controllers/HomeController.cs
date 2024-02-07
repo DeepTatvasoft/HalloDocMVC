@@ -54,5 +54,21 @@ namespace HalloDoc.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> validate([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
+        {
+            var obj = _context.Aspnetusers.FirstOrDefault(u => u.Email == aspNetUser.Email && u.Passwordhash == aspNetUser.Passwordhash);
+            if (obj != null)
+            {
+                TempData["success"] = "User LogIn Successfully";
+                return RedirectToAction("SubmitReqScreen", "Home");
+            }
+            else
+            {
+                TempData["error"] = "Username or Password is Incorrect";
+                return RedirectToAction("patientlogin", "Home");
+            }
+        }
     }
 }

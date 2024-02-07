@@ -1,0 +1,37 @@
+﻿@{
+ViewData["Title"] = "User";
+}
+@model IEnumerable<Aspnetuser>
+<h1>List of Users</h1>
+
+
+<table>
+    <tbody>
+        @foreach(var obj in Model)
+        {
+        <tr style="border:1px solid black">
+            <td>
+                @obj.Username
+            </td>
+            <td>
+                @obj.Email
+            </td>
+            <td>
+                @obj.Phonenumber
+            </td>
+            <td>
+                @obj.Emailconfirmed
+            </td>
+            <td>
+                @obj.Passwordhash
+            </td>
+            <td>
+                @obj.Accessfailedcount
+            </td>
+            <td>
+                @obj.Twofactorenabled
+            </td>
+        </tr>    
+        }
+    </tbody>
+</table>
