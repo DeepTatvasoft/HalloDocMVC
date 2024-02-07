@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Patient Login";
+    Layout = "NewLayout";
+}
+
+
+<div class="bg-img">
+    <img src="~/images/11116016_415.jpg" alt="">
+</div>
+<div class="container-fluid">
+    <div class="moon">
+        <button id="darkmode" onclick="dark()">
+            <img src="~/images/image_2024_01_17T04_17_17_762Z.png" alt="error">
+        </button>
+    </div>
+    <div class="hallodoc">
+        <img src="~/images/image_2024_01_17T04_17_17_750Z.png" alt="">
+    </div>
+    <div class="login">
+        <div class="back">
+            <a asp-asp-controller="Home" asp-action="patientsite" style="text-decoration: none;">
+                <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+                <span>Back</span>
+            </a>
+            <h2>Login To Your Account</h2>
+            <div class="form-floating mb-3 mt-4">
+                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Email address</label>
+                <i class="fa-regular fa-user icon"></i>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="togpass" placeholder="Password">
+                <label for="togpass">Password</label>
+                <i id="passicon" class="fa-solid fa-eye-slash icon" onclick="passtoggle()"></i>
+            </div>
+            <div class="button mt-4 logbtn">
+                <button type="submit">Login</button>
+            </div>
+            <div class="forget mt-4">
+                <a asp-controller="Home" asp-action="patientreset">Forget Password?</a>
+            </div>
+        </div>
+        <footer>
+            <a href="#">Terms Of Conditions</a>
+            &nbsp | &nbsp
+            <a href="#">Privacy Policy</a>
+        </footer>
+    </div>
+</div>

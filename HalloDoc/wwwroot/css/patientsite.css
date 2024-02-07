@@ -1,0 +1,17 @@
+﻿.sitebtn button {
+    width: 100%;
+    border-radius: 9px;
+    height: 70px;
+    border: none;
+    padding: 10px;
+    font-size: 26px;
+    color: white;
+}
+
+.sub button {
+    background-color: #0dcaf0;
+}
+
+.reg button {
+    background-color: #030359;
+}

@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "NewLayout";
+}
+
+
+    <div class="container-fluid">
+        <div class="moon">
+            <button id="darkmode" onclick="dark()">
+                <img src="~/images/image_2024_01_17T04_17_17_762Z.png" alt="error">
+            </button>
+        </div>
+        <div class="hallodoc">
+            <img src="~/images/image_2024_01_17T04_17_17_750Z.png" alt="">
+        </div>
+        <div class="login">
+            <div class="back">
+                <div class="button mt-4 sub sitebtn">
+                    <a asp-controller="Home" asp-action="SubmitReqScreen">
+                        <button type="submit">Submit A Request</button>
+                    </a>
+                </div>
+                <div class="button mt-4 reg sitebtn">
+                <a asp-controller="Home" asp-action="patientlogin">
+                        <button type="submit">Registered Patient</button>
+                    </a>
+                </div>
+            </div>
+            <footer>
+                <a href="#">Terms Of Conditions</a>
+                &nbsp | &nbsp
+                <a href="#">Privacy Policy</a>
+            </footer>
+        </div>
+    </div>
+

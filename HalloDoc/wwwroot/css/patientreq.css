@@ -1,0 +1,123 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    box-shadow: 0px 5px 5px gray;
+}
+#maincontent {
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.date {
+    width: 49.2%;
+}
+
+.file {
+    width: 100%;
+    border: 2px solid;
+}
+
+.filelable {
+    background-color: #0dcaf0;
+    border-radius: 0px 10px 10px 0px;
+    width: 95px;
+    text-align: center;
+    height: 35px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.submit {
+    display: flex;
+    justify-content: end;
+}
+
+.fileselect {
+    display: flex;
+    border: 1px solid;
+    border-radius: 10px;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+    .fileselect span {
+        margin-left: 10px;
+        padding: 4px 0px;
+    }
+
+.back a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border: 2px solid #0dcaf0;
+    width: 80px;
+    height: fit-content;
+    border-radius: 10px;
+    color: #0dcaf0;
+    position: relative;
+    left: 12px;
+}
+
+    .back a img {
+        width: 14px;
+    }
+
+.backimg {
+    margin-top: 10px;
+}
+
+.back {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.numcountry {
+    display: flex;
+    height: 58px;
+}
+
+.form-floating .form-control:focus {
+    border-color: aqua;
+    box-shadow: none;
+    border-width: 2px;
+}
+
+    .form-floating .form-control:focus ~ label {
+        color: aqua;
+    }
+
+.footer {
+    background-color: black;
+    color: white;
+    height: 50px;
+    text-align: end;
+    padding: 15px;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+    .footer a {
+        text-decoration: none;
+        color: white;
+    }
+
+#darkmode {
+    border: none;
+}
+
+    #darkmode img {
+        height: 40px;
+    }
+
+@media only screen and (max-width:364px) {
+    .medialabel {
+        font-size: 13px;
+    }
+}

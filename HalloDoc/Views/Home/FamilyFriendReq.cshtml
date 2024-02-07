@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "Family/Friend Request";
+    Layout = "formlayout";
+}
+<div id="exampleModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="mb-3" style="height: 80px;"><path fill="#FFD43B" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg>
+                <h4>Information</h4>
+                <p>When Submitting the request, you must provide the correct contact information for the patient or the responsibly party. Failure to provide the correct email and phone number will delay the service or be declined.</p>
+                <button type="button" id="closeBtn" class="btn btn-info mt-3" style="color: white; width: 57px;">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+    // console.log(myModal);
+    window.onload = function () {
+        myModal.show();
+    }
+    const closeBtn = document.getElementById("closeBtn");
+    closeBtn.addEventListener('click', function () { myModal.hide(); })
+
+</script>
+
+<div class="main">
+    <div class="back container mb-3 mt-3">
+        <a asp-asp-controller="Home" asp-action="SubmitReqScreen" style="text-decoration: none;" class="backimg">
+            <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+            <span>Back</span>
+        </a>
+    </div>
+    <div class="container bg-white" style="background-color: white; padding-bottom:20px" id="maincontent">
+        <div class="faminfo">
+            <h4>Family/Friend Information</h4>
+            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Street">
+                        <label for="floatingInput">Your First Name</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="City">
+                        <label for="floatingInput">Your Last Name</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3 numcountry">
+                        <select name="country" id="country" onchange="country_code()">
+                            <option value="select country">select country</option>
+                            <option value="us">US</option>
+                            <option value="uk">UK</option>
+                            <option value="br">BRAZIL</option>
+                            <option value="ind">INDIA</option>
+                        </select>
+                        <input type="tel" class="form-control" id="output" placeholder="Mobile Number">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput" placeholder="Email">
+                        <label for="floatingInput">Your Email</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Relation">
+                        <label for="floatingInput">Relation With Patient</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pinfo mt-5">
+            <h4>Patient Information</h4>
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+                          style="height: 100px;"></textarea>
+                <label for="floatingTextarea" class="medialabel">Enter Brief Details Of Symptoms (Optional)</label>
+            </div>
+            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Name">
+                        <label for="floatingInput">First Name</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Name">
+                        <label for="floatingInput">Last Name</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3 date">
+                    <input type="date" class="form-control" id="floatingInput" placeholder="Date">
+                    <label for="floatingInput">Date Of Birth</label>
+                </div>
+            </div>
+        </div>
+        <div class="pcinfo mt-5">
+            <h4>Patient Contact Information</h4>
+            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <label for="floatingInput">Email</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3 numcountry">
+                        <select name="country" id="country2" class="country" onchange="country_code2()">
+                            <option value="select country">select country</option>
+                            <option value="us">US</option>
+                            <option value="uk">UK</option>
+                            <option value="br">BRAZIL</option>
+                            <option value="ind">INDIA</option>
+                        </select>
+                        <input type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="plocation mt-5">
+            <h4>Patient Location</h4>
+            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Street">
+                        <label for="floatingInput">Street</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="City">
+                        <label for="floatingInput">City</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="State">
+                        <label for="floatingInput">State</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
+                        <label for="floatingInput">Zip Code</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Room">
+                        <label for="floatingInput">Room #/ Suite (Optional)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="updoc mt-5">
+            <h4>(Optional) Upload Photo Or Document</h4>
+            <div class="fileselect mt-3">
+                <input type="file" class="file mt-3" id="actual-btn" hidden />
+                <label for="actual-btn" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
+                <span id="file-chosen">Select File</span>
+            </div>
+        </div>
+        <div class="submit mt-4">
+            <button type="button" class="btn btn-info" style="color: white;">Submit</button>
+            <button type="button" class="btn btn-outline-info ms-2">Cancel</button>
+        </div>
+    </div>
+</div>

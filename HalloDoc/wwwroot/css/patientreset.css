@@ -1,0 +1,8 @@
+﻿.resbtn button {
+    width: 100%;
+    border-radius: 9px;
+    height: 40px;
+    background-color: #0dcaf0;
+    border: none;
+    color: white;
+}
