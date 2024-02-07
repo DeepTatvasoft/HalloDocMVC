@@ -1,6 +1,7 @@
 ﻿using HalloDoc.DataContext;
 using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace HalloDoc.Controllers
@@ -9,7 +10,7 @@ namespace HalloDoc.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
-        public HomeController(ILogger<HomeController> logger,ApplicationDbContext context)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
@@ -58,7 +59,7 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public async Task<IActionResult> validate([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
-            var obj = _context.Aspnetusers.FirstOrDefault(u => u.Email == aspNetUser.Email && u.Passwordhash == aspNetUser.Passwordhash);
+            var obj = await _context.Aspnetusers.FirstOrDefaultAsync(u => u.Email == aspNetUser.Email && u.Passwordhash == aspNetUser.Passwordhash);
             if (obj != null)
             {
                 TempData["success"] = "User LogIn Successfully";
