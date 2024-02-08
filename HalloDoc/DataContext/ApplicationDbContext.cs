@@ -99,16 +99,6 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Adminid).HasName("admin_pkey");
 
             entity.Property(e => e.Adminid).ValueGeneratedNever();
-
-            entity.HasOne(d => d.Aspnetuser).WithMany(p => p.AdminAspnetusers)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("aspnetuserid_fk");
-
-            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.AdminCreatedbyNavigations)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("CreatedBy_fk");
-
-            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.AdminModifiedbyNavigations).HasConstraintName("ModifiedBy_fk");
         });
 
         modelBuilder.Entity<Adminregion>(entity =>
@@ -139,10 +129,6 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<Aspnetuserrole>(entity =>
         {
             entity.HasKey(e => new { e.Userid, e.Roleid }).HasName("aspnetuserroles_pkey");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Aspnetuserroles)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("UserId_fk");
         });
 
         modelBuilder.Entity<Blockrequest>(entity =>
@@ -159,10 +145,6 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Businessid).ValueGeneratedNever();
 
             entity.HasOne(d => d.Businesstype).WithMany(p => p.Businesses).HasConstraintName("BusinessTypeId_fk");
-
-            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.BusinessCreatedbyNavigations).HasConstraintName("CreatedBy_fk");
-
-            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.BusinessModifiedbyNavigations).HasConstraintName("ModifiedBy_fk");
 
             entity.HasOne(d => d.Region).WithMany(p => p.Businesses).HasConstraintName("RegionId_fk");
         });
@@ -232,14 +214,6 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Physicianid).HasName("physician_pkey");
 
             entity.Property(e => e.Physicianid).ValueGeneratedNever();
-
-            entity.HasOne(d => d.Aspnetuser).WithMany(p => p.PhysicianAspnetusers).HasConstraintName("AspNetUserId_fk");
-
-            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.PhysicianCreatedbyNavigations)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("CreatedBy_fk");
-
-            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.PhysicianModifiedbyNavigations).HasConstraintName("ModifiedBy_fk");
         });
 
         modelBuilder.Entity<Physiciannotification>(entity =>
@@ -421,10 +395,6 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Shiftid).ValueGeneratedNever();
             entity.Property(e => e.Weekdays).IsFixedLength();
 
-            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.Shifts)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("CreatedBy_fk");
-
             entity.HasOne(d => d.Physician).WithMany(p => p.Shifts)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("PhysicianId_fk");
@@ -435,8 +405,6 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Shiftdetailid).HasName("shiftdetail_pkey");
 
             entity.Property(e => e.Shiftdetailid).ValueGeneratedNever();
-
-            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.Shiftdetails).HasConstraintName("ModifiedBy_fk");
 
             entity.HasOne(d => d.Shift).WithMany(p => p.Shiftdetails)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -466,8 +434,6 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Userid).HasName("users_pkey");
-
-            entity.HasOne(d => d.Aspnetuser).WithMany(p => p.Users).HasConstraintName("AspNetUserId_fk");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -133,18 +133,6 @@ public partial class Physician
     [StringLength(50)]
     public string? Syncemailaddress { get; set; }
 
-    [ForeignKey("Aspnetuserid")]
-    [InverseProperty("PhysicianAspnetusers")]
-    public virtual Aspnetuser? Aspnetuser { get; set; }
-
-    [ForeignKey("Createdby")]
-    [InverseProperty("PhysicianCreatedbyNavigations")]
-    public virtual Aspnetuser CreatedbyNavigation { get; set; } = null!;
-
-    [ForeignKey("Modifiedby")]
-    [InverseProperty("PhysicianModifiedbyNavigations")]
-    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
-
     [InverseProperty("Physician")]
     public virtual ICollection<Physiciannotification> Physiciannotifications { get; set; } = new List<Physiciannotification>();
 

@@ -79,14 +79,6 @@ public partial class Business
     [InverseProperty("Businesses")]
     public virtual Businesstype? Businesstype { get; set; }
 
-    [ForeignKey("Createdby")]
-    [InverseProperty("BusinessCreatedbyNavigations")]
-    public virtual Aspnetuser? CreatedbyNavigation { get; set; }
-
-    [ForeignKey("Modifiedby")]
-    [InverseProperty("BusinessModifiedbyNavigations")]
-    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
-
     [ForeignKey("Regionid")]
     [InverseProperty("Businesses")]
     public virtual Region? Region { get; set; }

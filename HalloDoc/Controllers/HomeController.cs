@@ -57,14 +57,14 @@ namespace HalloDoc.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult insert(User obj)
+        public IActionResult insert(Aspnetuser obj)
         {
-            obj.Createddate = DateTime.Now;
-            obj.Createdby = "asd";
-            _context.Users.Add(obj);
+            obj.Modifieddate = DateTime.Now;
+            _context.Aspnetusers.Add(obj);
             _context.SaveChanges();
             return RedirectToAction("patientlogin","Home");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> validate([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)

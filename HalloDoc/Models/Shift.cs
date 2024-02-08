@@ -41,10 +41,6 @@ public partial class Shift
     [StringLength(20)]
     public string? Ip { get; set; }
 
-    [ForeignKey("Createdby")]
-    [InverseProperty("Shifts")]
-    public virtual Aspnetuser CreatedbyNavigation { get; set; } = null!;
-
     [ForeignKey("Physicianid")]
     [InverseProperty("Shifts")]
     public virtual Physician Physician { get; set; } = null!;

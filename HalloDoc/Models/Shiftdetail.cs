@@ -52,10 +52,6 @@ public partial class Shiftdetail
     [Column("issync", TypeName = "bit(1)")]
     public BitArray? Issync { get; set; }
 
-    [ForeignKey("Modifiedby")]
-    [InverseProperty("Shiftdetails")]
-    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
-
     [ForeignKey("Shiftid")]
     [InverseProperty("Shiftdetails")]
     public virtual Shift Shift { get; set; } = null!;

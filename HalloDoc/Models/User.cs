@@ -93,10 +93,6 @@ public partial class User
     [Column("isrequestwithemail", TypeName = "bit(1)")]
     public BitArray? Isrequestwithemail { get; set; }
 
-    [ForeignKey("Aspnetuserid")]
-    [InverseProperty("Users")]
-    public virtual Aspnetuser? Aspnetuser { get; set; }
-
     [InverseProperty("User")]
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 }
