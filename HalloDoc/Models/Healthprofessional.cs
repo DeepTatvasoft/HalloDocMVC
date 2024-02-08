@@ -68,4 +68,8 @@ public partial class Healthprofessional
     [Column("businesscontact")]
     [StringLength(100)]
     public string? Businesscontact { get; set; }
+
+    [ForeignKey("Profession")]
+    [InverseProperty("Healthprofessionals")]
+    public virtual Healthprofessionaltype? ProfessionNavigation { get; set; }
 }

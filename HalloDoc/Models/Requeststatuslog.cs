@@ -42,4 +42,23 @@ public partial class Requeststatuslog
 
     [Column("transtoadmin", TypeName = "bit(1)")]
     public BitArray? Transtoadmin { get; set; }
+
+    [ForeignKey("Adminid")]
+    [InverseProperty("Requeststatuslogs")]
+    public virtual Admin? Admin { get; set; }
+
+    [ForeignKey("Physicianid")]
+    [InverseProperty("RequeststatuslogPhysicians")]
+    public virtual Physician? Physician { get; set; }
+
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requeststatuslogs")]
+    public virtual Request Request { get; set; } = null!;
+
+    [InverseProperty("Requeststatuslog")]
+    public virtual ICollection<Requestclosed> Requestcloseds { get; set; } = new List<Requestclosed>();
+
+    [ForeignKey("Transtophysicianid")]
+    [InverseProperty("RequeststatuslogTranstophysicians")]
+    public virtual Physician? Transtophysician { get; set; }
 }

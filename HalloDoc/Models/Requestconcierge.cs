@@ -22,4 +22,12 @@ public partial class Requestconcierge
     [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
+
+    [ForeignKey("Conciergeid")]
+    [InverseProperty("Requestconcierges")]
+    public virtual Concierge Concierge { get; set; } = null!;
+
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestconcierges")]
+    public virtual Request Request { get; set; } = null!;
 }

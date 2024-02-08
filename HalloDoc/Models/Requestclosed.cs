@@ -30,4 +30,12 @@ public partial class Requestclosed
     [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
+
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestcloseds")]
+    public virtual Request Request { get; set; } = null!;
+
+    [ForeignKey("Requeststatuslogid")]
+    [InverseProperty("Requestcloseds")]
+    public virtual Requeststatuslog Requeststatuslog { get; set; } = null!;
 }

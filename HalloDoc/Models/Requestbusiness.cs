@@ -22,4 +22,12 @@ public partial class Requestbusiness
     [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
+
+    [ForeignKey("Businessid")]
+    [InverseProperty("Requestbusinesses")]
+    public virtual Business Business { get; set; } = null!;
+
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestbusinesses")]
+    public virtual Request Request { get; set; } = null!;
 }

@@ -16,4 +16,7 @@ public partial class Businesstype
     [Column("name")]
     [StringLength(50)]
     public string Name { get; set; } = null!;
+
+    [InverseProperty("Businesstype")]
+    public virtual ICollection<Business> Businesses { get; set; } = new List<Business>();
 }

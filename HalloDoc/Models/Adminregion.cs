@@ -18,4 +18,12 @@ public partial class Adminregion
 
     [Column("regionid")]
     public int Regionid { get; set; }
+
+    [ForeignKey("Adminid")]
+    [InverseProperty("Adminregions")]
+    public virtual Admin Admin { get; set; } = null!;
+
+    [ForeignKey("Regionid")]
+    [InverseProperty("Adminregions")]
+    public virtual Region Region { get; set; } = null!;
 }

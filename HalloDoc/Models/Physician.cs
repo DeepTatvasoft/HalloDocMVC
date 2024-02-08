@@ -132,4 +132,34 @@ public partial class Physician
     [Column("syncemailaddress")]
     [StringLength(50)]
     public string? Syncemailaddress { get; set; }
+
+    [ForeignKey("Aspnetuserid")]
+    [InverseProperty("PhysicianAspnetusers")]
+    public virtual Aspnetuser? Aspnetuser { get; set; }
+
+    [ForeignKey("Createdby")]
+    [InverseProperty("PhysicianCreatedbyNavigations")]
+    public virtual Aspnetuser CreatedbyNavigation { get; set; } = null!;
+
+    [ForeignKey("Modifiedby")]
+    [InverseProperty("PhysicianModifiedbyNavigations")]
+    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
+
+    [InverseProperty("Physician")]
+    public virtual ICollection<Physiciannotification> Physiciannotifications { get; set; } = new List<Physiciannotification>();
+
+    [InverseProperty("Physician")]
+    public virtual ICollection<Physicianregion> Physicianregions { get; set; } = new List<Physicianregion>();
+
+    [InverseProperty("Physician")]
+    public virtual ICollection<Requeststatuslog> RequeststatuslogPhysicians { get; set; } = new List<Requeststatuslog>();
+
+    [InverseProperty("Transtophysician")]
+    public virtual ICollection<Requeststatuslog> RequeststatuslogTranstophysicians { get; set; } = new List<Requeststatuslog>();
+
+    [InverseProperty("Physician")]
+    public virtual ICollection<Requestwisefile> Requestwisefiles { get; set; } = new List<Requestwisefile>();
+
+    [InverseProperty("Physician")]
+    public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
 }

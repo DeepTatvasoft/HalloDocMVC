@@ -19,4 +19,8 @@ public partial class Aspnetuserrole
     [Column("roleid")]
     [StringLength(128)]
     public string Roleid { get; set; } = null!;
+
+    [ForeignKey("Userid")]
+    [InverseProperty("Aspnetuserroles")]
+    public virtual Aspnetuser User { get; set; } = null!;
 }

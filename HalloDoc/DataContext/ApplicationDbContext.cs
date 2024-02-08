@@ -99,6 +99,16 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Adminid).HasName("admin_pkey");
 
             entity.Property(e => e.Adminid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Aspnetuser).WithMany(p => p.AdminAspnetusers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("aspnetuserid_fk");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.AdminCreatedbyNavigations)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("CreatedBy_fk");
+
+            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.AdminModifiedbyNavigations).HasConstraintName("ModifiedBy_fk");
         });
 
         modelBuilder.Entity<Adminregion>(entity =>
@@ -106,6 +116,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Adminregionid).HasName("adminregion_pkey");
 
             entity.Property(e => e.Adminregionid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Admin).WithMany(p => p.Adminregions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("AdminId_fk");
+
+            entity.HasOne(d => d.Region).WithMany(p => p.Adminregions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RegionId_fk");
         });
 
         modelBuilder.Entity<Aspnetrole>(entity =>
@@ -121,6 +139,10 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<Aspnetuserrole>(entity =>
         {
             entity.HasKey(e => new { e.Userid, e.Roleid }).HasName("aspnetuserroles_pkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Aspnetuserroles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("UserId_fk");
         });
 
         modelBuilder.Entity<Blockrequest>(entity =>
@@ -135,6 +157,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Businessid).HasName("business_pkey");
 
             entity.Property(e => e.Businessid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Businesstype).WithMany(p => p.Businesses).HasConstraintName("BusinessTypeId_fk");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.BusinessCreatedbyNavigations).HasConstraintName("CreatedBy_fk");
+
+            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.BusinessModifiedbyNavigations).HasConstraintName("ModifiedBy_fk");
+
+            entity.HasOne(d => d.Region).WithMany(p => p.Businesses).HasConstraintName("RegionId_fk");
         });
 
         modelBuilder.Entity<Businesstype>(entity =>
@@ -156,6 +186,10 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Conciergeid).HasName("concierge_pkey");
 
             entity.Property(e => e.Conciergeid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Region).WithMany(p => p.Concierges)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RegionId_fk");
         });
 
         modelBuilder.Entity<Emaillog>(entity =>
@@ -168,6 +202,8 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Vendorid).HasName("healthprofessionals_pkey");
 
             entity.Property(e => e.Vendorid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.ProfessionNavigation).WithMany(p => p.Healthprofessionals).HasConstraintName("Profession_fk");
         });
 
         modelBuilder.Entity<Healthprofessionaltype>(entity =>
@@ -196,6 +232,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Physicianid).HasName("physician_pkey");
 
             entity.Property(e => e.Physicianid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Aspnetuser).WithMany(p => p.PhysicianAspnetusers).HasConstraintName("AspNetUserId_fk");
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.PhysicianCreatedbyNavigations)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("CreatedBy_fk");
+
+            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.PhysicianModifiedbyNavigations).HasConstraintName("ModifiedBy_fk");
         });
 
         modelBuilder.Entity<Physiciannotification>(entity =>
@@ -203,6 +247,10 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("physiciannotification_pkey");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Physiciannotifications)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("PhysicianId_fk");
         });
 
         modelBuilder.Entity<Physicianregion>(entity =>
@@ -210,6 +258,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Physicianregionid).HasName("physicianregion_pkey");
 
             entity.Property(e => e.Physicianregionid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Physicianregions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("PhysicianId_fk");
+
+            entity.HasOne(d => d.Region).WithMany(p => p.Physicianregions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RegionId_fk");
         });
 
         modelBuilder.Entity<Region>(entity =>
@@ -224,6 +280,8 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Requestid).HasName("request_pkey");
 
             entity.Property(e => e.Requestid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.User).WithMany(p => p.Requests).HasConstraintName("UserId_fk");
         });
 
         modelBuilder.Entity<Requestbusiness>(entity =>
@@ -231,6 +289,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Requestbusinessid).HasName("requestbusiness_pkey");
 
             entity.Property(e => e.Requestbusinessid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Business).WithMany(p => p.Requestbusinesses)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("BusinessId_fk");
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Requestbusinesses)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestId_fk");
         });
 
         modelBuilder.Entity<Requestclient>(entity =>
@@ -238,6 +304,12 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Requestclientid).HasName("requestclient_pkey");
 
             entity.Property(e => e.Requestclientid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Region).WithMany(p => p.Requestclients).HasConstraintName("RegionId_fk");
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Requestclients)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestId_fk");
         });
 
         modelBuilder.Entity<Requestclosed>(entity =>
@@ -245,6 +317,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Requestclosedid).HasName("requestclosed_pkey");
 
             entity.Property(e => e.Requestclosedid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Requestcloseds)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestId_fk");
+
+            entity.HasOne(d => d.Requeststatuslog).WithMany(p => p.Requestcloseds)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestStatusLogId_fk");
         });
 
         modelBuilder.Entity<Requestconcierge>(entity =>
@@ -252,6 +332,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("requestconcierge_pkey");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Concierge).WithMany(p => p.Requestconcierges)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ConciergeId_fk");
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Requestconcierges)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestId_fk");
         });
 
         modelBuilder.Entity<Requestnote>(entity =>
@@ -259,6 +347,10 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Requestnotesid).HasName("requestnotes_pkey");
 
             entity.Property(e => e.Requestnotesid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Requestnotes)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestId_fk");
         });
 
         modelBuilder.Entity<Requeststatuslog>(entity =>
@@ -266,6 +358,16 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Requeststatuslogid).HasName("requeststatuslog_pkey");
 
             entity.Property(e => e.Requeststatuslogid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Admin).WithMany(p => p.Requeststatuslogs).HasConstraintName("AdminId_fk");
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.RequeststatuslogPhysicians).HasConstraintName("PhysicianId_fk");
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Requeststatuslogs)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestId_fk");
+
+            entity.HasOne(d => d.Transtophysician).WithMany(p => p.RequeststatuslogTranstophysicians).HasConstraintName("TransToPhysicianId_fk");
         });
 
         modelBuilder.Entity<Requesttype>(entity =>
@@ -280,6 +382,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Requestwisefileid).HasName("requestwisefile_pkey");
 
             entity.Property(e => e.Requestwisefileid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Admin).WithMany(p => p.Requestwisefiles).HasConstraintName("AdminId_fk");
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Requestwisefiles).HasConstraintName("PhysicianId_fk");
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Requestwisefiles)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestId_fk");
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -294,6 +404,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Rolemenuid).HasName("rolemenu_pkey");
 
             entity.Property(e => e.Rolemenuid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Menu).WithMany(p => p.Rolemenus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("MenuId_fk");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Rolemenus)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RoleId_fk");
         });
 
         modelBuilder.Entity<Shift>(entity =>
@@ -302,6 +420,14 @@ public partial class ApplicationDbContext : DbContext
 
             entity.Property(e => e.Shiftid).ValueGeneratedNever();
             entity.Property(e => e.Weekdays).IsFixedLength();
+
+            entity.HasOne(d => d.CreatedbyNavigation).WithMany(p => p.Shifts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("CreatedBy_fk");
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Shifts)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("PhysicianId_fk");
         });
 
         modelBuilder.Entity<Shiftdetail>(entity =>
@@ -309,6 +435,12 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Shiftdetailid).HasName("shiftdetail_pkey");
 
             entity.Property(e => e.Shiftdetailid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.Shiftdetails).HasConstraintName("ModifiedBy_fk");
+
+            entity.HasOne(d => d.Shift).WithMany(p => p.Shiftdetails)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ShiftId_fk");
         });
 
         modelBuilder.Entity<Shiftdetailregion>(entity =>
@@ -316,6 +448,14 @@ public partial class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Shiftdetailregionid).HasName("shiftdetailregion_pkey");
 
             entity.Property(e => e.Shiftdetailregionid).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Region).WithMany(p => p.Shiftdetailregions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RegionId_fk");
+
+            entity.HasOne(d => d.Shiftdetail).WithMany(p => p.Shiftdetailregions)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ShiftDetailId_fk");
         });
 
         modelBuilder.Entity<Smslog>(entity =>
@@ -327,7 +467,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.Userid).HasName("users_pkey");
 
-            entity.Property(e => e.Userid).ValueGeneratedNever();
+            entity.HasOne(d => d.Aspnetuser).WithMany(p => p.Users).HasConstraintName("AspNetUserId_fk");
         });
 
         OnModelCreatingPartial(modelBuilder);

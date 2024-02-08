@@ -106,4 +106,29 @@ public partial class Request
 
     [Column("createduserid")]
     public int? Createduserid { get; set; }
+
+    [InverseProperty("Request")]
+    public virtual ICollection<Requestbusiness> Requestbusinesses { get; set; } = new List<Requestbusiness>();
+
+    [InverseProperty("Request")]
+    public virtual ICollection<Requestclient> Requestclients { get; set; } = new List<Requestclient>();
+
+    [InverseProperty("Request")]
+    public virtual ICollection<Requestclosed> Requestcloseds { get; set; } = new List<Requestclosed>();
+
+    [InverseProperty("Request")]
+    public virtual ICollection<Requestconcierge> Requestconcierges { get; set; } = new List<Requestconcierge>();
+
+    [InverseProperty("Request")]
+    public virtual ICollection<Requestnote> Requestnotes { get; set; } = new List<Requestnote>();
+
+    [InverseProperty("Request")]
+    public virtual ICollection<Requeststatuslog> Requeststatuslogs { get; set; } = new List<Requeststatuslog>();
+
+    [InverseProperty("Request")]
+    public virtual ICollection<Requestwisefile> Requestwisefiles { get; set; } = new List<Requestwisefile>();
+
+    [ForeignKey("Userid")]
+    [InverseProperty("Requests")]
+    public virtual User? User { get; set; }
 }

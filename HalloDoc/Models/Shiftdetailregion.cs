@@ -22,4 +22,12 @@ public partial class Shiftdetailregion
 
     [Column("isdeleted", TypeName = "bit(1)")]
     public BitArray? Isdeleted { get; set; }
+
+    [ForeignKey("Regionid")]
+    [InverseProperty("Shiftdetailregions")]
+    public virtual Region Region { get; set; } = null!;
+
+    [ForeignKey("Shiftdetailid")]
+    [InverseProperty("Shiftdetailregions")]
+    public virtual Shiftdetail Shiftdetail { get; set; } = null!;
 }

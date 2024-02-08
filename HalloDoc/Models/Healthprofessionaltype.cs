@@ -26,4 +26,7 @@ public partial class Healthprofessionaltype
 
     [Column("isdeleted", TypeName = "bit(1)")]
     public BitArray? Isdeleted { get; set; }
+
+    [InverseProperty("ProfessionNavigation")]
+    public virtual ICollection<Healthprofessional> Healthprofessionals { get; set; } = new List<Healthprofessional>();
 }

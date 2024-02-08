@@ -74,4 +74,23 @@ public partial class Business
     [Column("ip")]
     [StringLength(20)]
     public string? Ip { get; set; }
+
+    [ForeignKey("Businesstypeid")]
+    [InverseProperty("Businesses")]
+    public virtual Businesstype? Businesstype { get; set; }
+
+    [ForeignKey("Createdby")]
+    [InverseProperty("BusinessCreatedbyNavigations")]
+    public virtual Aspnetuser? CreatedbyNavigation { get; set; }
+
+    [ForeignKey("Modifiedby")]
+    [InverseProperty("BusinessModifiedbyNavigations")]
+    public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
+
+    [ForeignKey("Regionid")]
+    [InverseProperty("Businesses")]
+    public virtual Region? Region { get; set; }
+
+    [InverseProperty("Business")]
+    public virtual ICollection<Requestbusiness> Requestbusinesses { get; set; } = new List<Requestbusiness>();
 }

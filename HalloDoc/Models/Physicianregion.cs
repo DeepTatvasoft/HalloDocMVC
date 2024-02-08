@@ -18,4 +18,12 @@ public partial class Physicianregion
 
     [Column("regionid")]
     public int Regionid { get; set; }
+
+    [ForeignKey("Physicianid")]
+    [InverseProperty("Physicianregions")]
+    public virtual Physician Physician { get; set; } = null!;
+
+    [ForeignKey("Regionid")]
+    [InverseProperty("Physicianregions")]
+    public virtual Region Region { get; set; } = null!;
 }

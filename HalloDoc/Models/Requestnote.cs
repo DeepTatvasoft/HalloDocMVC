@@ -55,4 +55,8 @@ public partial class Requestnote
     [Column("administrativenotes")]
     [StringLength(500)]
     public string? Administrativenotes { get; set; }
+
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestnotes")]
+    public virtual Request Request { get; set; } = null!;
 }

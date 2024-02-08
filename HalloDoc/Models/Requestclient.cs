@@ -111,4 +111,12 @@ public partial class Requestclient
     [Column("longitude")]
     [Precision(9, 0)]
     public decimal? Longitude { get; set; }
+
+    [ForeignKey("Regionid")]
+    [InverseProperty("Requestclients")]
+    public virtual Region? Region { get; set; }
+
+    [ForeignKey("Requestid")]
+    [InverseProperty("Requestclients")]
+    public virtual Request Request { get; set; } = null!;
 }
