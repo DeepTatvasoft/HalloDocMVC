@@ -22,4 +22,6 @@ public partial class Region
     public virtual ICollection<Requestclient> Requestclients { get; set; } = new List<Requestclient>();
 
     public virtual ICollection<Shiftdetailregion> Shiftdetailregions { get; set; } = new List<Shiftdetailregion>();
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

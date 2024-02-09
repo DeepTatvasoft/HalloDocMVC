@@ -78,6 +78,8 @@ public partial class Physician
 
     public virtual ICollection<Physicianregion> Physicianregions { get; set; } = new List<Physicianregion>();
 
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+
     public virtual ICollection<Requeststatuslog> RequeststatuslogPhysicians { get; set; } = new List<Requeststatuslog>();
 
     public virtual ICollection<Requeststatuslog> RequeststatuslogTranstophysicians { get; set; } = new List<Requeststatuslog>();

@@ -295,9 +295,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("business");
 
-            entity.Property(e => e.Businessid)
-                .ValueGeneratedNever()
-                .HasColumnName("businessid");
+            entity.Property(e => e.Businessid).HasColumnName("businessid");
             entity.Property(e => e.Address1)
                 .HasMaxLength(500)
                 .HasColumnName("address1");
@@ -359,9 +357,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("businesstype");
 
-            entity.Property(e => e.Businesstypeid)
-                .ValueGeneratedNever()
-                .HasColumnName("businesstypeid");
+            entity.Property(e => e.Businesstypeid).HasColumnName("businesstypeid");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
@@ -387,9 +383,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("concierge");
 
-            entity.Property(e => e.Conciergeid)
-                .ValueGeneratedNever()
-                .HasColumnName("conciergeid");
+            entity.Property(e => e.Conciergeid).HasColumnName("conciergeid");
             entity.Property(e => e.Address)
                 .HasMaxLength(150)
                 .HasColumnName("address");
@@ -768,9 +762,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("region");
 
-            entity.Property(e => e.Regionid)
-                .ValueGeneratedNever()
-                .HasColumnName("regionid");
+            entity.Property(e => e.Regionid).HasColumnName("regionid");
             entity.Property(e => e.Abbreviation)
                 .HasMaxLength(50)
                 .HasColumnName("abbreviation");
@@ -855,6 +847,15 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Requesttypeid).HasColumnName("requesttypeid");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.Userid).HasColumnName("userid");
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.Physicianid)
+                .HasConstraintName("PhysicianId_fk");
+
+            entity.HasOne(d => d.Requesttype).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.Requesttypeid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("RequestTypeId_fk");
 
             entity.HasOne(d => d.User).WithMany(p => p.Requests)
                 .HasForeignKey(d => d.Userid)
@@ -1123,9 +1124,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("requesttype");
 
-            entity.Property(e => e.Requesttypeid)
-                .ValueGeneratedNever()
-                .HasColumnName("requesttypeid");
+            entity.Property(e => e.Requesttypeid).HasColumnName("requesttypeid");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
@@ -1444,6 +1443,10 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Aspnetuser).WithMany(p => p.Users)
                 .HasForeignKey(d => d.Aspnetuserid)
                 .HasConstraintName("aspnetuserid_fk");
+
+            entity.HasOne(d => d.Region).WithMany(p => p.Users)
+                .HasForeignKey(d => d.Regionid)
+                .HasConstraintName("RegionId_fk");
         });
 
         OnModelCreatingPartial(modelBuilder);

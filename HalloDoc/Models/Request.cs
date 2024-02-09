@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace HalloDoc.Models;
 
 public partial class Request
 {
-    [Key]
     public int Requestid { get; set; }
 
     public int Requesttypeid { get; set; }
@@ -64,6 +62,8 @@ public partial class Request
 
     public int? Createduserid { get; set; }
 
+    public virtual Physician? Physician { get; set; }
+
     public virtual ICollection<Requestbusiness> Requestbusinesses { get; set; } = new List<Requestbusiness>();
 
     public virtual ICollection<Requestclient> Requestclients { get; set; } = new List<Requestclient>();
@@ -75,6 +75,8 @@ public partial class Request
     public virtual ICollection<Requestnote> Requestnotes { get; set; } = new List<Requestnote>();
 
     public virtual ICollection<Requeststatuslog> Requeststatuslogs { get; set; } = new List<Requeststatuslog>();
+
+    public virtual Requesttype Requesttype { get; set; } = null!;
 
     public virtual ICollection<Requestwisefile> Requestwisefiles { get; set; } = new List<Requestwisefile>();
 

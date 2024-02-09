@@ -54,5 +54,7 @@ public partial class User
 
     public virtual Aspnetuser? Aspnetuser { get; set; }
 
+    public virtual Region? Region { get; set; }
+
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 }

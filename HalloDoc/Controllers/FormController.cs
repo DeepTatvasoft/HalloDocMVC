@@ -59,7 +59,7 @@ namespace HalloDoc.Controllers
                 Email = model.Email,
                 Phonenumber = model.PhoneNumber,
                 Createddate = DateTime.Now,
-                Requesttypeid = 2,
+                Requesttypeid = 1,
                 Status = 1,
                 User = user
             };
@@ -101,6 +101,7 @@ namespace HalloDoc.Controllers
                 Lastname = model.FamLastName,
                 Phonenumber = model.FamMobile,
                 Email = model.FamEmail,
+                Requesttypeid = 2,
                 Relationname = model.FamRelation
             };
             _context.Requests.Add(req);
@@ -127,7 +128,28 @@ namespace HalloDoc.Controllers
 
         public IActionResult ConciergeInfo(ConciergeSubmit model)
         {
-            Request req = new Request();
+            string name = model.ConFirstName + model.ConLastName;
+            Concierge concierge = new Concierge
+            {
+                Conciergename = name,
+                Address = model.ConProperty,
+                Street = model.ConStreet,
+                City = model.ConCity,
+                State = model.ConState,
+                Zipcode = model.ConZipcode,
+                Createddate = DateTime.Now,
+                Regionid = 1
+            };
+            _context.Concierges.Add(concierge);
+            Request req = new Request
+            {
+                Firstname = model.ConFirstName,
+                Lastname = model.ConLastName,
+                Phonenumber = model.ConPhonenumber,
+                Email = model.ConEmail,
+                Requesttypeid = 3
+            };
+            _context.Requests.Add(req);
             Requestclient reqclient = new Requestclient
             {
                 Notes = model.PatSymptoms,
@@ -145,6 +167,52 @@ namespace HalloDoc.Controllers
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
+            _context.SaveChanges();
+            return RedirectToAction("patientlogin", "Home");
+        }
+
+        public IActionResult BusinessInfo(BusinessSubmit model)
+        {
+            Request req = new Request
+            {
+                Firstname = model.BusFirstname,
+                Lastname = model.BusLastname,
+                Phonenumber = model.BusPhonenumber,
+                Email = model.BusEmail,
+                Requesttypeid = 4,
+                
+            };
+            _context.Requests.Add(req);
+            Requestclient reqclient = new Requestclient
+            {
+                Notes = model.PatSymptoms,
+                Firstname = model.PatFirstName,
+                Lastname = model.PatLastName,
+                Intdate = model.PatDOB.Day,
+                Intyear = model.PatDOB.Year,
+                Strmonth = model.PatDOB.Month.ToString(),
+                Phonenumber = model.PatPhoneNumber,
+                Street = model.PatStreet,
+                City = model.PatCity,
+                State = model.PatState,
+                Zipcode = model.PatZipcode,
+                Location = model.PatRoom,
+                Request = req
+            };
+            _context.Requestclients.Add(reqclient);
+
+            Business bus = new Business
+            {
+                Name = model.BusFirstname + model.BusLastname,
+                City = model.PatCity,
+                Regionid = 1,
+                Createddate = DateTime.Now,
+                Zipcode = model.PatZipcode,
+                Phonenumber = model.PatPhoneNumber,
+                Businesstypeid = 1
+            };
+            _context.Businesses.Add(bus);
+            _context.SaveChanges();
             return RedirectToAction("patientlogin", "Home");
         }
     }
