@@ -6,9 +6,19 @@
 .navbar {
     box-shadow: 0px 5px 5px gray;
 }
+
 #maincontent {
     border-radius: 10px;
     padding: 20px;
+}
+
+#passwordFields1{
+    display:none;
+}
+
+
+#passwordFields2{
+    display:none;
 }
 
 .date {

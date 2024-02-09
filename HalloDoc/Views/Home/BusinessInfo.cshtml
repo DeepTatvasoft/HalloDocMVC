@@ -2,6 +2,7 @@
     ViewData["Title"] = "Business Request";
     Layout = "formlayout";
 }
+@model HalloDoc.ViewModel.BusinessSubmit
 <div class="main">
     <div class="back container mb-3 mt-3">
         <a asp-controller ="Home" asp-action="SubmitReqScreen" style="text-decoration: none;" class="backimg">
@@ -15,13 +16,13 @@
             <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Street">
+                        <input asp-for="BusFirstname" type="text" class="form-control" id="floatingInput" placeholder="Street">
                         <label for="floatingInput">Your First Name</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="City">
+                        <input asp-for="BusLastname" type="text" class="form-control" id="floatingInput" placeholder="City">
                         <label for="floatingInput">Your Last Name</label>
                     </div>
                 </div>
@@ -34,24 +35,24 @@
                             <option value="br">BRAZIL</option>
                             <option value="ind">INDIA</option>
                         </select>
-                        <input type="tel" class="form-control" id="output" placeholder="Mobile Number">
+                        <input asp-for="BusPhonenumber" type="tel" class="form-control" id="output" placeholder="Mobile Number">
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="Email">
+                        <input asp-for="BusEmail" type="email" class="form-control" id="floatingInput" placeholder="Email">
                         <label for="floatingInput">Your Email</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Business Property">
+                        <input asp-for="BusProperty" type="text" class="form-control" id="floatingInput" placeholder="Business Property">
                         <label for="floatingInput">Business/Property Name</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Business Property">
+                        <input asp-for="BusCaseNum" type="text" class="form-control" id="floatingInput" placeholder="Business Property">
                         <label for="floatingInput">Case Number(Optional)</label>
                     </div>
                 </div>
@@ -67,20 +68,20 @@
             <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Name">
+                        <input asp-for="PatFirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
                         <label for="floatingInput">First Name</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Name">
+                        <input asp-for="PatLastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
                         <label for="floatingInput">Last Name</label>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="form-floating mb-3 date">
-                    <input type="date" class="form-control" id="floatingInput" placeholder="Date">
+                    <input asp-for="PatDOB" type="date" class="form-control" id="floatingInput" placeholder="Date">
                     <label for="floatingInput">Date Of Birth</label>
                 </div>
             </div>
@@ -90,7 +91,7 @@
             <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <input asp-for="PatEmail" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
                         <label for="floatingInput">Email</label>
                     </div>
                 </div>
@@ -103,7 +104,7 @@
                             <option value="br">BRAZIL</option>
                             <option value="ind">INDIA</option>
                         </select>
-                        <input type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
+                        <input asp-for="PatPhoneNumber" type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
                     </div>
                 </div>
             </div>
@@ -113,31 +114,31 @@
             <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Street">
+                        <input asp-for="PatStreet" type="text" class="form-control" id="floatingInput" placeholder="Street">
                         <label for="floatingInput">Street</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="City">
+                        <input asp-for="PatCity" type="text" class="form-control" id="floatingInput" placeholder="City">
                         <label for="floatingInput">City</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="State">
+                        <input asp-for="PatState" type="text" class="form-control" id="floatingInput" placeholder="State">
                         <label for="floatingInput">State</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
+                        <input asp-for="PatZipcode" type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
                         <label for="floatingInput">Zip Code</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Room">
+                        <input asp-for="PatRoom" type="text" class="form-control" id="floatingInput" placeholder="Room">
                         <label for="floatingInput">Room #/ Suite (Optional)</label>
                     </div>
                 </div>

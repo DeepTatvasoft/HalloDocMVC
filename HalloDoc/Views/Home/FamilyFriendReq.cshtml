@@ -2,6 +2,7 @@
     ViewData["Title"] = "Family/Friend Request";
     Layout = "formlayout";
 }
+@model HalloDoc.ViewModel.FamilyFriendReqSubmit
 <div id="exampleModal" class="modal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -27,150 +28,152 @@
 
 <div class="main">
     <div class="back container mb-3 mt-3">
-        <a asp-asp-controller="Home" asp-action="SubmitReqScreen" style="text-decoration: none;" class="backimg">
+        <a asp-controller="Home" asp-action="SubmitReqScreen" style="text-decoration: none;" class="backimg">
             <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
             <span>Back</span>
         </a>
     </div>
     <div class="container bg-white" style="background-color: white; padding-bottom:20px" id="maincontent">
-        <div class="faminfo">
-            <h4>Family/Friend Information</h4>
-            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Street">
-                        <label for="floatingInput">Your First Name</label>
+        <form method="post" asp-controller="Form" asp-action="familyinfo">
+            <div class="faminfo">
+                <h4>Family/Friend Information</h4>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="FamFirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <label for="floatingInput">Your First Name</label>
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="City">
-                        <label for="floatingInput">Your Last Name</label>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="FamLastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <label for="floatingInput">Your Last Name</label>
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="mb-3 numcountry">
-                        <select name="country" id="country" onchange="country_code()">
-                            <option value="select country">select country</option>
-                            <option value="us">US</option>
-                            <option value="uk">UK</option>
-                            <option value="br">BRAZIL</option>
-                            <option value="ind">INDIA</option>
-                        </select>
-                        <input type="tel" class="form-control" id="output" placeholder="Mobile Number">
+                    <div class="col">
+                        <div class="mb-3 numcountry">
+                            <select name="country" id="country" onchange="country_code()">
+                                <option value="select country">select country</option>
+                                <option value="us">US</option>
+                                <option value="uk">UK</option>
+                                <option value="br">BRAZIL</option>
+                                <option value="ind">INDIA</option>
+                            </select>
+                            <input asp-for="FamMobile" type="tel" class="form-control" id="output" placeholder="Mobile Number">
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="Email">
-                        <label for="floatingInput">Your Email</label>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="FamEmail" type="email" class="form-control" id="floatingInput" placeholder="Email">
+                            <label for="floatingInput">Your Email</label>
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Relation">
-                        <label for="floatingInput">Relation With Patient</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="pinfo mt-5">
-            <h4>Patient Information</h4>
-            <div class="form-floating">
-                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
-                          style="height: 100px;"></textarea>
-                <label for="floatingTextarea" class="medialabel">Enter Brief Details Of Symptoms (Optional)</label>
-            </div>
-            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Name">
-                        <label for="floatingInput">First Name</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Name">
-                        <label for="floatingInput">Last Name</label>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="FamRelation" type="text" class="form-control" id="floatingInput" placeholder="Relation">
+                            <label for="floatingInput">Relation With Patient</label>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="form-floating mb-3 date">
-                    <input type="date" class="form-control" id="floatingInput" placeholder="Date">
-                    <label for="floatingInput">Date Of Birth</label>
+            <div class="pinfo mt-5">
+                <h4>Patient Information</h4>
+                <div class="form-floating">
+                    <textarea asp-for="PatSymptoms" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+                              style="height: 100px;"></textarea>
+                    <label for="floatingTextarea" class="medialabel">Enter Brief Details Of Symptoms (Optional)</label>
                 </div>
-            </div>
-        </div>
-        <div class="pcinfo mt-5">
-            <h4>Patient Contact Information</h4>
-            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Email</label>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PatFirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <label for="floatingInput">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PatLastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <label for="floatingInput">Last Name</label>
+                        </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="mb-3 numcountry">
-                        <select name="country" id="country2" class="country" onchange="country_code2()">
-                            <option value="select country">select country</option>
-                            <option value="us">US</option>
-                            <option value="uk">UK</option>
-                            <option value="br">BRAZIL</option>
-                            <option value="ind">INDIA</option>
-                        </select>
-                        <input type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="plocation mt-5">
-            <h4>Patient Location</h4>
-            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Street">
-                        <label for="floatingInput">Street</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="City">
-                        <label for="floatingInput">City</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="State">
-                        <label for="floatingInput">State</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
-                        <label for="floatingInput">Zip Code</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Room">
-                        <label for="floatingInput">Room #/ Suite (Optional)</label>
+                    <div class="form-floating mb-3 date">
+                        <input asp-for="PatDOB" type="date" class="form-control" id="floatingInput" placeholder="Date">
+                        <label for="floatingInput">Date Of Birth</label>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="updoc mt-5">
-            <h4>(Optional) Upload Photo Or Document</h4>
-            <div class="fileselect mt-3">
-                <input type="file" class="file mt-3" id="actual-btn" hidden />
-                <label for="actual-btn" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
-                <span id="file-chosen">Select File</span>
+            <div class="pcinfo mt-5">
+                <h4>Patient Contact Information</h4>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PatEmail" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput">Email</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3 numcountry">
+                            <select name="country" id="country2" class="country" onchange="country_code2()">
+                                <option value="select country">select country</option>
+                                <option value="us">US</option>
+                                <option value="uk">UK</option>
+                                <option value="br">BRAZIL</option>
+                                <option value="ind">INDIA</option>
+                            </select>
+                            <input asp-for="PatPhoneNumber" type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="submit mt-4">
-            <button type="button" class="btn btn-info" style="color: white;">Submit</button>
-            <button type="button" class="btn btn-outline-info ms-2">Cancel</button>
-        </div>
+            <div class="plocation mt-5">
+                <h4>Patient Location</h4>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PatStreet" type="text" class="form-control" id="floatingInput" placeholder="Street">
+                            <label for="floatingInput">Street</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PatCity" type="text" class="form-control" id="floatingInput" placeholder="City">
+                            <label for="floatingInput">City</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PatState" type="text" class="form-control" id="floatingInput" placeholder="State">
+                            <label for="floatingInput">State</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PatZipcode" type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
+                            <label for="floatingInput">Zip Code</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="PatRoom" type="text" class="form-control" id="floatingInput" placeholder="Room">
+                            <label for="floatingInput">Room #/ Suite (Optional)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="updoc mt-5">
+                <h4>(Optional) Upload Photo Or Document</h4>
+                <div class="fileselect mt-3">
+                    <input type="file" class="file mt-3" id="actual-btn" hidden />
+                    <label for="actual-btn" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
+                    <span id="file-chosen">Select File</span>
+                </div>
+            </div>
+            <div class="submit mt-4">
+                <button type="submit" class="btn btn-info" style="color: white;">Submit</button>
+                <button type="button" class="btn btn-outline-info ms-2">Cancel</button>
+            </div>
+        </form>
     </div>
 </div>

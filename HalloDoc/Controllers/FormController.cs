@@ -19,7 +19,7 @@ namespace HalloDoc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult insert(PatientReqSubmit model)
+        public IActionResult patientinfo(PatientReqSubmit model)
         {
             Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
             if (aspuser == null)
@@ -29,6 +29,7 @@ namespace HalloDoc.Controllers
                 string username = model.FirstName + model.LastName;
                 aspnetuser1.Username = username;
                 aspnetuser1.Phonenumber = model.PhoneNumber;
+                aspnetuser1.Passwordhash = model.Password;
                 aspnetuser1.Modifieddate = DateTime.Now;
                 _context.Aspnetusers.Add(aspnetuser1);
                 aspuser = aspnetuser1;
@@ -73,10 +74,77 @@ namespace HalloDoc.Controllers
                 Email = model.Email,
                 Phonenumber = model.PhoneNumber,
                 Notes = model.Symptoms,
+                Intdate = model.DOB.Day,
+                Intyear = model.DOB.Year,
+                Strmonth = model.DOB.Month.ToString(),
+                Location = model.Room
             };
 
             _context.Requestclients.Add(reqclient);
             _context.SaveChanges();
+            return RedirectToAction("patientlogin", "Home");
+        }
+
+        [Route("/Form/patientinfo/checkemail/{email}")]
+        [HttpGet]
+        public IActionResult CheckEmail(string email)
+        {
+            var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
+            return Json(new { exists = emailExists });
+        }
+
+        public IActionResult familyinfo(FamilyFriendReqSubmit model)
+        {
+            Request req = new Request
+            {
+                Firstname = model.FamFirstName,
+                Lastname = model.FamLastName,
+                Phonenumber = model.FamMobile,
+                Email = model.FamEmail,
+                Relationname = model.FamRelation
+            };
+            _context.Requests.Add(req);
+            Requestclient reqclient = new Requestclient
+            {
+                Notes = model.PatSymptoms,
+                Firstname = model.PatFirstName,
+                Lastname = model.PatLastName,
+                Intdate = model.PatDOB.Day,
+                Intyear = model.PatDOB.Year,
+                Strmonth = model.PatDOB.Month.ToString(),
+                Phonenumber = model.PatPhoneNumber,
+                Street = model.PatStreet,
+                City = model.PatCity,
+                State = model.PatState,
+                Zipcode = model.PatZipcode,
+                Location = model.PatRoom,
+                Request = req
+            };
+            _context.Requestclients.Add(reqclient);
+            _context.SaveChanges();
+            return RedirectToAction("patientlogin", "Home");
+        }
+
+        public IActionResult ConciergeInfo(ConciergeSubmit model)
+        {
+            Request req = new Request();
+            Requestclient reqclient = new Requestclient
+            {
+                Notes = model.PatSymptoms,
+                Firstname = model.PatFirstName,
+                Lastname = model.PatLastName,
+                Intdate = model.PatDOB.Day,
+                Intyear = model.PatDOB.Year,
+                Strmonth = model.PatDOB.Month.ToString(),
+                Phonenumber = model.PatPhoneNumber,
+                Street = model.PatStreet,
+                City = model.PatCity,
+                State = model.PatState,
+                Zipcode = model.PatZipcode,
+                Location = model.PatRoom,
+                Request = req
+            };
+            _context.Requestclients.Add(reqclient);
             return RedirectToAction("patientlogin", "Home");
         }
     }

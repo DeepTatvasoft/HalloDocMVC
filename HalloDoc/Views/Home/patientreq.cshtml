@@ -11,7 +11,7 @@
         </a>
     </div>
     <div class="container bg-white" style="padding-bottom:20px" id="maincontent">
-        <form method="post" asp-controller="Form" asp-action="insert">
+        <form method="post" asp-controller="Form" asp-action="patientinfo">
             <div class="pinfo">
                 <h4>Patient Information</h4>
                 <div class="form-floating">
@@ -45,8 +45,8 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                            <label for="floatingInput">Email</label>
+                            <input asp-for="Email" onblur="checkEmailExists()" type="email" class="form-control" id="patientEmail" placeholder="name@example.com">
+                            <label for="patientEmail">Email</label>
                         </div>
                     </div>
                     <div class="col">
@@ -59,6 +59,18 @@
                                 <option value="ind">INDIA</option>
                             </select>
                             <input asp-for="PhoneNumber" type="tel" class="form-control output" id="output" placeholder="Mobile Number">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3" id="passwordFields1">
+                            <input asp-for="Password" type="password" class="form-control" id="floatingInput" placeholder="password">
+                            <label for="floatingInput">Password</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3" id="passwordFields2">
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" id="floatingInput" placeholder="confirmpassword">
+                            <label for="floatingInput">Confirm Password</label>
                         </div>
                     </div>
                 </div>
@@ -113,3 +125,26 @@
         </form>
     </div>
 </div>
+<script>
+    function checkEmailExists() {
+        var email = document.getElementById("patientEmail").value;
+
+        fetch('/Form/patientinfo/checkemail/' + email)
+            .then(response => response.json())
+            .then(data => {
+                var patientPassword = document.getElementById('passwordFields1');
+                var patientConfirmPassword = document.getElementById('passwordFields2');
+                if (data.exists) {
+                    patientPassword.style.display = 'none';
+                    patientConfirmPassword.style.display = 'none';
+                    console.log("exist ")
+                }
+                else {
+                    patientPassword.style.display = 'block';
+                    patientConfirmPassword.style.display = 'block';
+                    console.log(" not exist ")
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
