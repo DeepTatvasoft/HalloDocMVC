@@ -55,16 +55,6 @@ namespace HalloDoc.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult insert(Aspnetuser obj)
-        {
-            obj.Modifieddate = DateTime.Now;
-            _context.Aspnetusers.Add(obj);
-            _context.SaveChanges();
-            return RedirectToAction("patientlogin","Home");
-        }
-
 
         [HttpPost]
         public async Task<IActionResult> validate([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
