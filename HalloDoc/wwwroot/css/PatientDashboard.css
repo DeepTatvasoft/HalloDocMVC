@@ -1,0 +1,33 @@
+﻿.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #0dcaf0;
+    border: none;
+    /* background-color: var(--bs-nav-tabs-link-active-bg); */
+    /* border-color: var(--bs-nav-tabs-link-active-border-color); */
+}
+
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+    isolation: isolate;
+    border-color: white;
+    border-bottom: 1px solid #0dcaf0;
+}
+
+.nav-link {
+    color: black;
+    transition: none;
+}
+
+.uppernav {
+    border-bottom: 1px solid black;
+}
+
+.dashboard {
+    margin-top: 50px;
+}
+
+.CreateReqBtn {
+    height: 60px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    /* text-align: center; */
+}

@@ -102,7 +102,9 @@ namespace HalloDoc.Controllers
                 Phonenumber = model.FamMobile,
                 Email = model.FamEmail,
                 Requesttypeid = 2,
-                Relationname = model.FamRelation
+                Relationname = model.FamRelation,
+                Createddate = DateTime.Now,
+                Status = 1
             };
             _context.Requests.Add(req);
             Requestclient reqclient = new Requestclient
@@ -147,6 +149,7 @@ namespace HalloDoc.Controllers
                 Lastname = model.ConLastName,
                 Phonenumber = model.ConPhonenumber,
                 Email = model.ConEmail,
+                Createddate= DateTime.Now,
                 Requesttypeid = 3
             };
             _context.Requests.Add(req);
@@ -180,6 +183,7 @@ namespace HalloDoc.Controllers
                 Phonenumber = model.BusPhonenumber,
                 Email = model.BusEmail,
                 Requesttypeid = 4,
+                Status = 1
                 
             };
             _context.Requests.Add(req);

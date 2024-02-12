@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Patient Dashboard";
+    Layout = "_PatientDashboard";
+}
+@model IEnumerable<Request>
+<Partial name="_Notification" />
+<div class="tab-content mt-4" id="myTabContent">
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
+         tabindex="0">
+        <div class="container-fluid mt-5 dashboard" style="width: 90%;">
+            <h4>
+                Medical History
+            </h4>
+            <div class="CreateReqBtn bg-white mt-4">
+                <button type="button" class="btn btn-outline-info me-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Create New Request</button>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Create New Request</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Here, I want to create new request for...
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-info" style="color:white">Me</button>
+                                    <button type="button" class="btn btn-outline-secondary ms-2">Some One Else</button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-info" style="color:white">Continue</button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table mt-2">
+                <thead>
+                    <tr>
+                        <th class="bg-body-secondary" scope="col">Created Date <i class="bi bi-arrow-down"></i></th>
+                        <th class="bg-body-secondary" scope="col">Current Status</th>
+                        <th class="bg-body-secondary" scope="col">Document</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var obj in Model)
+                    {
+                        <tr>
+                            <td>
+                                @obj.Createddate
+                            </td>
+                            <td>
+                                @if (obj.Status == 1)
+                                {
+                                    <span>Processing</span>
+                                }
+                                else if (obj.Status == 2)
+                                {
+                                    <span>Accepted</span>
+                                }
+                            </td>
+                            <td>
+                                No Document
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+        Hello
+    </div>
+</div>

@@ -37,12 +37,14 @@
                     <i id="passicon" class="fa-solid fa-eye-slash icon" onclick="passtoggle()"></i>
                 </div>
                 <div class="button mt-4 logbtn">
-                    <button type="submit">Login</button>
+                    <a asp-controller="Home" asp-action="PatientDashboard">
+                        <button type="submit">Login</button>
+                    </a>
                 </div>
             </form>
-                <div class="forget mt-4">
-                    <a asp-controller="Home" asp-action="patientreset">Forget Password?</a>
-                </div>
+            <div class="forget mt-4">
+                <a asp-controller="Home" asp-action="patientreset">Forget Password?</a>
+            </div>
         </div>
         <footer>
             <a href="#">Terms Of Conditions</a>

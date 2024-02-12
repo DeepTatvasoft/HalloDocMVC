@@ -49,11 +49,20 @@ namespace HalloDoc.Controllers
         {
             return View();
         }
+        public IActionResult PatientDashboard()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult logout()
+        {
+            TempData["error"] = "User logged out Sucessfully";
+            return RedirectToAction("patientlogin", "Home");
         }
 
         [HttpPost]
@@ -63,7 +72,9 @@ namespace HalloDoc.Controllers
             if (obj != null)
             {
                 TempData["success"] = "User LogIn Successfully";
-                return RedirectToAction("SubmitReqScreen", "Home");
+                TempData["Username"] = obj.Username;
+                HttpContext.Session.SetString("Username", obj.Username);
+                return RedirectToAction("PatientDashboard", "Dashboard");
             }
             else
             {
@@ -71,5 +82,6 @@ namespace HalloDoc.Controllers
                 return RedirectToAction("patientlogin", "Home");
             }
         }
+        
     }
 }

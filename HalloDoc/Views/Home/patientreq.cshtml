@@ -125,6 +125,8 @@
         </form>
     </div>
 </div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     function checkEmailExists() {
         var email = document.getElementById("patientEmail").value;
@@ -137,11 +139,14 @@
                 if (data.exists) {
                     patientPassword.style.display = 'none';
                     patientConfirmPassword.style.display = 'none';
+                    toastr.info("Account Exist");
                     console.log("exist ")
+                    
                 }
                 else {
                     patientPassword.style.display = 'block';
                     patientConfirmPassword.style.display = 'block';
+                    toastr.error("Account does not Exist");
                     console.log(" not exist ")
                 }
             })
