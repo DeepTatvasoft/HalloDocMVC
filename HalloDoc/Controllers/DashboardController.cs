@@ -13,7 +13,8 @@ namespace HalloDoc.Controllers
         }
         public IActionResult PatientDashboard()
         {
-            IEnumerable<Request> data = _context.Requests;
+            var temp = HttpContext.Session.GetInt32("Userid");
+            IEnumerable<Request> data = _context.Requests.Where(u => u.Requestid == temp);
             return View(data);
         }
     }
