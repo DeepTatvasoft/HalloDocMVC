@@ -16,13 +16,37 @@ namespace HalloDoc.Controllers
             _logger = logger;
             _context = context;
         }
+        public void AddPatientRequestWiseFile(IFormFile formFile, int reqid)
+        {
+            string filename = formFile.FileName;
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "document", filename);
+
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                formFile.CopyTo(fileStream);
+            }
+
+            //Request? req = _context.Requests.FirstOrDefault(i => i.Requestid == reqid);
+            //int ReqId = req.Requestid;
+
+            var data3 = new Requestwisefile()
+            {
+                Createddate = DateTime.Now,
+                Requestid = reqid,
+                Filename = path
+            };
+
+            _context.Requestwisefiles.Add(data3);
+            _context.SaveChanges();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult patientinfo(PatientReqSubmit model)
         {
             Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
-            if (aspuser == null)
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+            if (aspuser == null && user == null )
             {
                 Aspnetuser aspnetuser1 = new Aspnetuser();
                 aspnetuser1.Email = model.Email;
@@ -33,24 +57,29 @@ namespace HalloDoc.Controllers
                 aspnetuser1.Modifieddate = DateTime.Now;
                 _context.Aspnetusers.Add(aspnetuser1);
                 aspuser = aspnetuser1;
+
+                User user1 = new User
+                {
+                    Firstname = model.FirstName,
+                    Lastname = model.LastName,
+                    Email = model.Email,
+                    Mobile = model.PhoneNumber,
+                    Street = model.Street,
+                    City = model.City,
+                    State = model.State,
+                    Zipcode = model.Zipcode,
+                    Createdby = model.FirstName + model.LastName,
+                    Createddate = DateTime.Now,
+                    Intdate = model.DOB.Day,
+                    Intyear = model.DOB.Year,
+                    Strmonth = model.DOB.Month.ToString(),
+                    Aspnetuser = aspuser,
+                };
+                _context.Users.Add(user1);
+                _context.SaveChanges();
+
+                user = user1;
             }
-
-            User user = new User
-            {
-                Firstname = model.FirstName,
-                Lastname = model.LastName,
-                Email = model.Email,
-                Mobile = model.PhoneNumber,
-                Street = model.Street,
-                City = model.City,
-                State = model.State,
-                Zipcode = model.Zipcode,
-                Createdby = model.FirstName + model.LastName,
-                Createddate = DateTime.Now,
-                Aspnetuser = aspuser
-            };
-
-            _context.Users.Add(user);
 
             Request req = new Request
             {
@@ -65,6 +94,7 @@ namespace HalloDoc.Controllers
             };
 
             _context.Requests.Add(req);
+            _context.SaveChanges();
 
             Requestclient reqclient = new Requestclient
             {
@@ -81,6 +111,10 @@ namespace HalloDoc.Controllers
             };
 
             _context.Requestclients.Add(reqclient);
+            if (model.Upload != null)
+            {
+                AddPatientRequestWiseFile(model.Upload, req.Requestid);
+            }
             _context.SaveChanges();
             return RedirectToAction("patientlogin", "Home");
         }
@@ -107,6 +141,7 @@ namespace HalloDoc.Controllers
                 Status = 1
             };
             _context.Requests.Add(req);
+            _context.SaveChanges();
             Requestclient reqclient = new Requestclient
             {
                 Notes = model.PatSymptoms,
@@ -125,6 +160,10 @@ namespace HalloDoc.Controllers
             };
             _context.Requestclients.Add(reqclient);
             _context.SaveChanges();
+            if (model.Upload != null)
+            {
+                AddPatientRequestWiseFile(model.Upload, req.Requestid);
+            }
             return RedirectToAction("patientlogin", "Home");
         }
 
@@ -153,6 +192,8 @@ namespace HalloDoc.Controllers
                 Requesttypeid = 3
             };
             _context.Requests.Add(req);
+            _context.SaveChanges();
+
             Requestclient reqclient = new Requestclient
             {
                 Notes = model.PatSymptoms,
@@ -187,6 +228,8 @@ namespace HalloDoc.Controllers
                 
             };
             _context.Requests.Add(req);
+            _context.SaveChanges();
+
             Requestclient reqclient = new Requestclient
             {
                 Notes = model.PatSymptoms,
@@ -204,6 +247,7 @@ namespace HalloDoc.Controllers
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
+            _context.SaveChanges();
 
             Business bus = new Business
             {

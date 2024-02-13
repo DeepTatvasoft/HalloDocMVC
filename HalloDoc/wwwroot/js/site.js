@@ -7,8 +7,13 @@ try {
 
     const actualBtn = document.getElementById('actual-btn');
     const fileChosen = document.getElementById('file-chosen');
+    var files = "";
     actualBtn.addEventListener('change', function () {
-        fileChosen.textContent = this.files[0].name
+        for (var i = 0; i < this.files.length; i++)
+        {
+            files += this.files[i].name;
+    }
+            fileChosen.textContent = files;
     })
 }
 catch (error) { }

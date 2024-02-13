@@ -1136,9 +1136,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("requestwisefile");
 
-            entity.Property(e => e.Requestwisefileid)
-                .ValueGeneratedNever()
-                .HasColumnName("requestwisefileid");
+            entity.Property(e => e.Requestwisefileid).HasColumnName("requestwisefileid");
             entity.Property(e => e.Adminid).HasColumnName("adminid");
             entity.Property(e => e.Createddate)
                 .HasColumnType("timestamp without time zone")

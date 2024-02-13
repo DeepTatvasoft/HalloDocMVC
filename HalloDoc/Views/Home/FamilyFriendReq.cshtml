@@ -34,7 +34,7 @@
         </a>
     </div>
     <div class="container bg-white" style="background-color: white; padding-bottom:20px" id="maincontent">
-        <form method="post" asp-controller="Form" asp-action="familyinfo">
+        <form method="post" asp-controller="Form" asp-action="familyinfo" enctype="multipart/form-data">
             <div class="faminfo">
                 <h4>Family/Friend Information</h4>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
@@ -165,7 +165,7 @@
             <div class="updoc mt-5">
                 <h4>(Optional) Upload Photo Or Document</h4>
                 <div class="fileselect mt-3">
-                    <input type="file" class="file mt-3" id="actual-btn" hidden />
+                    <input asp-for="Upload" type="file" class="file mt-3" id="actual-btn" hidden multiple/>
                     <label for="actual-btn" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
                     <span id="file-chosen">Select File</span>
                 </div>

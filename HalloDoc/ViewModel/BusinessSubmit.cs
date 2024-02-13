@@ -19,5 +19,7 @@
         public string PatState { get; set; }
         public string PatZipcode { get; set; }
         public string PatRoom { get; set; }
+        public IFormFile? Upload { get; set; }
+
     }
 }

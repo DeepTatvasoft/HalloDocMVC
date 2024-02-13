@@ -1,5 +1,6 @@
 ﻿using HalloDoc.DataContext;
 using HalloDoc.Models;
+using HalloDoc.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HalloDoc.Controllers
@@ -13,9 +14,41 @@ namespace HalloDoc.Controllers
         }
         public IActionResult PatientDashboard()
         {
-            var temp = HttpContext.Session.GetInt32("Userid");
-            IEnumerable<Request> data = _context.Requests.Where(u => u.Requestid == temp);
-            return View(data);
+            //User user = new User();
+            int temp = (int)HttpContext.Session.GetInt32("Userid");
+            var tempname = HttpContext.Session.GetString("Username");
+            //IEnumerable<Request> data = _context.Requests.Where(u => u.Userid == temp);
+            //return View(data);
+            PatientDashboardedit dashedit = new PatientDashboardedit();
+            var data = _context.Users.FirstOrDefault(u => u.Userid == temp);
+            dashedit.User = data;
+            DateTime tempDateTime = new DateTime(Convert.ToInt32(data.Intyear), Convert.ToInt32(data.Strmonth), (int)data.Intdate);
+            dashedit.tempdate = tempDateTime;
+            //var requestdata = from m in _context.Requests where m.Userid == temp select m;
+            var requestdata = _context.Requests.Where(u=>u.Userid == temp);
+            dashedit.requests = requestdata.ToList();
+            return View(dashedit);
+        }
+        public IActionResult editUser(PatientDashboardedit dashedit)
+        {
+            int id = (int)HttpContext.Session.GetInt32("Userid");
+            var user = _context.Users.FirstOrDefault(u=>u.Userid == id);
+            user.Firstname = dashedit.User.Firstname;
+            user.Lastname = dashedit.User.Lastname;
+            String str = user.Firstname + " " + user.Lastname;
+            HttpContext.Session.SetString("Username", str);
+            user.Intdate = dashedit.tempdate.Day;
+            user.Strmonth = (dashedit.tempdate.Month).ToString();
+            user.Intyear = dashedit.tempdate.Year;
+            user.Email = dashedit.User.Email;
+            user.Mobile = dashedit.User.Mobile;
+            user.Street = dashedit.User.Street;
+            user.City = dashedit.User.City;
+            user.State = dashedit.User.State;
+            user.Zipcode = dashedit.User.Zipcode;
+            _context.Users.Update(user);
+            _context.SaveChanges();
+            return RedirectToAction("PatientDashboard", "Dashboard");
         }
     }
 }

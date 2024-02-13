@@ -11,7 +11,7 @@
         </a>
     </div>
     <div class="container bg-white" style="padding-bottom:20px" id="maincontent">
-        <form method="post" asp-controller="Form" asp-action="patientinfo">
+        <form method="post" asp-controller="Form" asp-action="patientinfo" enctype="multipart/form-data">
             <div class="pinfo">
                 <h4>Patient Information</h4>
                 <div class="form-floating">
@@ -113,7 +113,7 @@
             <div class="updoc mt-5">
                 <h4>(Optional) Upload Photo Or Document</h4>
                 <div class="fileselect mt-3">
-                    <input type="file" class="file mt-3" id="actual-btn" hidden />
+                    <input asp-for="Upload" type="file" class="file mt-3" id="actual-btn" hidden multiple />
                     <label for="actual-btn" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
                     <span id="file-chosen">Select File</span>
                 </div>

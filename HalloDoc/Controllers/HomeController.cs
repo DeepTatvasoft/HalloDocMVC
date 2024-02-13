@@ -73,7 +73,8 @@ namespace HalloDoc.Controllers
             {
                 TempData["success"] = "User LogIn Successfully";
                 HttpContext.Session.SetString("Username", obj.Username);
-                HttpContext.Session.SetInt32("Userid", obj.Id);
+                var user = _context.Users.FirstOrDefault(u => u.Aspnetuserid == obj.Id);
+                HttpContext.Session.SetInt32("Userid", user.Userid);
                 return RedirectToAction("PatientDashboard", "Dashboard");
             }
             else
