@@ -75,6 +75,7 @@ namespace HalloDoc.Controllers
                 HttpContext.Session.SetString("Username", obj.Username);
                 var user = _context.Users.FirstOrDefault(u => u.Aspnetuserid == obj.Id);
                 HttpContext.Session.SetInt32("Userid", user.Userid);
+                HttpContext.Session.SetInt32("AspUserid", (int)user.Aspnetuserid);
                 return RedirectToAction("PatientDashboard", "Dashboard");
             }
             else

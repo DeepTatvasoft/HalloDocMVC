@@ -15,6 +15,6 @@
         public string State { get; set; }
         public string Zipcode { get; set; }
         public string Room { get; set; }
-        public IFormFile? Upload { get; set; }
+        public List<IFormFile> Upload { get; set; }
     }
 }

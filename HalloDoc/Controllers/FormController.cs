@@ -16,14 +16,16 @@ namespace HalloDoc.Controllers
             _logger = logger;
             _context = context;
         }
-        public void AddPatientRequestWiseFile(IFormFile formFile, int reqid)
+        public void AddPatientRequestWiseFile(List<IFormFile> formFile, int reqid)
         {
-            string filename = formFile.FileName;
+            foreach (var item in formFile)
+            {
+            string filename = reqid.ToString() + "_" + item.FileName;
             string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "document", filename);
 
             using (var fileStream = new FileStream(path, FileMode.Create))
             {
-                formFile.CopyTo(fileStream);
+                item.CopyTo(fileStream);
             }
 
             //Request? req = _context.Requests.FirstOrDefault(i => i.Requestid == reqid);
@@ -36,7 +38,8 @@ namespace HalloDoc.Controllers
                 Filename = path
             };
 
-            _context.Requestwisefiles.Add(data3);
+            _context.Requestwisefiles.Add(data3);       
+            }
             _context.SaveChanges();
         }
 

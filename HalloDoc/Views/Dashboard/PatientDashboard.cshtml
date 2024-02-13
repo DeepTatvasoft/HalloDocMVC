@@ -62,7 +62,15 @@
                                 }
                             </td>
                             <td>
-                                No Document
+                                @if(obj.Requestwisefiles.Count() != 0)
+                                {
+                                    <a asp-controller="Dashboard" asp-action="Dashboard">
+                                        <button class="d-flex babtn rounded align-item-center p-1 px-2">
+                                            <div><i class="bi bi-plus-lg"></i></div>
+                                            <div><span>(@obj.Requestwisefiles.Count()) Documnets</span></div>
+                                        </button>
+                                    </a>
+                                }
                             </td>
                         </tr>
                     }
