@@ -49,8 +49,7 @@ namespace HalloDoc.Controllers
         public IActionResult patientinfo(PatientReqSubmit model)
         {
             Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.Email);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             if (aspuser == null && user == null )
             {
                 Aspnetuser aspnetuser1 = new Aspnetuser();
@@ -79,13 +78,14 @@ namespace HalloDoc.Controllers
                     Intyear = model.DOB.Year,
                     Strmonth = model.DOB.Month.ToString(),
                     Aspnetuser = aspuser,
+                    Regionid = 1
                 };
                 _context.Users.Add(user1);
                 _context.SaveChanges();
 
                 user = user1;
             }
-
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
             Request req = new Request
             {
                 Firstname = model.FirstName,
@@ -148,8 +148,7 @@ namespace HalloDoc.Controllers
                 Createddate = DateTime.Now,
                 Status = 1,
                 Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-
-
+                User =user
             };
             _context.Requests.Add(req);
             _context.SaveChanges();
@@ -167,6 +166,7 @@ namespace HalloDoc.Controllers
                 State = model.PatState,
                 Zipcode = model.PatZipcode,
                 Location = model.PatRoom,
+                Email = model.PatEmail,
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
@@ -204,7 +204,7 @@ namespace HalloDoc.Controllers
                 Createddate= DateTime.Now,
                 Requesttypeid = 3,
                 Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-
+                User = user
             };
             _context.Requests.Add(req);
             _context.SaveChanges();
@@ -242,8 +242,9 @@ namespace HalloDoc.Controllers
                 Email = model.BusEmail,
                 Requesttypeid = 4,
                 Status = 1,
+                Createddate = DateTime.Now,
                 Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-
+                User = user
             };
             _context.Requests.Add(req);
             _context.SaveChanges();

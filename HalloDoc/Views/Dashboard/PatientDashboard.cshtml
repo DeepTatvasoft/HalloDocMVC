@@ -3,6 +3,7 @@
     Layout = "_PatientDashboard";
 }
 @model HalloDoc.ViewModel.PatientDashboardedit
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 <Partial name="_Notification" />
 <div class="tab-content mt-4" id="myTabContent">
     <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
@@ -36,7 +37,7 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table mt-2">
+                <table class="table mt-2" id="dtBasicExample">
                     <thead>
                         <tr>
                             <th class="bg-body-secondary" scope="col">Created Date <i class="bi bi-arrow-down"></i></th>
@@ -64,15 +65,17 @@
                                 <td>
                                     @if (obj.Requestwisefiles.Count() != 0)
                                     {
-                                        <a asp-controller="Dashboard" asp-action="Dashboard">
-                                            <button class="d-flex babtn rounded align-item-center p-1 px-2 docbutton">
+                                        <a asp-controller="Dashboard" asp-action="ViewDocument">
+                                            <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton">
                                                 <div class="plusdocument"><i class="bi bi-plus-lg"></i></div>
                                                 <div class="nonedocument">
-                                                    <a asp-controller="Dashboard" asp-action="ViewDocument">
+                                                    <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
                                                         <span>(@obj.Requestwisefiles.Count()) Documnets</span>
                                                     </a>
                                                 </div>
                                             </button>
+                                            
+                                            @*@HttpContextAccessor.HttpContext.Session.SetInt32("reqid",obj.)*@
                                         </a>
                                     }
                                 </td>
@@ -178,3 +181,15 @@
 
 </div>
 </div>
+<script>
+    //data table initiate
+    $(document).ready(function () {
+        $('#dtBasicExample').DataTable({
+            info: false,
+            ordering: true,
+            paging: false,
+            searching: false,
+
+        });
+    });
+</script>
