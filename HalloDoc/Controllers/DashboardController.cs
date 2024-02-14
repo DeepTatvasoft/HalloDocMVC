@@ -15,6 +15,8 @@ namespace HalloDoc.Controllers
         public IActionResult PatientDashboard()
         {
             //User user = new User();
+            if (HttpContext.Session.GetInt32("Userid")!=null)
+            {
             int temp = (int)HttpContext.Session.GetInt32("Userid");
             var tempname = HttpContext.Session.GetString("Username");
             //IEnumerable<Request> data = _context.Requests.Where(u => u.Userid == temp);
@@ -28,7 +30,12 @@ namespace HalloDoc.Controllers
             dashedit.requestwisefiles = reqfile;
             var requestdata = _context.Requests.Where(u=>u.Userid == temp);
             dashedit.requests = requestdata.ToList();
-            return View(dashedit);
+            return View(dashedit);                
+            }
+            else
+            {
+                return RedirectToAction("patientlogin", "Home");
+            }
         }
         public IActionResult editUser(PatientDashboardedit dashedit)
         {
@@ -57,6 +64,10 @@ namespace HalloDoc.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("PatientDashboard", "Dashboard");
+        }
+        public IActionResult ViewDocument()
+        {
+            return View();
         }
     }
 }

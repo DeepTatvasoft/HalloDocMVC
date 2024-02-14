@@ -4,6 +4,7 @@ using HalloDoc.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace HalloDoc.Controllers
 {
@@ -49,6 +50,7 @@ namespace HalloDoc.Controllers
         {
             Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
             User user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             if (aspuser == null && user == null )
             {
                 Aspnetuser aspnetuser1 = new Aspnetuser();
@@ -93,7 +95,8 @@ namespace HalloDoc.Controllers
                 Createddate = DateTime.Now,
                 Requesttypeid = 1,
                 Status = 1,
-                User = user
+                User = user,
+                Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2 , '0') + model.LastName.Substring(0, 2) + model.FirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
             };
 
             _context.Requests.Add(req);
@@ -132,6 +135,8 @@ namespace HalloDoc.Controllers
 
         public IActionResult familyinfo(FamilyFriendReqSubmit model)
         {
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             Request req = new Request
             {
                 Firstname = model.FamFirstName,
@@ -141,7 +146,10 @@ namespace HalloDoc.Controllers
                 Requesttypeid = 2,
                 Relationname = model.FamRelation,
                 Createddate = DateTime.Now,
-                Status = 1
+                Status = 1,
+                Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
+
+
             };
             _context.Requests.Add(req);
             _context.SaveChanges();
@@ -172,6 +180,8 @@ namespace HalloDoc.Controllers
 
         public IActionResult ConciergeInfo(ConciergeSubmit model)
         {
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             string name = model.ConFirstName + model.ConLastName;
             Concierge concierge = new Concierge
             {
@@ -192,7 +202,9 @@ namespace HalloDoc.Controllers
                 Phonenumber = model.ConPhonenumber,
                 Email = model.ConEmail,
                 Createddate= DateTime.Now,
-                Requesttypeid = 3
+                Requesttypeid = 3,
+                Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
+
             };
             _context.Requests.Add(req);
             _context.SaveChanges();
@@ -220,6 +232,8 @@ namespace HalloDoc.Controllers
 
         public IActionResult BusinessInfo(BusinessSubmit model)
         {
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             Request req = new Request
             {
                 Firstname = model.BusFirstname,
@@ -227,8 +241,9 @@ namespace HalloDoc.Controllers
                 Phonenumber = model.BusPhonenumber,
                 Email = model.BusEmail,
                 Requesttypeid = 4,
-                Status = 1
-                
+                Status = 1,
+                Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
+
             };
             _context.Requests.Add(req);
             _context.SaveChanges();

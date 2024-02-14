@@ -31,3 +31,35 @@
     align-items: center;
     /* text-align: center; */
 }
+
+@media only screen and (max-width:363px) {
+    .logouticon {
+        display: block;
+    }
+
+    .logouttext {
+        display: none;
+    }
+    .nonedocument{
+        display : none;
+    }
+    .docbutton{
+        margin : auto;
+    }
+}
+
+@media only screen and (min-width:364px) {
+    .logouticon {
+        display: none;
+    }
+
+    .logouttext {
+        display: block;
+    }
+}
+
+@media only screen and (max-width:521px) {
+    .uppernav {
+        justify-content: center !important;
+    }
+}

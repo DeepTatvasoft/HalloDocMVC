@@ -53,6 +53,10 @@ namespace HalloDoc.Controllers
         {
             return View();
         }
+        public IActionResult ViewDocument()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -62,6 +66,7 @@ namespace HalloDoc.Controllers
         public IActionResult logout()
         {
             TempData["error"] = "User logged out Sucessfully";
+            HttpContext.Session.Remove("Userid");
             return RedirectToAction("patientlogin", "Home");
         }
 

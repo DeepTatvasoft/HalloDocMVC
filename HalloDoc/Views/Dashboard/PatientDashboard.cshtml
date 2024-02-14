@@ -6,7 +6,7 @@
 <Partial name="_Notification" />
 <div class="tab-content mt-4" id="myTabContent">
     <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
-    tabindex="0">
+         tabindex="0">
         <div class="container-fluid mt-5 dashboard" style="width: 90%;">
             <h4>
                 Medical History
@@ -35,47 +35,52 @@
                     </div>
                 </div>
             </div>
-
-            <table class="table mt-2">
-                <thead>
-                    <tr>
-                        <th class="bg-body-secondary" scope="col">Created Date <i class="bi bi-arrow-down"></i></th>
-                        <th class="bg-body-secondary" scope="col">Current Status</th>
-                        <th class="bg-body-secondary" scope="col">Document</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var obj in Model.requests)
-                    {
+            <div class="table-responsive">
+                <table class="table mt-2">
+                    <thead>
                         <tr>
-                            <td>
-                                @obj.Createddate
-                            </td>
-                            <td>
-                                @if (obj.Status == 1)
-                                {
-                                    <span>Processing</span>
-                                }
-                                else if (obj.Status == 2)
-                                {
-                                    <span>Accepted</span>
-                                }
-                            </td>
-                            <td>
-                                @if(obj.Requestwisefiles.Count() != 0)
-                                {
-                                    <a asp-controller="Dashboard" asp-action="Dashboard">
-                                        <button class="d-flex babtn rounded align-item-center p-1 px-2">
-                                            <div><i class="bi bi-plus-lg"></i></div>
-                                            <div><span>(@obj.Requestwisefiles.Count()) Documnets</span></div>
-                                        </button>
-                                    </a>
-                                }
-                            </td>
+                            <th class="bg-body-secondary" scope="col">Created Date <i class="bi bi-arrow-down"></i></th>
+                            <th class="bg-body-secondary" scope="col">Current Status</th>
+                            <th class="bg-body-secondary" scope="col">Document</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var obj in Model.requests)
+                        {
+                            <tr>
+                                <td>
+                                    @obj.Createddate
+                                </td>
+                                <td>
+                                    @if (obj.Status == 1)
+                                    {
+                                        <span>Processing</span>
+                                    }
+                                    else if (obj.Status == 2)
+                                    {
+                                        <span>Accepted</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (obj.Requestwisefiles.Count() != 0)
+                                    {
+                                        <a asp-controller="Dashboard" asp-action="Dashboard">
+                                            <button class="d-flex babtn rounded align-item-center p-1 px-2 docbutton">
+                                                <div class="plusdocument"><i class="bi bi-plus-lg"></i></div>
+                                                <div class="nonedocument">
+                                                    <a asp-controller="Dashboard" asp-action="ViewDocument">
+                                                        <span>(@obj.Requestwisefiles.Count()) Documnets</span>
+                                                    </a>
+                                                </div>
+                                            </button>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
@@ -99,7 +104,7 @@
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3 date">
-                            <input asp-for="tempdate" type="date" class="form-control" id="floatingInput" placeholder="Date" >
+                            <input asp-for="tempdate" type="date" class="form-control" id="floatingInput" placeholder="Date">
                             <label for="floatingInput">Date Of Birth</label>
                         </div>
                     </div>

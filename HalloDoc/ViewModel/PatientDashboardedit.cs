@@ -7,5 +7,6 @@ namespace HalloDoc.ViewModel
         public List<Request> requests { get; set; }
         public DateTime tempdate { get; set; }
         public List<Requestwisefile> requestwisefiles { get; set; }
+        public List<IFormFile> Upload { get; set; }
     }
 }
