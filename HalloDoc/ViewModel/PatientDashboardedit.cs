@@ -9,5 +9,9 @@ namespace HalloDoc.ViewModel
         public List<Requestwisefile> requestwisefiles { get; set; }
         public List<IFormFile> Upload { get; set; }
         public string uploader { get; set; }
+        public int reqid { get; set; }
+        public String filename { get; set; }
+        public List<String> allfile { get; set; } 
+        
     }
 }

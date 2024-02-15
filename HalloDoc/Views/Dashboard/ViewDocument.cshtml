@@ -20,58 +20,77 @@
             <div class="documenthead mt-4 bg-white p-3 rounded">
                 <span class="text-body-secondary">Patient Name</span>
                 <h5 class="text-info">@HttpContextAccessor.HttpContext.Session.GetString("Username") (@Model.requests.FirstOrDefault(u=>u.Requestid == (Model.requests.FirstOrDefault(m=>m.Userid == Model.User.Userid).Requestid)).Confirmationnumber)</h5>
+                @{
+                    int id = (Model.requests.FirstOrDefault(u => u.Userid == Model.User.Userid).Requestid);
+                    Model.reqid = id;
+                    Model.filename = (Model.requestwisefiles.FirstOrDefault(u => u.Requestid == Model.reqid)).Filename;
+                }
                 <span class="text-body-secondary">Check here for any files that you and doctors of your subsequents requestors have attached for you to review</span>
-                <div class="updoc mt-5">
-                    <div class="fileselect mt-3 bg-body-secondary">
-                        <input asp-for="Upload" type="file" class="file mt-3" id="actual-btn" hidden multiple />
-                        <label for="actual-btn" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
-                        <span id="file-chosen">Select File</span>
+                <form asp-controller="Dashboard" asp-action="DocUpload" enctype="multipart/form-data" method="post">
+                    <input type="hidden" asp-for="reqid">
+                    <div class="row d-flex">
+                        <div class="col-12">
+                            <div class="form-group rounded d-flex align-items-center justify-content-between uploadbtndiv bg-body-secondary">
+                                <div class="px-3 table-responsive">
+                                    <input type="file" id="actual-btn" asp-for="Upload" multiple hidden />
+                                    <label role="button" for="actual-btn" id="file-chosen" class="choosenfile text-dark text-nowrap">No item selected</label>
+                                </div>
+                                <button type="submit" class="uploadbtn btn btn-info d-flex ms-1 border-0">
+                                    <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div>Upload</div></label>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="d-flex justify-content-between mt-3">
-                    <h5>Documents</h5>
-                    <button type="button" class="btn btn-outline-info text-center">Download All</button>
-                </div>
-                <div class="table-responsive">
-                    <table class="table mt-2" id="dtBasicExample">
-                        <thead>
-                            <tr>
-                                <th class="bg-body-secondary" scope="col"><input type="checkbox"></th>
-                                <th class="bg-body-secondary" scope="col"></th>
-                                <th class="bg-body-secondary" scope="col">Uploder</th>
-                                <th class="bg-body-secondary" scope="col">Upload Date</th>
-                                <th class="bg-body-secondary" scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var obj in Model.requestwisefiles)
-                            {
+                </form>
+                <form method="post" asp-controller="Dashboard" asp-action="DownloadFile">
+                    <div class="d-flex justify-content-between mt-3">
+                        <h5>Documents</h5>
+                        <button type="submit" class="btn btn-outline-info text-center">Download All</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table mt-2" id="dtBasicExample">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <input type="checkbox">
-                                    </td>
-                                    <td>
-                                        @{
-                                            var file = obj.Filename.Split("document\\");
-                                        }
-                                        @file[1]
-                                    </td>
-                                    <td>
-                                        @Model.requests.FirstOrDefault(u=>u.Requestid == obj.Requestid).Firstname
-                                    </td>
-                                    <td>
-                                        @obj.Createddate
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-outline-info">
-                                            <i class="bi bi-cloud-arrow-up"></i>
-                                        </button>
-                                    </td>
+                                    <th class="bg-body-secondary" scope="col"><input type="checkbox"></th>
+                                    <th class="bg-body-secondary" scope="col"></th>
+                                    <th class="bg-body-secondary" scope="col">Uploder</th>
+                                    <th class="bg-body-secondary" scope="col">Upload Date</th>
+                                    <th class="bg-body-secondary" scope="col">Action</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                @foreach (var obj in Model.requestwisefiles)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" id="@obj.Requestwisefileid" name="checklist" value="@obj.Requestwisefileid">
+                                        </td>
+                                        <td>
+                                            @{
+                                                var file = obj.Filename.Split("document\\");
+                                            }
+                                            @file[1]
+                                        </td>
+                                        <td>
+                                            @Model.requests.FirstOrDefault(u=>u.Requestid == obj.Requestid).Firstname
+                                        </td>
+                                        <td>
+                                            @obj.Createddate
+                                        </td>
+                                        <td>
+                                            <a asp-controller="Dashboard" asp-action="SingleDownload" asp-route-id="@obj.Requestwisefileid">
+                                                <div class="btn btn-outline-info">
+                                                    <i class="bi bi-cloud-arrow-up"></i>
+                                                </div>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+
             </div>
         </div>
         <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">

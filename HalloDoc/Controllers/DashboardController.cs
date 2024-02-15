@@ -2,6 +2,9 @@
 using HalloDoc.Models;
 using HalloDoc.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.IO;
 
 namespace HalloDoc.Controllers
 {
@@ -11,6 +14,32 @@ namespace HalloDoc.Controllers
         public DashboardController(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public void AddPatientRequestWiseFile(List<IFormFile> formFile, int reqid)
+        {
+            foreach (var item in formFile)
+            {
+                string filename = reqid.ToString() + "_" + item.FileName;
+                string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "document", filename);
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    item.CopyTo(fileStream);
+                }
+
+                //Request? req = _context.Requests.FirstOrDefault(i => i.Requestid == reqid);
+                //int ReqId = req.Requestid;
+
+                var data3 = new Requestwisefile()
+                {
+                    Createddate = DateTime.Now,
+                    Requestid = reqid,
+                    Filename = path
+                };
+
+                _context.Requestwisefiles.Add(data3);
+            }
+            _context.SaveChanges();
         }
         public IActionResult PatientDashboard()
         {
@@ -84,6 +113,53 @@ namespace HalloDoc.Controllers
             var requestdata = _context.Requests.Where(u => u.Requestid == temp);
             dashedit.requests = requestdata.ToList();
             return View(dashedit);
+        }
+        [HttpPost]
+        public IActionResult DocUpload(PatientDashboardedit dashedit)
+        {
+            if (dashedit.Upload != null)
+            {
+                AddPatientRequestWiseFile(dashedit.Upload, dashedit.reqid);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("ViewDocument", "Dashboard", new { id = dashedit.reqid });
+        }
+
+        [HttpPost]
+        [Route("DownloadFile")]
+        public async Task<IActionResult> DownloadFile(PatientDashboardedit dashedit)
+        {
+            var chk = Request.Form["checklist"].ToList();
+            foreach (var reqid in chk)
+            {
+                int rid = Int32.Parse(reqid);
+                var fname = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == rid).Filename;
+
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "document", fname);
+                var provider = new FileExtensionContentTypeProvider();
+                if (!provider.TryGetContentType(path, out var contentType))
+                {
+                    contentType = "application/octet-stream";
+                }
+                var bytes = await System.IO.File.ReadAllBytesAsync(path);
+                return File(bytes, contentType, Path.GetFileName(path));
+            }
+            return File("", "", Path.GetFileName(""));
+        }
+
+
+        [Route("SingleDownload")]
+        public async Task<IActionResult> SingleDownload(int id)
+        {
+            var fname = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == id).Filename;
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "document", fname);
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(path, out var contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            var bytes = await System.IO.File.ReadAllBytesAsync(path);
+            return File(bytes, contentType, Path.GetFileName(path));
         }
     }
 }
