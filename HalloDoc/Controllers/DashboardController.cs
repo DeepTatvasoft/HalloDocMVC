@@ -132,16 +132,30 @@ namespace HalloDoc.Controllers
         public async Task<IActionResult> DownloadFile(PatientDashboardedit dashedit)
         {
             var chk = Request.Form["checklist"].ToList();
-            using(var memorystream = new MemoryStream())
+            if (chk.Count == 0)
             {
-                using(var zip = new ZipArchive(memorystream,ZipArchiveMode.Create,true))
-                {
-                    foreach (var item in chk)                    {                        var s = Int32.Parse(item);                        var file = await _context.Requestwisefiles.FirstOrDefaultAsync(x => x.Requestwisefileid == s);                        var path = file.Filename;                        var bytes = await System.IO.File.ReadAllBytesAsync(path);                        var zipEntry = zip.CreateEntry(file.Filename.Split("\\document\\")[1], CompressionLevel.Fastest);                        using (var zipStream = zipEntry.Open())                        {                            await zipStream.WriteAsync(bytes, 0, bytes.Length);                        }                    }
-                }
-                memorystream.Position = 0; // Reset the position
-                return File(memorystream.ToArray(), "application/zip", "file.zip", enableRangeProcessing: true);
+                return NoContent();
             }
-    
+            using (var memorystream = new MemoryStream())
+                {
+                    using (var zip = new ZipArchive(memorystream, ZipArchiveMode.Create, true))
+                    {
+                        foreach (var item in chk)
+                        {
+                            var s = Int32.Parse(item);
+                            var file = await _context.Requestwisefiles.FirstOrDefaultAsync(x => x.Requestwisefileid == s);
+                            var path = file.Filename;
+                            var bytes = await System.IO.File.ReadAllBytesAsync(path);
+                            var zipEntry = zip.CreateEntry(file.Filename.Split("\\document\\")[1], CompressionLevel.Fastest);
+                            using (var zipStream = zipEntry.Open())
+                            {
+                                await zipStream.WriteAsync(bytes, 0, bytes.Length);
+                            }
+                        }
+                    }
+                    memorystream.Position = 0; // Reset the position
+                    return File(memorystream.ToArray(), "application/zip", "file.zip", enableRangeProcessing: true);
+                }
         }
 
 
