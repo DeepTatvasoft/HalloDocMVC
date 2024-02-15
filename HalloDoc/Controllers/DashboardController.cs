@@ -3,8 +3,10 @@ using HalloDoc.Models;
 using HalloDoc.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.IO;
+using System.IO.Compression;
 
 namespace HalloDoc.Controllers
 {
@@ -130,21 +132,16 @@ namespace HalloDoc.Controllers
         public async Task<IActionResult> DownloadFile(PatientDashboardedit dashedit)
         {
             var chk = Request.Form["checklist"].ToList();
-            foreach (var reqid in chk)
+            using(var memorystream = new MemoryStream())
             {
-                int rid = Int32.Parse(reqid);
-                var fname = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == rid).Filename;
-
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "document", fname);
-                var provider = new FileExtensionContentTypeProvider();
-                if (!provider.TryGetContentType(path, out var contentType))
+                using(var zip = new ZipArchive(memorystream,ZipArchiveMode.Create,true))
                 {
-                    contentType = "application/octet-stream";
+                    foreach (var item in chk)                    {                        var s = Int32.Parse(item);                        var file = await _context.Requestwisefiles.FirstOrDefaultAsync(x => x.Requestwisefileid == s);                        var path = file.Filename;                        var bytes = await System.IO.File.ReadAllBytesAsync(path);                        var zipEntry = zip.CreateEntry(file.Filename.Split("\\document\\")[1], CompressionLevel.Fastest);                        using (var zipStream = zipEntry.Open())                        {                            await zipStream.WriteAsync(bytes, 0, bytes.Length);                        }                    }
                 }
-                var bytes = await System.IO.File.ReadAllBytesAsync(path);
-                return File(bytes, contentType, Path.GetFileName(path));
+                memorystream.Position = 0; // Reset the position
+                return File(memorystream.ToArray(), "application/zip", "file.zip", enableRangeProcessing: true);
             }
-            return File("", "", Path.GetFileName(""));
+    
         }
 
 

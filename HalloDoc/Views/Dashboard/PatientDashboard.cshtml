@@ -66,9 +66,9 @@
                                     @if (obj.Requestwisefiles.Count() != 0)
                                     {
                                         <a asp-controller="Dashboard" asp-action="ViewDocument">
-                                            <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton" style="display:none">
+                                            <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton">
                                                 <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
-                                                    <div class="plusdocument"><i class="bi bi-plus-lg"></i></div>
+                                                    <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
                                                 </a>
                                                 <div class="nonedocument">
                                                     <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">

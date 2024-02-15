@@ -51,7 +51,7 @@
                         <table class="table mt-2" id="dtBasicExample">
                             <thead>
                                 <tr>
-                                    <th class="bg-body-secondary" scope="col"><input type="checkbox"></th>
+                                    <th class="bg-body-secondary" scope="col"><input id="chkbox" type="checkbox"></th>
                                     <th class="bg-body-secondary" scope="col"></th>
                                     <th class="bg-body-secondary" scope="col">Uploder</th>
                                     <th class="bg-body-secondary" scope="col">Upload Date</th>
@@ -63,7 +63,7 @@
                                 {
                                     <tr>
                                         <td>
-                                            <input type="checkbox" id="@obj.Requestwisefileid" name="checklist" value="@obj.Requestwisefileid">
+                                            <input type="checkbox" class="childChkbox" id="@obj.Requestwisefileid" name="checklist" value="@obj.Requestwisefileid">
                                         </td>
                                         <td>
                                             @{
@@ -107,6 +107,20 @@
             paging: false,
             searching: false,
 
+        });
+    });
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    // jQuery script to handle leader checkbox click event
+    $(document).ready(function () {
+        $('#chkbox').click(function () {
+            $('.childChkbox').prop('checked', $(this).prop('checked'));
+        });
+
+        // Handle individual checkbox clicks to update the leader checkbox state
+        $('.childChkbox').click(function () {
+            $('#chkbox').prop('checked', $('.childChkbox:checked').length === $('.childChkbox').length);
         });
     });
 </script>
