@@ -172,5 +172,28 @@ namespace HalloDoc.Controllers
             var bytes = await System.IO.File.ReadAllBytesAsync(path);
             return File(bytes, contentType, Path.GetFileName(path));
         }
+
+        public IActionResult SubmitForMe()
+        {
+            return View();
+        }
+        public IActionResult SubmitForElse()
+        {
+            return View();
+        }
+        public IActionResult MeElse()
+        {
+            var chk = Request.Form["options-outlined"].ToList();
+            if(chk.ElementAt(0) == "me")
+            {
+                return RedirectToAction("SubmitForMe", "Dashboard");
+            }
+            else if(chk.ElementAt(0) == "else")
+            {
+                return RedirectToAction("SubmitForElse", "Dashboard");
+
+            }
+            return NoContent();
+        }
     }
 }

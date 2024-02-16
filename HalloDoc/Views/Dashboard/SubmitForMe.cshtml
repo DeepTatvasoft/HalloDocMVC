@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Submit for me";
+    Layout = "formlayout";
+}
+@model HalloDoc.ViewModel.PatientReqSubmit
+<div class="main">
+    <div class="back container mb-3 mt-3 d-flex justify-content-between">
+        <h3 class="mt-2">Submit Information</h3>
+        <a asp-controller="Dashboard" asp-action="PatientDashboard" style="text-decoration: none;" class="backimg">
+            <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+            <span>Back</span>
+        </a>
+    </div>
+    <div class="container bg-white" style="padding-bottom:20px" id="maincontent">
+        <form method="post" asp-controller="Form" asp-action="patientinfo" enctype="multipart/form-data">
+            <div class="pinfo">
+                <h4>Patient Information</h4>
+                <div class="form-floating">
+                    <textarea asp-for="Symptoms" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+                              style="height: 100px;"></textarea>
+                    <label for="floatingTextarea" class="medialabel">Enter Brief Details Of Symptoms (Optional)</label>
+                </div>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="FirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <label for="floatingInput">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="LastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <label for="floatingInput">Last Name</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3 date">
+                        <input asp-for="DOB" type="date" class="form-control" id="floatingInput" placeholder="Date">
+                        <label for="floatingInput">Date Of Birth</label>
+                    </div>
+                </div>
+            </div>
+            <div class="pcinfo mt-5">
+                <h4>Patient Contact Information</h4>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Email" onblur="checkEmailExists()" type="email" class="form-control" id="patientEmail" placeholder="name@example.com">
+                            <label for="patientEmail">Email</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3 numcountry">
+                            <select name="country" id="country" class="country" onchange="country_code()">
+                                <option value="select country">select country</option>
+                                <option value="us">US</option>
+                                <option value="uk">UK</option>
+                                <option value="br">BRAZIL</option>
+                                <option value="ind">INDIA</option>
+                            </select>
+                            <input asp-for="PhoneNumber" type="tel" class="form-control output" id="output" placeholder="Mobile Number">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3" id="passwordFields1">
+                            <input asp-for="Password" type="password" class="form-control" id="floatingInput" placeholder="password">
+                            <label for="floatingInput">Password</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3" id="passwordFields2">
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" id="floatingInput" placeholder="confirmpassword">
+                            <label for="floatingInput">Confirm Password</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="plocation mt-5">
+                <h4>Patient Location</h4>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Street" type="text" class="form-control" id="floatingInput" placeholder="Street">
+                            <label for="floatingInput">Street</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="City" type="text" class="form-control" id="floatingInput" placeholder="City">
+                            <label for="floatingInput">City</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="State" type="text" class="form-control" id="floatingInput" placeholder="State">
+                            <label for="floatingInput">State</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
+                            <label for="floatingInput">Zip Code</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Room" type="text" class="form-control" id="floatingInput" placeholder="Room">
+                            <label for="floatingInput">Room #/ Suite (Optional)</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <a>
+                            <button style="height:56px" type="button" class="btn btn-outline-primary"><i class="bi bi-geo-alt"></i>Map</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="updoc mt-5">
+                <h4>(Optional) Upload Photo Or Document</h4>
+                <div class="fileselect mt-3">
+                    <input asp-for="Upload" type="file" class="file mt-3" id="actual-btn" hidden multiple />
+                    <label for="actual-btn" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
+                    <span id="file-chosen">Select File</span>
+                </div>
+            </div>
+            <div class="submit mt-4">
+                <button type="submit" class="btn btn-info" style="color: white;">Submit</button>
+                <button type="button" class="btn btn-outline-info ms-2">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
