@@ -1,10 +1,11 @@
-﻿using HalloDoc.DataContext;
+﻿using Data.DataModels;
+using HalloDoc.DataContext;
 using HalloDoc.Models;
-using HalloDoc.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Services.ViewModel;
 using System.IO;
 using System.IO.Compression;
 

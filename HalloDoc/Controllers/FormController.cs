@@ -1,10 +1,7 @@
-﻿using HalloDoc.DataContext;
-using HalloDoc.Models;
-using HalloDoc.ViewModel;
+﻿using Data.DataModels;
+using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Drawing;
+using Services.ViewModel;
 
 namespace HalloDoc.Controllers
 {
@@ -49,7 +46,8 @@ namespace HalloDoc.Controllers
         public IActionResult patientinfo(PatientReqSubmit model)
         {
             Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.Email);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             if (aspuser == null && user == null )
             {
                 Aspnetuser aspnetuser1 = new Aspnetuser();
@@ -82,7 +80,6 @@ namespace HalloDoc.Controllers
                 };
                 _context.Users.Add(user1);
                 _context.SaveChanges();
-
                 user = user1;
             }
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
@@ -136,7 +133,8 @@ namespace HalloDoc.Controllers
         public IActionResult familyinfo(FamilyFriendReqSubmit model)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
+            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             Request req = new Request
             {
                 Firstname = model.FamFirstName,
@@ -181,7 +179,8 @@ namespace HalloDoc.Controllers
         public IActionResult ConciergeInfo(ConciergeSubmit model)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
+            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             string name = model.ConFirstName + model.ConLastName;
             Concierge concierge = new Concierge
             {
@@ -233,7 +232,8 @@ namespace HalloDoc.Controllers
         public IActionResult BusinessInfo(BusinessSubmit model)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
+            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             Request req = new Request
             {
                 Firstname = model.BusFirstname,

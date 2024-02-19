@@ -1,3 +1,4 @@
+using Data.DataModels;
 using HalloDoc.DataContext;
 
 var builder = WebApplication.CreateBuilder(args);

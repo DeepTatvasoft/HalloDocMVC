@@ -5,6 +5,10 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HalloDoc", "HalloDoc\HalloDoc.csproj", "{822BAF51-11D3-4EE0-BEC6-61962A0B16F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{FC453872-0CA6-4588-BB0B-EDD57268EA03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{95F763DF-B7CC-4058-B74B-D6DB33EFE0AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{822BAF51-11D3-4EE0-BEC6-61962A0B16F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{822BAF51-11D3-4EE0-BEC6-61962A0B16F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{822BAF51-11D3-4EE0-BEC6-61962A0B16F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC453872-0CA6-4588-BB0B-EDD57268EA03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC453872-0CA6-4588-BB0B-EDD57268EA03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC453872-0CA6-4588-BB0B-EDD57268EA03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC453872-0CA6-4588-BB0B-EDD57268EA03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95F763DF-B7CC-4058-B74B-D6DB33EFE0AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95F763DF-B7CC-4058-B74B-D6DB33EFE0AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95F763DF-B7CC-4058-B74B-D6DB33EFE0AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95F763DF-B7CC-4058-B74B-D6DB33EFE0AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
