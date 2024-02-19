@@ -22,6 +22,21 @@ namespace HalloDoc.Controllers
             formSubmit.patientinfo(model);
             return RedirectToAction("patientlogin", "Home");
         }
+        public IActionResult familyinfo(FamilyFriendReqSubmit model)
+        {
+            formSubmit.familyinfo(model);
+            return RedirectToAction("patientlogin", "Home");
+        }
+        public IActionResult conciergeinfo(ConciergeSubmit model)
+        {
+            formSubmit.ConciergeInfo(model);
+            return RedirectToAction("patientlogin", "Home");
+        }
+        public IActionResult businessinfo(BusinessSubmit model)
+        {
+            formSubmit.BusinessInfo(model);
+            return RedirectToAction("patientlogin", "Home");
+        }
         [Route("/Form/patientinfo/checkemail/{email}")]
         [HttpGet]
         public IActionResult CheckEmail(string email)
