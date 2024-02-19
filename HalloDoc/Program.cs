@@ -1,5 +1,7 @@
 using Data.DataModels;
 using HalloDoc.DataContext;
+using Services.Contracts;
+using Services.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSession(options =>
@@ -12,6 +14,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddTransient<IFormSubmit, FormSubmit>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
