@@ -2,7 +2,7 @@
 using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
-using Services.ViewModel;
+using Services.ViewModels;
 
 namespace HalloDoc.Controllers
 {

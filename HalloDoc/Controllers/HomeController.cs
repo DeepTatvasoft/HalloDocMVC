@@ -4,6 +4,7 @@ using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
+using Services.ViewModels;
 using System.Diagnostics;
 
 namespace HalloDoc.Controllers
@@ -13,10 +14,11 @@ namespace HalloDoc.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IHomeFunction homefunction;
-        public HomeController(ILogger<HomeController> logger, IHomeFunction homeFunction)
+        public HomeController(ILogger<HomeController> logger, IHomeFunction homeFunction,ApplicationDbContext context)
         {
             _logger = logger;
             this.homefunction = homeFunction;
+            _context = context;
         }
 
         public IActionResult patientsite()
@@ -52,9 +54,11 @@ namespace HalloDoc.Controllers
         {
             return View();
         }
-        public IActionResult ResetPassword()
+        public IActionResult ResetPassword(string id)
         {
-            return View();
+            ResetPasswordVM vm = new ResetPasswordVM();
+            vm.Email = id;
+            return View(vm);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -86,6 +90,22 @@ namespace HalloDoc.Controllers
             {
                 TempData["error"] = "Username or Password is Incorrect";
                 return RedirectToAction("patientlogin", "Home");
+            }
+        }
+        [HttpPost]
+        public IActionResult changepassword (ResetPasswordVM vm)
+        {
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u=>u.Email == vm.Email);
+            if(vm.Password == vm.ConfirmPassword) { 
+                aspuser.Passwordhash = vm.Password;
+                _context.Aspnetusers.Update(aspuser);
+                _context.SaveChanges();
+                return RedirectToAction("patientlogin", "Home");
+            }
+            else
+            {
+                TempData["error"] = "Both passwords are different";
+                return RedirectToAction("ResetPassword", "Home", new {id=vm.Email});
             }
         }
 

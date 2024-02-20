@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
-using Services.ViewModel;
+using Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;

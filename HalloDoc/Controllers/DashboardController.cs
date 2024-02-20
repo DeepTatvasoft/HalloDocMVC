@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Services.Contracts;
 using Services.Implementation;
-using Services.ViewModel;
+using Services.ViewModels;
 using System.IO;
 using System.IO.Compression;
+using System.Net.Mail;
+using System.Net;
 
 namespace HalloDoc.Controllers
 {
@@ -102,6 +104,26 @@ namespace HalloDoc.Controllers
 
             }
             return NoContent();
+        }
+        public Task sendEmail(string email, string subject, string message)
+        {
+            var mail = "tatva.dotnet.deeppatel@outlook.com";
+            var password = "Deep2292002";
+
+            var client = new SmtpClient("smtp.office365.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, password)
+            };
+
+            return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
+        }
+        [HttpPost]
+        public IActionResult send_mail()
+        {
+            var email = Request.Form["email"].ElementAt(0);
+            sendEmail(email, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id="+email+"");
+            return RedirectToAction("patientlogin", "Home");
         }
     }
 }

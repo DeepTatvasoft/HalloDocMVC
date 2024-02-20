@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Services.ViewModel;
+using Services.ViewModels;
 
 namespace Services.Contracts
 {

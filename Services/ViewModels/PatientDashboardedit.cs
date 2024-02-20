@@ -1,6 +1,6 @@
 ﻿using Data.DataModels;
 using Microsoft.AspNetCore.Http;
-namespace Services.ViewModel
+namespace Services.ViewModels
 {
     public class PatientDashboardedit
     {

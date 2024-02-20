@@ -20,15 +20,17 @@
                 <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
                 <span>Back</span>
             </a>
-            <h2>Reset Your Password</h2>
-            <div class="form-floating mb-3 mt-4">
-                <input type="text" class="form-control" id="floatingInput" placeholder="Username">
-                <label for="floatingInput">Username</label>
-                <i class="fa-regular fa-user icon"></i>
-            </div>
-            <div class="button mt-4 resbtn">
-                <button type="submit">Reset Password</button>
-            </div>
+            <form asp-controller="Dashboard" asp-action="send_mail" method="post">
+                <h2>Reset Your Password</h2>
+                <div class="form-floating mb-3 mt-4">
+                    <input name="email" type="email" class="form-control" id="floatingInput" placeholder="Email">
+                    <label for="floatingInput">Email</label>
+                </div>
+                <div class="button mt-4 resbtn">
+                    <button type="submit">Reset Password</button>
+                </div>
+            </form>
+
             <div class="forget mt-4">
                 <a asp-controller="Home" asp-action="patientlogin">
                     <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
