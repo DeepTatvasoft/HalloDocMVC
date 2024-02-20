@@ -15,6 +15,8 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddTransient<IFormSubmit, FormSubmit>();
+builder.Services.AddTransient<IHomeFunction, HomeFunction>();
+builder.Services.AddTransient<IDashboard, Dashboard>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

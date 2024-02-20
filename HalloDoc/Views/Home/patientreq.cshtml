@@ -24,12 +24,14 @@
                         <div class="form-floating mb-3">
                             <input asp-for="FirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
                             <label for="floatingInput">First Name</label>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="LastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
                             <label for="floatingInput">Last Name</label>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -47,6 +49,7 @@
                         <div class="form-floating mb-3">
                             <input asp-for="Email" onblur="checkEmailExists()" type="email" class="form-control" id="patientEmail" placeholder="name@example.com">
                             <label for="patientEmail">Email</label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -131,7 +134,7 @@
     function checkEmailExists() {
         var email = document.getElementById("patientEmail").value;
 
-        fetch('/Form/patientinfo/checkemail/' + email)
+        fetch('/Form/patientreq/checkemail/' + email)
             .then(response => response.json())
             .then(data => {
                 var patientPassword = document.getElementById('passwordFields1');

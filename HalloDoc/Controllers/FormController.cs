@@ -37,7 +37,7 @@ namespace HalloDoc.Controllers
             formSubmit.BusinessInfo(model);
             return RedirectToAction("patientlogin", "Home");
         }
-        [Route("/Form/patientinfo/checkemail/{email}")]
+        [Route("/Form/patientreq/checkemail/{email}")]
         [HttpGet]
         public IActionResult CheckEmail(string email)
         {

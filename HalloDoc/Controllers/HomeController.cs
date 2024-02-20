@@ -3,6 +3,7 @@ using HalloDoc.DataContext;
 using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Services.Contracts;
 using System.Diagnostics;
 
 namespace HalloDoc.Controllers
@@ -11,10 +12,11 @@ namespace HalloDoc.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        private readonly IHomeFunction homefunction;
+        public HomeController(ILogger<HomeController> logger, IHomeFunction homeFunction)
         {
             _logger = logger;
-            _context = context;
+            this.homefunction = homeFunction;
         }
 
         public IActionResult patientsite()
@@ -70,12 +72,12 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public async Task<IActionResult> validate([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
-            var obj = await _context.Aspnetusers.FirstOrDefaultAsync(u => u.Email == aspNetUser.Email && u.Passwordhash == aspNetUser.Passwordhash);
+            var obj = homefunction.ValidateUser(aspNetUser).Item1;
             if (obj != null)
             {
                 TempData["success"] = "User LogIn Successfully";
                 HttpContext.Session.SetString("Username", obj.Username);
-                var user = _context.Users.FirstOrDefault(u => u.Aspnetuserid == obj.Id);
+                var user = homefunction.ValidateUser(aspNetUser).Item2;
                 HttpContext.Session.SetInt32("Userid", user.Userid);
                 HttpContext.Session.SetInt32("AspUserid", (int)user.Aspnetuserid);
                 return RedirectToAction("PatientDashboard", "Dashboard");
@@ -86,6 +88,6 @@ namespace HalloDoc.Controllers
                 return RedirectToAction("patientlogin", "Home");
             }
         }
-        
+
     }
 }

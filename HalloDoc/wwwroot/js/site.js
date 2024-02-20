@@ -9,11 +9,10 @@ try {
     const fileChosen = document.getElementById('file-chosen');
     var files = "";
     actualBtn.addEventListener('change', function () {
-        for (var i = 0; i < this.files.length; i++)
-        {
+        for (var i = 0; i < this.files.length; i++) {
             files += this.files[i].name;
-    }
-            fileChosen.textContent = files;
+        }
+        fileChosen.textContent = files;
     })
 }
 catch (error) { }
