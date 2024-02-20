@@ -14,7 +14,7 @@ namespace HalloDoc.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IHomeFunction homefunction;
-        public HomeController(ILogger<HomeController> logger, IHomeFunction homeFunction,ApplicationDbContext context)
+        public HomeController(ILogger<HomeController> logger, IHomeFunction homeFunction, ApplicationDbContext context)
         {
             _logger = logger;
             this.homefunction = homeFunction;
@@ -93,10 +93,11 @@ namespace HalloDoc.Controllers
             }
         }
         [HttpPost]
-        public IActionResult changepassword (ResetPasswordVM vm)
+        public IActionResult changepassword(ResetPasswordVM vm, string id)
         {
-            var aspuser = _context.Aspnetusers.FirstOrDefault(u=>u.Email == vm.Email);
-            if(vm.Password == vm.ConfirmPassword) { 
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == id);
+            if (vm.Password == vm.ConfirmPassword)
+            {
                 aspuser.Passwordhash = vm.Password;
                 _context.Aspnetusers.Update(aspuser);
                 _context.SaveChanges();
@@ -105,7 +106,7 @@ namespace HalloDoc.Controllers
             else
             {
                 TempData["error"] = "Both passwords are different";
-                return RedirectToAction("ResetPassword", "Home", new {id=vm.Email});
+                return RedirectToAction("ResetPassword", "Home", new { id = vm.Email });
             }
         }
 
