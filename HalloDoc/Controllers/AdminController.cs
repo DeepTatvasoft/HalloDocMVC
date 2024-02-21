@@ -1,17 +1,37 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.DataModels;
+using HalloDoc.DataContext;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Services.Contracts;
 
 namespace HalloDoc.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        private readonly IAdminFunction adminFunction;
+        public AdminController(ApplicationDbContext context, IAdminFunction adminFunction)
+        {
+            _context = context;
+            this.adminFunction = adminFunction;
+        }
         public IActionResult adminlogin()
         {
             return View();
         }
-        [HttpPost]
-        public IActionResult loginadmin()
+        public IActionResult loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
-            return View();
+            bool f = adminFunction.loginadmin(aspNetUser);          
+            if (f == false)
+            {
+                TempData["error"] = "Email or Password is Incorrect";
+                return RedirectToAction("adminlogin", "admin");
+            }
+            else
+            {
+                TempData["success"] = "Admin LogIn Successfully";
+                return RedirectToAction("patientlogin", "Home");
+            }
         }
     }
 }

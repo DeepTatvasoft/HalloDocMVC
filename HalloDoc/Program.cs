@@ -17,6 +17,8 @@ builder.Services.AddDbContext<ApplicationDbContext>();
 builder.Services.AddTransient<IFormSubmit, FormSubmit>();
 builder.Services.AddTransient<IHomeFunction, HomeFunction>();
 builder.Services.AddTransient<IDashboard, Dashboard>();
+builder.Services.AddTransient<IAdminFunction, AdminFunction>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -88,7 +88,7 @@ namespace HalloDoc.Controllers
             }
             else
             {
-                TempData["error"] = "Username or Password is Incorrect";
+                TempData["error"] = "Email or Password is Incorrect";
                 return RedirectToAction("patientlogin", "Home");
             }
         }
