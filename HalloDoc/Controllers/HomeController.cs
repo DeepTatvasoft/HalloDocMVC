@@ -95,18 +95,15 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public IActionResult changepassword(ResetPasswordVM vm, string id)
         {
-            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == id);
-            if (vm.Password == vm.ConfirmPassword)
+            bool f = homefunction.changepassword(vm, id).Item1;
+            if (f==true)
             {
-                aspuser.Passwordhash = vm.Password;
-                _context.Aspnetusers.Update(aspuser);
-                _context.SaveChanges();
                 return RedirectToAction("patientlogin", "Home");
             }
             else
             {
                 TempData["error"] = "Both passwords are different";
-                return RedirectToAction("ResetPassword", "Home", new { id = vm.Email });
+                return RedirectToAction("ResetPassword", "Home", new { id = id });
             }
         }
 

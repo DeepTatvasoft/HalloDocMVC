@@ -3,6 +3,7 @@ using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
+using Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,21 @@ namespace Services.Implementation
             }
             var user = _context.Users.FirstOrDefault(u => u.Aspnetuserid == obj.Id);
             return (obj,user);
+        }
+        public (bool,string) changepassword(ResetPasswordVM vm, string id)
+        {
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == id);
+            if (vm.Password == vm.ConfirmPassword)
+            {
+                aspuser.Passwordhash = vm.Password;
+                _context.Aspnetusers.Update(aspuser);
+                _context.SaveChanges();
+                return (true,vm.Email);
+            }
+            else
+            {
+                return (false,vm.Email);
+            }
         }
     }
 }

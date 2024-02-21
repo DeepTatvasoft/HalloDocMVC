@@ -1,0 +1,88 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+.loginimg img {
+    width: 100%;
+    height: 100vh;
+}
+
+.moon {
+    text-align: end;
+}
+
+    .moon img {
+        height: 40px;
+        width: 40px;
+    }
+
+.hallodoc img {
+    width: 30%;
+}
+
+.hallodoc {
+    text-align: center;
+}
+
+.login h1 {
+    text-align: center;
+}
+
+.button {
+    text-align: center;
+}
+
+    .button button {
+        width: 75%;
+        border-radius: 9px;
+        height: 40px;
+        background-color: #0dcaf0;
+        border: none;
+        color: white;
+    }
+
+.forget {
+    text-align: center;
+}
+
+    .forget a {
+        text-decoration: none;
+        color: #00adcf;
+    }
+
+.login {
+    flex-direction: column;
+    display: flex;
+    height: 60vh;
+    justify-content: center;
+}
+
+footer {
+    position: relative;
+    top: 25%;
+    color: gray;
+    text-align: center;
+}
+
+    footer a {
+        color: gray;
+        text-decoration: none;
+    }
+
+#darkmode {
+    border: none;
+}
+
+    #darkmode img {
+        height: 40px;
+    }
+
+@media only screen and (max-width : 768px){
+    .loginimg img{
+        display : none;
+    }
+    .button button{
+        width : 70%;
+    }
+}
