@@ -1,0 +1,123 @@
+﻿@model Services.ViewModels.NewStateData
+<div class="container-fluid" style="width:90%">
+    <div class="d-flex flex-wrap justify-content-between">
+        <h4>Patients (New)</h4>
+        <div class="allbtn">
+            <button class="btn btn-info text-white ms-1">
+                <i class="bi bi-send me-1"></i>
+                Send Link
+            </button>
+            <button class="btn btn-info text-white ms-1">
+                <i class="bi bi-journal-text me-1"></i>
+                Create Request
+            </button>
+            <button class="btn btn-info text-white ms-1">
+                <i class="fa-solid fa-file-export me-1"></i>
+                Export
+            </button>
+            <button class="btn btn-info text-white ms-1">
+                <i class="fa-solid fa-file-zipper me-1"></i>
+                Export All
+            </button>
+            <button class="btn btn-info text-white ms-1">
+                <i class="fa-solid fa-headset me-1"></i>
+                Request DIY Support
+            </button>
+        </div>
+    </div>
+    <div class="tablehead mt-4 d-flex flex-wrap justify-content-between bg-white">
+        <div class="d-flex flex-wrap align-items-center">
+            <div class="searchbar ms-2">
+                <input style="padding-left : 30px;position: relative;top: 13px;" class="form-control me-2" type="search" placeholder=" Search Patients" aria-label="Search">
+                <i class="bi bi-search searchicon1"></i>
+            </div>
+            <div class="ms-2">
+                <datalist id="suggestions">
+                    <option>First option</option>
+                    <option>Second Option</option>
+                </datalist>
+                <input style="height : 38px; width : 233px; padding-left : 28px" autoComplete="on" list="suggestions" placeholder="All Regions" />
+                <i class="bi bi-search searchicon2"></i>
+                <i class="fa-solid fa-chevron-down down"></i>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap mt-3">
+            <div class="border border-secondary-subtle all ms-3 mb-3 me-3">All</div>
+            <div class="d-flex flex-wrap">
+                <div class="ms-3 me-3"><span class="dot" style="Background-color : green;"></span> Patient</div>
+                <div class="ms-3 me-3"><span class="dot" style="Background-color : darkorange;"></span> Family/Friend</div>
+                <div class="ms-3 me-3"><span class="dot" style="Background-color : hotpink;"></span> Business</div>
+                <div class="ms-3 me-3"><span class="dot" style="Background-color : dodgerblue;"></span> Concierge</div>
+                <div class="ms-3 me-3"><span class="dot" style="Background-color : mediumpurple;"></span> Vip</div>
+            </div>
+        </div>
+
+    </div>
+    <div class="table-responsive text-white mt-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Date Of Birth</th>
+                    <th scope="col">Requestor</th>
+                    <th scope="col">Requested Date</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Notes</th>
+                    <th scope="col">Chat With</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody style="--bs-table-color: white;">
+                @{
+                    var req = Model.req.Where(u => u.Status == 5 || u.Status == 4);
+                }
+                @foreach (var obj in req)
+                {
+                    var reqclient = Model.requestclients.FirstOrDefault(u => u.Requestid == obj.Requestid);
+                    var color = "mediumpurple";
+                    var type = "";
+                    @if (obj.Requesttypeid == 1)
+                    {
+                        color = "green";
+                        type = "Patient";
+                    }
+                    else if (obj.Requesttypeid == 2)
+                    {
+                        color = "darkorange";
+                        type = "Family";
+                    }
+                    else if (obj.Requesttypeid == 4)
+                    {
+                        color = "hotpink";
+                        type = "Business";
+                    }
+                    else if (obj.Requesttypeid == 3)
+                    {
+                        color = "dodgerblue";
+                        type = "Concierge";
+                    }
+                    <tr style="--bs-table-bg: @color">
+                        <td scope="row">@obj.Firstname, @obj.Lastname</td>
+                        <td>@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
+                        <td>@reqclient.Firstname , @reqclient.Lastname</td>
+                        <td>@obj.Createddate</td>
+                        <td>
+                            <div class="phone">@obj.Phonenumber</div>
+                            (Patient)
+                            @if (type != "Patient")
+                            {
+                                <div class="phone">@reqclient.Phonenumber</div>
+                                <span>(@type)</span>
+                            }
+                        </td>
+                        <td>Address</td>
+                        <td>@reqclient.Notes</td>
+                        <td>mdo</td>
+                        <td>mdo</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

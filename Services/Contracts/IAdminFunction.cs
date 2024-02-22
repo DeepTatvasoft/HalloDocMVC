@@ -6,7 +6,7 @@ namespace Services.Contracts
 {
     public interface IAdminFunction
     {
-        bool loginadmin([Bind(new[] { "Email,Passwordhash" })] Aspnetuser aspNetUser);
+        (bool,string) loginadmin([Bind(new[] { "Email,Passwordhash" })] Aspnetuser aspNetUser);
         NewStateData AdminDashboarddata();
     }
 }

@@ -19,7 +19,7 @@ namespace Services.Implementation
         {
             _context = context;
         }
-        public bool loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
+        public (bool,string) loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
             var obj = _context.Aspnetusers.FirstOrDefault(u => u.Email == aspNetUser.Email && u.Passwordhash == aspNetUser.Passwordhash);
             if (obj != null)
@@ -27,16 +27,16 @@ namespace Services.Implementation
                 var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == obj.Id.ToString());
                 if (admin == null)
                 {
-                    return false;
+                    return (false,null);
                 }
                 else
                 {
-                    return true;
+                    return (true,obj.Username);
                 }
             }
             else
             {
-                return false;
+                return (false,null);
             }
         }
         public NewStateData AdminDashboarddata()

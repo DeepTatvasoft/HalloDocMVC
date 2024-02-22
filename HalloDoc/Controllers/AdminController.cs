@@ -22,11 +22,16 @@ namespace HalloDoc.Controllers
         }
         public IActionResult AdminDashboard()
         {
-            return View(adminFunction.AdminDashboarddata());
+            if (HttpContext.Session.GetString("Adminname") != null)
+            {
+                return View(adminFunction.AdminDashboarddata());
+            }
+            return RedirectToAction("adminlogin", "Admin");
         }
         public IActionResult loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
-            bool f = adminFunction.loginadmin(aspNetUser);          
+            bool f = adminFunction.loginadmin(aspNetUser).Item1;
+            string adminname = adminFunction.loginadmin(aspNetUser).Item2;
             if (f == false)
             {
                 TempData["error"] = "Email or Password is Incorrect";
@@ -34,9 +39,19 @@ namespace HalloDoc.Controllers
             }
             else
             {
-                TempData["success"] = "Admin LogIn Successfully";
+                HttpContext.Session.SetString("Adminname", adminname);
+                if (HttpContext.Session.GetString("Adminname") != null)
+                {
+                    TempData["success"] = "Admin LogIn Successfully";
+                }
                 return RedirectToAction("Admindashboard", "Admin");
             }
+        }
+        public IActionResult adminlogout()
+        {
+            HttpContext.Session.Remove("Adminname");
+            TempData["Error"] = "Admin Logged Out Successfuly";
+            return RedirectToAction("adminlogin", "Admin");
         }
     }
 }
