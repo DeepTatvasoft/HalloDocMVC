@@ -3,6 +3,7 @@ using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
+using Services.ViewModels;
 
 namespace HalloDoc.Controllers
 {
@@ -19,6 +20,10 @@ namespace HalloDoc.Controllers
         {
             return View();
         }
+        public IActionResult AdminDashboard()
+        {
+            return View(adminFunction.AdminDashboarddata());
+        }
         public IActionResult loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
             bool f = adminFunction.loginadmin(aspNetUser);          
@@ -30,7 +35,7 @@ namespace HalloDoc.Controllers
             else
             {
                 TempData["success"] = "Admin LogIn Successfully";
-                return RedirectToAction("patientlogin", "Home");
+                return RedirectToAction("Admindashboard", "Admin");
             }
         }
     }

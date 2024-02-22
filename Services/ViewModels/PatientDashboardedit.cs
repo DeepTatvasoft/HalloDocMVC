@@ -11,8 +11,8 @@ namespace Services.ViewModels
         public List<IFormFile> Upload { get; set; }
         public string uploader { get; set; }
         public int reqid { get; set; }
-        public String filename { get; set; }
-        public List<String> allfile { get; set; } 
+        public string filename { get; set; }
+        public List<string> allfile { get; set; } 
         
     }
 }

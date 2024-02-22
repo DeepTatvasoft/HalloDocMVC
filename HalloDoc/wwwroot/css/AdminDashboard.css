@@ -1,0 +1,202 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+.state {
+    width: 200px;
+    height: 100px;
+    font-weight: 700;
+}
+
+.card {
+    margin-top: 10px;
+}
+
+.allbtn .btn {
+    margin-left: 15px;
+    margin-top: 5px;
+}
+
+.searchicon1 {
+    position: relative;
+    bottom: 17px;
+    left: 10px;
+}
+
+.searchicon2 {
+    position: relative;
+    right: 84%;
+}
+
+.down {
+    position: relative;
+    right: 18%;
+}
+
+.border.border-secondary-subtle.all {
+    height: 30px;
+    width: 47px;
+    text-align: center;
+    border-radius: 3px;
+}
+
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+div.phone {
+    border: 2px solid white;
+    height: 32px;
+    width: 150px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.New {
+    background-color: lightblue;
+    border-color: darkblue;
+    color: darkblue;
+}
+
+.Pending {
+    background-color: lightskyblue;
+    border-color: blue;
+    color: blue;
+}
+
+.Active {
+    background-color: lightgreen;
+    border-color: darkgreen;
+    color: darkgreen;
+}
+
+.Conclude {
+    background-color: lightpink;
+    border-color: deeppink;
+    color: deeppink;
+}
+
+.Toclose {
+    background-color: cornflowerblue;
+    border-color: blue;
+    color: blue;
+}
+
+.Unpaid {
+    background-color: violet;
+    border-color: darkviolet;
+    color: darkviolet;
+}
+
+.active.state.New, .New:hover {
+    background-color: darkblue;
+    color: white;
+}
+
+.active.state.Pending, .Pending:hover {
+    background-color: deepskyblue;
+    border-color: deepskyblue;
+    color: white;
+}
+
+.active.state.Active, .Active:hover {
+    background-color: darkgreen;
+    color: white;
+}
+
+.active.state.Conclude, .Conclude:hover {
+    background-color: deeppink;
+    color: white;
+}
+
+.active.state.Toclose, .Toclose:hover {
+    background-color: blue;
+    color: white;
+}
+
+.active.state.Unpaid, .Unpaid:hover {
+    background-color: darkviolet;
+    color: white;
+}
+
+.active.state.New::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid darkblue;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.active.state.Pending::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid deepskyblue;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.active.state.Active::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid darkgreen;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.active.state.Conclude::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid deeppink;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.active.state.Toclose::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid blue;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.active.state.Unpaid::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid darkviolet;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
