@@ -1,6 +1,7 @@
 ﻿using Data.DataModels;
 using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
@@ -19,7 +20,7 @@ namespace Services.Implementation
         {
             _context = context;
         }
-        public (bool,string) loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
+        public (bool, string) loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
             var obj = _context.Aspnetusers.FirstOrDefault(u => u.Email == aspNetUser.Email && u.Passwordhash == aspNetUser.Passwordhash);
             if (obj != null)
@@ -27,24 +28,26 @@ namespace Services.Implementation
                 var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == obj.Id.ToString());
                 if (admin == null)
                 {
-                    return (false,null);
+                    return (false, null);
                 }
                 else
                 {
-                    return (true,obj.Username);
+                    return (true, obj.Username);
                 }
             }
             else
             {
-                return (false,null);
+                return (false, null);
             }
         }
-        public NewStateData AdminDashboarddata()
+        public NewStateData AdminDashboarddata(int status1,int status2,int status3)
         {
             NewStateData data = new NewStateData();
-            List<Request> req = _context.Requests.ToList();
-            List<Requestclient> reqclient = _context.Requestclients.ToList();
-            data.requestclients = reqclient;
+            List<Request> req = _context.Requests.Include(r=>r.Requestclients).Where(u => u.Status == status1 || u.Status == status2 || u.Status==status3).ToList();
+            foreach(var item in req)
+            {
+                List<Requestclient> rec = item.Requestclients.ToList();
+            }
             data.req = req;
             return data;
         }

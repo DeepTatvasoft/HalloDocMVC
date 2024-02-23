@@ -20,11 +20,40 @@ namespace HalloDoc.Controllers
         {
             return View();
         }
+        public IActionResult ActiveState()
+        {
+            return View(adminFunction.AdminDashboarddata(4,4,5));
+        }
+
+
+        public IActionResult NewState(NewStateData newStateData)
+        {
+                return View(adminFunction.AdminDashboarddata(1, 1, 1));                    
+        }
+        
+        public IActionResult PendingState()
+        {
+            return View(adminFunction.AdminDashboarddata(2,2,2));
+        }
+        public IActionResult TocloseState()
+        {
+            return View(adminFunction.AdminDashboarddata(6,6,6));
+        }
+        public IActionResult UnpaidState()
+        {
+            return View(adminFunction.AdminDashboarddata(9,9,9));
+        }
+        public IActionResult ConcludeState()
+        {
+            return View(adminFunction.AdminDashboarddata(3,7,8));
+        }
+
         public IActionResult AdminDashboard()
         {
             if (HttpContext.Session.GetString("Adminname") != null)
             {
-                return View(adminFunction.AdminDashboarddata());
+                List<Request> req = (from m in _context.Requests select m).ToList();
+                return View(req);
             }
             return RedirectToAction("adminlogin", "Admin");
         }
@@ -46,6 +75,13 @@ namespace HalloDoc.Controllers
                 }
                 return RedirectToAction("Admindashboard", "Admin");
             }
+        }
+        public IActionResult toogletable(string reqtypeid,string status)
+        {
+            NewStateData newStateData = new NewStateData();
+            List<Request> req = _context.Requests.Where(u=>u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString()==status).ToList();
+            newStateData.req = req;
+            return RedirectToAction("NewState", "Admin",new { newStateData = newStateData});
         }
         public IActionResult adminlogout()
         {

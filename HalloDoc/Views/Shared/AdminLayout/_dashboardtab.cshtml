@@ -1,65 +1,95 @@
-﻿<ul class="nav nav-tabs d-flex justify-content-around" id="myTab" role="tablist">
+﻿@using Data.DataModels;
+@model List<Request>
+<ul class="nav nav-tabs d-flex justify-content-around" id="myTab" role="tablist">
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link active state New" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
                 type="button" role="tab" aria-controls="New-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person-plus me-3"></i>NEW</div>
-            <h5>Count</h5>
+            <h5>@Model.Count(r=>r.Status == 1)</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Pending" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
                 type="button" role="tab" aria-controls="Pending-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person me-3"></i>PENDING</div>
-            <h5>Count</h5>
+            <h5>@Model.Count(r=>r.Status == 2)</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Active" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
                 type="button" role="tab" aria-controls="Active-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-check2-circle me-3"></i>ACTIVE</div>
-            <h5>Count</h5>
+            <h5>@Model.Count(r=>r.Status == 4 || r.Status == 5)</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Conclude" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
                 type="button" role="tab" aria-controls="Conclude-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-clock-history me-3"></i>CONCLUDE</div>
-            <h5>Count</h5>
+            <h5>@Model.Count(r=>r.Status == 6)</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Toclose" id="ToClose-tab" data-bs-toggle="tab" data-bs-target="#ToClose-tab-pane"
                 type="button" role="tab" aria-controls="ToClose-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person-x me-3"></i>TO CLOSE</div>
-            <h5>Count</h5>
+            <h5>@Model.Count(r=>r.Status == 3 || r.Status == 7 || r.Status == 8)</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Unpaid" id="Unpaid-tab" data-bs-toggle="tab" data-bs-target="#Unpaid-tab-pane"
                 type="button" role="tab" aria-controls="Unpaid-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-currency-dollar me-3"></i>UNPAID</div>
-            <h5>Count</h5>
+            <h5>@Model.Count(r=>r.Status == 9)</h5>
         </button>
     </li>
 </ul>
 
-<div class="tab-content mt-4" id="myTabContent">
-    <div class="tab-pane fade show active" id="New-tab-pane" role="tabpanel" aria-labelledby="New-tab" tabindex="0">
-        <partial name="AdminLayout/_NewState"/>
-    </div>
-    <div class="tab-pane fade" id="Pending-tab-pane" role="tabpanel" aria-labelledby="Pending-tab" tabindex="0">
-        <partial name="AdminLayout/_PendingState" />
-    </div>
-    <div class="tab-pane fade" id="Active-tab-pane" role="tabpanel" aria-labelledby="Active-tab" tabindex="0">
-        <partial name="AdminLayout/_ActiveState" />
-    </div>
-    <div class="tab-pane fade" id="Conclude-tab-pane" role="tabpanel" aria-labelledby="Conclude-tab" tabindex="0">
-        <partial name="AdminLayout/_ConcludeState" />
-    </div>
-    <div class="tab-pane fade" id="ToClose-tab-pane" role="tabpanel" aria-labelledby="ToClose-tab" tabindex="0">
-        <partial name="AdminLayout/_TocloseState" />
-    </div>
-    <div class="tab-pane fade" id="Unpaid-tab-pane" role="tabpanel" aria-labelledby="Unpaid-tab" tabindex="0">
-        <partial name="AdminLayout/_UnpaidState" />
-    </div>
+<div class="tab-content mt-4" id="status-tabContent">
+    
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.state').on('click', function (e) {
+            e.preventDefault();
+            //$('.dashboardtab').removeClass('active');
+            //$(this).addClass('active');
+            var target = $(this).data('bs-target');
+            var url;
+            switch (target) {
+                case '#New-tab-pane':
+                    url = '/Admin/NewState';
+                    break;
+                case '#Pending-tab-pane':
+                    url = '/Admin/PendingState';
+                    break;
+                case '#Active-tab-pane':
+                    url = '/Admin/ActiveState';
+                    break;
+                case '#Conclude-tab-pane':
+                    url = '/Admin/ConcludeState';
+                    break;
+                case '#ToClose-tab-pane':
+                    url = '/Admin/ToCloseState';
+                    break;
+                case '#Unpaid-tab-pane':
+                    url = '/Admin/UnpaidState';
+                    break;
+                default:
+                    url = 'Admin/AdminDashboard';
+            }
+
+            $.ajax({
+                url: url,
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

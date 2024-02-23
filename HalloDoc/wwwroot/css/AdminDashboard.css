@@ -4,7 +4,7 @@
 }
 
 .state {
-    width: 200px;
+    width: 250px;
     height: 100px;
     font-weight: 700;
 }
@@ -199,4 +199,7 @@ div.phone {
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
+}
+input#dt-search-0.dt-input{
+    display : none;
 }

@@ -1,4 +1,7 @@
-﻿@model Services.ViewModels.NewStateData
+﻿@{
+    Layout = "";
+}
+@model Services.ViewModels.NewStateData
 <div class="container-fluid" style="width:90%">
     <div class="d-flex flex-wrap justify-content-between">
         <h4>Patients (New)</h4>
@@ -69,12 +72,9 @@
                 </tr>
             </thead>
             <tbody style="--bs-table-color: white;">
-                @{
-                    var req = Model.req.Where(u => u.Status == 9);
-                }
-                @foreach (var obj in req)
+                @foreach (var obj in Model.req)
                 {
-                    var reqclient = Model.requestclients.FirstOrDefault(u => u.Requestid == obj.Requestid);
+                    var reqclient = obj.Requestclients.ElementAt(0);
                     var color = "mediumpurple";
                     var type = "";
                     @if (obj.Requesttypeid == 1)
