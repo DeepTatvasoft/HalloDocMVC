@@ -1,0 +1,90 @@
+﻿@{
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.NewStateData
+<div class="main">
+    <div class="back container mb-3 mt-3">
+        <a asp-controller="Home" asp-action="SubmitReqScreen" style="text-decoration: none;" class="backimg">
+            <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+            <span>Back</span>
+        </a>
+    </div>
+    <div class="container bg-white" style="padding-bottom:20px" id="maincontent">
+        <form method="post" asp-controller="Form" asp-action="patientinfo" enctype="multipart/form-data">
+            <div class="pinfo">
+                <h4>Patient Information</h4>
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+                              style="height: 100px;"></textarea>
+                    <label for="floatingTextarea" class="medialabel">Enter Brief Details Of Symptoms (Optional)</label>
+                </div>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Name" value="@model.req.FirstName">
+                            <label for="floatingInput">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <label for="floatingInput">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3 date" style="width:100%">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="Date">
+                            <label for="floatingInput">Date Of Birth</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3 numcountry">
+                            <select name="country" id="country" class="country" onchange="country_code()">
+                                <option value="select country">select country</option>
+                                <option value="us">US</option>
+                                <option value="uk">UK</option>
+                                <option value="br">BRAZIL</option>
+                                <option value="ind">INDIA</option>
+                            </select>
+                            <input type="tel" class="form-control output" id="output" placeholder="Mobile Number">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input onblur="checkEmailExists()" type="email" class="form-control" id="patientEmail" placeholder="name@example.com">
+                            <label for="patientEmail">Email</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="plocation mt-5">
+                <h4>Location Information</h4>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Region">
+                            <label for="floatingInput">Region</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Address">
+                            <label for="floatingInput">Business Name/Address</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Room">
+                            <label for="floatingInput">Room #</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="submit mt-4">
+                <button type="submit" class="btn btn-info" style="color: white;">Assign</button>
+                <button type="submit" class="btn btn-info ms-2" style="color: white;">View Notes</button>
+                <button type="button" class="btn btn-danger ms-2">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

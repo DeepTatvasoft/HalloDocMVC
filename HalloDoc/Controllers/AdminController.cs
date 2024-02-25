@@ -51,6 +51,13 @@ namespace HalloDoc.Controllers
         {
             return View(adminFunction.AdminDashboarddata(3, 7, 8));
         }
+        public IActionResult ViewCase(int id)
+        {
+            NewStateData newStateData = new NewStateData();
+            List<Request> req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requestid == id).ToList();
+            newStateData.req = req;
+            return View(newStateData);
+        }
 
         public IActionResult AdminDashboard()
         {
