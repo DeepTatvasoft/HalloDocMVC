@@ -45,15 +45,15 @@
             </div>
         </div>
         <div class="d-flex flex-wrap mt-3">
-            <div type="radio" class="border border-secondary-subtle all ms-3 mb-3 me-3 requestby" id="requestbyAll">
+            <div type="radio" class="border border-secondary-subtle all ms-3 mb-3 me-3 requestby" id="requestbyAll" style="cursor : pointer">
                 All
             </div>
             <div class="d-flex flex-wrap">
-                <div class="ms-3 me-3 requestby" id="1"><span class="dot" style="Background-color : green;"></span> Patient</div>
-                <div class="ms-3 me-3 requestby" id="2"><span class="dot" style="Background-color : darkorange;"></span> Family/Friend</div>
-                <div class="ms-3 me-3 requestby" id="3"><span class="dot" style="Background-color : hotpink;"></span> Business</div>
-                <div class="ms-3 me-3 requestby" id="4"><span class="dot" style="Background-color : dodgerblue;"></span> Concierge</div>
-                <div class="ms-3 me-3 requestby" id="5"><span class="dot" style="Background-color : mediumpurple;"></span> Vip</div>
+                <div class="ms-3 me-3 requestby" id="1" style="cursor : pointer"><span class="dot" style="Background-color : green;"></span> Patient</div>
+                <div class="ms-3 me-3 requestby" id="2" style="cursor : pointer"><span class="dot" style="Background-color : darkorange;"></span> Family/Friend</div>
+                <div class="ms-3 me-3 requestby" id="3" style="cursor : pointer"><span class="dot" style="Background-color : hotpink;"></span> Business</div>
+                <div class="ms-3 me-3 requestby" id="4" style="cursor : pointer"><span class="dot" style="Background-color : dodgerblue;"></span> Concierge</div>
+                <div class="ms-3 me-3 requestby" id="5" style="cursor : pointer"><span class="dot" style="Background-color : mediumpurple;"></span> Vip</div>
             </div>
         </div>
 
@@ -185,12 +185,11 @@
                     requesttype = '3';
                     break;
                 default:
-                    status = '1';
-                    requesttype = '1';
+                    
             }
 
             $.ajax({
-                url: '/Admin/toogletable',
+                url: '/Admin/NewState',
                 data: { "status": status, "reqtypeid": requesttype},
                 success: function (response) {
                     $('#status-tabContent').html(response);

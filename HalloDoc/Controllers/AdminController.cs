@@ -22,30 +22,34 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ActiveState()
         {
-            return View(adminFunction.AdminDashboarddata(4,4,5));
+            return View(adminFunction.AdminDashboarddata(4, 4, 5));
         }
 
 
-        public IActionResult NewState(NewStateData newStateData)
+        public IActionResult NewState(string reqtypeid, string status)
         {
-                return View(adminFunction.AdminDashboarddata(1, 1, 1));                    
+            if (reqtypeid != null && status != null)
+            {
+                return View(adminFunction.toogletable(reqtypeid, status));
+            }
+            return View(adminFunction.AdminDashboarddata(1, 1, 1));
         }
-        
+
         public IActionResult PendingState()
         {
-            return View(adminFunction.AdminDashboarddata(2,2,2));
+            return View(adminFunction.AdminDashboarddata(2, 2, 2));
         }
         public IActionResult TocloseState()
         {
-            return View(adminFunction.AdminDashboarddata(6,6,6));
+            return View(adminFunction.AdminDashboarddata(6, 6, 6));
         }
         public IActionResult UnpaidState()
         {
-            return View(adminFunction.AdminDashboarddata(9,9,9));
+            return View(adminFunction.AdminDashboarddata(9, 9, 9));
         }
         public IActionResult ConcludeState()
         {
-            return View(adminFunction.AdminDashboarddata(3,7,8));
+            return View(adminFunction.AdminDashboarddata(3, 7, 8));
         }
 
         public IActionResult AdminDashboard()
@@ -75,13 +79,6 @@ namespace HalloDoc.Controllers
                 }
                 return RedirectToAction("Admindashboard", "Admin");
             }
-        }
-        public IActionResult toogletable(string reqtypeid,string status)
-        {
-            NewStateData newStateData = new NewStateData();
-            List<Request> req = _context.Requests.Where(u=>u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString()==status).ToList();
-            newStateData.req = req;
-            return RedirectToAction("NewState", "Admin",new { newStateData = newStateData});
         }
         public IActionResult adminlogout()
         {

@@ -51,5 +51,12 @@ namespace Services.Implementation
             data.req = req;
             return data;
         }
+        public NewStateData toogletable(string reqtypeid,string status)
+        {
+            NewStateData newStateData = new NewStateData();
+            List<Request> req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
+            newStateData.req = req;
+            return newStateData;
+        }
     }
 }

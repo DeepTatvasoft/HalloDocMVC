@@ -8,5 +8,6 @@ namespace Services.Contracts
     {
         (bool,string) loginadmin([Bind(new[] { "Email,Passwordhash" })] Aspnetuser aspNetUser);
         NewStateData AdminDashboarddata(int status1,int status2,int status3);
+        NewStateData toogletable(string reqtypeid, string status);
     }
 }
