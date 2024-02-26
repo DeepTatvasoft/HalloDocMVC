@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Patient Login";
+    Layout = "NewLayout";
+}
+
+@model Services.ViewModels.PatientReqSubmit
+<partial name="_notification"/>
+<div class="bg-img">
+    <img src="~/images/11116016_415.jpg" alt="">
+</div>
+<div class="container-fluid">
+    <div class="moon">
+        <button id="darkmode" onclick="dark()">
+            <img src="~/images/image_2024_01_17T04_17_17_762Z.png" alt="error">
+        </button>
+    </div>
+    <div class="hallodoc">
+        <img src="~/images/image_2024_01_17T04_17_17_750Z.png" alt="">
+    </div>
+    <div class="login">
+        <div class="back">
+            <h2 class="text-center">Create Account</h2>
+            <form asp-action="newaccount" asp-controller="Home" asp-route-id="@Model.reqclientid">
+                <div class="form-floating mb-3 mt-4">
+                    <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">Email address</label>
+                    <i class="fa-regular fa-user icon"></i>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Password" type="password" class="form-control" id="togpass" placeholder="Password">
+                    <label for="togpass">Password</label>
+                    <i id="passicon" class="fa-solid fa-eye-slash icon" onclick="passtoggle()"></i>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="togpass" placeholder="Confirm Password">
+                    <label for="togpass">Confirm Password</label>
+                    <i id="passicon" class="fa-solid fa-eye-slash icon" onclick="passtoggle()"></i>
+                </div>
+                <div class="button mt-4 logbtn">
+                    <a asp-controller="Home" asp-action="PatientDashboard" asp-route-id="">
+                        <button type="submit">Create</button>
+                    </a>
+                </div>
+            </form>
+        </div>
+        <footer>
+            <a href="#">Terms Of Conditions</a>
+            &nbsp | &nbsp
+            <a href="#">Privacy Policy</a>
+        </footer>
+    </div>
+</div>

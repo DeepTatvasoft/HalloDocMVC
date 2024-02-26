@@ -50,8 +50,8 @@ namespace Services.Implementation
 
         public void patientinfo(PatientReqSubmit model)
         {
-            
-            Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);           
+
+            Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
             User user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             if (aspuser == null && user == null)
@@ -132,49 +132,94 @@ namespace Services.Implementation
             _context.SaveChanges();
         }
 
-        public void familyinfo(FamilyFriendReqSubmit model)
+        public (bool,int) familyinfo(FamilyFriendReqSubmit model)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
-            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
-            Request req = new Request
+            if (user != null)
             {
-                Firstname = model.FamFirstName,
-                Lastname = model.FamLastName,
-                Phonenumber = model.FamMobile,
-                Email = model.FamEmail,
-                Requesttypeid = 2,
-                Relationname = model.FamRelation,
-                Createddate = DateTime.Now,
-                Status = 1,
-                Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-                User = user
-            };
-            _context.Requests.Add(req);
-            _context.SaveChanges();
-            Requestclient reqclient = new Requestclient
+                var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
+                var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
+                Request req = new Request
+                {
+                    Firstname = model.FamFirstName,
+                    Lastname = model.FamLastName,
+                    Phonenumber = model.FamMobile,
+                    Email = model.FamEmail,
+                    Requesttypeid = 2,
+                    Relationname = model.FamRelation,
+                    Createddate = DateTime.Now,
+                    Status = 1,
+                    Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
+                    User = user
+                };
+                _context.Requests.Add(req);
+                _context.SaveChanges();
+                Requestclient reqclient = new Requestclient
+                {
+                    Notes = model.PatSymptoms,
+                    Firstname = model.PatFirstName,
+                    Lastname = model.PatLastName,
+                    Intdate = model.PatDOB.Day,
+                    Intyear = model.PatDOB.Year,
+                    Strmonth = model.PatDOB.Month.ToString(),
+                    Phonenumber = model.PatPhoneNumber,
+                    Street = model.PatStreet,
+                    City = model.PatCity,
+                    State = model.PatState,
+                    Zipcode = model.PatZipcode,
+                    Location = model.PatRoom,
+                    Email = model.PatEmail,
+                    Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
+                    Request = req
+                };
+                _context.Requestclients.Add(reqclient);
+                _context.SaveChanges();
+                if (model.Upload != null)
+                {
+                    AddPatientRequestWiseFile(model.Upload, req.Requestid);
+                }
+                return (true,reqclient.Requestclientid);
+            }
+            else
             {
-                Notes = model.PatSymptoms,
-                Firstname = model.PatFirstName,
-                Lastname = model.PatLastName,
-                Intdate = model.PatDOB.Day,
-                Intyear = model.PatDOB.Year,
-                Strmonth = model.PatDOB.Month.ToString(),
-                Phonenumber = model.PatPhoneNumber,
-                Street = model.PatStreet,
-                City = model.PatCity,
-                State = model.PatState,
-                Zipcode = model.PatZipcode,
-                Location = model.PatRoom,
-                Email = model.PatEmail,
-                Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
-                Request = req
-            };
-            _context.Requestclients.Add(reqclient);
-            _context.SaveChanges();
-            if (model.Upload != null)
-            {
-                AddPatientRequestWiseFile(model.Upload, req.Requestid);
+                Request req = new Request
+                {
+                    Firstname = model.FamFirstName,
+                    Lastname = model.FamLastName,
+                    Phonenumber = model.FamMobile,
+                    Email = model.FamEmail,
+                    Requesttypeid = 2,
+                    Relationname = model.FamRelation,
+                    Createddate = DateTime.Now,
+                    Status = 1,
+                };
+                _context.Requests.Add(req);
+                _context.SaveChanges();
+                Requestclient reqclient = new Requestclient
+                {
+                    Notes = model.PatSymptoms,
+                    Firstname = model.PatFirstName,
+                    Lastname = model.PatLastName,
+                    Intdate = model.PatDOB.Day,
+                    Intyear = model.PatDOB.Year,
+                    Strmonth = model.PatDOB.Month.ToString(),
+                    Phonenumber = model.PatPhoneNumber,
+                    Street = model.PatStreet,
+                    City = model.PatCity,
+                    State = model.PatState,
+                    Zipcode = model.PatZipcode,
+                    Location = model.PatRoom,
+                    Email = model.PatEmail,
+                    Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
+                    Request = req
+                };
+                _context.Requestclients.Add(reqclient);
+                _context.SaveChanges();
+                if (model.Upload != null)
+                {
+                    AddPatientRequestWiseFile(model.Upload, req.Requestid);
+                }
+                return (false,reqclient.Requestclientid);
             }
         }
 

@@ -3,6 +3,8 @@ using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.ViewModels;
+using System.Net.Mail;
+using System.Net;
 
 namespace HalloDoc.Controllers
 {
@@ -24,7 +26,13 @@ namespace HalloDoc.Controllers
         }
         public IActionResult familyinfo(FamilyFriendReqSubmit model)
         {
-            formSubmit.familyinfo(model);
+            bool f = formSubmit.familyinfo(model).Item1;
+            if (f == false)
+            {
+                var email = model.PatEmail;
+                int id = formSubmit.familyinfo(model).Item2;
+                sendEmail(email, "hello", "hello reset password https://localhost:44325/Home/CreateAccount/id="+id+"");
+            }
             return RedirectToAction("patientlogin", "Home");
         }
         public IActionResult conciergeinfo(ConciergeSubmit model)
@@ -44,6 +52,18 @@ namespace HalloDoc.Controllers
             var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
             return Json(new { exists = emailExists });
         }
+        public Task sendEmail(string email, string subject, string message)
+        {
+            var mail = "tatva.dotnet.deeppatel@outlook.com";
+            var password = "Deep2292002";
 
+            var client = new SmtpClient("smtp.office365.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, password)
+            };
+
+            return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
+        }
     }
 }

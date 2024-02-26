@@ -31,94 +31,210 @@
     <div class="tablehead mt-4 d-flex flex-wrap justify-content-between bg-white">
         <div class="d-flex flex-wrap align-items-center">
             <div class="searchbar ms-2">
-                <input style="padding-left : 30px;position: relative;top: 13px;" class="form-control me-2" type="search" placeholder=" Search Patients" aria-label="Search">
+                <input id="myInput" style="padding-left : 30px;position: relative;top: 13px;" class="form-control me-2" type="search" placeholder=" Search Patients" aria-label="Search">
                 <i class="bi bi-search searchicon1"></i>
             </div>
             <div class="ms-2">
                 <datalist id="suggestions">
-                    <option>United Kingdom</option>
-                    <option>Dubai</option>
-                    <option>New York</option>
+                    <option id="uk">United Kingdom</option>
+                    <option id="uae">Dubai</option>
+                    <option id="ny">New York</option>
                 </datalist>
-                <input style="height : 38px; width : 233px; padding-left : 28px" autoComplete="on" list="suggestions" placeholder="All Regions" />
+                <input style="height : 38px; width : 233px; padding-left : 28px" class="region" autoComplete="on" list="suggestions" placeholder="All Region" />
                 <i class="bi bi-search searchicon2"></i>
                 <i class="fa-solid fa-chevron-down down"></i>
             </div>
         </div>
         <div class="d-flex flex-wrap mt-3">
-            <div class="border border-secondary-subtle all ms-3 mb-3 me-3">All</div>
+            <div type="radio" class="border border-secondary-subtle all ms-3 mb-3 me-3 requestby" id="requestbyAll" style="cursor : pointer">
+                All
+            </div>
             <div class="d-flex flex-wrap">
-                <div class="ms-3 me-3"><span class="dot" style="Background-color : green;"></span> Patient</div>
-                <div class="ms-3 me-3"><span class="dot" style="Background-color : darkorange;"></span> Family/Friend</div>
-                <div class="ms-3 me-3"><span class="dot" style="Background-color : hotpink;"></span> Business</div>
-                <div class="ms-3 me-3"><span class="dot" style="Background-color : dodgerblue;"></span> Concierge</div>
-                <div class="ms-3 me-3"><span class="dot" style="Background-color : mediumpurple;"></span> Vip</div>
+                <div class="ms-3 me-3 requestby" id="1" style="cursor : pointer"><span class="dot" style="Background-color : green;"></span> Patient</div>
+                <div class="ms-3 me-3 requestby" id="2" style="cursor : pointer"><span class="dot" style="Background-color : darkorange;"></span> Family/Friend</div>
+                <div class="ms-3 me-3 requestby" id="3" style="cursor : pointer"><span class="dot" style="Background-color : hotpink;"></span> Business</div>
+                <div class="ms-3 me-3 requestby" id="4" style="cursor : pointer"><span class="dot" style="Background-color : dodgerblue;"></span> Concierge</div>
+                <div class="ms-3 me-3 requestby" id="5" style="cursor : pointer"><span class="dot" style="Background-color : mediumpurple;"></span> Vip</div>
             </div>
         </div>
 
     </div>
-    <div class="table-responsive text-white mt-3">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Date Of Birth</th>
-                    <th scope="col">Requestor</th>
-                    <th scope="col">Requested Date</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Notes</th>
-                    <th scope="col">Chat With</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody style="--bs-table-color: white;">
-                @foreach (var obj in Model.req)
-                {
-                    var reqclient = obj.Requestclients.ElementAt(0);
-                    var color = "mediumpurple";
-                    var type = "";
-                    @if (obj.Requesttypeid == 1)
-                    {
-                        color = "green";
-                        type = "Patient";
-                    }
-                    else if (obj.Requesttypeid == 2)
-                    {
-                        color = "darkorange";
-                        type = "Family";
-                    }
-                    else if (obj.Requesttypeid == 4)
-                    {
-                        color = "hotpink";
-                        type = "Business";
-                    }
-                    else if (obj.Requesttypeid == 3)
-                    {
-                        color = "dodgerblue";
-                        type = "Concierge";
-                    }
-                    <tr style="--bs-table-bg: @color">
-                        <td scope="row">@obj.Firstname, @obj.Lastname</td>
-                        <td>@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
-                        <td>@reqclient.Firstname , @reqclient.Lastname</td>
-                        <td>@obj.Createddate</td>
-                        <td>
-                            <div class="phone">@obj.Phonenumber</div>
-                            (Patient)
-                            @if (type != "Patient")
-                            {
-                                <div class="phone">@reqclient.Phonenumber</div>
-                                <span>(@type)</span>
-                            }
-                        </td>
-                        <td>Address</td>
-                        <td>@reqclient.Notes</td>
-                        <td>mdo</td>
-                        <td>mdo</td>
+    <div id="status-tabContent">
+        <div class="table-responsive text-white mt-3">
+            <table class="table" id="maintable">
+                <thead>
+                    <tr>
+                        <th scope="col" class="d-none"></th>
+                        <th scope="col">Name</th>
+                        <th scope="col"> </th>
+                        <th scope="col">Date Of Birth</th>
+                        <th scope="col">Requestor</th>
+                        <th scope="col">Requested Date</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Notes</th>
+                        <th scope="col">Chat With</th>
+                        <th scope="col">Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody style="--bs-table-color: white;" id="myTable">
+                    @foreach (var obj in Model.req)
+                    {
+                        var reqclient = obj.Requestclients.ElementAt(0);
+                        var color = "mediumpurple";
+                        var type = "";
+                        @if (obj.Requesttypeid == 1)
+                        {
+                            color = "rgb(72 169 70)";
+                            type = "Patient";
+                        }
+                        else if (obj.Requesttypeid == 2)
+                        {
+                            color = "#f5a33e";
+                            type = "Family";
+                        }
+                        else if (obj.Requesttypeid == 4)
+                        {
+                            color = "hotpink";
+                            type = "Business";
+                        }
+                        else if (obj.Requesttypeid == 3)
+                        {
+                            color = "dodgerblue";
+                            type = "Concierge";
+                        }
+                        <tr style="--bs-table-bg:@color">
+                            <td scope="row" class="d-none">@obj.Requesttypeid</td>
+                            <td scope="row">@obj.Firstname, @obj.Lastname</td>
+                            <td scope="row">
+                                <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                            </td>
+                            <td>@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
+                            <td>@reqclient.Firstname , @reqclient.Lastname</td>
+                            <td>@obj.Createddate</td>
+                            <td>
+                                <div class="phone">@obj.Phonenumber</div>
+                                (Patient)
+                                @if (type != "Patient")
+                                {
+                                    <div class="phone">@reqclient.Phonenumber</div>
+                                    <span>(@type)</span>
+                                }
+                            </td>
+                            <td>@reqclient.Address</td>
+                            <td>@reqclient.Notes</td>
+                            <td>
+                                <button class="btn btn-outline-light"><i class="bi bi-person me-1"></i>Provider</button>
+                            </td>
+                            <td>
+                                <div class="dropdown ms-2">
+                                    <button class="btn btn-outline-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item text-secondary"><i class="fa-regular fa-rectangle-list me-2"></i>Assign case</a></li>
+                                        <li><a class="dropdown-item text-secondary"><i class="fa-regular fa-circle-xmark me-2"></i>Cancel case</a></li>
+                                        <li><a class="dropdown-item text-secondary" asp-controller="Admin" asp-action="ViewCase" asp-route-id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
+                                        <li>
+                                            <a class="dropdown-item text-secondary" href="#">
+                                                <i class="fa-solid fa-book-journal-whills me-2"></i>View Notes
+                                            </a>
+                                        </li>
+                                        <li><a class="dropdown-item text-secondary" href="#"><i class="fa-solid fa-ban me-2"></i>Block Patients</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $('.requestby').on('click', function (e) {
+            e.preventDefault();
+            //$('.dashboardtab').removeClass('active');
+            //$(this).addClass('active');
+            var target = $(this).attr('id');
+            console.log(target);
+            var status;
+            var requesttype;
+            switch (target) {
+                case '1':
+                    status = '1';
+                    requesttype = '1';
+                    break;
+                case '2':
+                    status = '1';
+                    requesttype = '2';
+                    break;
+                case '3':
+                    status = '1';
+                    requesttype = '4';
+                    break;
+                case '4':
+                    status = '1';
+                    requesttype = '3';
+                    break;
+                default:
+
+            }
+
+            $.ajax({
+                url: '/Admin/NewState',
+                data: { "status": status, "reqtypeid": requesttype },
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.region').on('change', function (e) {
+
+            var target = $('.region').val();
+            console.log(target);
+            $('.region').value = target;
+            $(".region").attr("placeholder", "variable")
+            switch (target) {
+                case 'United Kingdom':
+                    status = '1';
+                    regionid = '3';
+                    break;
+                case 'Dubai':
+                    status = '1';
+                    regionid = '2';
+                    break;
+                case 'New York':
+                    status = '1';
+                    regionid = '1';
+                    break;
+                default:
+            }
+            $.ajax({
+                url: '/Admin/NewState',
+                data: { "status": status, "regionid": regionid },
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
