@@ -113,10 +113,15 @@ namespace Services.Implementation
                 Email = model.Email,
                 Phonenumber = model.PhoneNumber,
                 Notes = model.Symptoms,
+                State = model.State,
+                City = model.City,
+                Street = model.Street,
+                Zipcode = model.Zipcode,
                 Intdate = model.DOB.Day,
                 Intyear = model.DOB.Year,
                 Strmonth = model.DOB.Month.ToString(),
-                Location = model.Room
+                Location = model.Room,
+                Address = model.Room + model.Street + model.City + model.State,
             };
 
             _context.Requestclients.Add(reqclient);
@@ -162,6 +167,7 @@ namespace Services.Implementation
                 Zipcode = model.PatZipcode,
                 Location = model.PatRoom,
                 Email = model.PatEmail,
+                Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
@@ -209,6 +215,7 @@ namespace Services.Implementation
                 Notes = model.PatSymptoms,
                 Firstname = model.PatFirstName,
                 Lastname = model.PatLastName,
+                Email = model.PatEmail,
                 Intdate = model.PatDOB.Day,
                 Intyear = model.PatDOB.Year,
                 Strmonth = model.PatDOB.Month.ToString(),
@@ -218,6 +225,7 @@ namespace Services.Implementation
                 State = model.PatState,
                 Zipcode = model.PatZipcode,
                 Location = model.PatRoom,
+                Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
@@ -249,6 +257,7 @@ namespace Services.Implementation
                 Notes = model.PatSymptoms,
                 Firstname = model.PatFirstName,
                 Lastname = model.PatLastName,
+                Email = model.PatEmail,
                 Intdate = model.PatDOB.Day,
                 Intyear = model.PatDOB.Year,
                 Strmonth = model.PatDOB.Month.ToString(),
@@ -258,6 +267,7 @@ namespace Services.Implementation
                 State = model.PatState,
                 Zipcode = model.PatZipcode,
                 Location = model.PatRoom,
+                Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
                 Request = req
             };
             _context.Requestclients.Add(reqclient);

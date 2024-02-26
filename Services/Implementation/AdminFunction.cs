@@ -44,11 +44,13 @@ namespace Services.Implementation
         {
             NewStateData data = new NewStateData();
             List<Request> req = _context.Requests.Include(r=>r.Requestclients).Where(u => u.Status == status1 || u.Status == status2 || u.Status==status3).ToList();
-            foreach(var item in req)
-            {
-                List<Requestclient> rec = item.Requestclients.ToList();
-            }
             data.req = req;
+            data.newcount = getNewRequestCount();
+            data.activecount = getActiveRequestCount();
+            data.pendingcount = getPendingRequestCount();
+            data.Toclosecount = getToCloseRequestCount();
+            data.concludecount = getConcludeRequestCount();
+            data.Unpaidcount = getUnpaidRequestCount();
             return data;
         }
         public NewStateData toogletable(string reqtypeid,string status)
@@ -57,6 +59,67 @@ namespace Services.Implementation
             List<Request> req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
             newStateData.req = req;
             return newStateData;
+        }
+        public NewStateData1 ViewCase(int id)
+        {
+            NewStateData1 newStateData1 = new NewStateData1();
+            Request req = _context.Requests.Include(r => r.Requestclients).FirstOrDefault(u => u.Requestid == id);
+            newStateData1.req = req;
+            var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == req.Requestid);
+            int date = (int)reqclient.Intdate;
+            int year = (int)reqclient.Intyear;
+            string month = reqclient.Strmonth.ToString();
+            var region = _context.Regions.FirstOrDefault(u => u.Regionid == reqclient.Regionid);
+            newStateData1.region = region.Name;
+            newStateData1.DateOnly = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), (int)date).Date;
+            newStateData1.address = reqclient.Address;
+            newStateData1.room = reqclient.Location;
+            newStateData1.symptoms = reqclient.Notes;
+            return newStateData1;
+        }
+
+        public NewStateData regiontable(int regionid, string status)
+        {
+            NewStateData newStateData = new NewStateData();
+            var reqclient = _context.Requestclients.Include(m => m.Request).Where(u => u.Regionid == regionid).ToList();
+            newStateData.requestclients = reqclient;
+            List<Request> req = new List<Request>();
+            foreach (var obj in reqclient)
+            {
+                req.Add(obj.Request);
+            }
+            req = req.Where(u => u.Status.ToString() == status).ToList();
+            newStateData.req = req;
+            return newStateData;
+        }
+        public int getToCloseRequestCount()
+        {
+            return _context.Requests.Count(rc => rc.Status == 3 || rc.Status == 7 || rc.Status == 8);
+        }
+
+        public int getActiveRequestCount()
+        {
+            return _context.Requests.Count(rc => rc.Status == 4 || rc.Status == 5);
+        }
+
+        public int getConcludeRequestCount()
+        {
+            return _context.Requests.Count(rc => rc.Status == 6);
+        }
+
+        public int getNewRequestCount()
+        {
+            return _context.Requests.Count(r => r.Status == 1);
+        }
+
+        public int getPendingRequestCount()
+        {
+            return _context.Requests.Count(rc => rc.Status == 2);
+        }
+
+        public int getUnpaidRequestCount()
+        {
+            return _context.Requests.Count(rc => rc.Status == 9);
         }
     }
 }

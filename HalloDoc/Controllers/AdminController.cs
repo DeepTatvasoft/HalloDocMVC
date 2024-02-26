@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc.Controllers
 {
@@ -25,9 +26,12 @@ namespace HalloDoc.Controllers
             return View(adminFunction.AdminDashboarddata(4, 4, 5));
         }
 
-
-        public IActionResult NewState(string reqtypeid, string status)
+        public IActionResult NewState(string reqtypeid, string status, int regionid)
         {
+            if (regionid != null && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status));
+            }
             if (reqtypeid != null && status != null)
             {
                 return View(adminFunction.toogletable(reqtypeid, status));
@@ -53,18 +57,15 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ViewCase(int id)
         {
-            NewStateData newStateData = new NewStateData();
-            List<Request> req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requestid == id).ToList();
-            newStateData.req = req;
-            return View(newStateData);
+            return View(adminFunction.ViewCase(id));
         }
 
         public IActionResult AdminDashboard()
         {
             if (HttpContext.Session.GetString("Adminname") != null)
             {
-                List<Request> req = (from m in _context.Requests select m).ToList();
-                return View(req);
+                return View(adminFunction.AdminDashboarddata(1, 1, 1));
+
             }
             return RedirectToAction("adminlogin", "Admin");
         }

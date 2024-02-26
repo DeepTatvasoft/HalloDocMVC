@@ -1,52 +1,52 @@
 ﻿@using Data.DataModels;
-@model List<Request>
+@model Services.ViewModels.NewStateData
 <ul class="nav nav-tabs d-flex justify-content-around" id="myTab" role="tablist">
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link active state New" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
                 type="button" role="tab" aria-controls="New-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person-plus me-3"></i>NEW</div>
-            <h5>@Model.Count(r=>r.Status == 1)</h5>
+            <h5>@Model.newcount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Pending" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
                 type="button" role="tab" aria-controls="Pending-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person me-3"></i>PENDING</div>
-            <h5>@Model.Count(r=>r.Status == 2)</h5>
+            <h5>@Model.pendingcount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Active" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
                 type="button" role="tab" aria-controls="Active-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-check2-circle me-3"></i>ACTIVE</div>
-            <h5>@Model.Count(r=>r.Status == 4 || r.Status == 5)</h5>
+            <h5>@Model.activecount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Conclude" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
                 type="button" role="tab" aria-controls="Conclude-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-clock-history me-3"></i>CONCLUDE</div>
-            <h5>@Model.Count(r=>r.Status == 6)</h5>
+            <h5>@Model.concludecount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Toclose" id="ToClose-tab" data-bs-toggle="tab" data-bs-target="#ToClose-tab-pane"
                 type="button" role="tab" aria-controls="ToClose-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person-x me-3"></i>TO CLOSE</div>
-            <h5>@Model.Count(r=>r.Status == 3 || r.Status == 7 || r.Status == 8)</h5>
+            <h5>@Model.Toclosecount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
         <button class="nav-link state Unpaid" id="Unpaid-tab" data-bs-toggle="tab" data-bs-target="#Unpaid-tab-pane"
                 type="button" role="tab" aria-controls="Unpaid-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-currency-dollar me-3"></i>UNPAID</div>
-            <h5>@Model.Count(r=>r.Status == 9)</h5>
+            <h5>@Model.Unpaidcount</h5>
         </button>
     </li>
 </ul>
 
 <div class="tab-content mt-4" id="status-tabContent">
-    
+    <partial name="AdminLayout/_tabledata"/>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
