@@ -21,8 +21,16 @@ namespace HalloDoc.Controllers
         {
             return View();
         }
-        public IActionResult ActiveState()
+        public IActionResult ActiveState(string reqtypeid, string status, int regionid)
         {
+            if (regionid != null && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status));
+            }
+            if (reqtypeid != null && status != null)
+            {
+                return View(adminFunction.toogletable(reqtypeid, status));
+            }
             return View(adminFunction.AdminDashboarddata(4, 4, 5));
         }
 
@@ -39,21 +47,53 @@ namespace HalloDoc.Controllers
             return View(adminFunction.AdminDashboarddata(1, 1, 1));
         }
 
-        public IActionResult PendingState()
+        public IActionResult PendingState(string reqtypeid, string status, int regionid)
         {
+            if (regionid != null && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status));
+            }
+            if (reqtypeid != null && status != null)
+            {
+                return View(adminFunction.toogletable(reqtypeid, status));
+            }
             return View(adminFunction.AdminDashboarddata(2, 2, 2));
         }
-        public IActionResult TocloseState()
+        public IActionResult TocloseState(string reqtypeid, string status, int regionid)
         {
-            return View(adminFunction.AdminDashboarddata(6, 6, 6));
+            if (regionid != null && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status));
+            }
+            if (reqtypeid != null && status != null)
+            {
+                return View(adminFunction.toogletable(reqtypeid, status));
+            }
+            return View(adminFunction.AdminDashboarddata(3, 7, 8));
         }
-        public IActionResult UnpaidState()
+        public IActionResult UnpaidState(string reqtypeid, string status, int regionid)
         {
+            if (regionid != null && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status));
+            }
+            if (reqtypeid != null && status != null)
+            {
+                return View(adminFunction.toogletable(reqtypeid, status));
+            }
             return View(adminFunction.AdminDashboarddata(9, 9, 9));
         }
-        public IActionResult ConcludeState()
+        public IActionResult ConcludeState(string reqtypeid, string status, int regionid)
         {
-            return View(adminFunction.AdminDashboarddata(3, 7, 8));
+            if (regionid != null && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status));
+            }
+            if (reqtypeid != null && status != null)
+            {
+                return View(adminFunction.toogletable(reqtypeid, status));
+            }
+            return View(adminFunction.AdminDashboarddata(6, 6, 6));
         }
         public IActionResult ViewCase(int id)
         {

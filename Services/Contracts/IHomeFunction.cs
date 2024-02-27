@@ -8,5 +8,7 @@ namespace Services.Contracts
     {
         (Aspnetuser,User) ValidateUser([Bind(new[] { "Email,Passwordhash" })] Aspnetuser aspNetUser);
         public (bool,string) changepassword(ResetPasswordVM vm, string id);
+        public Aspnetuser getaspuser(PatientReqSubmit model);
+        void newaccount(PatientReqSubmit model, string id);
     }
 }

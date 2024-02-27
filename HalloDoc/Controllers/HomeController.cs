@@ -82,64 +82,13 @@ namespace HalloDoc.Controllers
         {
             if (model.Password == model.ConfirmPassword && model.Password != null)
             {
-                Aspnetuser aspnetuser = new Aspnetuser();
-                var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
+                var aspuser = homefunction.getaspuser(model);
                 if (aspuser != null)
                 {
                     TempData["error"] = "Email Already Exist";
                     return RedirectToAction("CreateAccount", "Home" , new { id = id });
                 }
-                int id2 = id.ElementAt(3);
-                var reqc = _context.Requestclients.FirstOrDefault(u => u.Requestclientid == id2);
-                aspnetuser.Email = model.Email;
-                aspnetuser.Passwordhash = model.ConfirmPassword;
-                aspnetuser.Username = reqc.Firstname + reqc.Lastname;
-                aspnetuser.Modifieddate = DateTime.Now;
-                _context.Aspnetusers.Add(aspnetuser);
-                User user = new User
-                {
-                    Firstname = reqc.Firstname,
-                    Lastname = reqc.Lastname,
-                    Email = model.Email,
-                    Aspnetuser = aspnetuser,
-                    Createdby = reqc.Firstname,
-                    Intdate = reqc.Intdate,
-                    Intyear = reqc.Intyear,
-                    Strmonth = reqc.Strmonth,
-                };
-                _context.Users.Add(user);
-                Request req = new Request
-                {
-                    Firstname = reqc.Firstname,
-                    Lastname = reqc.Lastname,
-                    Email = model.Email,
-                    Phonenumber = reqc.Phonenumber,
-                    Createddate = DateTime.Now,
-                    Requesttypeid = 1,
-                    Status = 1,
-                    User = user,
-                };
-                _context.Requests.Add(req);
-                Requestclient reqclient = new Requestclient
-                {
-                    Request = req,
-                    Firstname = reqc.Firstname,
-                    Lastname = reqc.Lastname,
-                    Email = model.Email,
-                    Phonenumber = reqc.Phonenumber,
-                    Notes = reqc.Notes,
-                    State = reqc.State,
-                    City = reqc.City,
-                    Street = reqc.Street,
-                    Zipcode = reqc.Zipcode,
-                    Intdate = reqc.Intdate,
-                    Intyear = reqc.Intyear,
-                    Strmonth = reqc.Strmonth,
-                    Location = reqc.Location,
-                    Address = reqc.Location + reqc.Street + reqc.City + reqc.State,
-                };
-                _context.Requestclients.Add(reqclient);
-                _context.SaveChanges();
+                homefunction.newaccount(model , id);
                 TempData["success"] = "Your Account Created Sucessfuly";
                 return RedirectToAction("patientlogin", "Home");
             }

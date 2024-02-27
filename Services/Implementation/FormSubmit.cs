@@ -88,7 +88,7 @@ namespace Services.Implementation
                 _context.SaveChanges();
                 user = user1;
             }
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == 3);
             Request req = new Request
             {
                 Firstname = model.FirstName,
@@ -121,6 +121,7 @@ namespace Services.Implementation
                 Intyear = model.DOB.Year,
                 Strmonth = model.DOB.Month.ToString(),
                 Location = model.Room,
+                Regionid=2,
                 Address = model.Room + model.Street + model.City + model.State,
             };
 
@@ -152,6 +153,7 @@ namespace Services.Implementation
                     Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
                     User = user
                 };
+
                 _context.Requests.Add(req);
                 _context.SaveChanges();
                 Requestclient reqclient = new Requestclient
@@ -167,6 +169,7 @@ namespace Services.Implementation
                     City = model.PatCity,
                     State = model.PatState,
                     Zipcode = model.PatZipcode,
+                    Regionid=1,
                     Location = model.PatRoom,
                     Email = model.PatEmail,
                     Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
@@ -210,6 +213,7 @@ namespace Services.Implementation
                     Zipcode = model.PatZipcode,
                     Location = model.PatRoom,
                     Email = model.PatEmail,
+                    Regionid = 1,
                     Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
                     Request = req
                 };

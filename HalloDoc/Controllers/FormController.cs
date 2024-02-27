@@ -26,11 +26,11 @@ namespace HalloDoc.Controllers
         }
         public IActionResult familyinfo(FamilyFriendReqSubmit model)
         {
-            bool f = formSubmit.familyinfo(model).Item1;
+            (bool f,int id) = formSubmit.familyinfo(model);
             if (f == false)
             {
                 var email = model.PatEmail;
-                int id = formSubmit.familyinfo(model).Item2;
+                //int id = formSubmit.familyinfo(model).Item2;
                 sendEmail(email, "hello", "hello reset password https://localhost:44325/Home/CreateAccount/id="+id+"");
             }
             return RedirectToAction("patientlogin", "Home");

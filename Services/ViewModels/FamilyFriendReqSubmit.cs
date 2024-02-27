@@ -4,6 +4,7 @@ namespace Services.ViewModels
 {
     public class FamilyFriendReqSubmit
     {
+        public int Id { get; set; }
         public string FamFirstName { get; set; }
         public string FamLastName { get; set; }
         public string FamMobile { get; set; }

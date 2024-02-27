@@ -172,19 +172,19 @@
             var requesttype;
             switch (target) {
                 case '1':
-                    status = '1';
+                    status = '9';
                     requesttype = '1';
                     break;
                 case '2':
-                    status = '1';
+                    status = '9';
                     requesttype = '2';
                     break;
                 case '3':
-                    status = '1';
+                    status = '9';
                     requesttype = '4';
                     break;
                 case '4':
-                    status = '1';
+                    status = '9';
                     requesttype = '3';
                     break;
                 default:
@@ -192,7 +192,7 @@
             }
 
             $.ajax({
-                url: '/Admin/NewState',
+                url: '/Admin/UnpaidState',
                 data: { "status": status, "reqtypeid": requesttype },
                 success: function (response) {
                     $('#status-tabContent').html(response);
@@ -211,21 +211,21 @@
             $(".region").attr("placeholder", "variable")
             switch (target) {
                 case 'United Kingdom':
-                    status = '1';
+                    status = '9';
                     regionid = '3';
                     break;
                 case 'Dubai':
-                    status = '1';
+                    status = '9';
                     regionid = '2';
                     break;
                 case 'New York':
-                    status = '1';
+                    status = '9';
                     regionid = '1';
                     break;
                 default:
             }
             $.ajax({
-                url: '/Admin/NewState',
+                url: '/Admin/UnpaidState',
                 data: { "status": status, "regionid": regionid },
                 success: function (response) {
                     $('#status-tabContent').html(response);

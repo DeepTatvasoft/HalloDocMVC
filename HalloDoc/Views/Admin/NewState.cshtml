@@ -168,8 +168,6 @@
             //$(this).addClass('active');
             var target = $(this).attr('id');
             console.log(target);
-            var status;
-            var requesttype;
             switch (target) {
                 case '1':
                     status = '1';
@@ -203,8 +201,7 @@
                 }
             });
         });
-        $('.region').on('change', function (e) {
-            
+        $('.region').on('change', function (e) {          
             var target = $('.region').val();
             console.log(target);
             $('.region').value = target;

@@ -45,5 +45,40 @@ namespace Services.Implementation
                 return (false,vm.Email);
             }
         }
+        public Aspnetuser getaspuser(PatientReqSubmit model) {
+            return _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
+        }
+
+        public void newaccount (PatientReqSubmit model, string id)
+        {
+            Aspnetuser aspnetuser = new Aspnetuser();
+            int id2 = id.ElementAt(3);
+            var reqc = _context.Requestclients.FirstOrDefault(u => u.Requestclientid == id2);
+            aspnetuser.Email = model.Email;
+            aspnetuser.Passwordhash = model.ConfirmPassword;
+            aspnetuser.Username = reqc.Firstname + reqc.Lastname;
+            aspnetuser.Phonenumber = reqc.Phonenumber;
+            aspnetuser.Modifieddate = DateTime.Now;
+            _context.Aspnetusers.Add(aspnetuser);
+            User user = new User
+            {
+                Firstname = reqc.Firstname,
+                Lastname = reqc.Lastname,
+                Email = model.Email,
+                Aspnetuser = aspnetuser,
+                Createdby = reqc.Firstname,
+                Intdate = reqc.Intdate,
+                Intyear = reqc.Intyear,
+                Strmonth = reqc.Strmonth,
+            };
+            _context.Users.Add(user);
+            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == reqc.Regionid);
+            var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqc.Requestid);
+            req.User = user;
+            req.Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + reqc.Firstname.Substring(0, 2) + req.Lastname.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper();
+            _context.Requests.Update(req);
+            _context.SaveChanges();
+        }
     }
 }

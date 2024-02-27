@@ -40,10 +40,10 @@ namespace Services.Implementation
                 return (false, null);
             }
         }
-        public NewStateData AdminDashboarddata(int status1,int status2,int status3)
+        public NewStateData AdminDashboarddata(int status1, int status2, int status3)
         {
             NewStateData data = new NewStateData();
-            List<Request> req = _context.Requests.Include(r=>r.Requestclients).Where(u => u.Status == status1 || u.Status == status2 || u.Status==status3).ToList();
+            List<Request> req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
             data.req = req;
             data.newcount = getNewRequestCount();
             data.activecount = getActiveRequestCount();
@@ -53,10 +53,22 @@ namespace Services.Implementation
             data.Unpaidcount = getUnpaidRequestCount();
             return data;
         }
-        public NewStateData toogletable(string reqtypeid,string status)
+        public NewStateData toogletable(string reqtypeid, string status)
         {
             NewStateData newStateData = new NewStateData();
-            List<Request> req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
+            List<Request> req;
+            if (status == "4")
+            {
+                req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status == 4 || u.Status == 5).ToList();
+            }
+            else if (status == "3")
+            {
+                req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 3 || u.Status == 7 || u.Status == 8)).ToList();
+            }
+            else
+            {
+                req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
+            }
             newStateData.req = req;
             return newStateData;
         }
@@ -88,7 +100,18 @@ namespace Services.Implementation
             {
                 req.Add(obj.Request);
             }
-            req = req.Where(u => u.Status.ToString() == status).ToList();
+            if (status == "4")
+            {
+                req = req.Where(u => u.Status == 4 || u.Status == 5).ToList();
+            }
+            else if (status == "3")
+            {
+                req = req.Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
+            }
+            else
+            {
+                req = req.Where(u => u.Status.ToString() == status).ToList();
+            }
             newStateData.req = req;
             return newStateData;
         }
