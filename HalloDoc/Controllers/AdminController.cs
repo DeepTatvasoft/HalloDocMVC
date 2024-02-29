@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
+using System.Drawing;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc.Controllers
@@ -97,9 +98,12 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ViewCase(int id)
         {
-            return View(adminFunction.ViewCase(id));
+            return PartialView("AdminLayout/_ViewCase", adminFunction.ViewCase(id));
         }
-
+        public IActionResult ViewNotes()
+        {
+            return PartialView("AdminLayout/_ViewNotes");
+        }
         public IActionResult AdminDashboard()
         {
             if (HttpContext.Session.GetString("Adminname") != null)
@@ -111,8 +115,8 @@ namespace HalloDoc.Controllers
         }
         public IActionResult loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
-            bool f = adminFunction.loginadmin(aspNetUser).Item1;
-            string adminname = adminFunction.loginadmin(aspNetUser).Item2;
+            (bool f, string adminname, int id) = adminFunction.loginadmin(aspNetUser);
+            //string adminname = adminFunction.loginadmin(aspNetUser).Item2;
             if (f == false)
             {
                 TempData["error"] = "Email or Password is Incorrect";
@@ -121,6 +125,7 @@ namespace HalloDoc.Controllers
             else
             {
                 HttpContext.Session.SetString("Adminname", adminname);
+                HttpContext.Session.SetInt32("Adminid", id);
                 if (HttpContext.Session.GetString("Adminname") != null)
                 {
                     TempData["success"] = "Admin LogIn Successfully";
@@ -128,11 +133,22 @@ namespace HalloDoc.Controllers
                 return RedirectToAction("Admindashboard", "Admin");
             }
         }
+        public List<Physician> filterregion(string regionid)
+        {
+            return adminFunction.filterregion(regionid);
+        }
         public IActionResult adminlogout()
         {
             HttpContext.Session.Remove("Adminname");
             TempData["Error"] = "Admin Logged Out Successfuly";
             return RedirectToAction("adminlogin", "Admin");
+        }
+        public IActionResult cancelcase(int reqid, int casetagid, string cancelnotes)
+        {
+            int id = (int)HttpContext.Session.GetInt32("Adminid");
+            string adminname = HttpContext.Session.GetString("Adminname");
+            adminFunction.cancelcase(reqid, casetagid, cancelnotes, adminname, id);
+            return RedirectToAction("NewState", adminFunction.AdminDashboarddata(1, 1, 1));
         }
     }
 }

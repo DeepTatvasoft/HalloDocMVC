@@ -1,0 +1,216 @@
+﻿@{
+    Layout = "";
+}
+@model Services.ViewModels.NewStateData1
+@{
+    var type = "";
+    var color = "mediumpurple";
+    @if (Model.req.Requesttypeid == 1)
+    {
+        color = "rgb(72 169 70)";
+        type = "Patient";
+    }
+    else if (Model.req.Requesttypeid == 2)
+    {
+        color = "#f5a33e";
+        type = "Family";
+    }
+    else if (Model.req.Requesttypeid == 4)
+    {
+        color = "hotpink";
+        type = "Business";
+    }
+    else if (Model.req.Requesttypeid == 3)
+    {
+        color = "dodgerblue";
+        type = "Concierge";
+    }
+}
+<div class="main">
+    <div class="back container mb-3 mt-3 d-flex justify-content-between">
+        <h3 class="mt-2">
+            New Request <span class="headtag d-sm-inline-block d-none" style="border-radius:15px;font-size:23px;background-color:@color;color:white;padding:5px;">@type</span>
+        </h3>
+        <a asp-controller="Admin" asp-action="AdminDashboard" style="text-decoration: none;" class="backimg">
+            <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+            <span>Back</span>
+        </a>
+    </div>
+    <div class="container bg-white" style="padding-bottom:20px" id="maincontent">
+        <form method="post">
+            <div class="confirmNum">
+                Confirmation Number
+                <h3 class="text-info">@Model.req.Confirmationnumber</h3>
+            </div>
+            <div class="pinfo mt-4">
+                <h4>Patient Information</h4>
+                <div class="form-floating">
+                    <textarea asp-for="@Model.symptoms" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+                              style="height: 100px;" readonly></textarea>
+                    <label for="floatingTextarea" class="medialabel">Enter Brief Details Of Symptoms (Optional)</label>
+                </div>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Name" value="@Model.req.Firstname" readonly>
+                            <label for="floatingInput">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Name" value="@Model.req.Lastname" readonly>
+                            <label for="floatingInput">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3 date" style="width:100%">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="Date" asp-for="@Model.DateOnly" readonly>
+                            <label for="floatingInput">Date Of Birth</label>
+                        </div>
+                    </div>
+                    <div class="col d-flex">
+                        <div class="form-floating mb-3 numcountry me-2" style="width:100%">
+                            <input type="tel" class="form-control output" id="floatingInput" placeholder="Mobile Number" value="@Model.req.Phonenumber" readonly>
+                            <label for="floatingInput">Mobile Number</label>
+                        </div>
+                        <a>
+                            <button style="height:56px" type="button" class="btn btn-outline-primary"><i class="fa-solid fa-phone"></i></button>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="patientEmail" placeholder="name@example.com" value="@Model.req.Email" readonly>
+                            <label for="patientEmail">Email</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="plocation mt-5">
+                <h4>Location Information</h4>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Region" value="@Model.region" readonly>
+                            <label for="floatingInput">Region</label>
+                        </div>
+                    </div>
+                    <div class="col d-flex">
+                        <div class="form-floating mb-3 me-2" style="width:100%">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Address" value="@Model.address" readonly>
+                            <label for="floatingInput">Business Name/Address</label>
+                        </div>
+                        <a>
+                            <button style="height:56px" type="button" class="btn btn-outline-primary"><i class="bi bi-geo-alt"></i></button>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Room" value="@Model.room" readonly>
+                            <label for="floatingInput">Room #</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="submit mt-4">
+                <button type="button" class="btn btn-info" style="color: white;" data-bs-toggle="modal" data-bs-target="#exampleModal1">Assign</button>
+                <button type="button" class="btn btn-info ms-2 viewnotes" style="color: white;">View Notes</button>
+                <button type="button" class="btn btn-danger ms-2">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                To assign this request, search and select another Physician.
+                <div class="form-floating">
+                    <select class="form-select physiciandata" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>Select Region</option>
+                        @if (Model.regions != null)
+                        {
+                            @foreach (var obj in Model.regions)
+                            {
+                                <option value="@obj.Regionid">@obj.Name</option>
+                            }
+                        }
+                    </select>
+                    <label for="floatingSelect" class="text-info">
+                        Narrow Search by Region
+                    </label>
+                </div>
+                <select class="form-select mt-4" id="physelect" aria-label="Floating label select example" style="height:58px">
+                </select>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white">Submit</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.viewnotes').on('click', function (e) {
+            e.preventDefault();
+            //$('.dashboardtab').removeClass('active');
+            //$(this).addClass('active');
+            //var id = $(this).attr('id');
+            console.log($('#ViewcaseRemove').attr('id'));
+            $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
+            //$('#myTab').remove();
+
+            $.ajax({
+                url: '/Admin/ViewNotes',
+                success: function (response) {
+                    $('#alldata').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.physiciandata').on('change', function (e) {
+            var regionid = $(this).val();
+            console.log(regionid);
+
+            $.ajax({
+                url: '/admin/filterregion',
+                data: { "regionid": regionid },
+                success: function (response) {
+                    //console.log(response);
+                    var physelect = $('#physelect');
+                    //console.log(physelect);
+                    physelect.empty();
+                    physelect.append($('<option>', {
+                        value: "",
+                        text: "Select Physician"
+                    }))
+                    response.forEach(function (item) {
+                        //console.log(item);
+                        physelect.append(
+                            $('<option>', {
+                                value: item.physicianid,
+                                text: item.firstname
+                            }));
+                        console.log("fetch success");
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+
+

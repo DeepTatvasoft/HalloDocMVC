@@ -104,3 +104,9 @@ function country_code2() {
     }
 
 }
+
+function CancelModelName(clicked_name) {
+    var arr = clicked_name.split("+");
+    document.getElementById('cancleModelName').innerHTML = arr[0];
+    document.getElementById('reqidCancelModel').innerHTML = arr[1];
+}

@@ -5,6 +5,19 @@
 @model Services.ViewModels.PatientDashboardedit
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 <Partial name="_Notification" />
+<style>
+    .icn::before {
+        border: 2px solid #0dcaf0;
+        border-radius: 50%;
+        line-height: 1;
+        font-size: 13px;
+        padding: 3px;
+    }
+
+    .icns::before {
+        font-weight: 900 !important;
+    }
+</style>
 <div class="tab-content mt-4" id="myTabContent">
     <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
          tabindex="0">
@@ -42,7 +55,7 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table mt-2" id="dtBasicExample">
+                <table class="table d-none d-md-table mt-2" id="dtBasicExample">
                     <thead>
                         <tr>
                             <th class="bg-body-secondary" scope="col">Created Date <i class="bi bi-arrow-down"></i></th>
@@ -92,6 +105,56 @@
                         }
                     </tbody>
                 </table>
+                <div class="accordion d-md-none d-block" id="accordionExample">
+                    <div class="accordion-item">
+                        @foreach (var obj in Model.requests)
+                        {
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne-@obj.Requestid" aria-expanded="true" aria-controls="collapseOne-@obj.Requestid">
+                                    <i class="fa-regular fa-clock me-1 text-info"></i>Created Date : @obj.Createddate
+                                </button>
+                            </h2>
+                            <div id="collapseOne-@obj.Requestid" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div class="mb-1">
+                                        <i class="fa-solid fa-user-tie me-1 text-info icn"></i> Provider
+                                    </div>
+                                    <div>
+                                        <i class="fa-solid fa-check me-1 text-info icn"></i>CurrentStatus :
+                                        @if (obj.Status == 1)
+                                        {
+                                            <span>Processing</span>
+                                        }
+                                        else if (obj.Status == 2)
+                                        {
+                                            <span>Accepted</span>
+                                        }
+                                    </div>
+                                    <br>
+                                    @if (obj.Requestwisefiles.Count() != 0)
+                                    {
+                                        <a asp-controller="Dashboard" asp-action="ViewDocument">
+                                            <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton w-100 justify-content-center">
+                                                <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
+                                                    <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
+                                                </a>
+                                                <div class="nonedocument">
+                                                    <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
+                                                        <span>(@obj.Requestwisefiles.Count()) Documnets</span>
+                                                    </a>
+                                                </div>
+                                            </button>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span>No Document</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>

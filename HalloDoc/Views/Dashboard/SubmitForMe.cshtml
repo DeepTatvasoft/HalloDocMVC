@@ -46,7 +46,7 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="Email" onblur="checkEmailExists()" type="email" class="form-control" id="patientEmail" placeholder="name@example.com">
+                            <input asp-for="Email" type="email" class="form-control" id="patientEmail" placeholder="name@example.com">
                             <label for="patientEmail">Email</label>
                         </div>
                     </div>
@@ -60,18 +60,6 @@
                                 <option value="ind">INDIA</option>
                             </select>
                             <input asp-for="PhoneNumber" type="tel" class="form-control output" id="output" placeholder="Mobile Number">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-floating mb-3" id="passwordFields1">
-                            <input asp-for="Password" type="password" class="form-control" id="floatingInput" placeholder="password">
-                            <label for="floatingInput">Password</label>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-floating mb-3" id="passwordFields2">
-                            <input asp-for="ConfirmPassword" type="password" class="form-control" id="floatingInput" placeholder="confirmpassword">
-                            <label for="floatingInput">Confirm Password</label>
                         </div>
                     </div>
                 </div>

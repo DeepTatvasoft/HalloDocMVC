@@ -4,7 +4,7 @@
 }
 
 .state {
-    width: 16.3%;
+    width: 250px;
     height: 100px;
     font-weight: 700;
 }
@@ -24,9 +24,21 @@
     left: 10px;
 }
 
+.region {
+    height: 38px;
+    width: 233px;
+    padding-left: 32px;
+}
+
+
+.fa-chevron-down:before {
+    content: "\f078";
+    display: none;
+}
+
 .searchicon2 {
     position: relative;
-    right: 84%;
+    right: 88%;
 }
 
 .down {
@@ -200,7 +212,25 @@ div.phone {
     left: 50%;
     transform: translateX(-50%);
 }
-input#dt-search-0.dt-input{
-    display : none;
+
+input#dt-search-0.dt-input {
+    display: none;
 }
 
+li {
+    cursor: pointer;
+}
+
+@media only screen and (max-width:767px) {
+    .state {
+        width: 100px;
+    }
+
+    button .h5 {
+        font-size: 12px !important;
+    }
+
+    .icon {
+        display: none;
+    }
+}

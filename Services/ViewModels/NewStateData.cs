@@ -6,13 +6,15 @@ namespace Services.ViewModels
     {
         public List<Request> req { get; set; }
         public List<Requestclient> requestclients { get; set; }
-
         public int newcount { get; set; }
         public int pendingcount { get; set; }
         public int activecount { get; set; }
         public int concludecount { get; set; }
         public int Toclosecount { get; set; }
         public int Unpaidcount { get; set; }
+        public List<Region> regions { get; set; }
+        public List<Physician> physicians { get; set; }
+        public List<Casetag> casetags { get; set; }
     }
     public class NewStateData1
     {
@@ -22,5 +24,6 @@ namespace Services.ViewModels
         public string address { get; set; }
         public string room { get; set; }
         public string symptoms { get; set; }
+        public List<Region> regions { get; set; }
     }
 }
