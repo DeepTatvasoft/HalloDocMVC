@@ -110,3 +110,6 @@ function CancelModelName(clicked_name) {
     document.getElementById('cancleModelName').innerHTML = arr[0];
     document.getElementById('reqidCancelModel').innerHTML = arr[1];
 }
+function AssignModelName(clicked_name) {
+    document.getElementById('reqidAssignModel').innerHTML = clicked_name;
+}

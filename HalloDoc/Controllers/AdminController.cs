@@ -150,5 +150,12 @@ namespace HalloDoc.Controllers
             adminFunction.cancelcase(reqid, casetagid, cancelnotes, adminname, id);
             return RedirectToAction("NewState", adminFunction.AdminDashboarddata(1, 1, 1));
         }
+        public IActionResult assigncase(int reqid, int regid, int phyid, string Assignnotes)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            int id = (int)HttpContext.Session.GetInt32("Adminid");
+            adminFunction.assigncase(reqid,regid,phyid, Assignnotes, adminname, id);
+            return RedirectToAction("NewState", adminFunction.AdminDashboarddata(1, 1, 1));
+        }
     }
 }

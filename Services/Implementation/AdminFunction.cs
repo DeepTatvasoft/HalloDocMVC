@@ -28,7 +28,7 @@ namespace Services.Implementation
             if (obj != null)
             {
                 var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == obj.Id.ToString());
-                var physician = _context.Physicians.FirstOrDefault(u=>u.Aspnetuserid == obj.Id.ToString());
+                var physician = _context.Physicians.FirstOrDefault(u => u.Aspnetuserid == obj.Id.ToString());
                 int id = obj.Id;
                 if (admin == null && physician == null)
                 {
@@ -222,6 +222,36 @@ namespace Services.Implementation
         {
             List<Physician> physicians = _context.Physicians.Where(u => u.Regionid.ToString() == regionid).ToList();
             return physicians;
+        }
+        public void assigncase(int reqid, int regid, int phyid, string Assignnotes, string adminname, int id)
+        {
+            if (phyid != 0)
+            {
+                var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqid);
+                req.Modifieddate = DateTime.Now;
+                req.Status = 2;
+                req.Physicianid = phyid;
+                _context.Requests.Update(req);
+                Requestnote requestnote = new Requestnote
+                {
+                    Requestid = reqid,
+                    Adminnotes = Assignnotes,
+                    Createdby = adminname,
+                    Createddate = DateTime.Now,
+                };
+                Requeststatuslog requeststatuslog = new Requeststatuslog
+                {
+                    Requestid = reqid,
+                    Status = 2,
+                    Adminid = id,
+                    Transtophysicianid = phyid,
+                    Notes = Assignnotes,
+                    Createddate = DateTime.Now,
+                };
+                _context.Requestnotes.Add(requestnote);
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.SaveChanges();
+            }
         }
     }
 }

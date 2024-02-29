@@ -150,7 +150,7 @@
                                         Actions
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#exampleModal1"><a class="dropdown-item text-secondary"><i class="fa-regular fa-rectangle-list me-2"></i>Assign case</a></li>
+                                        <li style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#exampleModal1"><a class="dropdown-item text-secondary dataforAssignModel" onclick="AssignModelName(this.name)" name="@obj.Requestid"><i class="fa-regular fa-rectangle-list me-2"></i>Assign case</a></li>
                                         <li style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#CancelCaseBtn"><a class="dropdown-item text-secondary dataforCancelModel" onclick="CancelModelName(this.name)" name="@obj.Firstname , @obj.Lastname+@obj.Requestid"><i class="fa-regular fa-circle-xmark me-2"></i>Cancel case</a></li>
                                         <li style="cursor : pointer"><a class="dropdown-item text-secondary viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
                                         <li>
@@ -260,6 +260,7 @@
             </div>
             <div class="modal-body">
                 To assign this request, search and select another Physician.
+                <span id="reqidAssignModel" hidden></span>
                 <div class="form-floating">
                     <select class="form-select physiciandata" id="floatingSelect" aria-label="Floating label select example">
                         <option selected>Select Region</option>
@@ -278,12 +279,12 @@
                 <select class="form-select mt-4" id="physelect" aria-label="Floating label select example" style="height:58px">
                 </select>
                 <div class="form-floating mt-4">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <textarea class="form-control Assignnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
                     <label for="floatingTextarea">Description</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info text-white">Submit</button>
+                <button type="button" class="btn btn-info text-white assigncase" data-bs-dismiss="modal">Submit</button>
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -482,6 +483,25 @@
             $.ajax({
                 url: '/admin/cancelcase',
                 data: { "reqid": reqid, "casetagid": casetagid, "cancelnotes": cancelnotes },
+                success: function (response) {
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.assigncase').on('click', function (e) {
+            var reqid = $('#reqidAssignModel').text();
+            var regid = $('.physiciandata').val();
+            var phyid = $('#physelect').val();
+            var Assignnotes = $('.Assignnotes').val();
+            console.log(reqid);
+            console.log(regid);
+            console.log(phyid);
+            $.ajax({
+                url: '/admin/assigncase',
+                data: { "reqid": reqid, "regid": regid, "phyid": phyid, "Assignnotes": Assignnotes },
                 success: function (response) {
 
                 },

@@ -19,5 +19,6 @@ namespace Services.Contracts
         int getUnpaidRequestCount();
         void cancelcase(int reqid, int casetagid, string cancelnotes, string adminname, int id);
         List<Physician> filterregion(string regionid);
+        void assigncase(int reqid, int regid, int phyid, string Assignnotes, string adminname, int id);
     }
 }
