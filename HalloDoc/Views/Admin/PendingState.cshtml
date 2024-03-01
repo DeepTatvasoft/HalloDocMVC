@@ -82,11 +82,11 @@
             <table class="table d-none d-md-table" id="maintable">
                 <thead>
                     <tr>
-                        <th scope="col" class="d-none"></th>
                         <th scope="col">Name</th>
                         <th scope="col"> </th>
                         <th scope="col">Date Of Birth</th>
                         <th scope="col">Requestor</th>
+                        <th scope="col">Physician Name</th>
                         <th scope="col">Requested Date</th>
                         <th scope="col">Phone</th>
                         <th scope="col">Address</th>
@@ -99,6 +99,7 @@
                     @foreach (var obj in Model.req)
                     {
                         var reqclient = obj.Requestclients.ElementAt(0);
+                        var reqstatuslog = obj.Requeststatuslogs.ElementAt(0);
                         var color = "mediumpurple";
                         var type = "";
                         @if (obj.Requesttypeid == 1)
@@ -122,15 +123,15 @@
                             type = "Concierge";
                         }
                         <tr style="--bs-table-bg:@color">
-                            <td scope="row" class="d-none">@obj.Requesttypeid</td>
                             <td scope="row">@obj.Firstname, @obj.Lastname</td>
                             <td scope="row">
                                 <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
                             </td>
-                            <td>@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
-                            <td>@reqclient.Firstname , @reqclient.Lastname</td>
-                            <td>@obj.Createddate</td>
-                            <td>
+                            <td scope="row">@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
+                            <td scope="row">@reqclient.Firstname , @reqclient.Lastname</td>
+                            <td scope="row">@reqstatuslog.Transtophysician.Firstname</td>
+                            <td scope="row">@obj.Createddate</td>
+                            <td scope="row">
                                 <div class="phone">@obj.Phonenumber</div>
                                 (Patient)
                                 @if (type != "Patient")
@@ -139,12 +140,12 @@
                                     <span>(@type)</span>
                                 }
                             </td>
-                            <td>@reqclient.Address</td>
-                            <td>@reqclient.Notes</td>
-                            <td>
+                            <td scope="row">@reqclient.Address</td>
+                            <td scope="row">@reqstatuslog.Notes</td>
+                            <td scope="row">
                                 <button class="btn btn-outline-light"><i class="bi bi-person me-1"></i>Provider</button>
                             </td>
-                            <td>
+                            <td scope="row">
                                 <div class="dropdown ms-2">
                                     <button class="btn btn-outline-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Actions
@@ -511,6 +512,7 @@
                 url: '/admin/cancelcase',
                 data: { "reqid": reqid, "casetagid": casetagid, "cancelnotes": cancelnotes },
                 success: function (response) {
+                    $('#status-tabContent').html(response);
 
                 },
                 error: function (xhr, status, error) {
@@ -530,6 +532,7 @@
                 url: '/admin/assigncase',
                 data: { "reqid": reqid, "regid": regid, "phyid": phyid, "Assignnotes": Assignnotes },
                 success: function (response) {
+                    $('#status-tabContent').html(response);
 
                 },
                 error: function (xhr, status, error) {
@@ -545,6 +548,7 @@
                 url: '/admin/blockcase',
                 data: { "reqid": reqid, "Blocknotes": Blocknotes },
                 success: function (response) {
+                    $('#status-tabContent').html(response);
 
                 },
                 error: function (xhr, status, error) {

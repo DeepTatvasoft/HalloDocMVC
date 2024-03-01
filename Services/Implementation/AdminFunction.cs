@@ -46,7 +46,7 @@ namespace Services.Implementation
         public NewStateData AdminDashboarddata(int status1, int status2, int status3)
         {
             NewStateData data = new NewStateData();
-            List<Request> req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
+            List<Request> req = _context.Requests.Include(r => r.Requestclients).Include(m=>m.Requeststatuslogs).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
             data.req = req;
             data.newcount = getNewRequestCount();
             data.activecount = getActiveRequestCount();
@@ -57,6 +57,8 @@ namespace Services.Implementation
             var regions = _context.Regions.ToList();
             data.regions = regions;
             var casetag = _context.Casetags.ToList();
+            List<Requeststatuslog> requeststatuslogs = _context.Requeststatuslogs.Include(r=>r.Transtophysician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
+            data.requeststatuslogs = requeststatuslogs;
             data.casetags = casetag;
             return data;
         }

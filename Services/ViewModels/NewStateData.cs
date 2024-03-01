@@ -15,6 +15,8 @@ namespace Services.ViewModels
         public List<Region> regions { get; set; }
         public List<Physician> physicians { get; set; }
         public List<Casetag> casetags { get; set; }
+        public List<Requeststatuslog> requeststatuslogs { get; set; }
+
     }
     public class NewStateData1
     {
@@ -25,6 +27,7 @@ namespace Services.ViewModels
         public string room { get; set; }
         public string symptoms { get; set; }
         public List<Region> regions { get; set; }
+
     }
     public class ViewNotesModel
     {

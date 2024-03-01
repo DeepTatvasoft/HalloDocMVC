@@ -113,7 +113,7 @@
             </div>
             <div class="submit mt-4">
                 <button type="button" class="btn btn-info" style="color: white;" data-bs-toggle="modal" data-bs-target="#exampleModal1">Assign</button>
-                <button type="button" class="btn btn-info ms-2 viewnotes" style="color: white;">View Notes</button>
+                <button type="button" class="btn btn-info ms-2 viewnotes" style="color: white;" name="@Model.req.Requestid">View Notes</button>
                 <button type="button" class="btn btn-danger ms-2">Cancel</button>
             </div>
         </form>
@@ -164,13 +164,15 @@
             e.preventDefault();
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
-            //var id = $(this).attr('id');
+            var reqid = $(this).attr('name');
+            //console.log(reqid);
             console.log($('#ViewcaseRemove').attr('id'));
             $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
             //$('#myTab').remove();
 
             $.ajax({
                 url: '/Admin/ViewNotes',
+                data: { "reqid": reqid },
                 success: function (response) {
                     $('#alldata').html(response);
                     console.log("Fetch success");

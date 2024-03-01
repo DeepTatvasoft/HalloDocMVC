@@ -140,7 +140,7 @@
                                 }
                             </td>
                             <td>@reqclient.Address</td>
-                            <td>@reqclient.Notes</td>
+                            <td>-</td>
                             <td>
                                 <button class="btn btn-outline-light"><i class="bi bi-person me-1"></i>Provider</button>
                             </td>
@@ -511,6 +511,7 @@
                 url: '/admin/cancelcase',
                 data: { "reqid": reqid, "casetagid": casetagid, "cancelnotes": cancelnotes },
                 success: function (response) {
+                    $('#status-tabContent').html(response);
 
                 },
                 error: function (xhr, status, error) {
@@ -530,6 +531,7 @@
                 url: '/admin/assigncase',
                 data: { "reqid": reqid, "regid": regid, "phyid": phyid, "Assignnotes": Assignnotes },
                 success: function (response) {
+                    $('#status-tabContent').html(response);
 
                 },
                 error: function (xhr, status, error) {
@@ -545,6 +547,7 @@
                 url: '/admin/blockcase',
                 data: { "reqid": reqid, "Blocknotes": Blocknotes },
                 success: function (response) {
+                    $('#status-tabContent').html(response);
 
                 },
                 error: function (xhr, status, error) {
