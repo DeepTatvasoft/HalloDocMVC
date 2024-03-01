@@ -1,5 +1,6 @@
 ﻿using Data.DataModels;
 using HalloDoc.DataContext;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
@@ -100,9 +101,9 @@ namespace HalloDoc.Controllers
         {
             return PartialView("AdminLayout/_ViewCase", adminFunction.ViewCase(id));
         }
-        public IActionResult ViewNotes()
+        public IActionResult ViewNotes(int reqid)
         {
-            return PartialView("AdminLayout/_ViewNotes");
+            return PartialView("AdminLayout/_ViewNotes", adminFunction.ViewNotes(reqid));
         }
         public IActionResult AdminDashboard()
         {
@@ -154,8 +155,20 @@ namespace HalloDoc.Controllers
         {
             string adminname = HttpContext.Session.GetString("Adminname");
             int id = (int)HttpContext.Session.GetInt32("Adminid");
-            adminFunction.assigncase(reqid,regid,phyid, Assignnotes, adminname, id);
+            adminFunction.assigncase(reqid, regid, phyid, Assignnotes, adminname, id);
             return RedirectToAction("NewState", adminFunction.AdminDashboarddata(1, 1, 1));
+        }
+        public IActionResult blockcase(int reqid, string Blocknotes)
+        {
+            adminFunction.blockcase(reqid, Blocknotes);
+            return RedirectToAction("NewState", adminFunction.AdminDashboarddata(1, 1, 1));
+        }
+        [HttpPost]
+        public IActionResult AdminNotesSaveChanges(int reqid, string adminnotes)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            adminFunction.AdminNotesSaveChanges(reqid, adminnotes, adminname);
+            return PartialView("AdminLayout/_ViewNotes", adminFunction.ViewNotes(reqid));
         }
     }
 }

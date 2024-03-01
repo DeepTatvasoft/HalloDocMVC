@@ -20,5 +20,8 @@ namespace Services.Contracts
         void cancelcase(int reqid, int casetagid, string cancelnotes, string adminname, int id);
         List<Physician> filterregion(string regionid);
         void assigncase(int reqid, int regid, int phyid, string Assignnotes, string adminname, int id);
+        void blockcase(int reqid, string Blocknotes);
+        ViewNotesModel ViewNotes(int reqid);
+        void AdminNotesSaveChanges(int reqid, string adminnotes, string adminname);
     }
 }

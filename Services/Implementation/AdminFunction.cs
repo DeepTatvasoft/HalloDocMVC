@@ -28,9 +28,8 @@ namespace Services.Implementation
             if (obj != null)
             {
                 var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == obj.Id.ToString());
-                var physician = _context.Physicians.FirstOrDefault(u => u.Aspnetuserid == obj.Id.ToString());
                 int id = obj.Id;
-                if (admin == null && physician == null)
+                if (admin == null)
                 {
                     return (false, null, id);
                 }
@@ -172,51 +171,21 @@ namespace Services.Implementation
             request.Status = 3;
             _context.Requests.Update(request);
             _context.SaveChanges();
-            var physician = _context.Physicians.FirstOrDefault(u => u.Aspnetuserid == id.ToString());
             var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == id.ToString());
-            if (physician == null)
-            {
-                Requestnote requestnote = new Requestnote
-                {
-                    Requestid = reqid,
-                    Adminnotes = cancelnotes,
-                    Createdby = admin.Firstname,
-                    Createddate = DateTime.Now,
-                };
-                Requeststatuslog requeststatuslog = new Requeststatuslog
-                {
-                    Requestid = reqid,
-                    Status = 3,
-                    Adminid = admin.Adminid,
-                    Notes = cancelnotes,
-                    Createddate = DateTime.Now,
 
-                };
-                _context.Requestnotes.Add(requestnote);
-                _context.Requeststatuslogs.Add(requeststatuslog);
-                _context.SaveChanges();
-            }
-            else
+            Requeststatuslog requeststatuslog = new Requeststatuslog
             {
-                Requestnote requestnote = new Requestnote
-                {
-                    Requestid = reqid,
-                    Physiciannotes = cancelnotes,
-                    Createdby = physician.Firstname,
-                    Createddate = DateTime.Now,
-                };
-                Requeststatuslog requeststatuslog = new Requeststatuslog
-                {
-                    Requestid = reqid,
-                    Status = 3,
-                    Physicianid = physician.Physicianid,
-                    Notes = cancelnotes,
-                    Createddate = DateTime.Now,
-                };
-                _context.Requestnotes.Add(requestnote);
-                _context.Requeststatuslogs.Add(requeststatuslog);
-                _context.SaveChanges();
-            }
+                Requestid = reqid,
+                Status = 3,
+                Adminid = admin.Adminid,
+                Notes = cancelnotes,
+                Createddate = DateTime.Now,
+
+            };
+            _context.Requeststatuslogs.Add(requeststatuslog);
+            _context.SaveChanges();
+
+
         }
         public List<Physician> filterregion(string regionid)
         {
@@ -232,13 +201,6 @@ namespace Services.Implementation
                 req.Status = 2;
                 req.Physicianid = phyid;
                 _context.Requests.Update(req);
-                Requestnote requestnote = new Requestnote
-                {
-                    Requestid = reqid,
-                    Adminnotes = Assignnotes,
-                    Createdby = adminname,
-                    Createddate = DateTime.Now,
-                };
                 Requeststatuslog requeststatuslog = new Requeststatuslog
                 {
                     Requestid = reqid,
@@ -248,8 +210,71 @@ namespace Services.Implementation
                     Notes = Assignnotes,
                     Createddate = DateTime.Now,
                 };
-                _context.Requestnotes.Add(requestnote);
                 _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.SaveChanges();
+            }
+        }
+        public void blockcase(int reqid, string Blocknotes)
+        {
+            var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqid);
+            req.Status = 200;
+            _context.Update(req);
+            _context.SaveChanges();
+            Blockrequest blockrequest = new Blockrequest
+            {
+                Phonenumber = req.Phonenumber,
+                Email = req.Email,
+                Reason = Blocknotes,
+                Requestid = reqid.ToString(),
+                Createddate= DateTime.Now,
+            };
+            _context.Blockrequests.Add(blockrequest);
+            _context.SaveChanges();
+        }
+        public ViewNotesModel ViewNotes(int reqid)
+        {
+            ViewNotesModel viewNotesModel = new ViewNotesModel();
+            var reqstatuslog = _context.Requeststatuslogs.FirstOrDefault(u => u.Requestid == reqid);
+            var requestnotes = _context.Requestnotes.FirstOrDefault(u => u.Requestid == reqid);
+            if (reqstatuslog != null)
+            {
+                string adminname = _context.Admins.FirstOrDefault(u => u.Adminid == reqstatuslog.Adminid).Firstname;
+                viewNotesModel.adminname = adminname;
+                string phyname;
+                if (reqstatuslog.Transtophysicianid != null)
+                {
+                    phyname = _context.Physicians.FirstOrDefault(u => u.Physicianid == reqstatuslog.Transtophysicianid).Firstname;
+                    viewNotesModel.phyname = phyname;
+
+                }
+                viewNotesModel.requeststatuslogs = reqstatuslog;
+            }
+            if (requestnotes != null)
+            {
+                viewNotesModel.adminnotes = requestnotes.Adminnotes;
+            }
+            viewNotesModel.reqid = reqid;
+            return viewNotesModel;
+        }
+        public void AdminNotesSaveChanges(int reqid, string adminnotes,string adminname)
+        {
+            var reqnotes = _context.Requestnotes.FirstOrDefault(u => u.Requestid == reqid);
+            if (reqnotes == null)
+            {
+                Requestnote requestnote = new Requestnote
+                {
+                    Requestid = reqid,
+                    Adminnotes = adminnotes,
+                    Createdby = adminname,
+                    Createddate = DateTime.Now,
+                };
+                _context.Requestnotes.Add(requestnote);
+                _context.SaveChanges();
+            }
+            else
+            {
+                reqnotes.Adminnotes = adminnotes;
+                _context.Requestnotes.Update(reqnotes);
                 _context.SaveChanges();
             }
         }

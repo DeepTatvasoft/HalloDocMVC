@@ -2,7 +2,25 @@
     Layout = "";
 }
 @model Services.ViewModels.NewStateData
-<div class="container-fluid" style="width:90%">
+<style>
+    .accordion-button::after {
+        content: none;
+    }
+
+    .icn::before {
+        border: 2px solid #0dcaf0;
+        border-radius: 50%;
+        line-height: 1;
+        font-size: 13px;
+        padding: 3px;
+    }
+
+    .icns::before {
+        font-weight: 900 !important;
+    }
+</style>
+
+<div class="container-fluid" style="width:90%" id="alldata">
     <div class="d-flex flex-wrap justify-content-between">
         <h4>Patients (New)</h4>
         <div class="allbtn">
@@ -40,7 +58,7 @@
                     <option id="uae">Dubai</option>
                     <option id="ny">New York</option>
                 </datalist>
-                <input style="height : 38px; width : 233px; padding-left : 28px" class="region" autoComplete="on" list="suggestions" placeholder="All Region" />
+                <input class="region" autoComplete="on" list="suggestions" placeholder="All Region" />
                 <i class="bi bi-search searchicon2"></i>
                 <i class="fa-solid fa-chevron-down down"></i>
             </div>
@@ -132,15 +150,15 @@
                                         Actions
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item text-secondary"><i class="fa-regular fa-rectangle-list me-2"></i>Assign case</a></li>
-                                        <li><a class="dropdown-item text-secondary"><i class="fa-regular fa-circle-xmark me-2"></i>Cancel case</a></li>
-                                        <li><a class="dropdown-item text-secondary" asp-controller="Admin" asp-action="ViewCase" asp-route-id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
+                                        <li style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#exampleModal1"><a class="dropdown-item text-secondary dataforAssignModel" onclick="AssignModelName(this.name)" name="@obj.Requestid"><i class="fa-regular fa-rectangle-list me-2"></i>Assign case</a></li>
+                                        <li style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#CancelCaseBtn"><a class="dropdown-item text-secondary dataforCancelModel" onclick="CancelModelName(this.name)" name="@obj.Firstname , @obj.Lastname+@obj.Requestid"><i class="fa-regular fa-circle-xmark me-2"></i>Cancel case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item text-secondary viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
                                         <li>
-                                            <a class="dropdown-item text-secondary" href="#">
+                                            <a class="dropdown-item text-secondary viewnotes" name="@obj.Requestid">
                                                 <i class="fa-solid fa-book-journal-whills me-2"></i>View Notes
                                             </a>
                                         </li>
-                                        <li><a class="dropdown-item text-secondary" href="#"><i class="fa-solid fa-ban me-2"></i>Block Patients</a></li>
+                                        <li data-bs-toggle="modal" data-bs-target="#BlockCaseBtn"><a class="dropdown-item text-secondary dataforBlockModel" onclick="BlockModelName(this.name)" name="@obj.Firstname , @obj.Lastname+@obj.Requestid"><i class="fa-solid fa-ban me-2"></i>Block Patients</a></li>
                                     </ul>
                                 </div>
                             </td>
@@ -187,7 +205,7 @@
                                 <div class="col d-flex flex-column text-end mt-2 p-0">
                                     <div>
                                         <div>
-                                            <div class="ms-3 me-3" id="1">@type<span class="dot ms-2" style="Background-color : @color;"></span></div>
+                                            <div class="ms-3" id="1">@type<span class="dot ms-2" style="Background-color :@color;"></span></div>
                                         </div>
                                         <div class=" btn rounded-pill text-info border-info float-end p-1 mt-3" style="width:120px">
                                             Map Location
@@ -197,8 +215,8 @@
                             </button>
                             <hr class="m-0">
                         </h2>
-
                         <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                            <button type="button" class="btn btn-outline-light text-black float-end viewcase bg-white rounded-5 border border-black mt-1" id="@item.Requestid">View Case</button>
                             <div class="accordion-body d-flex flex-column gap-1">
                                 <div><i class="bi bi-calendar2-minus me-1 icn"></i>Date of birth: @reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</div>
                                 <div><i class="bi bi-envelope me-1 icn"></i>Email: @reqclient.Email</div>
@@ -209,10 +227,10 @@
                             </div>
                             <div class="row mx-3">
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
+                                    <a class="btn w-100  text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal1" style="background:#c40eff;">Assign Case</a>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
+                                    <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#CancelCaseBtn" onclick="CancelModelName(this.name)" name="@item.Firstname , @item.Lastname + @item.Requestid">Cancel Case</a>
                                 </div>
                                 <div class="col-6 mb-2">
                                     <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
@@ -232,11 +250,107 @@
 
     </div>
 </div>
+
+@*AssignCase Model*@
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                To assign this request, search and select another Physician.
+                <span id="reqidAssignModel" hidden></span>
+                <div class="form-floating">
+                    <select class="form-select physiciandata" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>Select Region</option>
+                        @if (Model.regions != null)
+                        {
+                            @foreach (var obj in Model.regions)
+                            {
+                                <option value="@obj.Regionid">@obj.Name</option>
+                            }
+                        }
+                    </select>
+                    <label for="floatingSelect" class="text-info">
+                        Narrow Search by Region
+                    </label>
+                </div>
+                <select class="form-select mt-4" id="physelect" aria-label="Floating label select example" style="height:58px">
+                </select>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control Assignnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white assigncase" data-bs-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*CancelCase Model*@
+<div class="modal fade" id="CancelCaseBtn" tabindex="-1" aria-labelledby="CancelCaseBtn" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="CancelCaseBtn">Confirm Cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span>Patient Name: <span id="cancleModelName" class="text-info"> </span></span>
+                <span id="reqidCancelModel" hidden></span>
+                <select class="form-select mt-4 reason" aria-label="Floating label select example" style="height:58px">
+                    <option selected>Reason For Cancellation</option>
+                    @foreach (var obj in Model.casetags)
+                    {
+                        <option value="@obj.Casetagid">@obj.Name</option>
+                    }
+                </select>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control Cancelnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Provide Addtional Notes</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white cancelcase" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*BlockCase Modal*@
+<div class="modal fade" id="BlockCaseBtn" tabindex="-1" aria-labelledby="BlockCaseBtn" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="BlockCaseBtn">Confirm Block</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span>Patient Name: <span id="BlockModelName" class="text-info"> </span></span>
+                <span id="reqidBlockModel" hidden></span>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control Blocknotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Provide Addtional Notes</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white blockcase" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-
-        $("#myInput").on("keyup", function () {
+        $("#myInput").on("input", function () {
             var value = $(this).val().toLowerCase();
             $("#myTable tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
@@ -247,9 +361,9 @@
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
             var target = $(this).attr('id');
-            console.log(target);
             var status;
             var requesttype;
+            console.log(target);
             switch (target) {
                 case '1':
                     status = '2';
@@ -268,7 +382,6 @@
                     requesttype = '3';
                     break;
                 default:
-
             }
 
             $.ajax({
@@ -284,11 +397,11 @@
             });
         });
         $('.region').on('change', function (e) {
-
             var target = $('.region').val();
-            console.log(target);
             $('.region').value = target;
-            $(".region").attr("placeholder", "variable")
+            $('.region').removeAttr('placeholder');
+            $(".region").attr("value", target);
+            console.log($(".region").attr("value"));
             switch (target) {
                 case 'United Kingdom':
                     status = '2';
@@ -310,6 +423,129 @@
                 success: function (response) {
                     $('#status-tabContent').html(response);
                     console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.viewcase').on('click', function (e) {
+            e.preventDefault();
+            //$('.dashboardtab').removeClass('active');
+            //$(this).addClass('active');
+            var id = $(this).attr('id');
+            console.log($('#ViewcaseRemove').attr('id'));
+            $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
+            //$('#myTab').remove();
+
+            $.ajax({
+                url: '/Admin/ViewCase',
+                data: { "id": id },
+                success: function (response) {
+                    $('#alldata').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.viewnotes').on('click', function (e) {
+            e.preventDefault();
+            //$('.dashboardtab').removeClass('active');
+            //$(this).addClass('active');
+            var reqid = $(this).attr('name');
+            //console.log(reqid);
+            console.log($('#ViewcaseRemove').attr('id'));
+            $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
+            //$('#myTab').remove();
+
+            $.ajax({
+                url: '/Admin/ViewNotes',
+                data: { "reqid": reqid },
+                success: function (response) {
+                    $('#alldata').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.physiciandata').on('change', function (e) {
+            var regionid = $(this).val();
+            console.log(regionid);
+
+            $.ajax({
+                url: '/admin/filterregion',
+                data: { "regionid": regionid },
+                success: function (response) {
+                    //console.log(response);
+                    var physelect = $('#physelect');
+                    //console.log(physelect);
+                    physelect.empty();
+                    physelect.append($('<option>', {
+                        value: "",
+                        text: "Select Physician"
+                    }))
+                    response.forEach(function (item) {
+                        //console.log(item);
+                        physelect.append(
+                            $('<option>', {
+                                value: item.physicianid,
+                                text: item.firstname
+                            }));
+                        console.log("fetch success");
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.cancelcase').on('click', function (e) {
+            var reqid = $('#reqidCancelModel').text();
+            var casetagid = $('.reason').val();
+            var cancelnotes = $('.Cancelnotes').val();
+            $.ajax({
+                url: '/admin/cancelcase',
+                data: { "reqid": reqid, "casetagid": casetagid, "cancelnotes": cancelnotes },
+                success: function (response) {
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.assigncase').on('click', function (e) {
+            var reqid = $('#reqidAssignModel').text();
+            var regid = $('.physiciandata').val();
+            var phyid = $('#physelect').val();
+            var Assignnotes = $('.Assignnotes').val();
+            console.log(reqid);
+            console.log(regid);
+            console.log(phyid);
+            $.ajax({
+                url: '/admin/assigncase',
+                data: { "reqid": reqid, "regid": regid, "phyid": phyid, "Assignnotes": Assignnotes },
+                success: function (response) {
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.blockcase').on('click', function (e) {
+            var reqid = $('#reqidBlockModel').text();
+            var Blocknotes = $('.Blocknotes').val();
+            $.ajax({
+                url: '/admin/blockcase',
+                data: { "reqid": reqid, "Blocknotes": Blocknotes },
+                success: function (response) {
+
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

@@ -154,11 +154,11 @@
                                         <li style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#CancelCaseBtn"><a class="dropdown-item text-secondary dataforCancelModel" onclick="CancelModelName(this.name)" name="@obj.Firstname , @obj.Lastname+@obj.Requestid"><i class="fa-regular fa-circle-xmark me-2"></i>Cancel case</a></li>
                                         <li style="cursor : pointer"><a class="dropdown-item text-secondary viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
                                         <li>
-                                            <a class="dropdown-item text-secondary viewnotes" href="#">
+                                            <a class="dropdown-item text-secondary viewnotes" name="@obj.Requestid">
                                                 <i class="fa-solid fa-book-journal-whills me-2"></i>View Notes
                                             </a>
                                         </li>
-                                        <li><a class="dropdown-item text-secondary" href="#"><i class="fa-solid fa-ban me-2"></i>Block Patients</a></li>
+                                        <li data-bs-toggle="modal" data-bs-target="#BlockCaseBtn"><a class="dropdown-item text-secondary dataforBlockModel" onclick="BlockModelName(this.name)" name="@obj.Firstname , @obj.Lastname+@obj.Requestid"><i class="fa-solid fa-ban me-2"></i>Block Patients</a></li>
                                     </ul>
                                 </div>
                             </td>
@@ -251,6 +251,7 @@
     </div>
 </div>
 
+@*AssignCase Model*@
 <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -291,7 +292,7 @@
     </div>
 </div>
 
-
+@*CancelCase Model*@
 <div class="modal fade" id="CancelCaseBtn" tabindex="-1" aria-labelledby="CancelCaseBtn" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -316,6 +317,30 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-info text-white cancelcase" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*BlockCase Modal*@
+<div class="modal fade" id="BlockCaseBtn" tabindex="-1" aria-labelledby="BlockCaseBtn" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="BlockCaseBtn">Confirm Block</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span>Patient Name: <span id="BlockModelName" class="text-info"> </span></span>
+                <span id="reqidBlockModel" hidden></span>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control Blocknotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Provide Addtional Notes</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white blockcase" data-bs-dismiss="modal">Confirm</button>
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -429,13 +454,15 @@
             e.preventDefault();
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
-            //var id = $(this).attr('id');
+            var reqid = $(this).attr('name');
+            //console.log(reqid);
             console.log($('#ViewcaseRemove').attr('id'));
             $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
             //$('#myTab').remove();
 
             $.ajax({
                 url: '/Admin/ViewNotes',
+                data: { "reqid": reqid },
                 success: function (response) {
                     $('#alldata').html(response);
                     console.log("Fetch success");
@@ -502,6 +529,21 @@
             $.ajax({
                 url: '/admin/assigncase',
                 data: { "reqid": reqid, "regid": regid, "phyid": phyid, "Assignnotes": Assignnotes },
+                success: function (response) {
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.blockcase').on('click', function (e) {
+            var reqid = $('#reqidBlockModel').text();
+            var Blocknotes = $('.Blocknotes').val();
+            $.ajax({
+                url: '/admin/blockcase',
+                data: { "reqid": reqid, "Blocknotes": Blocknotes },
                 success: function (response) {
 
                 },

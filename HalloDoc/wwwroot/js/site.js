@@ -113,3 +113,8 @@ function CancelModelName(clicked_name) {
 function AssignModelName(clicked_name) {
     document.getElementById('reqidAssignModel').innerHTML = clicked_name;
 }
+function BlockModelName(clicked_name) {
+    var arr = clicked_name.split("+");
+    document.getElementById('BlockModelName').innerHTML = arr[0];
+    document.getElementById('reqidBlockModel').innerHTML = arr[1];
+}

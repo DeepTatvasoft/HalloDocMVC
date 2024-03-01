@@ -26,4 +26,12 @@ namespace Services.ViewModels
         public string symptoms { get; set; }
         public List<Region> regions { get; set; }
     }
+    public class ViewNotesModel
+    {
+        public Requeststatuslog requeststatuslogs { get; set; }
+        public string adminname { get; set; }
+        public string phyname { get; set; }
+        public string adminnotes { get; set; }
+        public int reqid { get; set; }
+    }
 }
