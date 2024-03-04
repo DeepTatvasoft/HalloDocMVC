@@ -107,8 +107,8 @@ namespace HalloDoc.Controllers
             if (obj != null)
             {
                 TempData["success"] = "User LogIn Successfully";
-                HttpContext.Session.SetString("Username", obj.Username);
                 var user = homefunction.ValidateUser(aspNetUser).Item2;
+                HttpContext.Session.SetString("Username", obj.Username);
                 HttpContext.Session.SetInt32("Userid", user.Userid);
                 HttpContext.Session.SetInt32("AspUserid", (int)user.Aspnetuserid);
                 return RedirectToAction("PatientDashboard", "Dashboard");

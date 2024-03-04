@@ -2,8 +2,10 @@
 using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
+using Services.Implementation;
 using Services.ViewModels;
 using System.Drawing;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -14,10 +16,14 @@ namespace HalloDoc.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IAdminFunction adminFunction;
-        public AdminController(ApplicationDbContext context, IAdminFunction adminFunction)
+        private readonly IDashboard dashboard;
+
+        public AdminController(ApplicationDbContext context, IAdminFunction adminFunction, IDashboard dashboard)
         {
             _context = context;
             this.adminFunction = adminFunction;
+            this.dashboard = dashboard;
+
         }
         public IActionResult adminlogin()
         {
@@ -169,6 +175,34 @@ namespace HalloDoc.Controllers
             string adminname = HttpContext.Session.GetString("Adminname");
             adminFunction.AdminNotesSaveChanges(reqid, adminnotes, adminname);
             return PartialView("AdminLayout/_ViewNotes", adminFunction.ViewNotes(reqid));
+        }
+
+        public IActionResult AdminuploadDoc(int reqid)
+        {
+            AdminviewDoc adminviewDoc = new AdminviewDoc();
+            adminviewDoc.Username = _context.Requests.FirstOrDefault(u => u.Requestid == reqid).Firstname;
+            adminviewDoc.ConfirmationNum = _context.Requests.FirstOrDefault(u => u.Requestid == reqid).Confirmationnumber;
+            var reqfile = _context.Requestwisefiles.Where(u => u.Requestid == reqid).ToList();
+            adminviewDoc.reqfile = reqfile;
+            adminviewDoc.reqid = reqid;
+            return PartialView("AdminLayout/_ViewDocument",adminviewDoc);
+        }
+        [HttpPost]
+        public IActionResult DocUpload(List<IFormFile> myfile, string reqid)
+        {
+            //if (model.Upload != null)
+            //{
+            //    dashboard.AddPatientRequestWiseFile(model.Upload, model.reqid);
+            //}
+            //_context.SaveChanges();
+            //AdminviewDoc adminviewDoc = new AdminviewDoc();
+            //adminviewDoc.Username = _context.Requests.FirstOrDefault(u => u.Requestid == model.reqid).Firstname;
+            //adminviewDoc.ConfirmationNum = _context.Requests.FirstOrDefault(u => u.Requestid == model.reqid).Confirmationnumber;
+            //var reqfile = _context.Requestwisefiles.Where(u => u.Requestid == model.reqid).ToList();
+            //adminviewDoc.reqfile = reqfile;
+            //adminviewDoc.reqid = model.reqid;
+            //return PartialView("AdminLayout/_ViewDocument", adminviewDoc);
+            return NoContent();
         }
     }
 }

@@ -2,29 +2,57 @@
     Layout = "";
 }
 @model Services.ViewModels.NewStateData
-<div class="container-fluid" style="width:90%">
+<style>
+    .accordion-button::after {
+        content: none;
+    }
+
+    .icn::before {
+        border: 2px solid #0dcaf0;
+        border-radius: 50%;
+        line-height: 1;
+        font-size: 13px;
+        padding: 3px;
+    }
+
+    .icns::before {
+        font-weight: 900 !important;
+    }
+</style>
+
+<div class="container-fluid" id="alldata">
     <div class="d-flex flex-wrap justify-content-between">
-        <h4>Patients (New)</h4>
-        <div class="allbtn">
-            <button class="btn btn-info text-white ms-1">
+        <h4 class="mt-2">Patients (New)</h4>
+        <div class="allbtn d-flex">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="bi bi-send me-1"></i>
-                Send Link
+                <span class="d-none d-md-block">
+                    Send Link
+                </span>
             </button>
-            <button class="btn btn-info text-white ms-1">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="bi bi-journal-text me-1"></i>
-                Create Request
+                <span class="d-none d-md-block">
+                    Create Request
+                </span>
             </button>
-            <button class="btn btn-info text-white ms-1">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="fa-solid fa-file-export me-1"></i>
-                Export
+                <span class="d-none d-md-block">
+                    Export
+                </span>
             </button>
-            <button class="btn btn-info text-white ms-1">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="fa-solid fa-file-zipper me-1"></i>
-                Export All
+                <span class="d-none d-md-block">
+                    Export All
+                </span>
             </button>
-            <button class="btn btn-info text-white ms-1">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="fa-solid fa-headset me-1"></i>
-                Request DIY Support
+                <span class="d-none d-md-block">
+                    Request DIY Support
+                </span>
             </button>
         </div>
     </div>
@@ -40,13 +68,13 @@
                     <option id="uae">Dubai</option>
                     <option id="ny">New York</option>
                 </datalist>
-                <input style="height : 38px; width : 233px; padding-left : 28px" class="region" autoComplete="on" list="suggestions" placeholder="All Region" />
+                <input class="region" autoComplete="on" list="suggestions" placeholder="All Region" />
                 <i class="bi bi-search searchicon2"></i>
                 <i class="fa-solid fa-chevron-down down"></i>
             </div>
         </div>
         <div class="d-flex flex-wrap mt-3">
-            <div type="radio" class="border border-secondary-subtle all ms-3 mb-3 me-3 requestby" id="requestbyAll" style="cursor : pointer">
+            <div type="radio" class="border border-secondary-subtle all ms-3 mb-3 me-3 requestby d-none d-md-inline-block" id="requestbyAll" style="cursor : pointer">
                 All
             </div>
             <div class="d-flex flex-wrap">
@@ -64,13 +92,13 @@
             <table class="table d-none d-md-table" id="maintable">
                 <thead>
                     <tr>
-                        <th scope="col" class="d-none"></th>
                         <th scope="col">Name</th>
                         <th scope="col"> </th>
                         <th scope="col">Date Of Birth</th>
-                        <th scope="col">Requestor</th>
-                        <th scope="col">Requested Date</th>
-                        <th scope="col">Phone</th>
+                        <th scope="col">Region</th>
+                        <th scope="col">Physician Name</th>
+                        <th scope="col">Date Of Service</th>
+
                         <th scope="col">Address</th>
                         <th scope="col">Notes</th>
                         <th scope="col">Chat With</th>
@@ -81,6 +109,7 @@
                     @foreach (var obj in Model.req)
                     {
                         var reqclient = obj.Requestclients.ElementAt(0);
+                        var reqstatuslog = obj.Requeststatuslogs.ElementAt(0);
                         var color = "mediumpurple";
                         var type = "";
                         @if (obj.Requesttypeid == 1)
@@ -104,43 +133,66 @@
                             type = "Concierge";
                         }
                         <tr style="--bs-table-bg:@color">
-                            <td scope="row" class="d-none">@obj.Requesttypeid</td>
                             <td scope="row">@obj.Firstname, @obj.Lastname</td>
                             <td scope="row">
                                 <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
                             </td>
-                            <td>@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
-                            <td>@reqclient.Firstname , @reqclient.Lastname</td>
-                            <td>@obj.Createddate</td>
-                            <td>
-                                <div class="phone">@obj.Phonenumber</div>
-                                (Patient)
-                                @if (type != "Patient")
+                            <td scope="row">@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
+                            <td scope="row">@Model.regions.FirstOrDefault(u=>u.Regionid == reqclient.Regionid).Name</td>
+                            <td scope="row">
+                                @if (@reqstatuslog.Transtophysician == null)
                                 {
-                                    <div class="phone">@reqclient.Phonenumber</div>
-                                    <span>(@type)</span>
+                                    <span>-</span>
+                                }
+                                else
+                                {
+                                    @reqstatuslog.Transtophysician.Firstname
                                 }
                             </td>
-                            <td>@reqclient.Address</td>
-                            <td>@reqclient.Notes</td>
-                            <td>
+                            <td scope="row">@obj.Modifieddate</td>
+                            <td scope="row">@reqclient.Address</td>
+                            <td scope="row">@reqstatuslog.Notes</td>
+                            <td scope="row">
                                 <button class="btn btn-outline-light"><i class="bi bi-person me-1"></i>Provider</button>
                             </td>
-                            <td>
+                            <td scope="row">
                                 <div class="dropdown ms-2">
                                     <button class="btn btn-outline-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Actions
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item text-secondary"><i class="fa-regular fa-rectangle-list me-2"></i>Assign case</a></li>
-                                        <li><a class="dropdown-item text-secondary"><i class="fa-regular fa-circle-xmark me-2"></i>Cancel case</a></li>
-                                        <li><a class="dropdown-item text-secondary" asp-controller="Admin" asp-action="ViewCase" asp-route-id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item text-secondary viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item text-secondary"><i class="fa-regular fa-file me-2"></i>View Uploads</a></li>
                                         <li>
-                                            <a class="dropdown-item text-secondary" href="#">
+                                            <a class="dropdown-item text-secondary viewnotes" name="@obj.Requestid">
                                                 <i class="fa-solid fa-book-journal-whills me-2"></i>View Notes
                                             </a>
                                         </li>
-                                        <li><a class="dropdown-item text-secondary" href="#"><i class="fa-solid fa-ban me-2"></i>Block Patients</a></li>
+                                        <li>
+                                            <a class="dropdown-item text-secondary" href="#">
+                                                <i class="fa-solid fa-cart-shopping me-2"></i>Orders
+                                            </a>
+                                        </li>
+                                        <li style="cursor : pointer">
+                                            <a class="dropdown-item text-secondary">
+                                                <i class="fa-regular fa-circle-xmark me-2"></i>Close case
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-secondary" href="#">
+                                                <i class="fa-solid fa-notes-medical me-2"></i>Doctor's Note
+                                            </a>
+                                        </li>
+                                        <li style="cursor : pointer">
+                                            <a class="dropdown-item text-secondary">
+                                                <i class="fa-regular fa-circle-xmark me-2"></i>Clear case
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-secondary" href="#">
+                                                <i class="fa-solid fa-file me-2"></i>Encounter
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>
@@ -154,6 +206,7 @@
                     @foreach (var item in Model.req)
                     {
                         var reqclient = item.Requestclients.ElementAt(0);
+                        var reqstatuslog = item.Requeststatuslogs.ElementAt(0);
                         var type = "";
                         var color = "mediumpurple";
                         @if (item.Requesttypeid == 1)
@@ -187,7 +240,7 @@
                                 <div class="col d-flex flex-column text-end mt-2 p-0">
                                     <div>
                                         <div>
-                                            <div class="ms-3 me-3" id="1">@type<span class="dot ms-2" style="Background-color : @color;"></span></div>
+                                            <div class="ms-3" id="1">@type<span class="dot ms-2" style="Background-color :@color;"></span></div>
                                         </div>
                                         <div class=" btn rounded-pill text-info border-info float-end p-1 mt-3" style="width:120px">
                                             Map Location
@@ -197,32 +250,57 @@
                             </button>
                             <hr class="m-0">
                         </h2>
-
                         <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
-                            <div class="accordion-body d-flex flex-column gap-1">
+                            <button type="button" class="btn btn-outline-light text-black float-end viewcase bg-white rounded-5 border border-black mt-1" id="@item.Requestid">View Case</button>
+                            <div class="accordion-body d-flex flex-column gap-1 w-100">
                                 <div><i class="bi bi-calendar2-minus me-1 icn"></i>Date of birth: @reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</div>
                                 <div><i class="bi bi-envelope me-1 icn"></i>Email: @reqclient.Email</div>
                                 <div>
-                                    <i class="bi bi-telephone me-1 icn"></i>Patient: @item.Phonenumber
+                                    <i class="fa-solid fa-arrow-right-arrow-left icn me-1"></i>Transfer Notes: @reqstatuslog.Notes
                                 </div>
-                                <div><i class="bi bi-person me-1 icn"></i>Requestor: @item.Firstname, @item.Lastname</div>
+                                <div>
+                                    <i class="fa-regular fa-calendar-days icn me-1"></i>Date Of Services: @item.Modifieddate
+                                </div>
+                                <div>
+                                    <i class="fa-solid fa-user-doctor me-1 icn"></i>Physician: 
+                                    @if(@reqstatuslog.Transtophysician == null)
+                                    {
+                                        <span>-</span>
+                                    }
+                                    else
+                                    {
+                                        @reqstatuslog.Transtophysician.Firstname
+                                    }
+                                </div>
+                                <div><i class="fa-solid fa-globe me-1 icn"></i>Region: @Model.regions.FirstOrDefault(u=>u.Regionid == reqclient.Regionid).Name</div>
                             </div>
                             <div class="row mx-3">
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
+                                    <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm" style="font-size:13px">Clear Case</a>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
+                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid" style="background-color:green;font-size:13px">View Notes</a>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
+                                    <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm" style="font-size:13px">Doctors Note</a>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100  bg-danger text-white rounded-pill p-1 btn-sm">Block Patient</a>
+                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">View Uploads</a>
                                 </div>
-                                <div class="col-6">
-                                    <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
+                                <div class="col-6 mb-2">
+                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Encounter</a>
                                 </div>
+                                <div class="col-6 mb-2">
+                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:orangered;font-size:13px">Clear Case</a>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
+                                </div>
+                            </div>
+                            <div class="mt-2 me-sm-4 d-flex justify-content-end align-items-center">
+                                <span class="me-2">Chat With:</span>
+                                <button class="btn btn-outline-info btn-sm me-2"><i class="fa-solid fa-user-injured me-1"></i>Patient</button>
+                                <button class="btn btn-outline-info btn-sm"><i class="bi bi-person me-1"></i>Provider</button>
                             </div>
                         </div>
                     }
@@ -232,11 +310,107 @@
 
     </div>
 </div>
+
+@*AssignCase Model*@
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                To assign this request, search and select another Physician.
+                <span id="reqidAssignModel" hidden></span>
+                <div class="form-floating">
+                    <select class="form-select physiciandata" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected>Select Region</option>
+                        @if (Model.regions != null)
+                        {
+                            @foreach (var obj in Model.regions)
+                            {
+                                <option value="@obj.Regionid">@obj.Name</option>
+                            }
+                        }
+                    </select>
+                    <label for="floatingSelect" class="text-info">
+                        Narrow Search by Region
+                    </label>
+                </div>
+                <select class="form-select mt-4" id="physelect" aria-label="Floating label select example" style="height:58px">
+                </select>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control Assignnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white assigncase" data-bs-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*CancelCase Model*@
+<div class="modal fade" id="CancelCaseBtn" tabindex="-1" aria-labelledby="CancelCaseBtn" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="CancelCaseBtn">Confirm Cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span>Patient Name: <span id="cancleModelName" class="text-info"> </span></span>
+                <span id="reqidCancelModel" hidden></span>
+                <select class="form-select mt-4 reason" aria-label="Floating label select example" style="height:58px">
+                    <option selected>Reason For Cancellation</option>
+                    @foreach (var obj in Model.casetags)
+                    {
+                        <option value="@obj.Casetagid">@obj.Name</option>
+                    }
+                </select>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control Cancelnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Provide Addtional Notes</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white cancelcase" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*BlockCase Modal*@
+<div class="modal fade" id="BlockCaseBtn" tabindex="-1" aria-labelledby="BlockCaseBtn" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="BlockCaseBtn">Confirm Block</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span>Patient Name: <span id="BlockModelName" class="text-info"> </span></span>
+                <span id="reqidBlockModel" hidden></span>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control Blocknotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Provide Addtional Notes</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white blockcase" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-
-        $("#myInput").on("keyup", function () {
+        $("#myInput").on("input", function () {
             var value = $(this).val().toLowerCase();
             $("#myTable tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
@@ -309,6 +483,49 @@
                 data: { "status": status, "regionid": regionid },
                 success: function (response) {
                     $('#status-tabContent').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.viewcase').on('click', function (e) {
+            e.preventDefault();
+            //$('.dashboardtab').removeClass('active');
+            //$(this).addClass('active');
+            var id = $(this).attr('id');
+            console.log($('#ViewcaseRemove').attr('id'));
+            $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
+            //$('#myTab').remove();
+
+            $.ajax({
+                url: '/Admin/ViewCase',
+                data: { "id": id },
+                success: function (response) {
+                    $('#alldata').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.viewnotes').on('click', function (e) {
+            e.preventDefault();
+            //$('.dashboardtab').removeClass('active');
+            //$(this).addClass('active');
+            var reqid = $(this).attr('name');
+            //console.log(reqid);
+            console.log($('#ViewcaseRemove').attr('id'));
+            $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
+            //$('#myTab').remove();
+
+            $.ajax({
+                url: '/Admin/ViewNotes',
+                data: { "reqid": reqid },
+                success: function (response) {
+                    $('#alldata').html(response);
                     console.log("Fetch success");
                 },
                 error: function (xhr, status, error) {

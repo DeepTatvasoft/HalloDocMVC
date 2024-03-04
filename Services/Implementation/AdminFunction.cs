@@ -46,7 +46,7 @@ namespace Services.Implementation
         public NewStateData AdminDashboarddata(int status1, int status2, int status3)
         {
             NewStateData data = new NewStateData();
-            List<Request> req = _context.Requests.Include(r => r.Requestclients).Include(m=>m.Requeststatuslogs).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
+            List<Request> req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
             data.req = req;
             data.newcount = getNewRequestCount();
             data.activecount = getActiveRequestCount();
@@ -57,7 +57,7 @@ namespace Services.Implementation
             var regions = _context.Regions.ToList();
             data.regions = regions;
             var casetag = _context.Casetags.ToList();
-            List<Requeststatuslog> requeststatuslogs = _context.Requeststatuslogs.Include(r=>r.Transtophysician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
+            List<Requeststatuslog> requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
             data.requeststatuslogs = requeststatuslogs;
             data.casetags = casetag;
             return data;
@@ -66,23 +66,29 @@ namespace Services.Implementation
         {
             NewStateData newStateData = new NewStateData();
             List<Request> req;
+            List<Requeststatuslog> requeststatuslogs;
             if (status == "4")
             {
-                req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status == 4 || u.Status == 5).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status == 4 || u.Status == 5).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 4 || u.Status == 5).ToList();
             }
             else if (status == "3")
             {
-                req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 3 || u.Status == 7 || u.Status == 8)).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 3 || u.Status == 7 || u.Status == 8)).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
             }
             else
             {
-                req = _context.Requests.Include(r => r.Requestclients).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
             }
             newStateData.req = req;
+            newStateData.requeststatuslogs = requeststatuslogs;
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
             newStateData.casetags = casetag;
+
             return newStateData;
         }
         public NewStateData1 ViewCase(int id)
@@ -109,6 +115,7 @@ namespace Services.Implementation
         {
             NewStateData newStateData = new NewStateData();
             var reqclient = _context.Requestclients.Include(m => m.Request).Where(u => u.Regionid == regionid).ToList();
+            List<Requeststatuslog> requeststatuslogs;
             newStateData.requestclients = reqclient;
             List<Request> req = new List<Request>();
             foreach (var obj in reqclient)
@@ -118,20 +125,24 @@ namespace Services.Implementation
             if (status == "4")
             {
                 req = req.Where(u => u.Status == 4 || u.Status == 5).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 4 || u.Status == 5).ToList();
             }
             else if (status == "3")
             {
                 req = req.Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
             }
             else
             {
                 req = req.Where(u => u.Status.ToString() == status).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
             }
             newStateData.req = req;
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
             newStateData.casetags = casetag;
+            newStateData.requeststatuslogs = requeststatuslogs;
             return newStateData;
         }
         public int getToCloseRequestCount()
@@ -228,7 +239,7 @@ namespace Services.Implementation
                 Email = req.Email,
                 Reason = Blocknotes,
                 Requestid = reqid.ToString(),
-                Createddate= DateTime.Now,
+                Createddate = DateTime.Now,
             };
             _context.Blockrequests.Add(blockrequest);
             _context.SaveChanges();
@@ -258,7 +269,7 @@ namespace Services.Implementation
             viewNotesModel.reqid = reqid;
             return viewNotesModel;
         }
-        public void AdminNotesSaveChanges(int reqid, string adminnotes,string adminname)
+        public void AdminNotesSaveChanges(int reqid, string adminnotes, string adminname)
         {
             var reqnotes = _context.Requestnotes.FirstOrDefault(u => u.Requestid == reqid);
             if (reqnotes == null)

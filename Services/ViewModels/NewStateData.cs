@@ -1,4 +1,5 @@
 ﻿using Data.DataModels;
+using Microsoft.AspNetCore.Http;
 
 namespace Services.ViewModels
 {
@@ -16,7 +17,6 @@ namespace Services.ViewModels
         public List<Physician> physicians { get; set; }
         public List<Casetag> casetags { get; set; }
         public List<Requeststatuslog> requeststatuslogs { get; set; }
-
     }
     public class NewStateData1
     {
@@ -35,6 +35,14 @@ namespace Services.ViewModels
         public string adminname { get; set; }
         public string phyname { get; set; }
         public string adminnotes { get; set; }
+        public int reqid { get; set; }
+    }
+    public class AdminviewDoc
+    {
+        public string Username { get; set; }
+        public List<IFormFile> Upload { get; set; }
+        public List<Requestwisefile> reqfile { get; set; }
+        public string ConfirmationNum { get; set; }
         public int reqid { get; set; }
     }
 }

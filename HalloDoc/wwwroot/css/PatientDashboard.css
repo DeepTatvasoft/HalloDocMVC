@@ -52,8 +52,3 @@
     }
 }
 
-@media only screen and (max-width:521px) {
-    .uppernav {
-        justify-content: center !important;
-    }
-}

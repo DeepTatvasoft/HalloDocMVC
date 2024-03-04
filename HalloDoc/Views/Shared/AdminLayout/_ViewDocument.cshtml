@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "View Document";
+    Layout = "";
+}
+@model Services.ViewModels.AdminviewDoc
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+<Partial name="_Notification" />
+<script src="~/js/site.js"></script>
+<div class="container-fluid mt-5 dashboard" style="width: 90%;">
+    <div class="d-flex justify-content-between">
+        <h4>Documents</h4>
+        <div class="backbtn">
+            <a asp-controller="Admin" asp-action="AdminDashboard">
+                <button type="button" class="btn btn-outline-info text-center"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
+            </a>
+        </div>
+    </div>
+    <div class="documenthead mt-4 bg-white p-3 rounded">
+        <span class="text-body-secondary">Patient Name</span>
+        <h5 class="text-info">@Model.Username (@Model.ConfirmationNum)</h5>
+
+        <span class="text-body-secondary">Check here for any files that you and doctors of your subsequents requestors have attached for you to review</span>
+        <form enctype="multipart/form-data">
+            <input type="hidden" name="@Model.reqid" id="docid">
+            <div class="row d-flex">
+                <div class="col-12">
+                    <div class="form-group rounded d-flex align-items-center justify-content-between uploadbtndiv bg-body-secondary">
+                        <div class="px-3 table-responsive">
+                            <input type="file" id="actual-btn" asp-for="Upload" multiple hidden />
+                            <label role="button" for="actual-btn" id="file-chosen" class="choosenfile text-dark text-nowrap">No item selected</label>
+                        </div>
+                        <button type="button" class="uploadbtn btn btn-info d-flex ms-1 border-0">
+                            <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div>Upload</div></label>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <form method="post" asp-controller="Dashboard" asp-action="DownloadFile">
+            <div class="d-flex justify-content-between mt-3">
+                <h5>Documents</h5>
+                <button type="submit" class="btn btn-outline-info text-center">Download All</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table mt-2" id="dtBasicExample">
+                    <thead>
+                        <tr>
+                            <th class="bg-body-secondary" scope="col"><input id="chkbox" type="checkbox"></th>
+                            <th class="bg-body-secondary" scope="col">Documents</th>
+                            <th class="bg-body-secondary" scope="col">Upload Date</th>
+                            <th class="bg-body-secondary" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var obj in Model.reqfile)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="childChkbox" id="@obj.Requestwisefileid" name="checklist" value="@obj.Requestwisefileid">
+                                </td>
+                                <td>
+                                    @{
+                                        var file = obj.Filename.Split("document\\");
+                                    }
+                                    @file[1]
+                                </td>
+                                <td>
+                                    @obj.Createddate
+                                </td>
+                                <td>
+                                    <a asp-controller="Dashboard" asp-action="SingleDownload" asp-route-id="@obj.Requestwisefileid">
+                                        <div class="btn btn-outline-info">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                        </div>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    // jQuery script to handle leader checkbox click event
+    $(document).ready(function () {
+        $('#chkbox').click(function () {
+            $('.childChkbox').prop('checked', $(this).prop('checked'));
+        });
+
+        // Handle individual checkbox clicks to update the leader checkbox state
+        $('.childChkbox').click(function () {
+            $('#chkbox').prop('checked', $('.childChkbox:checked').length === $('.childChkbox').length);
+        });
+        $('.uploadbtn').on('click',function(){
+            var myfile = $('#actual-btn')[0].files;
+            var formData = new FormData();
+            var reqid = $('#docid').attr('name');
+            console.log(myfile);
+            console.log(reqid);
+            if (myfile.length > 0) {
+                for (var i = 0; i < files.length; i++) {
+                    formData.append('myfile', myfile[i]); 
+                }
+            }
+            console.log(formData);
+
+            $.ajax({
+                url: '/Admin/DocUpload', // Update the controller action URL
+                type: "POST",
+                data: { "myfile": formData, "reqid": reqid },
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    
+                },
+            });
+        });
+    });
+</script>

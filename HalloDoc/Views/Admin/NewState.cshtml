@@ -20,29 +20,39 @@
     }
 </style>
 
-<div class="container-fluid" style="width:90%" id="alldata">
+<div class="container-fluid" id="alldata">
     <div class="d-flex flex-wrap justify-content-between">
-        <h4>Patients (New)</h4>
-        <div class="allbtn">
-            <button class="btn btn-info text-white ms-1">
+        <h4 class="mt-2">Patients (New)</h4>
+        <div class="allbtn d-flex">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="bi bi-send me-1"></i>
-                Send Link
+                <span class="d-none d-md-block">
+                    Send Link
+                </span>
             </button>
-            <button class="btn btn-info text-white ms-1">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="bi bi-journal-text me-1"></i>
-                Create Request
+                <span class="d-none d-md-block">
+                    Create Request
+                </span>
             </button>
-            <button class="btn btn-info text-white ms-1">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="fa-solid fa-file-export me-1"></i>
-                Export
+                <span class="d-none d-md-block">
+                    Export
+                </span>
             </button>
-            <button class="btn btn-info text-white ms-1">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="fa-solid fa-file-zipper me-1"></i>
-                Export All
+                <span class="d-none d-md-block">
+                    Export All
+                </span>
             </button>
-            <button class="btn btn-info text-white ms-1">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="fa-solid fa-headset me-1"></i>
-                Request DIY Support
+                <span class="d-none d-md-block">
+                    Request DIY Support
+                </span>
             </button>
         </div>
     </div>
@@ -64,7 +74,7 @@
             </div>
         </div>
         <div class="d-flex flex-wrap mt-3">
-            <div type="radio" class="border border-secondary-subtle all ms-3 mb-3 me-3 requestby" id="requestbyAll" style="cursor : pointer">
+            <div type="radio" class="border border-secondary-subtle all ms-3 mb-3 me-3 requestby d-none d-md-inline-block" id="requestbyAll" style="cursor : pointer">
                 All
             </div>
             <div class="d-flex flex-wrap">
