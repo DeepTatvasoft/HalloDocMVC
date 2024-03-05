@@ -7,7 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Implementation;
 using Services.ViewModels;
+using System.Collections;
 using System.Drawing;
+using System.Net.Mail;
+using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc.Controllers
@@ -179,30 +182,88 @@ namespace HalloDoc.Controllers
 
         public IActionResult AdminuploadDoc(int reqid)
         {
-            AdminviewDoc adminviewDoc = new AdminviewDoc();
-            adminviewDoc.Username = _context.Requests.FirstOrDefault(u => u.Requestid == reqid).Firstname;
-            adminviewDoc.ConfirmationNum = _context.Requests.FirstOrDefault(u => u.Requestid == reqid).Confirmationnumber;
-            var reqfile = _context.Requestwisefiles.Where(u => u.Requestid == reqid).ToList();
-            adminviewDoc.reqfile = reqfile;
-            adminviewDoc.reqid = reqid;
-            return PartialView("AdminLayout/_ViewDocument",adminviewDoc);
+            return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
         }
         [HttpPost]
-        public IActionResult DocUpload(List<IFormFile> myfile, string reqid)
+        public IActionResult DocUpload(List<IFormFile> myfile, int reqid)
         {
-            //if (model.Upload != null)
-            //{
-            //    dashboard.AddPatientRequestWiseFile(model.Upload, model.reqid);
-            //}
-            //_context.SaveChanges();
-            //AdminviewDoc adminviewDoc = new AdminviewDoc();
-            //adminviewDoc.Username = _context.Requests.FirstOrDefault(u => u.Requestid == model.reqid).Firstname;
-            //adminviewDoc.ConfirmationNum = _context.Requests.FirstOrDefault(u => u.Requestid == model.reqid).Confirmationnumber;
-            //var reqfile = _context.Requestwisefiles.Where(u => u.Requestid == model.reqid).ToList();
-            //adminviewDoc.reqfile = reqfile;
-            //adminviewDoc.reqid = model.reqid;
-            //return PartialView("AdminLayout/_ViewDocument", adminviewDoc);
-            return NoContent();
+            if (myfile.Count() != 0)
+            {
+                dashboard.AddPatientRequestWiseFile(myfile, reqid);
+            }
+            _context.SaveChanges();
+            return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
         }
+
+        public IActionResult SingleDelete(int reqfileid)
+        {
+            int reqid = adminFunction.SingleDelete(reqfileid);
+            return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
+        }
+
+        public IActionResult DeleteAll(List<int> reqwiseid, int reqid)
+        {
+            foreach (var obj in reqwiseid)
+            {
+                adminFunction.SingleDelete(obj);
+            }
+            return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
+        }
+
+        public IActionResult SendMail(List<int> reqwiseid, int reqid)
+        {
+
+            List<string> filenames = new List<string>();
+            foreach (var item in reqwiseid)
+            {
+                var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == item).Filename;
+                filenames.Add(file);
+            }
+
+            Sendemail("yashb.patel@etatvasoft.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
+            return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
+
+        }
+        public async Task Sendemail(string email, string subject, string message, List<string> attachmentPaths)
+        {
+            try
+            {
+                var mail = "tatva.dotnet.deeppatel@outlook.com";
+                var password = "Deep2292002";
+
+                var client = new SmtpClient("smtp.office365.com", 587)
+                {
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential(mail, password)
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(mail),
+                    Subject = subject,
+                    Body = message,
+                    IsBodyHtml = true // Set to true if your message contains HTML
+                };
+
+                mailMessage.To.Add(email);
+
+                foreach (var attachmentPath in attachmentPaths)
+                {
+                    if (!string.IsNullOrEmpty(attachmentPath))
+                    {
+                        var attachment = new Attachment(attachmentPath);
+                        mailMessage.Attachments.Add(attachment);
+                    }
+                }
+
+                await client.SendMailAsync(mailMessage);
+                Console.WriteLine("Email sent successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending email: {ex.Message}");
+            }
+        }
+
     }
 }

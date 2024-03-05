@@ -39,7 +39,12 @@
         <form method="post" asp-controller="Dashboard" asp-action="DownloadFile">
             <div class="d-flex justify-content-between mt-3">
                 <h5>Documents</h5>
-                <button type="submit" class="btn btn-outline-info text-center">Download All</button>
+                <div>
+                    <button type="submit" class="btn btn-outline-info text-center">Download All</button>
+                    <button type="button" class="btn btn-outline-info text-center" id="DeleteAll">Delete All</button>
+                    <button type="button" class="btn btn-outline-info text-center" id="SendMail">Send Mail</button>
+
+                </div>
             </div>
             <div class="table-responsive">
                 <table class="table mt-2" id="dtBasicExample">
@@ -68,11 +73,16 @@
                                     @obj.Createddate
                                 </td>
                                 <td>
-                                    <a asp-controller="Dashboard" asp-action="SingleDownload" asp-route-id="@obj.Requestwisefileid">
-                                        <div class="btn btn-outline-info">
+                                    <div class="btn btn-outline-info">
+                                        <a asp-controller="Dashboard" asp-action="SingleDownload" asp-route-id="@obj.Requestwisefileid">
                                             <i class="bi bi-cloud-arrow-up"></i>
-                                        </div>
-                                    </a>
+                                        </a>
+                                    </div>
+                                    <div class="btn btn-outline-info SingleDelete" name="@obj.Requestwisefileid">
+                                        <a>
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -99,29 +109,90 @@
         $('.childChkbox').click(function () {
             $('#chkbox').prop('checked', $('.childChkbox:checked').length === $('.childChkbox').length);
         });
-        $('.uploadbtn').on('click',function(){
+        $('.uploadbtn').on('click', function () {
             var myfile = $('#actual-btn')[0].files;
             var formData = new FormData();
             var reqid = $('#docid').attr('name');
             console.log(myfile);
-            console.log(reqid);
             if (myfile.length > 0) {
                 for (var i = 0; i < files.length; i++) {
-                    formData.append('myfile', myfile[i]); 
+                    formData.append('myfile', myfile[i]);
                 }
             }
-            console.log(formData);
+            formData.append('reqid', reqid);
+            //console.log(reqid);
+            //console.log(formData);
 
             $.ajax({
-                url: '/Admin/DocUpload', // Update the controller action URL
+                url: '/Admin/DocUpload',
                 type: "POST",
-                data: { "myfile": formData, "reqid": reqid },
+                data: formData,
                 contentType: false,
                 processData: false,
-                success: function (data) {
-                    
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
                 },
             });
         });
+        $('.SingleDelete').on('click', function () {
+            var reqfileid = $(this).attr('name');
+
+            $.ajax({
+                url: '/Admin/SingleDelete',
+                data: { 'reqfileid': reqfileid },
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                },
+            });
+        });
+        $('#DeleteAll').on('click', function () {
+            var formData = new FormData();
+
+            $('input[name="checklist"]:checked').each(function () {
+                formData.append('reqwiseid', $(this).val());
+            });
+            var reqid = $('#docid').attr('name');
+            formData.append('reqid', reqid);
+            console.log(selectedCheckboxes);
+            console.log(selectedCheckboxes);
+
+            $.ajax({
+                url: '/Admin/DeleteAll',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('#SendMail').on('click',function(){
+            var formData = new FormData();
+
+            $('input[name="checklist"]:checked').each(function () {
+                formData.append('reqwiseid', $(this).val());
+            });
+            var reqid = $('#docid').attr('name');
+            formData.append('reqid', reqid);
+
+            $.ajax({
+                url: '/Admin/SendMail',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
     });
 </script>

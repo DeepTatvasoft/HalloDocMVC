@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -290,6 +291,27 @@ namespace Services.Implementation
                 _context.Requestnotes.Update(reqnotes);
                 _context.SaveChanges();
             }
+        }
+
+        public AdminviewDoc AdminuploadDoc(int reqid)
+        {
+            AdminviewDoc adminviewDoc = new AdminviewDoc();
+            adminviewDoc.Username = _context.Requests.FirstOrDefault(u => u.Requestid == reqid).Firstname;
+            adminviewDoc.ConfirmationNum = _context.Requests.FirstOrDefault(u => u.Requestid == reqid).Confirmationnumber;
+            var reqfile = _context.Requestwisefiles.Where(u => u.Requestid == reqid && u.Isdeleted != new BitArray(new[] { true })).ToList();
+            adminviewDoc.reqfile = reqfile;
+            adminviewDoc.reqid = reqid;
+            return adminviewDoc;
+        }
+
+        public int SingleDelete(int reqfileid)
+        {
+            var requestwisefile = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == reqfileid);
+            int reqid = requestwisefile.Requestid;
+            requestwisefile.Isdeleted = new BitArray(new[] { true });
+            _context.Requestwisefiles.Update(requestwisefile);
+            _context.SaveChanges();
+            return reqid;
         }
     }
 }

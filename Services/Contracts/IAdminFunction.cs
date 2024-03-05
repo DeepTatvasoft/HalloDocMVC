@@ -23,5 +23,7 @@ namespace Services.Contracts
         void blockcase(int reqid, string Blocknotes);
         ViewNotesModel ViewNotes(int reqid);
         void AdminNotesSaveChanges(int reqid, string adminnotes, string adminname);
+        AdminviewDoc AdminuploadDoc(int reqid);
+        int SingleDelete(int reqfileid);
     }
 }
