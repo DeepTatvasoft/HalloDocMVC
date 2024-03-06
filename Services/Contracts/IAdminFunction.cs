@@ -25,5 +25,6 @@ namespace Services.Contracts
         void AdminNotesSaveChanges(int reqid, string adminnotes, string adminname);
         AdminviewDoc AdminuploadDoc(int reqid);
         int SingleDelete(int reqfileid);
+        List<string> SendMail(List<int> reqwiseid, int reqid);
     }
 }

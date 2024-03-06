@@ -12,6 +12,8 @@ using System.Drawing;
 using System.Net.Mail;
 using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Authorization = Services.Implementation.Authorization;
+using DataAccess.ServiceRepository.IServiceRepository;
 
 namespace HalloDoc.Controllers
 {
@@ -20,13 +22,13 @@ namespace HalloDoc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IAdminFunction adminFunction;
         private readonly IDashboard dashboard;
-
-        public AdminController(ApplicationDbContext context, IAdminFunction adminFunction, IDashboard dashboard)
+        private readonly IJwtRepository jwtRepository;
+        public AdminController(ApplicationDbContext context, IAdminFunction adminFunction, IDashboard dashboard, IJwtRepository jwtRepository)
         {
             _context = context;
             this.adminFunction = adminFunction;
             this.dashboard = dashboard;
-
+            this.jwtRepository = jwtRepository;
         }
         public IActionResult adminlogin()
         {
@@ -114,6 +116,7 @@ namespace HalloDoc.Controllers
         {
             return PartialView("AdminLayout/_ViewNotes", adminFunction.ViewNotes(reqid));
         }
+        [Authorization("1")]
         public IActionResult AdminDashboard()
         {
             if (HttpContext.Session.GetString("Adminname") != null)
@@ -123,6 +126,7 @@ namespace HalloDoc.Controllers
             }
             return RedirectToAction("adminlogin", "Admin");
         }
+       
         public IActionResult loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
             (bool f, string adminname, int id) = adminFunction.loginadmin(aspNetUser);
@@ -134,6 +138,12 @@ namespace HalloDoc.Controllers
             }
             else
             {
+                LoggedInPersonViewModel model = new LoggedInPersonViewModel();
+                model.aspuserid = id;
+                model.username = adminname;
+                model.role = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == id.ToString()).Roleid;
+                //model.userid = _context.Users.FirstOrDefault(u => u.Aspnetuserid == id).Userid;
+                Response.Cookies.Append("jwt", jwtRepository.GenerateJwtToken(model));
                 HttpContext.Session.SetString("Adminname", adminname);
                 HttpContext.Session.SetInt32("Adminid", id);
                 if (HttpContext.Session.GetString("Adminname") != null)
@@ -151,6 +161,8 @@ namespace HalloDoc.Controllers
         {
             HttpContext.Session.Remove("Adminname");
             TempData["Error"] = "Admin Logged Out Successfuly";
+            Response.Cookies.Delete("jwt");
+
             return RedirectToAction("adminlogin", "Admin");
         }
         public IActionResult cancelcase(int reqid, int casetagid, string cancelnotes)
@@ -213,13 +225,7 @@ namespace HalloDoc.Controllers
         public IActionResult SendMail(List<int> reqwiseid, int reqid)
         {
 
-            List<string> filenames = new List<string>();
-            foreach (var item in reqwiseid)
-            {
-                var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == item).Filename;
-                filenames.Add(file);
-            }
-
+            List<string> filenames = adminFunction.SendMail(reqwiseid, reqid);
             Sendemail("yashb.patel@etatvasoft.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
             return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
 

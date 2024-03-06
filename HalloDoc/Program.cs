@@ -1,4 +1,6 @@
 using Data.DataModels;
+using DataAccess.ServiceRepository;
+using DataAccess.ServiceRepository.IServiceRepository;
 using HalloDoc.DataContext;
 using Services.Contracts;
 using Services.Implementation;
@@ -18,6 +20,8 @@ builder.Services.AddTransient<IFormSubmit, FormSubmit>();
 builder.Services.AddTransient<IHomeFunction, HomeFunction>();
 builder.Services.AddTransient<IDashboard, Dashboard>();
 builder.Services.AddTransient<IAdminFunction, AdminFunction>();
+builder.Services.AddTransient<IAuthorization, Authorization>();
+builder.Services.AddTransient<IJwtRepository, JwtRepo>();
 
 var app = builder.Build();
 

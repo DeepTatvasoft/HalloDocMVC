@@ -121,10 +121,15 @@ namespace Services.Implementation
                 Intyear = model.DOB.Year,
                 Strmonth = model.DOB.Month.ToString(),
                 Location = model.Room,
-                Regionid=2,
+                Regionid = 2,
                 Address = model.Room + model.Street + model.City + model.State,
             };
-
+            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+            {
+                Userid = user.Aspnetuserid.ToString(),
+                Roleid = "3"
+            };
+            _context.Aspnetuserroles.Add(aspnetuserrole);
             _context.Requestclients.Add(reqclient);
             if (model.Upload != null)
             {
@@ -133,7 +138,7 @@ namespace Services.Implementation
             _context.SaveChanges();
         }
 
-        public (bool,int) familyinfo(FamilyFriendReqSubmit model)
+        public (bool, int) familyinfo(FamilyFriendReqSubmit model)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
             if (user != null)
@@ -169,19 +174,25 @@ namespace Services.Implementation
                     City = model.PatCity,
                     State = model.PatState,
                     Zipcode = model.PatZipcode,
-                    Regionid=1,
+                    Regionid = 1,
                     Location = model.PatRoom,
                     Email = model.PatEmail,
                     Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
                     Request = req
                 };
+                Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+                {
+                    Userid = user.Aspnetuserid.ToString(),
+                    Roleid = "3"
+                };
+                _context.Aspnetuserroles.Add(aspnetuserrole);
                 _context.Requestclients.Add(reqclient);
                 _context.SaveChanges();
                 if (model.Upload != null)
                 {
                     AddPatientRequestWiseFile(model.Upload, req.Requestid);
                 }
-                return (true,reqclient.Requestclientid);
+                return (true, reqclient.Requestclientid);
             }
             else
             {
@@ -223,7 +234,7 @@ namespace Services.Implementation
                 {
                     AddPatientRequestWiseFile(model.Upload, req.Requestid);
                 }
-                return (false,reqclient.Requestclientid);
+                return (false, reqclient.Requestclientid);
             }
         }
 
@@ -278,6 +289,12 @@ namespace Services.Implementation
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
+            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+            {
+                Userid = user.Aspnetuserid.ToString(),
+                Roleid = "3"
+            };
+            _context.Aspnetuserroles.Add(aspnetuserrole);
             _context.SaveChanges();
         }
 
@@ -333,6 +350,12 @@ namespace Services.Implementation
                 Businesstypeid = 1
             };
             _context.Businesses.Add(bus);
+            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+            {
+                Userid = user.Aspnetuserid.ToString(),
+                Roleid = "3"
+            };
+            _context.Aspnetuserroles.Add(aspnetuserrole);
             _context.SaveChanges();
         }
     }

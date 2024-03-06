@@ -177,29 +177,30 @@ namespace Services.Implementation
         }
         public void cancelcase(int reqid, int casetagid, string cancelnotes, string adminname, int id)
         {
-            var request = _context.Requests.FirstOrDefault(u => u.Requestid == reqid);
-            request.Modifieddate = DateTime.Now;
-            request.Declinedby = adminname;
-            string casetag = _context.Casetags.FirstOrDefault(u => u.Casetagid == casetagid).Name;
-            request.Casetag = casetag;
-            request.Status = 3;
-            _context.Requests.Update(request);
-            _context.SaveChanges();
-            var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == id.ToString());
-
-            Requeststatuslog requeststatuslog = new Requeststatuslog
+            if (cancelnotes != null && casetagid != null)
             {
-                Requestid = reqid,
-                Status = 3,
-                Adminid = admin.Adminid,
-                Notes = cancelnotes,
-                Createddate = DateTime.Now,
+                var request = _context.Requests.FirstOrDefault(u => u.Requestid == reqid);
+                request.Modifieddate = DateTime.Now;
+                request.Declinedby = adminname;
+                string casetag = _context.Casetags.FirstOrDefault(u => u.Casetagid == casetagid).Name;
+                request.Casetag = casetag;
+                request.Status = 3;
+                _context.Requests.Update(request);
+                _context.SaveChanges();
+                var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == id.ToString());
 
-            };
-            _context.Requeststatuslogs.Add(requeststatuslog);
-            _context.SaveChanges();
+                Requeststatuslog requeststatuslog = new Requeststatuslog
+                {
+                    Requestid = reqid,
+                    Status = 3,
+                    Adminid = admin.Adminid,
+                    Notes = cancelnotes,
+                    Createddate = DateTime.Now,
 
-
+                };
+                _context.Requeststatuslogs.Add(requeststatuslog);
+                _context.SaveChanges();
+            }
         }
         public List<Physician> filterregion(string regionid)
         {
@@ -312,6 +313,17 @@ namespace Services.Implementation
             _context.Requestwisefiles.Update(requestwisefile);
             _context.SaveChanges();
             return reqid;
+        }
+        public List<string> SendMail(List<int> reqwiseid, int reqid)
+        {
+
+            List<string> filenames = new List<string>();
+            foreach (var item in reqwiseid)
+            {
+                var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == item).Filename;
+                filenames.Add(file);
+            }
+            return filenames;
         }
     }
 }

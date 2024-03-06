@@ -314,7 +314,7 @@
                 <span>Patient Name: <span id="cancleModelName" class="text-info"> </span></span>
                 <span id="reqidCancelModel" hidden></span>
                 <select class="form-select mt-4 reason" aria-label="Floating label select example" style="height:58px">
-                    <option selected>Reason For Cancellation</option>
+                    <option selected value="">Reason For Cancellation</option>
                     @foreach (var obj in Model.casetags)
                     {
                         <option value="@obj.Casetagid">@obj.Name</option>
@@ -326,7 +326,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info text-white cancelcase" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-info text-white cancelcase">Confirm</button>
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -358,6 +358,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
         $("#myInput").on("input", function () {
@@ -516,18 +517,26 @@
         $('.cancelcase').on('click', function (e) {
             var reqid = $('#reqidCancelModel').text();
             var casetagid = $('.reason').val();
-            var cancelnotes = $('.Cancelnotes').val();
-            $.ajax({
-                url: '/admin/cancelcase',
-                data: { "reqid": reqid, "casetagid": casetagid, "cancelnotes": cancelnotes },
-                success: function (response) {
-                    $('#status-tabContent').html(response);
-
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
+            console.log(casetagid);
+            if (casetagid == "") {
+                $('.reason').css('border', '1px solid red');
+            }
+            else {
+                var cancelnotes = $('.Cancelnotes').val();
+                $.ajax({
+                    url: '/admin/cancelcase',
+                    data: { "reqid": reqid, "casetagid": casetagid, "cancelnotes": cancelnotes },
+                    success: function (response) {
+                        $('#status-tabContent').html(response);
+                        $(".CancelCaseBtn").modal("hide");
+                        $("body").removeAttr("style");
+                        $(".modal-backdrop").remove();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
         });
         $('.assigncase').on('click', function (e) {
             var reqid = $('#reqidAssignModel').text();

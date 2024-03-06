@@ -72,6 +72,12 @@ namespace Services.Implementation
                 Strmonth = reqc.Strmonth,
             };
             _context.Users.Add(user);
+            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+            {
+                Userid = user.Aspnetuserid.ToString(),
+                Roleid = "3"
+            };
+            _context.Aspnetuserroles.Add(aspnetuserrole);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == reqc.Regionid);
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqc.Requestid);
