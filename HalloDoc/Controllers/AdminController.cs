@@ -14,6 +14,7 @@ using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Authorization = Services.Implementation.Authorization;
 using DataAccess.ServiceRepository.IServiceRepository;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace HalloDoc.Controllers
 {
@@ -126,7 +127,7 @@ namespace HalloDoc.Controllers
             }
             return RedirectToAction("adminlogin", "Admin");
         }
-       
+
         public IActionResult loginadmin([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
             (bool f, string adminname, int id) = adminFunction.loginadmin(aspNetUser);
@@ -162,7 +163,6 @@ namespace HalloDoc.Controllers
             HttpContext.Session.Remove("Adminname");
             TempData["Error"] = "Admin Logged Out Successfuly";
             Response.Cookies.Delete("jwt");
-
             return RedirectToAction("adminlogin", "Admin");
         }
         public IActionResult cancelcase(int reqid, int casetagid, string cancelnotes)
@@ -170,19 +170,19 @@ namespace HalloDoc.Controllers
             int id = (int)HttpContext.Session.GetInt32("Adminid");
             string adminname = HttpContext.Session.GetString("Adminname");
             adminFunction.cancelcase(reqid, casetagid, cancelnotes, adminname, id);
-            return RedirectToAction("NewState", adminFunction.AdminDashboarddata(1, 1, 1));
+            return RedirectToAction("AdminDashboard");
         }
         public IActionResult assigncase(int reqid, int regid, int phyid, string Assignnotes)
         {
             string adminname = HttpContext.Session.GetString("Adminname");
             int id = (int)HttpContext.Session.GetInt32("Adminid");
             adminFunction.assigncase(reqid, regid, phyid, Assignnotes, adminname, id);
-            return RedirectToAction("NewState", adminFunction.AdminDashboarddata(1, 1, 1));
+            return RedirectToAction("AdminDashboard");
         }
         public IActionResult blockcase(int reqid, string Blocknotes)
         {
             adminFunction.blockcase(reqid, Blocknotes);
-            return RedirectToAction("NewState", adminFunction.AdminDashboarddata(1, 1, 1));
+            return RedirectToAction("AdminDashboard");
         }
         [HttpPost]
         public IActionResult AdminNotesSaveChanges(int reqid, string adminnotes)
@@ -270,6 +270,30 @@ namespace HalloDoc.Controllers
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
         }
-
+        public IActionResult Orders(int reqid)
+        {
+            SendOrders modal = new SendOrders();
+            modal.reqid = reqid;
+            modal.createdby = HttpContext.Session.GetString("Adminname");
+            return PartialView("AdminLayout/_SendOrder", modal);
+        }
+        public List<Healthprofessionaltype> getprofession()
+        {
+            return adminFunction.getprofession();
+        }
+        public List<Healthprofessional> filterprofession(int professionid)
+        {
+            return adminFunction.filterprofession(professionid);
+        }
+        public Healthprofessional filterbusiness(int vendorid)
+        {
+            return adminFunction.filterbusiness(vendorid);
+        }
+        [HttpPost]
+        public IActionResult OrderSubmit(SendOrders sendorder)
+        {
+            adminFunction.OrderSubmit(sendorder);
+            return RedirectToAction("AdminDashboard");
+        }
     }
 }

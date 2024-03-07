@@ -325,5 +325,37 @@ namespace Services.Implementation
             }
             return filenames;
         }
+        public List<Healthprofessionaltype> getprofession()
+        {
+            List<Healthprofessionaltype> list = _context.Healthprofessionaltypes.ToList();
+            return list;
+        }
+        public List<Healthprofessional> filterprofession(int professionid)
+        {
+            List<Healthprofessional> list = _context.Healthprofessionals.Where(u => u.Profession == professionid).ToList();
+            return list;
+        }
+        public Healthprofessional filterbusiness(int vendorid)
+        {
+            Healthprofessional profession = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == vendorid);
+            return profession;
+        }
+        public void OrderSubmit(SendOrders sendorder)
+        {
+            Orderdetail orderdetail = new Orderdetail
+            {
+                Vendorid = sendorder.vendorid,
+                Requestid = sendorder.reqid,
+                Faxnumber = sendorder.Fax,
+                Email = sendorder.Email,
+                Businesscontact = sendorder.Contact,
+                Prescription = sendorder.prescription,
+                Noofrefill = sendorder.refil,
+                Createddate = DateTime.Now,
+                Createdby = sendorder.createdby
+            };
+            _context.Orderdetails.Add(orderdetail);
+            _context.SaveChanges();
+        }
     }
 }

@@ -169,7 +169,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item text-secondary" href="#">
+                                            <a class="dropdown-item text-secondary sendorder" name="@obj.Requestid" href="#">
                                                 <i class="fa-solid fa-cart-shopping me-2"></i>Orders
                                             </a>
                                         </li>
@@ -526,6 +526,21 @@
                 data: { "reqid": reqid },
                 success: function (response) {
                     $('#alldata').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.sendorder').on('click', function (e) {
+            e.preventDefault();
+            var reqid = $(this).attr('name');
+            $.ajax({
+                url: '/Admin/Orders',
+                data: { "reqid": reqid },
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
                     console.log("Fetch success");
                 },
                 error: function (xhr, status, error) {

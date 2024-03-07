@@ -26,5 +26,9 @@ namespace Services.Contracts
         AdminviewDoc AdminuploadDoc(int reqid);
         int SingleDelete(int reqfileid);
         List<string> SendMail(List<int> reqwiseid, int reqid);
+        List<Healthprofessionaltype> getprofession();
+        List<Healthprofessional> filterprofession(int professionid);
+        Healthprofessional filterbusiness(int vendorid);
+        void OrderSubmit(SendOrders sendorder);
     }
 }

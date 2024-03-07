@@ -45,4 +45,16 @@ namespace Services.ViewModels
         public string ConfirmationNum { get; set; }
         public int reqid { get; set; }
     }
+    public class SendOrders
+    {
+        public int reqid { get; set; }
+        public int vendorid { get; set; }
+        public string Contact { get; set; }
+        public string Email { get; set; }
+        public string Fax { get; set; }
+        public string prescription { get; set; }
+        public int refil { get; set; }
+        public int professionid { get; set;}
+        public string createdby { get; set;}
+    }
 }
