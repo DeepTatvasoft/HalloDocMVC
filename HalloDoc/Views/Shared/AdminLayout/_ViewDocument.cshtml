@@ -67,7 +67,15 @@
                                     @{
                                         var file = obj.Filename.Split("document\\");
                                     }
-                                    @file[1]
+                                    @if(file.Length > 1)
+                                    {
+                                        @file[1]
+
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
                                 </td>
                                 <td>
                                     @obj.Createddate

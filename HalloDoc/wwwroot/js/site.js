@@ -113,8 +113,48 @@ function CancelModelName(clicked_name) {
 function AssignModelName(clicked_name) {
     document.getElementById('reqidAssignModel').innerHTML = clicked_name;
 }
+function ClearCaseName(clicked_name) {
+    document.getElementById('reqidClearCase').innerHTML = clicked_name;
+}
 function BlockModelName(clicked_name) {
     var arr = clicked_name.split("+");
     document.getElementById('BlockModelName').innerHTML = arr[0];
     document.getElementById('reqidBlockModel').innerHTML = arr[1];
+}
+function ChangePage(Page,status) {
+    var currentPage = Page;
+    var status = status;
+    var url;
+    if (status == 1) {
+        url = "/Admin/NewState/"
+    }
+    else if (status == 2) {
+        url = "/Admin/PendingState/"
+    }
+    else if (status == 4) {
+        url = "/Admin/ActiveState/"
+    }
+    else if (status == 6) {
+        url = "/Admin/ConcludeState/"
+    }
+    else if (status == 3) {
+        url = "/Admin/TocloseState/"
+    }
+    else {
+        url = "/Admin/UnpaidState/"
+    }
+    $.ajax({
+        url: url,
+        data: { "currentPage": currentPage },
+        type: "POST",
+        dataType: "html",
+        success: function (response) {
+            $('#status-tabContent').html(response);
+            document.getElementById("page-1").style.backgroundColor = "white";
+            document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
 }

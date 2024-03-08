@@ -18,6 +18,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace HalloDoc.Controllers
 {
+
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -35,7 +36,8 @@ namespace HalloDoc.Controllers
         {
             return View();
         }
-        public IActionResult ActiveState(string reqtypeid, string status, int regionid)
+        [Authorization("1")]
+        public IActionResult ActiveState(string reqtypeid, string status, int regionid , int currentPage)
         {
             if (regionid != null && status != null && reqtypeid == null)
             {
@@ -45,10 +47,10 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status));
             }
-            return View(adminFunction.AdminDashboarddata(4, 4, 5));
+            return View(adminFunction.AdminDashboarddata(4, 4, 5, currentPage));
         }
-
-        public IActionResult NewState(string reqtypeid, string status, int regionid)
+        [Authorization("1")]
+        public IActionResult NewState(string reqtypeid, string status, int regionid, int currentPage)
         {
             if (regionid != null && status != null && reqtypeid == null)
             {
@@ -58,10 +60,10 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status));
             }
-            return View(adminFunction.AdminDashboarddata(1, 1, 1));
+            return View(adminFunction.AdminDashboarddata(1, 1, 1 , currentPage));
         }
-
-        public IActionResult PendingState(string reqtypeid, string status, int regionid)
+        [Authorization("1")]
+        public IActionResult PendingState(string reqtypeid, string status, int regionid, int currentPage)
         {
             if (regionid != null && status != null && reqtypeid == null)
             {
@@ -71,9 +73,10 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status));
             }
-            return View(adminFunction.AdminDashboarddata(2, 2, 2));
+            return View(adminFunction.AdminDashboarddata(2, 2, 2, currentPage));
         }
-        public IActionResult TocloseState(string reqtypeid, string status, int regionid)
+        [Authorization("1")]
+        public IActionResult TocloseState(string reqtypeid, string status, int regionid, int currentPage)
         {
             if (regionid != null && status != null && reqtypeid == null)
             {
@@ -83,9 +86,10 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status));
             }
-            return View(adminFunction.AdminDashboarddata(3, 7, 8));
+            return View(adminFunction.AdminDashboarddata(3, 7, 8, currentPage));
         }
-        public IActionResult UnpaidState(string reqtypeid, string status, int regionid)
+        [Authorization("1")]
+        public IActionResult UnpaidState(string reqtypeid, string status, int regionid, int currentPage)
         {
             if (regionid != null && status != null && reqtypeid == null)
             {
@@ -95,9 +99,10 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status));
             }
-            return View(adminFunction.AdminDashboarddata(9, 9, 9));
+            return View(adminFunction.AdminDashboarddata(9, 9, 9, currentPage));
         }
-        public IActionResult ConcludeState(string reqtypeid, string status, int regionid)
+        [Authorization("1")]
+        public IActionResult ConcludeState(string reqtypeid, string status, int regionid, int currentPage)
         {
             if (regionid != null && status != null && reqtypeid == null)
             {
@@ -107,7 +112,7 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status));
             }
-            return View(adminFunction.AdminDashboarddata(6, 6, 6));
+            return View(adminFunction.AdminDashboarddata(6, 6, 6, currentPage));
         }
         public IActionResult ViewCase(int id)
         {
@@ -121,9 +126,8 @@ namespace HalloDoc.Controllers
         public IActionResult AdminDashboard()
         {
             if (HttpContext.Session.GetString("Adminname") != null)
-            {
-                return View(adminFunction.AdminDashboarddata(1, 1, 1));
-
+            {;
+                return View(adminFunction.AdminDashboard());
             }
             return RedirectToAction("adminlogin", "Admin");
         }
@@ -293,6 +297,11 @@ namespace HalloDoc.Controllers
         public IActionResult OrderSubmit(SendOrders sendorder)
         {
             adminFunction.OrderSubmit(sendorder);
+            return RedirectToAction("AdminDashboard");
+        }
+        public IActionResult clearcase(int reqid)
+        {
+
             return RedirectToAction("AdminDashboard");
         }
     }

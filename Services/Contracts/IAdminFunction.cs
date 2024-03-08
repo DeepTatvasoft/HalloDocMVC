@@ -1,4 +1,5 @@
 ﻿using Data.DataModels;
+using Data.DataModels;
 using Microsoft.AspNetCore.Mvc;
 using Services.ViewModels;
 
@@ -7,10 +8,11 @@ namespace Services.Contracts
     public interface IAdminFunction
     {
         (bool, string, int) loginadmin([Bind(new[] { "Email,Passwordhash" })] Aspnetuser aspNetUser);
-        NewStateData AdminDashboarddata(int status1, int status2, int status3);
+        NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage);
         NewStateData toogletable(string reqtypeid, string status);
         NewStateData1 ViewCase(int id);
         NewStateData regiontable(int regionid, string status);
+        NewStateData AdminDashboard();
         int getToCloseRequestCount();
         int getActiveRequestCount();
         int getConcludeRequestCount();
@@ -30,5 +32,6 @@ namespace Services.Contracts
         List<Healthprofessional> filterprofession(int professionid);
         Healthprofessional filterbusiness(int vendorid);
         void OrderSubmit(SendOrders sendorder);
+        void clearcase(int reqid);
     }
 }

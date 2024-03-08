@@ -44,11 +44,12 @@ namespace Services.Implementation
                 return (false, null, 0);
             }
         }
-        public NewStateData AdminDashboarddata(int status1, int status2, int status3)
+        public NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage)
         {
             NewStateData data = new NewStateData();
             List<Request> req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
-            data.req = req;
+            List<Request> newreq = req.Skip((currentPage - 1) * 7).Take(7).ToList();
+            data.req = newreq;
             data.newcount = getNewRequestCount();
             data.activecount = getActiveRequestCount();
             data.pendingcount = getPendingRequestCount();
@@ -57,11 +58,23 @@ namespace Services.Implementation
             data.Unpaidcount = getUnpaidRequestCount();
             var regions = _context.Regions.ToList();
             data.regions = regions;
+            data.totalpages = req.Count();
             var casetag = _context.Casetags.ToList();
             List<Requeststatuslog> requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
             data.requeststatuslogs = requeststatuslogs;
             data.casetags = casetag;
             return data;
+        }
+        public NewStateData AdminDashboard()
+        {
+            NewStateData modal = new NewStateData();
+            modal.concludecount = getConcludeRequestCount();
+            modal.newcount = getNewRequestCount();
+            modal.pendingcount = getPendingRequestCount();
+            modal.activecount = getActiveRequestCount();
+            modal.Toclosecount = getToCloseRequestCount();
+            modal.Unpaidcount = getUnpaidRequestCount();
+            return modal;
         }
         public NewStateData toogletable(string reqtypeid, string status)
         {
@@ -84,6 +97,7 @@ namespace Services.Implementation
                 requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
             }
             newStateData.req = req;
+            newStateData.totalpages = req.Count();
             newStateData.requeststatuslogs = requeststatuslogs;
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
@@ -139,6 +153,7 @@ namespace Services.Implementation
                 requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
             }
             newStateData.req = req;
+            newStateData.totalpages = req.Count();
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
@@ -355,6 +370,13 @@ namespace Services.Implementation
                 Createdby = sendorder.createdby
             };
             _context.Orderdetails.Add(orderdetail);
+            _context.SaveChanges();
+        }
+        public void clearcase(int reqid)
+        {
+            var req = _context.Requests.FirstOrDefault(u=>u.Requestid == reqid);
+            req.Status = 10;
+            _context.Requests.Update(req);
             _context.SaveChanges();
         }
     }

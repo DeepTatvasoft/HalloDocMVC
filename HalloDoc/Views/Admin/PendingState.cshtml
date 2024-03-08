@@ -175,7 +175,7 @@
                                             </a>
                                         </li>
                                         <li style="cursor : pointer">
-                                            <a class="dropdown-item text-secondary">
+                                            <a class="dropdown-item text-secondary" data-bs-toggle="modal" data-bs-target="#ClearCase" onclick="ClearCaseName(this.name)" name="@obj.Requestid">
                                                 <i class="fa-regular fa-circle-xmark me-2"></i>Clear case
                                             </a>
                                         </li>
@@ -191,6 +191,27 @@
                     }
                 </tbody>
             </table>
+            <div class="d-none d-md-flex justify-content-center gap-3">
+                @if (Model.totalpages > 0)
+                {
+                    var x = 0;
+                    if (Model.totalpages % 7 == 0)
+                    {
+                        x = 0;
+                    }
+                    else
+                    {
+                        x = 1;
+                    }
+                    @for (int page = 0; page < (Model.totalpages / 7) + x; page++)
+                    {
+                        var temp = page + 1;
+                        <button class="@temp" id="page-@temp" onclick="ChangePage(@temp,2)" style="width:25px">
+                            @temp
+                        </button>
+                    }
+                }
+            </div>
             <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
 
                 <div class="accordion-item">
@@ -268,13 +289,13 @@
                                     <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid" style="background-color:green;font-size:13px">View Notes</a>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100 bg-info text-white rounded-pill p-1 btn-sm" style="font-size:13px">Transfer</a>
+                                    <a class="btn w-100 bg-info text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#transferModal" onclick="AssignModelName(this.name)" name="@item.Requestid" style="font-size:13px">Transfer</a>
                                 </div>
                                 <div class="col-6 mb-2">
                                     <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid" style="background-color:green;font-size:13px">View Uploads</a>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:orangered;font-size:13px">Clear Case</a>
+                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#ClearCase" onclick="ClearCaseName(this.name)" name="@item.Requestid" style="background-color:orangered;font-size:13px">Clear Case</a>
                                 </div>
                                 <div class="col-6 mb-2">
                                     <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
@@ -294,6 +315,7 @@
     </div>
 </div>
 
+@*Transfer Modal*@
 <div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -334,6 +356,25 @@
         </div>
     </div>
 </div>
+
+@*ClearCase Modal*@
+<div id="ClearCase" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <input type="text" id="reqidClearCase" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="mb-3" style="height: 80px;"><path fill="#FFD43B" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg>
+                <h4>Confirmation for clear case</h4>
+                <p>Are sure you want to clear this request? Once clear this request then you are not able to see this request.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white clearcase" data-bs-dismiss="modal">Clear</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -376,7 +417,7 @@
                 data: { "status": status, "reqtypeid": requesttype },
                 success: function (response) {
                     $('#status-tabContent').html(response);
-                    console.log("Fetch success");
+                    document.getElementById("page-1").style.backgroundColor = "lightblue";
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
@@ -459,7 +500,7 @@
                 data: { "status": status, "regionid": regionid },
                 success: function (response) {
                     $('#status-tabContent').html(response);
-                    console.log("Fetch success");
+                    document.getElementById("page-1").style.backgroundColor = "lightblue";
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
@@ -525,6 +566,19 @@
                 success: function (response) {
                     $('#home-tab-pane').html(response);
                     console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.clearcase').on('click', function (e) {
+            var reqid = $('#reqidClearCase').text();
+            $.ajax({
+                url: '/admin/clearcase',
+                data: { "reqid": reqid },
+                success: function (response) {
+
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

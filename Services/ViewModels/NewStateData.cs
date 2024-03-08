@@ -17,6 +17,7 @@ namespace Services.ViewModels
         public List<Physician> physicians { get; set; }
         public List<Casetag> casetags { get; set; }
         public List<Requeststatuslog> requeststatuslogs { get; set; }
+        public int totalpages { get; set; }
     }
     public class NewStateData1
     {

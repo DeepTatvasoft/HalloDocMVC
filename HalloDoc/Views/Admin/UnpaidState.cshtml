@@ -179,6 +179,27 @@
                     }
                 </tbody>
             </table>
+            <div class="d-none d-md-flex justify-content-center gap-3">
+                @if (Model.totalpages > 0)
+                {
+                    var x = 0;
+                    if (Model.totalpages % 7 == 0)
+                    {
+                        x = 0;
+                    }
+                    else
+                    {
+                        x = 1;
+                    }
+                    @for (int page = 0; page < (Model.totalpages / 7) + x; page++)
+                    {
+                        var temp = page + 1;
+                        <button class="@temp" id="page-@temp" onclick="ChangePage(@temp,9)" style="width:25px">
+                            @temp
+                        </button>
+                    }
+                }
+            </div>
             <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
 
                 <div class="accordion-item">
@@ -320,7 +341,7 @@
                 data: { "status": status, "reqtypeid": requesttype },
                 success: function (response) {
                     $('#status-tabContent').html(response);
-                    console.log("Fetch success");
+                    document.getElementById("page-1").style.backgroundColor = "lightblue";
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
@@ -353,7 +374,7 @@
                 data: { "status": status, "regionid": regionid },
                 success: function (response) {
                     $('#status-tabContent').html(response);
-                    console.log("Fetch success");
+                    document.getElementById("page-1").style.backgroundColor = "lightblue";
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
