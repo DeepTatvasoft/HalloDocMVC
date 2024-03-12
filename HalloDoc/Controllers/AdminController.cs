@@ -301,8 +301,29 @@ namespace HalloDoc.Controllers
         }
         public IActionResult clearcase(int reqid)
         {
-
             return RedirectToAction("AdminDashboard");
+        }
+        public IActionResult ReviewAgreement(int id)
+        {
+            Agreementmodal modal = new Agreementmodal();
+            modal.reqid = id;
+            modal.firstname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Firstname;
+            modal.lastname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Lastname;
+            return View(modal);
+        }
+        public IActionResult AcceptAgreement(int id)
+        {
+            adminFunction.AcceptAgreement(id);
+            return RedirectToAction("patientlogin", "Home");
+        }
+        public IActionResult CancelAgreement(Agreementmodal modal)
+        {
+            adminFunction.CancelAgreement(modal);
+            return RedirectToAction("patientlogin", "Home");
+        }
+        public IActionResult CloseCase(int reqid)
+        {
+            return PartialView("AdminLayout/_CloseCase", adminFunction.AdminuploadDoc(reqid));
         }
     }
 }

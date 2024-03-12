@@ -18,6 +18,9 @@ namespace Services.ViewModels
         public List<Casetag> casetags { get; set; }
         public List<Requeststatuslog> requeststatuslogs { get; set; }
         public int totalpages { get; set; }
+        public int reqid { get; set; }
+        public string phonenumber { get; set; }
+        public string emaill { get; set; }
     }
     public class NewStateData1
     {
@@ -57,5 +60,12 @@ namespace Services.ViewModels
         public int refil { get; set; }
         public int professionid { get; set;}
         public string createdby { get; set;}
+    }
+    public class Agreementmodal
+    {
+        public int reqid { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public string reason { get; set; }
     }
 }

@@ -33,5 +33,7 @@ namespace Services.Contracts
         Healthprofessional filterbusiness(int vendorid);
         void OrderSubmit(SendOrders sendorder);
         void clearcase(int reqid);
+        void CancelAgreement(Agreementmodal modal);
+        void AcceptAgreement(int id);
     }
 }

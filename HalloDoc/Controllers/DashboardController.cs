@@ -123,8 +123,15 @@ namespace HalloDoc.Controllers
         public IActionResult send_mail()
         {
             var email = Request.Form["email"].ElementAt(0);
-            sendEmail(email, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id="+email+"");
+            sendEmail(email, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id=" + email + "");
             return RedirectToAction("patientlogin", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult SendAgreement(NewStateData modal)
+        {
+            sendEmail(modal.emaill, "Link for Agreement", "https://localhost:44325/admin/ReviewAgreement/" + modal.reqid + "");
+            return RedirectToAction("AdminDashboard","Admin");
         }
     }
 }

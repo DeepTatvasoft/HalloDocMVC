@@ -174,7 +174,7 @@
                                             </a>
                                         </li>
                                         <li style="cursor : pointer">
-                                            <a class="dropdown-item text-secondary">
+                                            <a class="dropdown-item text-secondary closecase" name="@obj.Requestid">
                                                 <i class="fa-regular fa-circle-xmark me-2"></i>Close case
                                             </a>
                                         </li>
@@ -598,6 +598,21 @@
 
             $.ajax({
                 url: '/Admin/AdminuploadDoc',
+                data: { "reqid": reqid },
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.closecase').on('click', function (e) {
+            e.preventDefault();
+            var reqid = $(this).attr('name');
+            $.ajax({
+                url: '/Admin/CloseCase',
                 data: { "reqid": reqid },
                 success: function (response) {
                     $('#home-tab-pane').html(response);

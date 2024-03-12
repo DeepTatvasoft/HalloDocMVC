@@ -139,7 +139,7 @@
                             </td>
                             <td scope="row">@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
                             <td scope="row">@reqclient.Firstname , @reqclient.Lastname</td>
-                            <td scope="row">@reqstatuslog.Transtophysician.Firstname</td>
+                            <td scope="row">@obj.Physician.Firstname</td>
                             <td scope="row">@obj.Modifieddate</td>
                             <td scope="row">
                                 <div class="phone">@obj.Phonenumber</div>
@@ -180,7 +180,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item text-secondary">
+                                            <a class="dropdown-item text-secondary" data-bs-toggle="modal" data-bs-target="#SendAgreement" onclick="SendAgreement(this.name,@obj.Requesttypeid,'@obj.Phonenumber','@obj.Email')" name="@obj.Requestid">
                                                 <i class="fa-solid fa-file-contract me-2"></i>Send Agreement
                                             </a>
                                         </li>
@@ -277,13 +277,13 @@
                                     <i class="fa-regular fa-calendar-days icn me-1"></i>Date Of Services: @item.Modifieddate
                                 </div>
                                 <div>
-                                    <i class="fa-solid fa-user-doctor me-1 icn"></i>Physician: @reqstatuslog.Transtophysician.Firstname
+                                    <i class="fa-solid fa-user-doctor me-1 icn"></i>Physician: @item.Physician.Firstname
                                 </div>
                                 <div><i class="bi bi-person me-1 icn"></i>Requestor: @item.Firstname, @item.Lastname</div>
                             </div>
                             <div class="row mx-3">
                                 <div class="col-6 mb-2">
-                                    <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background-color:orangered;font-size:11px;height:29.5px">Send Agreement</a>
+                                    <a class="btn w-100  text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#SendAgreement" onclick="SendAgreement(this.name,@item.Requesttypeid,'@item.Phonenumber','@item.Email')" name="@item.Requestid" style="background-color:orangered;font-size:11px;height:29.5px">Send Agreement</a>
                                 </div>
                                 <div class="col-6 mb-2">
                                     <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid" style="background-color:green;font-size:13px">View Notes</a>
@@ -320,7 +320,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
-                <h1 class="modal-title fs-5" id="exampleModal1Label">Transfer Request</h1>
+                <h1 class="modal-title fs-5" id="transferModalLabel">Transfer Request</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -371,6 +371,37 @@
                 <button type="button" class="btn btn-info text-white clearcase" data-bs-dismiss="modal">Clear</button>
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
+        </div>
+    </div>
+</div>
+
+@*SendAgreement Modal*@
+<div class="modal fade" id="SendAgreement" tabindex="-1" aria-labelledby="transferModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="SendAgreementLabel">Send Agreement</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="SendAgreement" asp-controller="Dashboard" method="post">
+                <div class="modal-body">
+                    <input asp-for="reqid" type="text" id="reqidSendAgreement" hidden>
+                    <div class="mb-2" style="cursor : pointer"><span class="dot" id="coloragreement"></span> <span id="typeagreement"></span> </div>
+                    To Send Agreement please make sure you are updating the correct contact information below for the responsible party.
+                    <div class="form-floating mb-3 mt-3">
+                        <input asp-for="phonenumber" type="tel" class="form-control" id="PhoneSendAgreement" placeholder="Phone Number" readonly>
+                        <label for="floatingInput">Phone Number</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="emaill" type="email" class="form-control" id="EmailSendAgreement" placeholder="name@example.com" readonly>
+                        <label for="floatingInput">Email address</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info text-white" data-bs-dismiss="modal">Send</button>
+                    <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -136,7 +136,7 @@
                                 <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
                             </td>
                             <td scope="row">@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
-                            <td scope="row">@reqstatuslog.Transtophysician.Firstname</td>
+                            <td scope="row">@obj.Physician.Firstname</td>
                             <td scope="row">@obj.Modifieddate</td>
                             <td scope="row">
                                 <div class="phone">@obj.Phonenumber</div>
@@ -270,7 +270,7 @@
                                     <i class="fa-regular fa-calendar-days icn me-1"></i>Date Of Services: @item.Modifieddate
                                 </div>
                                 <div>
-                                    <i class="fa-solid fa-user-doctor me-1 icn"></i>Physician: @reqstatuslog.Transtophysician.Firstname
+                                    <i class="fa-solid fa-user-doctor me-1 icn"></i>Physician: @item.Physician.Firstname
                                 </div>
                             </div>
                             <div class="row mx-3">

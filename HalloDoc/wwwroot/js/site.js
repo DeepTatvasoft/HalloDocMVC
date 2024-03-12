@@ -121,7 +121,32 @@ function BlockModelName(clicked_name) {
     document.getElementById('BlockModelName').innerHTML = arr[0];
     document.getElementById('reqidBlockModel').innerHTML = arr[1];
 }
-function ChangePage(Page,status) {
+function SendAgreement(clicked_name, Requesttypeid, phonenumber, email) {
+    var color = "mediumpurple";
+    var type = "";
+    if (Requesttypeid == 1) {
+        color = "rgb(72 169 70)";
+        type = "Patient";
+    }
+    else if (Requesttypeid == 2) {
+        color = "#f5a33e";
+        type = "Family";
+    }
+    else if (Requesttypeid == 4) {
+        color = "hotpink";
+        type = "Business";
+    }
+    else if (Requesttypeid == 3) {
+        color = "dodgerblue";
+        type = "Concierge";
+    }
+    document.getElementById('reqidSendAgreement').value = clicked_name;
+    document.getElementById('coloragreement').style.backgroundColor = color;
+    document.getElementById('typeagreement').innerHTML = type;
+    document.getElementById('PhoneSendAgreement').value = phonenumber;
+    document.getElementById('EmailSendAgreement').value = email;
+}
+function ChangePage(Page, status) {
     var currentPage = Page;
     var status = status;
     var url;
