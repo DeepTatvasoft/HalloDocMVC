@@ -3,6 +3,7 @@
 }
 @model Services.ViewModels.NewStateData1
 @{
+    var reqclient = Model.req.Requestclients.ElementAt(0);
     var type = "";
     var color = "mediumpurple";
     @if (Model.req.Requesttypeid == 1)
@@ -52,13 +53,13 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Name" value="@Model.req.Firstname" readonly>
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Name" value="@reqclient.Firstname" readonly>
                             <label for="floatingInput">First Name</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Name" value="@Model.req.Lastname" readonly>
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Name" value="@reqclient.Lastname" readonly>
                             <label for="floatingInput">Last Name</label>
                         </div>
                     </div>
@@ -70,7 +71,7 @@
                     </div>
                     <div class="col d-flex">
                         <div class="form-floating mb-3 numcountry me-2" style="width:100%">
-                            <input type="tel" class="form-control output" id="floatingInput" placeholder="Mobile Number" value="@Model.req.Phonenumber" readonly>
+                            <input type="tel" class="form-control output" id="floatingInput" placeholder="Mobile Number" value="@reqclient.Phonenumber" readonly>
                             <label for="floatingInput">Mobile Number</label>
                         </div>
                         <a>
@@ -79,7 +80,7 @@
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="patientEmail" placeholder="name@example.com" value="@Model.req.Email" readonly>
+                            <input type="email" class="form-control" id="patientEmail" placeholder="name@example.com" value="@reqclient.Email" readonly>
                             <label for="patientEmail">Email</label>
                         </div>
                     </div>
@@ -96,7 +97,7 @@
                     </div>
                     <div class="col d-flex">
                         <div class="form-floating mb-3 me-2" style="width:100%">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Address" value="@Model.address" readonly>
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Address" value="@reqclient.Address" readonly>
                             <label for="floatingInput">Business Name/Address</label>
                         </div>
                         <a>

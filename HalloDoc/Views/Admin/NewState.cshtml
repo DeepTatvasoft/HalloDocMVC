@@ -133,12 +133,12 @@
                         }
                         <tr style="--bs-table-bg:@color">
                             <td scope="row" class="d-none">@obj.Requesttypeid</td>
-                            <td scope="row">@obj.Firstname, @obj.Lastname</td>
+                            <td scope="row">@reqclient.Firstname , @reqclient.Lastname</td>
                             <td scope="row">
                                 <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
                             </td>
                             <td>@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
-                            <td>@reqclient.Firstname , @reqclient.Lastname</td>
+                            <td>@obj.Firstname , @obj.Lastname</td>
                             <td>@obj.Createddate</td>
                             <td>
                                 <div class="phone">@obj.Phonenumber</div>
@@ -229,7 +229,7 @@
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.Requestid" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
 
                                 <div class="col d-flex flex-column">
-                                    <span class="">@item.Firstname, @item.Lastname</span>
+                                    <span class="">@reqclient.Firstname, @reqclient.Lastname</span>
                                     <span class=" mt-4">@reqclient.Address</span>
                                     <span class="mt-3"><i class="bi bi-clock text-info h6 me-2 icns"></i>Wait Time: DEC5, 2023</span>
                                 </div>
@@ -252,7 +252,7 @@
                                 <div><i class="bi bi-calendar2-minus me-1 icn"></i>Date of birth: @reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</div>
                                 <div><i class="bi bi-envelope me-1 icn"></i>Email: @reqclient.Email</div>
                                 <div>
-                                    <i class="bi bi-telephone me-1 icn"></i>Patient: @item.Phonenumber
+                                    <i class="bi bi-telephone me-1 icn"></i>Patient: @reqclient.Phonenumber
                                 </div>
                                 <div><i class="bi bi-person me-1 icn"></i>Requestor: @item.Firstname, @item.Lastname</div>
                             </div>

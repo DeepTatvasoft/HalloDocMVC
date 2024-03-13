@@ -35,5 +35,7 @@ namespace Services.Contracts
         void clearcase(int reqid);
         void CancelAgreement(Agreementmodal modal);
         void AcceptAgreement(int id);
+        void CloseCasebtn(int id);
+        void Closecaseedit([FromForm] AdminviewDoc formData);   
     }
 }

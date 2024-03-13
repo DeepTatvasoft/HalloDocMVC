@@ -24,54 +24,138 @@
             <button type="button" class="btn btn-outline-info" style="margin-bottom:10px">Create Invoice Through Quickbooks</button>
         </div>
         <h5>Documents</h5>
-        <form method="post" asp-controller="Dashboard" asp-action="DownloadFile">
-            <div class="table-responsive">
-                <table class="table mt-2" id="dtBasicExample">
-                    <thead>
+        <div class="table-responsive">
+            <table class="table mt-2" id="dtBasicExample">
+                <thead>
+                    <tr>
+                        <th class="bg-body-secondary" scope="col"></th>
+                        <th class="bg-body-secondary" scope="col">Upload Date</th>
+                        <th class="bg-body-secondary" scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var obj in Model.reqfile)
+                    {
                         <tr>
-                            <th class="bg-body-secondary" scope="col">Documents</th>
-                            <th class="bg-body-secondary" scope="col">Upload Date</th>
-                            <th class="bg-body-secondary" scope="col">Action</th>
+                            <td>
+                                @{
+                                    var file = obj.Filename.Split("document\\");
+                                }
+                                @if (file.Length > 1)
+                                {
+                                    @file[1]
+
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>
+                                @obj.Createddate
+                            </td>
+                            <td>
+                                <div class="btn btn-outline-info">
+                                    <a asp-controller="Dashboard" asp-action="SingleDownload" asp-route-id="@obj.Requestwisefileid">
+                                        <i class="bi bi-cloud-arrow-up"></i>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var obj in Model.reqfile)
-                        {
-                            <tr>
-                                <td>
-                                    @{
-                                        var file = obj.Filename.Split("document\\");
-                                    }
-                                    @if (file.Length > 1)
-                                    {
-                                        @file[1]
-
-                                    }
-                                    else
-                                    {
-                                        <span>-</span>
-                                    }
-                                </td>
-                                <td>
-                                    @obj.Createddate
-                                </td>
-                                <td>
-                                    <div class="btn btn-outline-info">
-                                        <a asp-controller="Dashboard" asp-action="SingleDownload" asp-route-id="@obj.Requestwisefileid">
-                                            <i class="bi bi-cloud-arrow-up"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="pinfo bg-white">
+            <h4>Patient Information</h4>
+            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="firstname" type="text" class="form-control" id="firstname" placeholder="Name" disabled>
+                        <label for="floatingInput">First Name</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="lastname" type="text" class="form-control" id="lastname" placeholder="Name" disabled>
+                        <label for="floatingInput">Last Name</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3 date w-100">
+                        <input asp-for="DOB" type="date" class="form-control" id="birthdate" placeholder="Date" disabled>
+                        <label for="floatingInput">Date Of Birth</label>
+                    </div>
+                </div>
+                <div class="col d-flex">
+                    <div class="form-floating mb-3 numcountry me-2" style="width:100%">
+                        <input asp-for="phonenumber" type="tel" class="form-control output" id="phonenumber" placeholder="Phone Number" disabled>
+                        <label for="floatingInput">Phone Number</label>
+                    </div>
+                    <a>
+                        <button style="height:56px" type="button" class="btn btn-outline-primary"><i class="fa-solid fa-phone"></i></button>
+                    </a>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="email" type="email" class="form-control" id="patientEmail" placeholder="name@example.com" disabled>
+                        <label for="patientEmail">Email</label>
+                    </div>
+                </div>
             </div>
-        </form>
+            <div class="d-flex justify-content-end">
+                <button type="button" onclick="editclick()" class="btn btn-info text-white edit">Edit</button>
+                <a asp-action="CloseCasebtn" asp-controller="Admin" asp-route-id="@Model.reqid" type="button" class="btn btn-outline-info ms-1 CloseCase">Close Case</a>
+                <button onclick="CloseCaseEdit()" name="@Model.reqid" type="button" class="btn btn-info text-white d-none save">Save</button>
+                <button type="button" onclick="cancelclick()" class="btn btn-outline-info ms-1 d-none cancel">Cancel</button>
 
+            </div>
+        </div>
     </div>
 </div>
 
+<script>
+    function editclick() {
+        $('.save').removeClass('d-none').addClass('d-inline-block');
+        $('.cancel').removeClass('d-none').addClass('d-inline-block');
+        $('.edit').removeClass('d-inline-block').addClass('d-none');
+        $('.CloseCase').removeClass('d-inline-block').addClass('d-none');
+        $('.form-floating input').each(function () {
+            $(this).prop('disabled', false);
+        });
 
+    }
+    function cancelclick() {
+        $('.edit').removeClass('d-none').addClass('d-inline-block');
+        $('.CloseCase').removeClass('d-none').addClass('d-inline-block');
+        $('.save').removeClass('d-inline-block').addClass('d-none');
+        $('.cancel').removeClass('d-inline-block').addClass('d-none');
+        $('.form-floating input').each(function () {
+            $(this).prop('disabled', true);
+        });
+    }
+    function CloseCaseEdit(){
+        var data = new FormData();
+        data.append('reqid', @Model.reqid);
+        data.append('firstname', $('#firstname').val());
+        data.append('lastname', $('#lastname').val());
+        data.append('DOB', $('#birthdate').val());
+        data.append('phonenumber', $('#phonenumber').val());
+        data.append('email', $('#patientEmail').val());
+        $.ajax({
+            url: '/Admin/Closecaseedit',
+            data: data,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            success: function (response) {
+                $('#home-tab-pane').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+</script>
 
 

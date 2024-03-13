@@ -47,7 +47,7 @@ namespace Services.Implementation
         public NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage)
         {
             NewStateData data = new NewStateData();
-            List<Request> req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z=>z.Physician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
+            List<Request> req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
             List<Request> newreq = req.Skip((currentPage - 1) * 7).Take(7).ToList();
             data.req = newreq;
             data.newcount = getNewRequestCount();
@@ -317,6 +317,13 @@ namespace Services.Implementation
             var reqfile = _context.Requestwisefiles.Where(u => u.Requestid == reqid && u.Isdeleted != new BitArray(new[] { true })).ToList();
             adminviewDoc.reqfile = reqfile;
             adminviewDoc.reqid = reqid;
+            var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == reqid);
+            adminviewDoc.firstname = reqclient.Firstname;
+            adminviewDoc.lastname = reqclient.Lastname;
+            DateTime tempDateTime = new DateTime(Convert.ToInt32(reqclient.Intyear), Convert.ToInt32(reqclient.Strmonth), (int)reqclient.Intdate);
+            adminviewDoc.DOB = tempDateTime;
+            adminviewDoc.phonenumber = reqclient.Phonenumber;
+            adminviewDoc.email = reqclient.Email;
             return adminviewDoc;
         }
 
@@ -408,6 +415,35 @@ namespace Services.Implementation
                 Notes = modal.reason
             };
             _context.Requeststatuslogs.Add(reqstatuslog);
+            _context.SaveChanges();
+        }
+        public void CloseCasebtn(int id)
+        {
+            var req = _context.Requests.FirstOrDefault(u => u.Requestid == id);
+            req.Status = 9;
+            req.Modifieddate = DateTime.Now;
+            _context.Requests.Update(req);
+            _context.SaveChanges();
+            Requeststatuslog requeststatuslog = new Requeststatuslog
+            {
+                Requestid = id,
+                Status = 9,
+                Createddate = DateTime.Now,
+            };
+            _context.Requeststatuslogs.Add(requeststatuslog);
+            _context.SaveChanges();
+        }
+        public void Closecaseedit([FromForm] AdminviewDoc formData)
+        {
+            var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == formData.reqid);
+            reqclient.Firstname = formData.firstname;
+            reqclient.Lastname = formData.lastname;
+            reqclient.Intdate = formData.DOB.Day;
+            reqclient.Strmonth = formData.DOB.Month.ToString();
+            reqclient.Intyear = formData.DOB.Year;
+            reqclient.Email = formData.email;
+            reqclient.Phonenumber = formData.phonenumber;
+            _context.Requestclients.Update(reqclient);
             _context.SaveChanges();
         }
     }

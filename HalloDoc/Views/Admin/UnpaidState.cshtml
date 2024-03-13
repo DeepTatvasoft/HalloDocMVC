@@ -130,7 +130,7 @@
                             type = "Concierge";
                         }
                         <tr style="--bs-table-bg:@color">
-                            <td scope="row">@obj.Firstname, @obj.Lastname</td>
+                            <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
                             <td scope="row">
                                 <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
                             </td>
@@ -146,11 +146,11 @@
                             </td>
                             <td scope="row">@obj.Modifieddate</td>
                             <td scope="row">
-                                <div class="phone">@obj.Phonenumber</div>
+                                <div class="phone">@reqclient.Phonenumber</div>
                                 (Patient)
                                 @if (type != "Patient")
                                 {
-                                    <div class="phone">@reqclient.Phonenumber</div>
+                                    <div class="phone">@obj.Phonenumber</div>
                                     <span>(@type)</span>
                                 }
                             </td>

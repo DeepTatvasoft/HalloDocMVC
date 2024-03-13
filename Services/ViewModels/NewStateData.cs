@@ -48,6 +48,11 @@ namespace Services.ViewModels
         public List<Requestwisefile> reqfile { get; set; }
         public string ConfirmationNum { get; set; }
         public int reqid { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public DateTime DOB { get; set; }
+        public string phonenumber { get; set; }
+        public string email { get; set; }
     }
     public class SendOrders
     {

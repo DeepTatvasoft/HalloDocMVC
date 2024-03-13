@@ -325,5 +325,16 @@ namespace HalloDoc.Controllers
         {
             return PartialView("AdminLayout/_CloseCase", adminFunction.AdminuploadDoc(reqid));
         }
+        public IActionResult CloseCasebtn(int id)
+        {
+            adminFunction.CloseCasebtn(id);
+            return RedirectToAction("AdminDashboard");
+        }
+        [HttpPost]
+        public IActionResult Closecaseedit([FromForm] AdminviewDoc formData)
+        {
+            adminFunction.Closecaseedit(formData);
+            return PartialView("AdminLayout/_CloseCase", adminFunction.AdminuploadDoc(formData.reqid));
+        }
     }
 }
