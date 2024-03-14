@@ -336,5 +336,16 @@ namespace HalloDoc.Controllers
             adminFunction.Closecaseedit(formData);
             return PartialView("AdminLayout/_CloseCase", adminFunction.AdminuploadDoc(formData.reqid));
         }
+
+        public IActionResult Profiletab()
+        {
+            int adminid = (int)HttpContext.Session.GetInt32("Adminid");
+            AdminProfile adminProfile = new AdminProfile();
+            adminProfile.Username = _context.Aspnetusers.FirstOrDefault(u => u.Id == adminid).Username;
+            Admin admindata = _context.Admins.FirstOrDefault(u => u.Adminid == adminid);
+            adminProfile.admindata = admindata;
+            adminProfile.regions = _context.Regions.ToList();
+            return View(adminProfile);
+        }
     }
 }
