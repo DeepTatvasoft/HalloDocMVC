@@ -1,5 +1,4 @@
 ﻿using Data.DataModels;
-using Data.DataModels;
 using Microsoft.AspNetCore.Mvc;
 using Services.ViewModels;
 
@@ -9,9 +8,10 @@ namespace Services.Contracts
     {
         (bool, string, int) loginadmin([Bind(new[] { "Email,Passwordhash" })] Aspnetuser aspNetUser);
         NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage);
-        NewStateData toogletable(string reqtypeid, string status);
+        NewStateData toogletable(string reqtypeid, string status, int currentPage);
         NewStateData1 ViewCase(int id);
-        NewStateData regiontable(int regionid, string status);
+        NewStateData regiontable(int regionid, string status, int currentPage);
+        NewStateData RegionReqtype(int regionid, string reqtypeid, string status, int currentPage);
         NewStateData AdminDashboard();
         int getToCloseRequestCount();
         int getActiveRequestCount();
@@ -36,6 +36,8 @@ namespace Services.Contracts
         void CancelAgreement(Agreementmodal modal);
         void AcceptAgreement(int id);
         void CloseCasebtn(int id);
-        void Closecaseedit([FromForm] AdminviewDoc formData);   
+        void Closecaseedit([FromForm] AdminviewDoc formData);
+        void AdminResetPassword(AdminProfile modal);
+        AdminProfile Profiletab(int adminid);
     }
 }

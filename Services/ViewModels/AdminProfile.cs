@@ -12,5 +12,6 @@ namespace Services.ViewModels
         public string Username { get; set; }
         public Admin admindata { get; set; }
         public List<Region> regions { get; set; }
+        public string ResetPassword { get; set; }
     }
 }

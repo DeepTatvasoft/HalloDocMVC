@@ -37,80 +37,104 @@ namespace HalloDoc.Controllers
             return View();
         }
         [Authorization("1")]
-        public IActionResult ActiveState(string reqtypeid, string status, int regionid , int currentPage)
+        public IActionResult ActiveState(string reqtypeid, string status, int regionid, int currentPage = 1)
         {
-            if (regionid != null && status != null && reqtypeid == null)
+            if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.regiontable(regionid, status));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+            }
+            if (regionid != 0 && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status, currentPage));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
             }
             return View(adminFunction.AdminDashboarddata(4, 4, 5, currentPage));
         }
         [Authorization("1")]
-        public IActionResult NewState(string reqtypeid, string status, int regionid, int currentPage)
+        public IActionResult NewState(string reqtypeid, string status, int regionid, int currentPage=1)
         {
-            if (regionid != null && status != null && reqtypeid == null)
+            if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.regiontable(regionid, status));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+            }
+            if (regionid != 0 && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status, currentPage));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
             }
-            return View(adminFunction.AdminDashboarddata(1, 1, 1 , currentPage));
+            return View(adminFunction.AdminDashboarddata(1, 1, 1, currentPage));
         }
         [Authorization("1")]
-        public IActionResult PendingState(string reqtypeid, string status, int regionid, int currentPage)
+        public IActionResult PendingState(string reqtypeid, string status, int regionid, int currentPage=1)
         {
-            if (regionid != null && status != null && reqtypeid == null)
+            if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.regiontable(regionid, status));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+            }
+            if (regionid != 0 && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status, currentPage));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
             }
             return View(adminFunction.AdminDashboarddata(2, 2, 2, currentPage));
         }
         [Authorization("1")]
-        public IActionResult TocloseState(string reqtypeid, string status, int regionid, int currentPage)
+        public IActionResult TocloseState(string reqtypeid, string status, int regionid, int currentPage = 1)
         {
-            if (regionid != null && status != null && reqtypeid == null)
+            if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.regiontable(regionid, status));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+            }
+            if (regionid != 0 && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status, currentPage));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
             }
             return View(adminFunction.AdminDashboarddata(3, 7, 8, currentPage));
         }
         [Authorization("1")]
-        public IActionResult UnpaidState(string reqtypeid, string status, int regionid, int currentPage)
+        public IActionResult UnpaidState(string reqtypeid, string status, int regionid, int currentPage = 1)
         {
-            if (regionid != null && status != null && reqtypeid == null)
+            if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.regiontable(regionid, status));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+            }
+            if (regionid != 0 && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status, currentPage));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
             }
             return View(adminFunction.AdminDashboarddata(9, 9, 9, currentPage));
         }
         [Authorization("1")]
-        public IActionResult ConcludeState(string reqtypeid, string status, int regionid, int currentPage)
+        public IActionResult ConcludeState(string reqtypeid, string status, int regionid, int currentPage = 1)
         {
-            if (regionid != null && status != null && reqtypeid == null)
+            if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.regiontable(regionid, status));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+            }
+            if (regionid != 0 && status != null && reqtypeid == null)
+            {
+                return View(adminFunction.regiontable(regionid, status, currentPage));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
             }
             return View(adminFunction.AdminDashboarddata(6, 6, 6, currentPage));
         }
@@ -126,7 +150,8 @@ namespace HalloDoc.Controllers
         public IActionResult AdminDashboard()
         {
             if (HttpContext.Session.GetString("Adminname") != null)
-            {;
+            {
+                ;
                 return View(adminFunction.AdminDashboard());
             }
             return RedirectToAction("adminlogin", "Admin");
@@ -340,12 +365,21 @@ namespace HalloDoc.Controllers
         public IActionResult Profiletab()
         {
             int adminid = (int)HttpContext.Session.GetInt32("Adminid");
-            AdminProfile adminProfile = new AdminProfile();
-            adminProfile.Username = _context.Aspnetusers.FirstOrDefault(u => u.Id == adminid).Username;
-            Admin admindata = _context.Admins.FirstOrDefault(u => u.Adminid == adminid);
-            adminProfile.admindata = admindata;
-            adminProfile.regions = _context.Regions.ToList();
-            return View(adminProfile);
+            return View(adminFunction.Profiletab(adminid));
+        }
+        [HttpPost]
+        public IActionResult AdminResetPassword(AdminProfile modal)
+        {
+            if (modal.ResetPassword == null)
+            {
+                TempData["error"] = "Please enter valid password";
+            }
+            else
+            {
+                TempData["success"] = "Your Password is changed Successfuly";
+                adminFunction.AdminResetPassword(modal);
+            }
+            return RedirectToAction("Profiletab", "Admin");
         }
     }
 }

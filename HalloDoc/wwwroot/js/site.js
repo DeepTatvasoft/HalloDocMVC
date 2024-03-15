@@ -146,9 +146,12 @@ function SendAgreement(clicked_name, Requesttypeid, phonenumber, email) {
     document.getElementById('PhoneSendAgreement').value = phonenumber;
     document.getElementById('EmailSendAgreement').value = email;
 }
-function ChangePage(Page, status) {
+
+function ChangePage(Page, status , reqtype ,region) {
     var currentPage = Page;
     var status = status;
+    regionid = region;
+    reqtypeid = reqtype;
     var url;
     if (status == 1) {
         url = "/Admin/NewState/"
@@ -170,7 +173,7 @@ function ChangePage(Page, status) {
     }
     $.ajax({
         url: url,
-        data: { "currentPage": currentPage },
+        data: { "currentPage": currentPage, "regionid": regionid, "reqtypeid": reqtypeid , "status" : status},
         type: "POST",
         dataType: "html",
         success: function (response) {

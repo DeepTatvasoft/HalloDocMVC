@@ -21,6 +21,9 @@ namespace Services.ViewModels
         public int reqid { get; set; }
         public string phonenumber { get; set; }
         public string emaill { get; set; }
+        public int region { get; set; }
+        public string reqtype { get; set; }
+        public int currentpage { get; set; }
     }
     public class NewStateData1
     {

@@ -3,6 +3,7 @@
     Layout = "AdminLayout/_AdminDashboard";
 }
 @model Services.ViewModels.AdminProfile
+<partial name="_Notification" />
 <div class="tabnav mt-2 bg-white d-none d-md-block">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -60,156 +61,208 @@
     </div>
     <div class="bg-white p-4 mt-2 rounded">
         <div class="accinfo">
-            <h5>Account Information</h5>
-            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.Username" type="text" class="form-control" id="floatingInput" placeholder="Name">
-                        <label for="floatingInput">User Name</label>
+            <form method="post" asp-action="AdminResetPassword" asp-controller="Admin">
+                <input asp-for="@Model.admindata.Adminid" type="hidden">
+                <h5>Account Information</h5>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.Username" type="text" class="form-control" id="floatingInput" placeholder="Name" disabled>
+                            <label for="floatingInput">User Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.ResetPassword" type="password" class="form-control" id="floatingInput" placeholder="Name">
+                            <label for="floatingInput">Password</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example" disabled>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <label for="floatingSelect">Status</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example" disabled>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <label for="floatingSelect">Role</label>
+                        </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="floatingInput" placeholder="Name">
-                        <label for="floatingInput">Password</label>
-                    </div>
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-outline-info">Reset Password</button>
                 </div>
-                <div class="col">
-                    <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                        <label for="floatingSelect">Status</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                        <label for="floatingSelect">Role</label>
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-end mt-4">
-                <button type="button" class="btn btn-outline-info">Reset Password</button>
-            </div>
+            </form>
         </div>
 
         <div class="Administratorinfo">
-            <h5>Administrator Information</h5>
-            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.admindata.Firstname" type="text" class="form-control" id="floatingInput" placeholder="FirstName">
-                        <label for="floatingInput">First Name</label>
+            <form>
+
+                <h5>Administrator Information</h5>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.admindata.Firstname" type="text" class="form-control firstedit" id="floatingInput" placeholder="FirstName" disabled>
+                            <label for="floatingInput">First Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.admindata.Lastname" type="text" class="form-control firstedit" id="floatingInput" placeholder="Name" disabled>
+                            <label for="floatingInput">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.admindata.Email" type="email" class="form-control firstedit" id="floatingInput" placeholder="name@example.com" disabled>
+                            <label for="floatingInput">Email</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.admindata.Email" type="email" class="form-control firstedit" id="floatingInput" placeholder="name@example.com" disabled>
+                            <label for="floatingInput">Confirm Email</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3 numcountry">
+                            <select name="country" id="country" class="country firstedit" onchange="country_code()" disabled>
+                                <option value="select country">select country</option>
+                                <option value="us">US</option>
+                                <option value="uk">UK</option>
+                                <option value="br">BRAZIL</option>
+                                <option value="ind">INDIA</option>
+                            </select>
+                            <input asp-for="@Model.admindata.Mobile" type="tel" class="form-control output firstedit" id="output" placeholder="Mobile Number" disabled>
+                        </div>
+                    </div>
+                    <div class="col d-flex flex-wrap">
+                        @foreach (var obj in Model.regions)
+                        {
+                            <div class="form-check me-2">
+                                <input class="form-check-input firstedit" type="checkbox" value="@obj.Regionid" id="flexCheckChecked-@obj.Regionid" checked disabled>
+                                <label class="form-check-label" for="flexCheckChecked-@obj.Regionid">
+                                    @obj.Name
+                                </label>
+                            </div>
+                        }
                     </div>
                 </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.admindata.Lastname" type="text" class="form-control" id="floatingInput" placeholder="Name">
-                        <label for="floatingInput">Last Name</label>
-                    </div>
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="button" onclick="editoneclick()" class="btn btn-info text-white editf">Edit</button>
+                    <button type="button" class="btn btn-info text-white d-none savef">Save</button>
+                    <button type="reset" onclick="canceloneclick()" class="btn btn-outline-info ms-1 d-none cancelf">Cancel</button>
                 </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.admindata.Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Email</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.admindata.Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Confirm Email</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="mb-3 numcountry">
-                        <select name="country" id="country" class="country" onchange="country_code()">
-                            <option value="select country">select country</option>
-                            <option value="us">US</option>
-                            <option value="uk">UK</option>
-                            <option value="br">BRAZIL</option>
-                            <option value="ind">INDIA</option>
-                        </select>
-                        <input asp-for="@Model.admindata.Mobile" type="tel" class="form-control output" id="output" placeholder="Mobile Number">
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-                        <label class="form-check-label" for="flexCheckChecked">
-                            Checked checkbox
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-end mt-4">
-                <button type="button" class="btn btn-info text-white">Edit</button>
-            </div>
+            </form>
         </div>
 
         <div class="Mailinginfo">
-            <h5>Mailing & Billing Information</h5>
-            <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.admindata.Address1" type="text" class="form-control" id="floatingInput" placeholder="FirstName">
-                        <label for="floatingInput">Address 1</label>
+            <form>
+
+                <h5>Mailing & Billing Information</h5>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.admindata.Address1" type="text" class="form-control secondedit" id="floatingInput" placeholder="FirstName" disabled>
+                            <label for="floatingInput">Address 1</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.admindata.Address2" type="text" class="form-control secondedit" id="floatingInput" placeholder="Name" disabled>
+                            <label for="floatingInput">Address 2</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.admindata.City" type="text" class="form-control secondedit" id="floatingInput" placeholder="name@example.com" disabled>
+                            <label for="floatingInput">City</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating">
+                            <select class="form-select secondedit" id="floatingSelect" aria-label="Floating label select example" disabled>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <label for="floatingSelect">State</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="@Model.admindata.Zip" type="text" class="form-control secondedit" id="floatingInput" placeholder="name@example.com" disabled>
+                            <label for="floatingInput">Zip</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3 numcountry">
+                            <select name="country" id="country2" class="country secondedit" onchange="country_code2()" disabled>
+                                <option value="select country">select country</option>
+                                <option value="us">US</option>
+                                <option value="uk">UK</option>
+                                <option value="br">BRAZIL</option>
+                                <option value="ind">INDIA</option>
+                            </select>
+                            <input asp-for="@Model.admindata.Mobile" type="tel" class="form-control output secondedit" id="output2" placeholder="Mobile Number" disabled>
+                        </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.admindata.Address2" type="text" class="form-control" id="floatingInput" placeholder="Name">
-                        <label for="floatingInput">Address 2</label>
-                    </div>
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits">Edit</button>
+                    <button type="button" class="btn btn-info text-white d-none saves">Save</button>
+                    <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels">Cancel</button>
                 </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.admindata.City" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">City</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                        <label for="floatingSelect">State</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-floating mb-3">
-                        <input asp-for="@Model.admindata.Zip" type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                        <label for="floatingInput">Zip</label>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="mb-3 numcountry">
-                        <select name="country" id="country2" class="country" onchange="country_code2()">
-                            <option value="select country">select country</option>
-                            <option value="us">US</option>
-                            <option value="uk">UK</option>
-                            <option value="br">BRAZIL</option>
-                            <option value="ind">INDIA</option>
-                        </select>
-                        <input type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-end mt-4">
-                <button type="button" class="btn btn-info text-white">Edit</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
+<script>
+    function editoneclick() {
+        $('.savef').removeClass('d-none').addClass('d-inline-block');
+        $('.cancelf').removeClass('d-none').addClass('d-inline-block');
+        $('.editf').removeClass('d-inline-block').addClass('d-none');
+        $('.firstedit').each(function () {
+            $(this).prop('disabled', false);
+        });
 
+    }
+    function canceloneclick() {
+        $('.editf').removeClass('d-none').addClass('d-inline-block');
+        $('.savef').removeClass('d-inline-block').addClass('d-none');
+        $('.cancelf').removeClass('d-inline-block').addClass('d-none');
+        $('.firstedit').each(function () {
+            $(this).prop('disabled', true);
+        });
+    }
+    function editsecondclick() {
+        $('.saves').removeClass('d-none').addClass('d-inline-block');
+        $('.cancels').removeClass('d-none').addClass('d-inline-block');
+        $('.edits').removeClass('d-inline-block').addClass('d-none');
+        $('.secondedit').each(function () {
+            $(this).prop('disabled', false);
+        });
+
+    }
+    function cancelsecondclick() {
+        $('.edits').removeClass('d-none').addClass('d-inline-block');
+        $('.saves').removeClass('d-inline-block').addClass('d-none');
+        $('.cancels').removeClass('d-inline-block').addClass('d-none');
+        $('.secondedit').each(function () {
+            $(this).prop('disabled', true);
+        });
+    }
+</script>
 
 
 

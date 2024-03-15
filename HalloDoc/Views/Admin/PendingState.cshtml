@@ -20,73 +20,7 @@
     }
 </style>
 
-<div class="container-fluid" id="alldata">
-    <div class="d-flex flex-wrap justify-content-between">
-        <h4 class="mt-2">Patients (New)</h4>
-        <div class="allbtn d-flex">
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
-                <i class="bi bi-send me-1"></i>
-                <span class="d-none d-md-block">
-                    Send Link
-                </span>
-            </button>
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
-                <i class="bi bi-journal-text me-1"></i>
-                <span class="d-none d-md-block">
-                    Create Request
-                </span>
-            </button>
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
-                <i class="fa-solid fa-file-export me-1"></i>
-                <span class="d-none d-md-block">
-                    Export
-                </span>
-            </button>
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
-                <i class="fa-solid fa-file-zipper me-1"></i>
-                <span class="d-none d-md-block">
-                    Export All
-                </span>
-            </button>
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
-                <i class="fa-solid fa-headset me-1"></i>
-                <span class="d-none d-md-block">
-                    Request DIY Support
-                </span>
-            </button>
-        </div>
-    </div>
-    <div class="tablehead mt-4 d-flex flex-wrap justify-content-between bg-white">
-        <div class="d-flex flex-wrap align-items-center">
-            <div class="searchbar ms-2">
-                <input id="myInput" style="padding-left : 30px;position: relative;top: 13px;" class="form-control me-2" type="search" placeholder=" Search Patients" aria-label="Search">
-                <i class="bi bi-search searchicon1"></i>
-            </div>
-            <div class="ms-2">
-                <datalist id="suggestions">
-                    <option id="uk">United Kingdom</option>
-                    <option id="uae">Dubai</option>
-                    <option id="ny">New York</option>
-                </datalist>
-                <input class="region" autoComplete="on" list="suggestions" placeholder="All Region" />
-                <i class="bi bi-search searchicon2"></i>
-                <i class="fa-solid fa-chevron-down down"></i>
-            </div>
-        </div>
-        <div class="d-flex flex-wrap mt-3">
-            <div type="radio" class="border border-secondary-subtle all ms-3 mb-3 me-3 requestby d-none d-md-inline-block" id="requestbyAll" style="cursor : pointer">
-                All
-            </div>
-            <div class="d-flex flex-wrap">
-                <div class="ms-3 me-3 requestby" id="1" style="cursor : pointer"><span class="dot" style="Background-color : green;"></span> Patient</div>
-                <div class="ms-3 me-3 requestby" id="2" style="cursor : pointer"><span class="dot" style="Background-color : darkorange;"></span> Family/Friend</div>
-                <div class="ms-3 me-3 requestby" id="3" style="cursor : pointer"><span class="dot" style="Background-color : hotpink;"></span> Business</div>
-                <div class="ms-3 me-3 requestby" id="4" style="cursor : pointer"><span class="dot" style="Background-color : dodgerblue;"></span> Concierge</div>
-                <div class="ms-3 me-3 requestby" id="5" style="cursor : pointer"><span class="dot" style="Background-color : mediumpurple;"></span> Vip</div>
-            </div>
-        </div>
-
-    </div>
+<div class="container-fluid">
     <div id="status-tabContent">
         <div class="table-responsive text-white mt-3">
             <table class="table d-none d-md-table" id="maintable">
@@ -191,27 +125,7 @@
                     }
                 </tbody>
             </table>
-            <div class="d-none d-md-flex justify-content-center gap-3">
-                @if (Model.totalpages > 0)
-                {
-                    var x = 0;
-                    if (Model.totalpages % 7 == 0)
-                    {
-                        x = 0;
-                    }
-                    else
-                    {
-                        x = 1;
-                    }
-                    @for (int page = 0; page < (Model.totalpages / 7) + x; page++)
-                    {
-                        var temp = page + 1;
-                        <button class="@temp" id="page-@temp" onclick="ChangePage(@temp,2)" style="width:25px">
-                            @temp
-                        </button>
-                    }
-                }
-            </div>
+            
             <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
 
                 <div class="accordion-item">
@@ -311,7 +225,92 @@
                 </div>
             </div>
         </div>
+        <div class="d-flex justify-content-center gap-3">
+            @if (Model.totalpages > 0)
+            {
+                var previous = Model.currentpage - 1;
+                var next = Model.currentpage + 1;
+                if (previous <= 0)
+                {
+                    previous = 1;
+                }
+                if (next > Model.totalpages)
+                {
+                    next = Model.totalpages;
+                }
+                <button class="@previous" id="page-0" onclick="ChangePage(@previous ,2, '@Model.reqtype' , @Model.region)" style="width:68px">
+                    Previous
+                </button>
+                @if (Model.totalpages > 5)
+                {
+                    @if (Model.currentpage > Model.totalpages - 3)
+                    {
+                        <button class="1" id="page-1" onclick="ChangePage(1 ,2, '@Model.reqtype' , @Model.region)" style="width:25px">
+                            1
+                        </button>
+                        <button class="0" id="page-0" style="width:25px">
+                            ...
+                        </button>
+                        @for (var i = Model.totalpages - 3; i <= Model.totalpages; i++)
+                        {
+                            <button class="@i" id="page-@i" onclick="ChangePage(@i ,2, '@Model.reqtype' , @Model.region)" style="width:25px">
+                                @i
+                            </button>
+                        }
+                    }
+                    else if (Model.currentpage < Model.totalpages - 2 && Model.currentpage > 3)
+                    {
+                        <button class="1" id="page-1" onclick="ChangePage(1 ,2, '@Model.reqtype' , @Model.region)" style="width:25px">
+                            1
+                        </button>
+                        <button class="0" id="page-0" style="width:25px">
+                            ...
+                        </button>
+                        @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
+                        {
+                            <button class="@i" id="page-@i" onclick="ChangePage(@i ,2, '@Model.reqtype' , @Model.region)" style="width:25px">
+                                @i
+                            </button>
+                        }
+                        <button class="0" id="page-0" style="width:25px">
+                            ...
+                        </button>
+                        <button class="@Model.totalpages" id="page-@Model.totalpages" onclick="ChangePage(@Model.totalpages ,2, '@Model.reqtype' , @Model.region)" style="width:25px">
+                            @Model.totalpages
+                        </button>
+                    }
+                    else
+                    {
+                        @for (var i = 1; i <= 4; i++)
+                        {
+                            <button class="@i" id="page-@i" onclick="ChangePage(@i ,2, '@Model.reqtype' , @Model.region)" style="width:25px">
+                                @i
+                            </button>
+                        }
+                        <button class="0" id="page-0" style="width:25px">
+                            ...
+                        </button>
+                        <button class="@Model.totalpages" id="page-@Model.totalpages" onclick="ChangePage(@Model.totalpages ,2, '@Model.reqtype' , @Model.region)" style="width:25px">
+                            @Model.totalpages
+                        </button>
+                    }
+                }
+                else
+                {
+                    @for (int page = 0; page < Model.totalpages; page++)
+                    {
+                        var temp = page + 1;
 
+                        <button class="@temp" id="page-@temp" onclick="ChangePage(@temp ,2, '@Model.reqtype' , @Model.region)" style="width:25px">
+                            @temp
+                        </button>
+                    }
+                }
+                <button class="@next" id="page-@next" onclick="ChangePage(@next ,2, '@Model.reqtype' , @Model.region)" style="width:50px">
+                    Next
+                </button>
+            }
+        </div>
     </div>
 </div>
 
@@ -409,83 +408,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#myInput").on("input", function () {
-            var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-        });
-        $('.requestby').on('click', function (e) {
-            e.preventDefault();
-            //$('.dashboardtab').removeClass('active');
-            //$(this).addClass('active');
-            var target = $(this).attr('id');
-            var status;
-            var requesttype;
-            console.log(target);
-            switch (target) {
-                case '1':
-                    status = '2';
-                    requesttype = '1';
-                    break;
-                case '2':
-                    status = '2';
-                    requesttype = '2';
-                    break;
-                case '3':
-                    status = '2';
-                    requesttype = '4';
-                    break;
-                case '4':
-                    status = '2';
-                    requesttype = '3';
-                    break;
-                default:
-            }
-
-            $.ajax({
-                url: '/Admin/PendingState',
-                data: { "status": status, "reqtypeid": requesttype },
-                success: function (response) {
-                    $('#status-tabContent').html(response);
-                    document.getElementById("page-1").style.backgroundColor = "lightblue";
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-        $('.physiciandata').on('change', function (e) {
-            var regionid = $(this).val();
-            console.log(regionid);
-
-            $.ajax({
-                url: '/admin/filterregion',
-                data: { "regionid": regionid },
-                success: function (response) {
-                    //console.log(response);
-                    var physelect = $('#physelect');
-                    //console.log(physelect);
-                    physelect.empty();
-                    physelect.append($('<option>', {
-                        value: "",
-                        text: "Select Physician"
-                    }))
-                    response.forEach(function (item) {
-                        //console.log(item);
-                        physelect.append(
-                            $('<option>', {
-                                value: item.physicianid,
-                                text: item.firstname
-                            }));
-                        console.log("fetch success");
-                    });
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
         $('.transfer').on('click', function (e) {
             var reqid = $('#reqidAssignModel').text();
             var regid = $('.physiciandata').val();
@@ -499,39 +421,6 @@
                 data: { "reqid": reqid, "regid": regid, "phyid": phyid, "Assignnotes": Assignnotes },
                 success: function (response) {
 
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-        $('.region').on('change', function (e) {
-            var target = $('.region').val();
-            $('.region').value = target;
-            $('.region').removeAttr('placeholder');
-            $(".region").attr("value", target);
-            console.log($(".region").attr("value"));
-            switch (target) {
-                case 'United Kingdom':
-                    status = '2';
-                    regionid = '3';
-                    break;
-                case 'Dubai':
-                    status = '2';
-                    regionid = '2';
-                    break;
-                case 'New York':
-                    status = '2';
-                    regionid = '1';
-                    break;
-                default:
-            }
-            $.ajax({
-                url: '/Admin/PendingState',
-                data: { "status": status, "regionid": regionid },
-                success: function (response) {
-                    $('#status-tabContent').html(response);
-                    document.getElementById("page-1").style.backgroundColor = "lightblue";
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
