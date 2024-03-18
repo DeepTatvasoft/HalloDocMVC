@@ -663,7 +663,7 @@ namespace Services.Implementation
                     }
                     else
                     {
-                        row.CreateCell(16).SetCellValue(model.physicians.ElementAt(i).Firstname);
+                        row.CreateCell(16).SetCellValue(model.req.ElementAt(i).Physician.Firstname);
                     }
                     row.CreateCell(17).SetCellValue(model.status);
                 }
