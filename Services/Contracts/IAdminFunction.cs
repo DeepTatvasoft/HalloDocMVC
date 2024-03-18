@@ -7,11 +7,11 @@ namespace Services.Contracts
     public interface IAdminFunction
     {
         (bool, string, int) loginadmin([Bind(new[] { "Email,Passwordhash" })] Aspnetuser aspNetUser);
-        NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage);
-        NewStateData toogletable(string reqtypeid, string status, int currentPage);
+        NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage, string searchkey);
+        NewStateData toogletable(string reqtypeid, string status, int currentPage, string searchkey);
         NewStateData1 ViewCase(int id);
-        NewStateData regiontable(int regionid, string status, int currentPage);
-        NewStateData RegionReqtype(int regionid, string reqtypeid, string status, int currentPage);
+        NewStateData regiontable(int regionid, string status, int currentPage, string searchkey);
+        NewStateData RegionReqtype(int regionid, string reqtypeid, string status, int currentPage, string searchkey);
         NewStateData AdminDashboard();
         int getToCloseRequestCount();
         int getActiveRequestCount();
@@ -39,5 +39,8 @@ namespace Services.Contracts
         void Closecaseedit([FromForm] AdminviewDoc formData);
         void AdminResetPassword(AdminProfile modal);
         AdminProfile Profiletab(int adminid);
+        void AdministratorinfoEdit(AdminProfile Modal);
+        void MailinginfoEdit(AdminProfile modal);
+        byte[] DownloadExcle(NewStateData model);
     }
 }

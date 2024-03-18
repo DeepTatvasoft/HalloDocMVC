@@ -3,6 +3,9 @@ using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using Org.BouncyCastle.Ocsp;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
@@ -44,12 +47,10 @@ namespace Services.Implementation
                 return (false, null, 0);
             }
         }
-        public NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage)
+        public NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage, string searchkey = "")
         {
             NewStateData data = new NewStateData();
             List<Request> req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
-            List<Request> newreq = req.Skip((currentPage - 1) * 1).Take(1).ToList();
-            data.req = newreq;
             data.newcount = getNewRequestCount();
             data.activecount = getActiveRequestCount();
             data.pendingcount = getPendingRequestCount();
@@ -58,12 +59,19 @@ namespace Services.Implementation
             data.Unpaidcount = getUnpaidRequestCount();
             var regions = _context.Regions.ToList();
             data.regions = regions;
+            if (!string.IsNullOrWhiteSpace(searchkey))
+            {
+                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
+            }
             data.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
+            req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
             var casetag = _context.Casetags.ToList();
             List<Requeststatuslog> requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
+            data.req = req;
             data.requeststatuslogs = requeststatuslogs;
             data.casetags = casetag;
             data.currentpage = currentPage;
+            data.searchkey = searchkey;
             return data;
         }
         public NewStateData AdminDashboard()
@@ -77,7 +85,7 @@ namespace Services.Implementation
             modal.Unpaidcount = getUnpaidRequestCount();
             return modal;
         }
-        public NewStateData toogletable(string reqtypeid, string status , int currentPage)
+        public NewStateData toogletable(string reqtypeid, string status, int currentPage, string searchkey = "")
         {
             NewStateData newStateData = new NewStateData();
             List<Request> req;
@@ -97,19 +105,25 @@ namespace Services.Implementation
                 req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
                 requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
             }
-            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
             newStateData.requeststatuslogs = requeststatuslogs;
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
             newStateData.casetags = casetag;
             newStateData.reqtype = reqtypeid;
-            List<Request> newreq = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            if (!string.IsNullOrWhiteSpace(searchkey))
+            {
+                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
+            }
+            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
+            req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
             newStateData.currentpage = currentPage;
-            newStateData.req = newreq;
+            newStateData.req = req;
+            newStateData.searchkey = searchkey;
+            newStateData.status = Convert.ToInt32(status);
             return newStateData;
         }
-        public NewStateData RegionReqtype(int regionid, string reqtypeid, string status, int currentPage)
+        public NewStateData RegionReqtype(int regionid, string reqtypeid, string status, int currentPage, string searchkey = "")
         {
             NewStateData newStateData = new NewStateData();
             newStateData.region = regionid;
@@ -136,7 +150,6 @@ namespace Services.Implementation
                 req = req.Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
                 requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
             }
-            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
@@ -144,14 +157,20 @@ namespace Services.Implementation
             newStateData.reqtype = reqtypeid;
             newStateData.requeststatuslogs = requeststatuslogs;
             newStateData.currentpage = currentPage;
-            List<Request> newreq = req.Skip((currentPage - 1) * 1).Take(1).ToList();
-            newStateData.req = newreq;
+            if (!string.IsNullOrWhiteSpace(searchkey))
+            {
+                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
+            }
+            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
+            req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            newStateData.req = req;
+            newStateData.searchkey = searchkey;
             return newStateData;
         }
         public NewStateData1 ViewCase(int id)
         {
             NewStateData1 newStateData1 = new NewStateData1();
-            Request req = _context.Requests.Include(r => r.Requestclients).FirstOrDefault(u => u.Requestid == id);
+            Request? req = _context.Requests.Include(r => r.Requestclients).FirstOrDefault(u => u.Requestid == id);
             newStateData1.req = req;
             var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == req.Requestid);
             int date = (int)reqclient.Intdate;
@@ -168,7 +187,7 @@ namespace Services.Implementation
             return newStateData1;
         }
 
-        public NewStateData regiontable(int regionid, string status, int currentPage)
+        public NewStateData regiontable(int regionid, string status, int currentPage, string searchkey = "")
         {
             NewStateData newStateData = new NewStateData();
             newStateData.region = regionid;
@@ -195,15 +214,20 @@ namespace Services.Implementation
                 req = req.Where(u => u.Status.ToString() == status).ToList();
                 requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
             }
-            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
             newStateData.casetags = casetag;
             newStateData.currentpage = currentPage;
             newStateData.requeststatuslogs = requeststatuslogs;
-            List<Request> newreq = req.Skip((currentPage - 1) * 1).Take(1).ToList();
-            newStateData.req = newreq;
+            if (!string.IsNullOrWhiteSpace(searchkey))
+            {
+                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
+            }
+            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
+            req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            newStateData.req = req;
+            newStateData.searchkey = searchkey;
             return newStateData;
         }
         public int getToCloseRequestCount()
@@ -402,9 +426,9 @@ namespace Services.Implementation
             List<Healthprofessional> list = _context.Healthprofessionals.Where(u => u.Profession == professionid).ToList();
             return list;
         }
-        public Healthprofessional filterbusiness(int vendorid)
+        public Healthprofessional? filterbusiness(int vendorid)
         {
-            Healthprofessional profession = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == vendorid);
+            Healthprofessional? profession = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == vendorid);
             return profession;
         }
         public void OrderSubmit(SendOrders sendorder)
@@ -507,5 +531,130 @@ namespace Services.Implementation
             adminProfile.regions = _context.Regions.ToList();
             return adminProfile;
         }
+        public void AdministratorinfoEdit(AdminProfile Modal)
+        {
+            var admin = _context.Admins.FirstOrDefault(u => u.Adminid == Modal.admindata.Adminid);
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == Modal.admindata.Adminid);
+            admin.Firstname = Modal.admindata.Firstname;
+            admin.Lastname = Modal.admindata.Lastname;
+            admin.Email = Modal.admindata.Email;
+            admin.Mobile = Modal.admindata.Mobile;
+            admin.Modifieddate = DateTime.Now;
+            aspuser.Phonenumber = Modal.admindata.Mobile;
+            aspuser.Email = Modal.admindata.Email;
+            aspuser.Modifieddate = DateTime.Now;
+            _context.Aspnetusers.Update(aspuser);
+            _context.Admins.Update(admin);
+            _context.SaveChanges();
+        }
+        public void MailinginfoEdit(AdminProfile modal)
+        {
+            var admin = _context.Admins.FirstOrDefault(u => u.Adminid == modal.admindata.Adminid);
+            admin.Address1 = modal.admindata.Address1;
+            admin.Address2 = modal.admindata.Address2;
+            admin.City = modal.admindata.City;
+            admin.Regionid = modal.admindata.Regionid;
+            admin.Zip = modal.admindata.Zip;
+            admin.Altphone = modal.admindata.Altphone;
+            admin.Modifieddate = DateTime.Now;
+            _context.Admins.Update(admin);
+            _context.SaveChanges();
+        }
+        public byte[] DownloadExcle(NewStateData model)
+        {
+            using (var workbook = new XSSFWorkbook())
+            {
+                ISheet sheet = workbook.CreateSheet("FilteredRecord");
+                IRow headerRow = sheet.CreateRow(0);
+                headerRow.CreateCell(0).SetCellValue("Sr No.");
+                headerRow.CreateCell(1).SetCellValue("Request Id");
+                headerRow.CreateCell(2).SetCellValue("Patient Name");
+                headerRow.CreateCell(3).SetCellValue("Patient DOB");
+                headerRow.CreateCell(4).SetCellValue("RequestorName");
+                headerRow.CreateCell(5).SetCellValue("RequestedDate");
+                headerRow.CreateCell(6).SetCellValue("PatientPhone");
+                headerRow.CreateCell(7).SetCellValue("TransferNotes");
+                headerRow.CreateCell(8).SetCellValue("RequestorPhone");
+                headerRow.CreateCell(9).SetCellValue("RequestorEmail");
+                headerRow.CreateCell(10).SetCellValue("Address");
+                headerRow.CreateCell(11).SetCellValue("Notes");
+                headerRow.CreateCell(12).SetCellValue("ProviderEmail");
+                headerRow.CreateCell(13).SetCellValue("PatientEmail");
+                headerRow.CreateCell(14).SetCellValue("RequestType");
+                headerRow.CreateCell(15).SetCellValue("Region");
+                headerRow.CreateCell(16).SetCellValue("PhysicainName");
+                headerRow.CreateCell(17).SetCellValue("Status");
+
+                for (int i = 0; i < model.req.Count; i++)
+                {
+                    var reqclient = model.req.ElementAt(i).Requestclients.ElementAt(0);
+                    var type = "";
+                    if (model.req.ElementAt(i).Requesttypeid == 1)
+                    {
+                        type = "Patient";
+                    }
+                    else if (model.req.ElementAt(i).Requesttypeid == 2)
+                    {
+                        type = "Family";
+                    }
+                    else if (model.req.ElementAt(i).Requesttypeid == 4)
+                    {
+                        type = "Business";
+                    }
+                    else if (model.req.ElementAt(i).Requesttypeid == 3)
+                    {
+                        type = "Concierge";
+                    }
+                    IRow row = sheet.CreateRow(i + 1);
+                    row.CreateCell(0).SetCellValue(i + 1);
+                    row.CreateCell(1).SetCellValue(model.req.ElementAt(i).Requestid);
+                    row.CreateCell(2).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Firstname);
+                    row.CreateCell(3).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Intdate + "/" + model.req.ElementAt(i).Requestclients.ElementAt(0).Strmonth + "/" + model.req.ElementAt(i).Requestclients.ElementAt(0).Intyear);
+                    row.CreateCell(4).SetCellValue(model.req.ElementAt(i).Firstname);
+                    row.CreateCell(5).SetCellValue(model.req.ElementAt(i).Createddate);
+                    row.CreateCell(6).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Phonenumber);
+                    if (model.requeststatuslogs.Count == 0)
+                    {
+                        row.CreateCell(7).SetCellValue("");
+                    }
+                    else
+                    {
+                        row.CreateCell(7).SetCellValue(model.requeststatuslogs.ElementAt(0).Notes);
+                    }
+                    row.CreateCell(8).SetCellValue(model.req.ElementAt(i).Phonenumber);
+                    row.CreateCell(9).SetCellValue(model.req.ElementAt(i).Email);
+                    row.CreateCell(10).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Address);
+                    row.CreateCell(11).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Notes);
+                    if (model.physicians == null)
+                    {
+                        row.CreateCell(12).SetCellValue("");
+                    }
+                    else
+                    {
+                        row.CreateCell(12).SetCellValue(model.physicians.ElementAt(i).Email);
+                    }
+                    row.CreateCell(13).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Email);
+                    row.CreateCell(14).SetCellValue(type);
+                    row.CreateCell(15).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Region.Name);
+                    if (model.req.ElementAt(i).Physician == null)
+                    {
+                        row.CreateCell(16).SetCellValue("");
+                    }
+                    else
+                    {
+                        row.CreateCell(16).SetCellValue(model.physicians.ElementAt(i).Firstname);
+                    }
+                    row.CreateCell(17).SetCellValue(model.status);
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.Write(stream);
+                    var content = stream.ToArray();
+                    return content;
+                }
+            }
+        }
+
     }
 }

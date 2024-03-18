@@ -37,106 +37,106 @@ namespace HalloDoc.Controllers
             return View();
         }
         [Authorization("1")]
-        public IActionResult ActiveState(string reqtypeid, string status, int regionid, int currentPage = 1)
+        public IActionResult ActiveState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
         {
             if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage, searchkey));
             }
             if (regionid != 0 && status != null && reqtypeid == null)
             {
-                return View(adminFunction.regiontable(regionid, status, currentPage));
+                return View(adminFunction.regiontable(regionid, status, currentPage, searchkey));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(4, 4, 5, currentPage));
+            return View(adminFunction.AdminDashboarddata(4, 4, 5, currentPage, searchkey));
         }
         [Authorization("1")]
-        public IActionResult NewState(string reqtypeid, string status, int regionid, int currentPage=1)
+        public IActionResult NewState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
         {
             if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage, searchkey));
             }
             if (regionid != 0 && status != null && reqtypeid == null)
             {
-                return View(adminFunction.regiontable(regionid, status, currentPage));
+                return View(adminFunction.regiontable(regionid, status, currentPage, searchkey));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(1, 1, 1, currentPage));
+            return View(adminFunction.AdminDashboarddata(1, 1, 1, currentPage, searchkey));
         }
         [Authorization("1")]
-        public IActionResult PendingState(string reqtypeid, string status, int regionid, int currentPage=1)
+        public IActionResult PendingState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
         {
             if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage, searchkey));
             }
             if (regionid != 0 && status != null && reqtypeid == null)
             {
-                return View(adminFunction.regiontable(regionid, status, currentPage));
+                return View(adminFunction.regiontable(regionid, status, currentPage, searchkey));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(2, 2, 2, currentPage));
+            return View(adminFunction.AdminDashboarddata(2, 2, 2, currentPage, searchkey));
         }
         [Authorization("1")]
-        public IActionResult TocloseState(string reqtypeid, string status, int regionid, int currentPage = 1)
+        public IActionResult TocloseState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
         {
             if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage, searchkey));
             }
             if (regionid != 0 && status != null && reqtypeid == null)
             {
-                return View(adminFunction.regiontable(regionid, status, currentPage));
+                return View(adminFunction.regiontable(regionid, status, currentPage, searchkey));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(3, 7, 8, currentPage));
+            return View(adminFunction.AdminDashboarddata(3, 7, 8, currentPage, searchkey));
         }
         [Authorization("1")]
-        public IActionResult UnpaidState(string reqtypeid, string status, int regionid, int currentPage = 1)
+        public IActionResult UnpaidState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
         {
             if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage, searchkey));
             }
             if (regionid != 0 && status != null && reqtypeid == null)
             {
-                return View(adminFunction.regiontable(regionid, status, currentPage));
+                return View(adminFunction.regiontable(regionid, status, currentPage, searchkey));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(9, 9, 9, currentPage));
+            return View(adminFunction.AdminDashboarddata(9, 9, 9, currentPage, searchkey));
         }
         [Authorization("1")]
-        public IActionResult ConcludeState(string reqtypeid, string status, int regionid, int currentPage = 1)
+        public IActionResult ConcludeState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
         {
             if (regionid != 0 && reqtypeid != null)
             {
-                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage));
+                return View(adminFunction.RegionReqtype(regionid, reqtypeid, status, currentPage, searchkey));
             }
             if (regionid != 0 && status != null && reqtypeid == null)
             {
-                return View(adminFunction.regiontable(regionid, status, currentPage));
+                return View(adminFunction.regiontable(regionid, status, currentPage, searchkey));
             }
             if (reqtypeid != null && status != null)
             {
-                return View(adminFunction.toogletable(reqtypeid, status, currentPage));
+                return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(6, 6, 6, currentPage));
+            return View(adminFunction.AdminDashboarddata(6, 6, 6, currentPage, searchkey));
         }
         public IActionResult ViewCase(int id)
         {
@@ -151,7 +151,6 @@ namespace HalloDoc.Controllers
         {
             if (HttpContext.Session.GetString("Adminname") != null)
             {
-                ;
                 return View(adminFunction.AdminDashboard());
             }
             return RedirectToAction("adminlogin", "Admin");
@@ -380,6 +379,41 @@ namespace HalloDoc.Controllers
                 adminFunction.AdminResetPassword(modal);
             }
             return RedirectToAction("Profiletab", "Admin");
+        }
+        public IActionResult AdministratorinfoEdit(AdminProfile Modal)
+        {
+            adminFunction.AdministratorinfoEdit(Modal);
+            return RedirectToAction("Profiletab", "Admin");
+        }
+        public IActionResult MailinginfoEdit(AdminProfile modal)
+        {
+            adminFunction.MailinginfoEdit(modal);
+            return RedirectToAction("Profiletab", "Admin");
+        }
+        [HttpPost]
+        public IActionResult Export(NewStateData modal)
+        {
+            var record = new byte[0];
+            NewStateData data = new NewStateData();
+            if (modal.region != 0 && modal.reqtype != null)
+            {
+                record = adminFunction.DownloadExcle(adminFunction.RegionReqtype(modal.region, modal.reqtype, modal.status.ToString(), modal.currentpage, modal.searchkey));
+            }
+            if (modal.region != 0 && modal.status.ToString() != null && modal.reqtype == null)
+            {
+                record = adminFunction.DownloadExcle(adminFunction.regiontable(modal.region, modal.status.ToString(), modal.currentpage, modal.searchkey));
+            }
+            if (modal.reqtype != null && modal.status != null)
+            {
+                data = adminFunction.toogletable(modal.reqtype, modal.status.ToString(), modal.currentpage, modal.searchkey);
+                record = adminFunction.DownloadExcle(data);
+            }
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = $"{modal.region}_{strDate}.xlsx";
+
+            return File(record, contentType, filename);
+            //return View(adminFunction.AdminDashboarddata(1, 1, 1, modal.currentpage, modal.searchkey));
         }
     }
 }

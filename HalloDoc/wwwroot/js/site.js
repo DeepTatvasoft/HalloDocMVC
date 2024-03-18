@@ -147,11 +147,11 @@ function SendAgreement(clicked_name, Requesttypeid, phonenumber, email) {
     document.getElementById('EmailSendAgreement').value = email;
 }
 
-function ChangePage(Page, status , reqtype ,region) {
+function ChangePage(Page, status, reqtype, region, searchkey) {
     var currentPage = Page;
     var status = status;
-    regionid = region;
-    reqtypeid = reqtype;
+    var regionid = region;
+    var reqtypeid = reqtype;
     var url;
     if (status == 1) {
         url = "/Admin/NewState/"
@@ -173,13 +173,14 @@ function ChangePage(Page, status , reqtype ,region) {
     }
     $.ajax({
         url: url,
-        data: { "currentPage": currentPage, "regionid": regionid, "reqtypeid": reqtypeid , "status" : status},
+        data: { "currentPage": currentPage, "regionid": regionid, "reqtypeid": reqtypeid, "status": status, "searchkey": searchkey },
         type: "POST",
         dataType: "html",
         success: function (response) {
             $('#status-tabContent').html(response);
             document.getElementById("page-1").style.backgroundColor = "white";
             document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
+            $('#exportpage').val(currentPage);
         },
         error: function (xhr, status, error) {
             console.error(error);

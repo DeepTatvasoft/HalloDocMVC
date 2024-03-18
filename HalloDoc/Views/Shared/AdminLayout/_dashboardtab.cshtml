@@ -60,12 +60,19 @@
                     Create Request
                 </span>
             </button>
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
-                <i class="fa-solid fa-file-export me-1"></i>
-                <span class="d-none d-md-block">
-                    Export
-                </span>
-            </button>
+            <form asp-controller="Admin" asp-action="Export">
+                <input id="exportreqtype" asp-for="@Model.reqtype" type="hidden" />
+                <input id="exportregion" asp-for="@Model.region" type="hidden" />
+                <input id="exportstatus" asp-for="@Model.status" value="1" type="hidden" />
+                <input id="exportseach" asp-for="@Model.searchkey" type="hidden" />
+                <input id="exportpage" asp-for="@Model.currentpage" value="1" type="hidden" />
+                <button type="submit" class="btn btn-info text-white ms-1 d-flex align-items-center">
+                    <i class="fa-solid fa-file-export me-1"></i>
+                    <span class="d-none d-md-block">
+                        Export
+                    </span>
+                </button>
+            </form>
             <button class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="fa-solid fa-file-zipper me-1"></i>
                 <span class="d-none d-md-block">
@@ -180,7 +187,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
+        var search;
+        var url = '/Admin/NewState';
+        $('#myInput').keyup(function () {
+            search = $('#myInput').val();
+            searchajax();
+        });
         var status = '1';
+        $('#exportstatus').val(status);
         var pagereqtype;
         var globalregion;
         var currentpage = 1;
@@ -198,7 +212,6 @@
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
             var target = $(this).data('bs-target');
-            var url;
             switch (target) {
                 case '#New-tab-pane':
                     url = '/Admin/NewState';
@@ -228,13 +241,26 @@
                     status = '1';
                     url = 'Admin/AdminDashboard';
             }
-
             $.ajax({
                 url: url,
-                data: {"currentPage": currentpage },
+                data: { "currentPage": currentpage, "searchkey": search },
                 success: function (response) {
                     $('#status-tabContent').html(response);
-                    document.getElementById("page-1").style.backgroundColor = "lightblue";
+                    //console.log($('#exportstatus'));
+                    $('#exportstatus').val(status);
+                    var page = document.getElementById("page-1");
+                    if (page != null) {
+                        page.style.backgroundColor = "lightblue";
+                    }
+                    $('.requestby').each(function () {
+                        $(this).removeClass('border border-secondary-subtle');
+                        $(this).css('height', '33px');
+                        $(this).addClass('px-1');
+                    });
+                    $('.region').val("");
+                    $('#exportreqtype').val("");
+                    $('#exportregion').val("Select Region");
+                    $('#exportpage').val(currentpage);
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
@@ -246,9 +272,7 @@
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
             var target = $(this).attr('id');
-            var curstatus;
             var requesttype;
-            var url;
             $('.requestby').each(function () {
                 $(this).removeClass('border border-secondary-subtle');
                 $(this).css('height', '33px');
@@ -302,9 +326,12 @@
             }
             $.ajax({
                 url: url,
-                data: { "status": curstatus, "reqtypeid": requesttype, "regionid": globalregion, "currentPage": currentpage },
+                data: { "status": curstatus, "reqtypeid": requesttype, "regionid": globalregion, "currentPage": currentpage, "searchkey": search },
                 success: function (response) {
                     $('#status-tabContent').html(response);
+                    $('#exportreqtype').val(requesttype);
+                    $('#exportseach').val(search);
+                    $('#exportpage').val(currentpage);
                     var page = document.getElementById("page-1");
                     if (page != null) {
                         page.style.backgroundColor = "lightblue";
@@ -318,7 +345,6 @@
         $('.region').on('change', function (e) {
             var target = $('.region').val();
             var curstatus;
-            var url;
             $('.region').value = target;
             $('.region').removeAttr('placeholder');
             $(".region").attr("value", target);
@@ -367,9 +393,12 @@
             }
             $.ajax({
                 url: url,
-                data: { "status": status, "regionid": regionid, "reqtypeid": pagereqtype, "currentPage": currentpage },
+                data: { "status": status, "regionid": regionid, "reqtypeid": pagereqtype, "currentPage": currentpage, "searchkey": search },
                 success: function (response) {
                     $('#status-tabContent').html(response);
+                    $('#exportregion').val(regionid);
+                    $('#exportseach').val(search);
+                    $('#exportpage').val(currentpage);
                     var page = document.getElementById("page-1");
                     if (page != null) {
                         page.style.backgroundColor = "lightblue";
@@ -380,5 +409,24 @@
                 }
             });
         });
+        function searchajax(){
+            $.ajax({
+                url: url,
+                data: { "status": status, "regionid": globalregion, "reqtypeid": pagereqtype, "currentPage": currentpage, "searchkey": search },
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                    $('#exportregion').val(globalregion);
+                    $('#exportseach').val(search);
+                    $('#exportpage').val(currentpage);
+                    var page = document.getElementById("page-1");
+                    if (page != null) {
+                        page.style.backgroundColor = "lightblue";
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
     });
 </script>

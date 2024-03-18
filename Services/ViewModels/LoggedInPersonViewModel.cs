@@ -10,7 +10,7 @@ namespace Services.ViewModels
     {
         public int userid { get; set; }
         public int aspuserid { get; set; }
-        public string username { get; set; }
-        public string role { get; set; }
+        public string? username { get; set; }
+        public string? role { get; set; }
     }
 }

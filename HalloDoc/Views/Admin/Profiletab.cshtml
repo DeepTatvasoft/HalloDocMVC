@@ -106,8 +106,8 @@
         </div>
 
         <div class="Administratorinfo">
-            <form>
-
+            <form method="post" asp-action="AdministratorinfoEdit" asp-controller="Admin">
+                <input asp-for="@Model.admindata.Adminid" type="hidden">
                 <h5>Administrator Information</h5>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
@@ -160,15 +160,15 @@
                 </div>
                 <div class="d-flex justify-content-end mt-4">
                     <button type="button" onclick="editoneclick()" class="btn btn-info text-white editf">Edit</button>
-                    <button type="button" class="btn btn-info text-white d-none savef">Save</button>
+                    <button type="submit" class="btn btn-info text-white d-none savef">Save</button>
                     <button type="reset" onclick="canceloneclick()" class="btn btn-outline-info ms-1 d-none cancelf">Cancel</button>
                 </div>
             </form>
         </div>
 
         <div class="Mailinginfo">
-            <form>
-
+            <form method="post" asp-action="MailinginfoEdit" asp-controller="Admin">
+                <input asp-for="@Model.admindata.Adminid" type="hidden">
                 <h5>Mailing & Billing Information</h5>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
@@ -191,10 +191,11 @@
                     </div>
                     <div class="col">
                         <div class="form-floating">
-                            <select class="form-select secondedit" id="floatingSelect" aria-label="Floating label select example" disabled>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                            <select asp-for="@Model.admindata.Regionid" class="form-select secondedit" id="floatingSelect" aria-label="Floating label select example" disabled>
+                                @foreach (var obj in Model.regions)
+                                {
+                                    <option value="@obj.Regionid">@obj.Name</option>
+                                }
                             </select>
                             <label for="floatingSelect">State</label>
                         </div>
@@ -214,13 +215,13 @@
                                 <option value="br">BRAZIL</option>
                                 <option value="ind">INDIA</option>
                             </select>
-                            <input asp-for="@Model.admindata.Mobile" type="tel" class="form-control output secondedit" id="output2" placeholder="Mobile Number" disabled>
+                            <input asp-for="@Model.admindata.Altphone" type="tel" class="form-control output secondedit" id="output2" placeholder="Mobile Number" disabled>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
                     <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits">Edit</button>
-                    <button type="button" class="btn btn-info text-white d-none saves">Save</button>
+                    <button type="submit" class="btn btn-info text-white d-none saves">Save</button>
                     <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels">Cancel</button>
                 </div>
             </form>
