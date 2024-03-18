@@ -51,7 +51,7 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(4, 4, 5, currentPage, searchkey));
+            return View(adminFunction.AdminDashboarddata(4, currentPage, searchkey));
         }
         [Authorization("1")]
         public IActionResult NewState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
@@ -68,7 +68,7 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(1, 1, 1, currentPage, searchkey));
+            return View(adminFunction.AdminDashboarddata(1, currentPage, searchkey));
         }
         [Authorization("1")]
         public IActionResult PendingState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
@@ -85,7 +85,7 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(2, 2, 2, currentPage, searchkey));
+            return View(adminFunction.AdminDashboarddata(2, currentPage, searchkey));
         }
         [Authorization("1")]
         public IActionResult TocloseState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
@@ -102,7 +102,7 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(3, 7, 8, currentPage, searchkey));
+            return View(adminFunction.AdminDashboarddata(3, currentPage, searchkey));
         }
         [Authorization("1")]
         public IActionResult UnpaidState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
@@ -119,7 +119,7 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(9, 9, 9, currentPage, searchkey));
+            return View(adminFunction.AdminDashboarddata(9, currentPage, searchkey));
         }
         [Authorization("1")]
         public IActionResult ConcludeState(string reqtypeid, string status, int regionid, int currentPage = 1, string searchkey = "")
@@ -136,7 +136,7 @@ namespace HalloDoc.Controllers
             {
                 return View(adminFunction.toogletable(reqtypeid, status, currentPage, searchkey));
             }
-            return View(adminFunction.AdminDashboarddata(6, 6, 6, currentPage, searchkey));
+            return View(adminFunction.AdminDashboarddata(6, currentPage, searchkey));
         }
         public IActionResult ViewCase(int id)
         {
@@ -405,15 +405,21 @@ namespace HalloDoc.Controllers
             }
             if (modal.reqtype != null && modal.status != null)
             {
-                data = adminFunction.toogletable(modal.reqtype, modal.status.ToString(), modal.currentpage, modal.searchkey);
-                record = adminFunction.DownloadExcle(data);
+                record = adminFunction.DownloadExcle(adminFunction.toogletable(modal.reqtype, modal.status.ToString(), modal.currentpage, modal.searchkey));
             }
+            record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(1, modal.currentpage, modal.searchkey));
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
             string filename = $"{modal.region}_{strDate}.xlsx";
-
             return File(record, contentType, filename);
-            //return View(adminFunction.AdminDashboarddata(1, 1, 1, modal.currentpage, modal.searchkey));
+        }
+        public IActionResult ExportAll(NewStateData modal)
+        {
+            var record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(modal.status, modal.currentpage, modal.searchkey));
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = $"{modal.region}_{strDate}.xlsx";
+            return File(record, contentType, filename);
         }
     }
 }

@@ -47,10 +47,26 @@ namespace Services.Implementation
                 return (false, null, 0);
             }
         }
-        public NewStateData AdminDashboarddata(int status1, int status2, int status3, int currentPage, string searchkey = "")
+        public NewStateData AdminDashboarddata(int status, int currentPage, string searchkey = "")
         {
             NewStateData data = new NewStateData();
-            List<Request> req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
+            List<Request> req = new List<Request>();
+            List<Requeststatuslog> requeststatuslogs = new List<Requeststatuslog>();
+            if (status == 4)
+            {
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == 4 || u.Status == 5).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 4 || u.Status == 5).ToList();
+            }
+            else if (status == 3)
+            {
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
+            }
+            else
+            {
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == status).ToList();
+                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == status).ToList();
+            }
             data.newcount = getNewRequestCount();
             data.activecount = getActiveRequestCount();
             data.pendingcount = getPendingRequestCount();
@@ -64,14 +80,17 @@ namespace Services.Implementation
                 req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
             data.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
-            req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            if (currentPage != 0)
+            {
+                req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            }
             var casetag = _context.Casetags.ToList();
-            List<Requeststatuslog> requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == status1 || u.Status == status2 || u.Status == status3).ToList();
             data.req = req;
             data.requeststatuslogs = requeststatuslogs;
             data.casetags = casetag;
             data.currentpage = currentPage;
             data.searchkey = searchkey;
+            data.status = Convert.ToInt32(status);
             return data;
         }
         public NewStateData AdminDashboard()
@@ -165,6 +184,7 @@ namespace Services.Implementation
             req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
             newStateData.req = req;
             newStateData.searchkey = searchkey;
+            newStateData.status = Convert.ToInt32(status);
             return newStateData;
         }
         public NewStateData1 ViewCase(int id)
@@ -228,6 +248,7 @@ namespace Services.Implementation
             req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
             newStateData.req = req;
             newStateData.searchkey = searchkey;
+            newStateData.status = Convert.ToInt32(status);
             return newStateData;
         }
         public int getToCloseRequestCount()

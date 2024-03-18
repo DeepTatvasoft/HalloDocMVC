@@ -73,12 +73,15 @@
                     </span>
                 </button>
             </form>
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
-                <i class="fa-solid fa-file-zipper me-1"></i>
-                <span class="d-none d-md-block">
-                    Export All
-                </span>
-            </button>
+            <form asp-controller="Admin" asp-action="ExportAll">
+                <input id="exportstatusall" asp-for="@Model.status" value="1" type="hidden" />
+                <button class="btn btn-info text-white ms-1 d-flex align-items-center">
+                    <i class="fa-solid fa-file-zipper me-1"></i>
+                    <span class="d-none d-md-block">
+                        Export All
+                    </span>
+                </button>
+            </form>
             <button class="btn btn-info text-white ms-1 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#ReqSupportModal">
                 <i class="fa-solid fa-headset me-1"></i>
                 <span class="d-none d-md-block">
@@ -195,8 +198,9 @@
         });
         var status = '1';
         $('#exportstatus').val(status);
+
         var pagereqtype;
-        var globalregion;
+        var globalregion = 0;
         var currentpage = 1;
         $.ajax({
             url: '/Admin/NewState',
@@ -248,6 +252,8 @@
                     $('#status-tabContent').html(response);
                     //console.log($('#exportstatus'));
                     $('#exportstatus').val(status);
+                    $('#exportstatusall').val(status);
+                    globalregion = 0;
                     var page = document.getElementById("page-1");
                     if (page != null) {
                         page.style.backgroundColor = "lightblue";
@@ -409,7 +415,7 @@
                 }
             });
         });
-        function searchajax(){
+        function searchajax() {
             $.ajax({
                 url: url,
                 data: { "status": status, "regionid": globalregion, "reqtypeid": pagereqtype, "currentPage": currentpage, "searchkey": search },
