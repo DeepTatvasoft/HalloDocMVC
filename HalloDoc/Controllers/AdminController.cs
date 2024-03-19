@@ -397,17 +397,20 @@ namespace HalloDoc.Controllers
             NewStateData data = new NewStateData();
             if (modal.region != 0 && modal.reqtype != null)
             {
-                record = adminFunction.DownloadExcle(adminFunction.RegionReqtype(modal.region, modal.reqtype, modal.status.ToString(), modal.currentpage, modal.searchkey));
+                record = adminFunction.DownloadExcle(adminFunction.RegionReqtype(modal.region, modal.reqtype, modal.status.ToString(), 0, modal.searchkey));
             }
-            if (modal.region != 0 && modal.status.ToString() != null && modal.reqtype == null)
+            else if (modal.region != 0 && modal.status.ToString() != null && modal.reqtype == null)
             {
-                record = adminFunction.DownloadExcle(adminFunction.regiontable(modal.region, modal.status.ToString(), modal.currentpage, modal.searchkey));
+                record = adminFunction.DownloadExcle(adminFunction.regiontable(modal.region, modal.status.ToString(), 0, modal.searchkey));
             }
-            if (modal.reqtype != null && modal.status != null)
+            else if (modal.reqtype != null && modal.status != null)
             {
-                record = adminFunction.DownloadExcle(adminFunction.toogletable(modal.reqtype, modal.status.ToString(), modal.currentpage, modal.searchkey));
+                record = adminFunction.DownloadExcle(adminFunction.toogletable(modal.reqtype, modal.status.ToString(), 0, modal.searchkey));
             }
-            record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(1, modal.currentpage, modal.searchkey));
+            else
+            {
+                record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(1, 0, modal.searchkey));
+            }
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
             string filename = $"{modal.region}_{strDate}.xlsx";
@@ -415,11 +418,18 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ExportAll(NewStateData modal)
         {
-            var record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(modal.status, modal.currentpage, modal.searchkey));
+            var record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(modal.status, 0, ""));
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
             string filename = $"{modal.region}_{strDate}.xlsx";
             return File(record, contentType, filename);
+        }
+        public IActionResult Providertab()
+        {
+            ProviderModal modal = new ProviderModal();
+            var physician = _context.Physicians.Include(r=>r.Roleid).ToList();
+            modal.physicians = physician;
+            return View(modal);
         }
     }
 }

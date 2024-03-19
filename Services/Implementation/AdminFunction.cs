@@ -135,7 +135,10 @@ namespace Services.Implementation
                 req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
             newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
-            req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            if (currentPage != 0)
+            {
+                req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            }
             newStateData.currentpage = currentPage;
             newStateData.req = req;
             newStateData.searchkey = searchkey;
@@ -181,7 +184,10 @@ namespace Services.Implementation
                 req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
             newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
-            req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            if (currentPage != 0)
+            {
+                req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            }
             newStateData.req = req;
             newStateData.searchkey = searchkey;
             newStateData.status = Convert.ToInt32(status);
@@ -245,7 +251,10 @@ namespace Services.Implementation
                 req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
             newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
-            req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            if (currentPage != 0)
+            {
+                req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+            }
             newStateData.req = req;
             newStateData.searchkey = searchkey;
             newStateData.status = Convert.ToInt32(status);

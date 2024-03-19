@@ -65,7 +65,6 @@
                 <input id="exportregion" asp-for="@Model.region" type="hidden" />
                 <input id="exportstatus" asp-for="@Model.status" value="1" type="hidden" />
                 <input id="exportseach" asp-for="@Model.searchkey" type="hidden" />
-                <input id="exportpage" asp-for="@Model.currentpage" value="1" type="hidden" />
                 <button type="submit" class="btn btn-info text-white ms-1 d-flex align-items-center">
                     <i class="fa-solid fa-file-export me-1"></i>
                     <span class="d-none d-md-block">
@@ -266,7 +265,6 @@
                     $('.region').val("");
                     $('#exportreqtype').val("");
                     $('#exportregion').val("Select Region");
-                    $('#exportpage').val(currentpage);
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
@@ -337,7 +335,6 @@
                     $('#status-tabContent').html(response);
                     $('#exportreqtype').val(requesttype);
                     $('#exportseach').val(search);
-                    $('#exportpage').val(currentpage);
                     var page = document.getElementById("page-1");
                     if (page != null) {
                         page.style.backgroundColor = "lightblue";
@@ -404,7 +401,6 @@
                     $('#status-tabContent').html(response);
                     $('#exportregion').val(regionid);
                     $('#exportseach').val(search);
-                    $('#exportpage').val(currentpage);
                     var page = document.getElementById("page-1");
                     if (page != null) {
                         page.style.backgroundColor = "lightblue";
@@ -423,7 +419,6 @@
                     $('#status-tabContent').html(response);
                     $('#exportregion').val(globalregion);
                     $('#exportseach').val(search);
-                    $('#exportpage').val(currentpage);
                     var page = document.getElementById("page-1");
                     if (page != null) {
                         page.style.backgroundColor = "lightblue";
