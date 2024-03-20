@@ -1,5 +1,5 @@
-﻿using Data.DataModels;
-using HalloDoc.DataContext;
+﻿using Data.DataContext;
+using Data.DataModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +11,7 @@ using Services.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,10 +80,10 @@ namespace Services.Implementation
             {
                 req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
-            data.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
+            data.totalpages = (int)Math.Ceiling(req.Count() / 5.00);
             if (currentPage != 0)
             {
-                req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+                req = req.Skip((currentPage - 1) * 5).Take(5).ToList();
             }
             var casetag = _context.Casetags.ToList();
             data.req = req;
@@ -102,6 +103,7 @@ namespace Services.Implementation
             modal.activecount = getActiveRequestCount();
             modal.Toclosecount = getToCloseRequestCount();
             modal.Unpaidcount = getUnpaidRequestCount();
+            modal.regions = _context.Regions.ToList();
             return modal;
         }
         public NewStateData toogletable(string reqtypeid, string status, int currentPage, string searchkey = "")
@@ -134,10 +136,10 @@ namespace Services.Implementation
             {
                 req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
-            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
+            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 5.00);
             if (currentPage != 0)
             {
-                req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+                req = req.Skip((currentPage - 1) * 5).Take(5).ToList();
             }
             newStateData.currentpage = currentPage;
             newStateData.req = req;
@@ -183,10 +185,10 @@ namespace Services.Implementation
             {
                 req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
-            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
+            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 5.00);
             if (currentPage != 0)
             {
-                req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+                req = req.Skip((currentPage - 1) * 5).Take(5).ToList();
             }
             newStateData.req = req;
             newStateData.searchkey = searchkey;
@@ -250,10 +252,10 @@ namespace Services.Implementation
             {
                 req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
-            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 1.00);
+            newStateData.totalpages = (int)Math.Ceiling(req.Count() / 5.00);
             if (currentPage != 0)
             {
-                req = req.Skip((currentPage - 1) * 1).Take(1).ToList();
+                req = req.Skip((currentPage - 1) * 5).Take(5).ToList();
             }
             newStateData.req = req;
             newStateData.searchkey = searchkey;
@@ -318,7 +320,7 @@ namespace Services.Implementation
         }
         public List<Physician> filterregion(string regionid)
         {
-            List<Physician> physicians = _context.Physicians.Where(u => u.Regionid.ToString() == regionid).ToList();
+            List<Physician> physicians = _context.Physicianregions.Where(u => u.Regionid.ToString() == regionid).Select(y=>y.Physician).ToList();
             return physicians;
         }
         public void assigncase(int reqid, int regid, int phyid, string Assignnotes, string adminname, int id)
@@ -685,6 +687,25 @@ namespace Services.Implementation
                 }
             }
         }
-
+        public ProviderModal Providertab(int regionid)
+        {
+            ProviderModal modal = new ProviderModal();
+            var physician = _context.Physicians.Include(r => r.Role).ToList();
+            modal.regions = _context.Regions.ToList();
+            if(regionid != 0 )
+            {
+                physician = physician.Where(u=>u.Regionid == regionid).ToList();
+            }
+            modal.physicians = physician;
+            return modal;
+        }
+        public Agreementmodal ReviewAgreement(int id)
+        {
+            Agreementmodal modal = new Agreementmodal();
+            modal.reqid = id;
+            modal.firstname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Firstname;
+            modal.lastname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Lastname;
+            return modal;
+        }
     }
 }

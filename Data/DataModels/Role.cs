@@ -24,5 +24,7 @@ public partial class Role
 
     public string? Ip { get; set; }
 
+    public virtual ICollection<Physician> Physicians { get; set; } = new List<Physician>();
+
     public virtual ICollection<Rolemenu> Rolemenus { get; set; } = new List<Rolemenu>();
 }

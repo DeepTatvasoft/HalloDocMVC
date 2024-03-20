@@ -19,5 +19,6 @@ namespace Services.ViewModels
         public string? Room { get; set; }
         public string? reqclientid { get; set; }
         public List<IFormFile>? Upload { get; set; }
+        public string? AdminNotes { get; set; }
     }
 }

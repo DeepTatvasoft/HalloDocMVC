@@ -1,5 +1,4 @@
 ﻿using Data.DataModels;
-using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
@@ -15,6 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Authorization = Services.Implementation.Authorization;
 using DataAccess.ServiceRepository.IServiceRepository;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Data.DataContext;
 
 namespace HalloDoc.Controllers
 {
@@ -329,11 +329,7 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ReviewAgreement(int id)
         {
-            Agreementmodal modal = new Agreementmodal();
-            modal.reqid = id;
-            modal.firstname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Firstname;
-            modal.lastname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Lastname;
-            return View(modal);
+            return View(adminFunction.ReviewAgreement(id));
         }
         public IActionResult AcceptAgreement(int id)
         {
@@ -361,6 +357,7 @@ namespace HalloDoc.Controllers
             return PartialView("AdminLayout/_CloseCase", adminFunction.AdminuploadDoc(formData.reqid));
         }
 
+        [Authorization("1")]
         public IActionResult Profiletab()
         {
             int adminid = (int)HttpContext.Session.GetInt32("Adminid");
@@ -424,12 +421,24 @@ namespace HalloDoc.Controllers
             string filename = $"{modal.region}_{strDate}.xlsx";
             return File(record, contentType, filename);
         }
+        [Authorization("1")]
         public IActionResult Providertab()
         {
-            ProviderModal modal = new ProviderModal();
-            var physician = _context.Physicians.Include(r=>r.Roleid).ToList();
-            modal.physicians = physician;
-            return View(modal);
+            return View(adminFunction.Providertab(0));
+        }
+        public IActionResult ProvidertabbyRegion(int regionid)
+        {
+            return PartialView("AdminLayout/_ProviderTable", adminFunction.Providertab(regionid));
+        }
+        [Authorization("1")]
+        public IActionResult AdminCreateReq()
+        {
+            return View();
+        }
+        [Authorization("1")]
+        public IActionResult EditPhysician()
+        {
+            return View();
         }
     }
 }

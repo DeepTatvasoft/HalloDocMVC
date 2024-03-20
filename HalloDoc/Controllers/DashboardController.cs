@@ -1,5 +1,4 @@
 ﻿using Data.DataModels;
-using HalloDoc.DataContext;
 using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -12,6 +11,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Mail;
 using System.Net;
+using Data.DataContext;
 
 namespace HalloDoc.Controllers
 {
@@ -130,6 +130,12 @@ namespace HalloDoc.Controllers
         public IActionResult SendAgreement(NewStateData modal)
         {
             sendEmail(modal.emaill, "Link for Agreement", "https://localhost:44325/admin/ReviewAgreement/" + modal.reqid + "");
+            return RedirectToAction("AdminDashboard","Admin");
+        }
+        public IActionResult SendLink(NewStateData modal)
+        {
+            string message = "Hello " + modal.firstname + modal.lastname;
+            sendEmail(modal.emaill, " Link for Submit Request Screen", message + " https://localhost:44325/Home/Submitreqscreen");
             return RedirectToAction("AdminDashboard","Admin");
         }
     }

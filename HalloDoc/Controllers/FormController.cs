@@ -1,10 +1,10 @@
 ﻿using Data.DataModels;
-using HalloDoc.DataContext;
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.ViewModels;
 using System.Net.Mail;
 using System.Net;
+using Data.DataContext;
 
 namespace HalloDoc.Controllers
 {
@@ -21,7 +21,8 @@ namespace HalloDoc.Controllers
         }
         public IActionResult patientinfo(PatientReqSubmit model)
         {
-            formSubmit.patientinfo(model);
+            int adminid = (int)HttpContext.Session.GetInt32("Adminid");
+            formSubmit.patientinfo(model,adminid);
             return RedirectToAction("patientlogin", "Home");
         }
         public IActionResult familyinfo(FamilyFriendReqSubmit model)

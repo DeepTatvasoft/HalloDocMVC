@@ -1,5 +1,5 @@
-﻿using Data.DataModels;
-using HalloDoc.DataContext;
+﻿using Data.DataContext;
+using Data.DataModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;

@@ -8,7 +8,7 @@ namespace Services.Contracts
         void AddPatientRequestWiseFile(List<IFormFile> formFile, int reqid);
         void BusinessInfo(BusinessSubmit model);
         void ConciergeInfo(ConciergeSubmit model);
-        (bool,int) familyinfo(FamilyFriendReqSubmit model);
-        void patientinfo(PatientReqSubmit model);
+        (bool, int) familyinfo(FamilyFriendReqSubmit model);
+        void patientinfo(PatientReqSubmit model, int adminid);
     }
 }

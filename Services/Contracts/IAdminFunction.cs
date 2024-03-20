@@ -42,5 +42,7 @@ namespace Services.Contracts
         void AdministratorinfoEdit(AdminProfile Modal);
         void MailinginfoEdit(AdminProfile modal);
         byte[] DownloadExcle(NewStateData model);
+        ProviderModal Providertab(int regionid);
+        Agreementmodal ReviewAgreement(int id);
     }
 }

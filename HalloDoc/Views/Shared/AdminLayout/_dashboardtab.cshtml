@@ -54,18 +54,18 @@
                     Send Link
                 </span>
             </button>
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center">
+            <a asp-action="AdminCreateReq" asp-controller="Admin" class="btn btn-info text-white ms-1 d-flex align-items-center">
                 <i class="bi bi-journal-text me-1"></i>
                 <span class="d-none d-md-block">
                     Create Request
                 </span>
-            </button>
+            </a>
             <form asp-controller="Admin" asp-action="Export">
                 <input id="exportreqtype" asp-for="@Model.reqtype" type="hidden" />
                 <input id="exportregion" asp-for="@Model.region" type="hidden" />
                 <input id="exportstatus" asp-for="@Model.status" value="1" type="hidden" />
                 <input id="exportseach" asp-for="@Model.searchkey" type="hidden" />
-                <button type="submit" class="btn btn-info text-white ms-1 d-flex align-items-center">
+                <button type="submit" class="btn btn-info text-white ms-1 d-flex align-items-center" style="height:38px">
                     <i class="fa-solid fa-file-export me-1"></i>
                     <span class="d-none d-md-block">
                         Export
@@ -74,7 +74,7 @@
             </form>
             <form asp-controller="Admin" asp-action="ExportAll">
                 <input id="exportstatusall" asp-for="@Model.status" value="1" type="hidden" />
-                <button class="btn btn-info text-white ms-1 d-flex align-items-center">
+                <button class="btn btn-info text-white ms-1 d-flex align-items-center" style="height:38px">
                     <i class="fa-solid fa-file-zipper me-1"></i>
                     <span class="d-none d-md-block">
                         Export All
@@ -84,7 +84,7 @@
             <button class="btn btn-info text-white ms-1 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#ReqSupportModal">
                 <i class="fa-solid fa-headset me-1"></i>
                 <span class="d-none d-md-block">
-                    Request DIY Support
+                    Request DTY Support
                 </span>
             </button>
         </div>
@@ -96,12 +96,13 @@
                 <i class="bi bi-search searchicon1"></i>
             </div>
             <div class="ms-2">
-                <datalist id="suggestions">
-                    <option id="uk">United Kingdom</option>
-                    <option id="uae">Dubai</option>
-                    <option id="ny">New York</option>
-                </datalist>
-                <input class="region" autoComplete="on" list="suggestions" placeholder="All Region" />
+                <select id="suggestions" class="region">
+                    <option>All Region</option>
+                    @foreach (var obj in Model.regions)
+                    {
+                        <option value="@obj.Regionid">@obj.Name</option>
+                    }
+                </select>
                 <i class="bi bi-search searchicon2"></i>
                 <i class="fa-solid fa-chevron-down down"></i>
             </div>
@@ -154,34 +155,37 @@
                 <h1 class="modal-title fs-5" id="SendLinkModal">Send mail to patient for submitting request</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="FirstName">
-                    <label for="floatingInput">First Name</label>
+            <form method="post" asp-action="SendLink" asp-controller="Dashboard">
+                <div class="modal-body">
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="firstname" type="text" class="form-control" id="floatingInput" placeholder="FirstName">
+                        <label for="floatingInput">First Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="lastname" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                        <label for="floatingInput">Last Name</label>
+                    </div>
+                    <div class="mb-3 numcountry">
+                        <select name="country" id="country2" class="country" onchange="country_code2()">
+                            <option value="select country">select country</option>
+                            <option value="us">US</option>
+                            <option value="uk">UK</option>
+                            <option value="br">BRAZIL</option>
+                            <option value="ind">INDIA</option>
+                        </select>
+                        <input asp-for="phonenumber" type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="emaill" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                        <label for="floatingInput">Email</label>
+                    </div>
                 </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Name">
-                    <label for="floatingInput">Last Name</label>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info text-white">Send</button>
+                    <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
                 </div>
-                <div class="mb-3 numcountry">
-                    <select name="country" id="country2" class="country" onchange="country_code2()">
-                        <option value="select country">select country</option>
-                        <option value="us">US</option>
-                        <option value="uk">UK</option>
-                        <option value="br">BRAZIL</option>
-                        <option value="ind">INDIA</option>
-                    </select>
-                    <input type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">Email</label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info text-white" data-bs-dismiss="modal">Send</button>
-                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -262,7 +266,7 @@
                         $(this).css('height', '33px');
                         $(this).addClass('px-1');
                     });
-                    $('.region').val("");
+
                     $('#exportreqtype').val("");
                     $('#exportregion').val("Select Region");
                 },
@@ -346,30 +350,9 @@
             });
         });
         $('.region').on('change', function (e) {
-            var target = $('.region').val();
-            var curstatus;
-            $('.region').value = target;
-            $('.region').removeAttr('placeholder');
-            $(".region").attr("value", target);
-            //console.log("hello");
-            //console.log($(".region").attr("value"));
-            switch (target) {
-                case 'United Kingdom':
-                    curstatus = status;
-                    regionid = '3';
-                    break;
-                case 'Dubai':
-                    curstatus = status;
-                    regionid = '2';
-                    break;
-                case 'New York':
-                    curstatus = status;
-                    regionid = '1';
-                    break;
-                default:
-                    curstatus = status;
-                    regionid = '0';
-            }
+            var regionid = $('.region').val();
+            var curstatus = status;
+            console.log($('.region'));
             //console.log("hii" + curstatus);
             globalregion = regionid;
             switch (curstatus) {

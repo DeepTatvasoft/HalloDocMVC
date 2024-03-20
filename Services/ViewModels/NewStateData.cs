@@ -26,6 +26,8 @@ namespace Services.ViewModels
         public int currentpage { get; set; }
         public int status { get; set; }
         public string searchkey { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
     }
     public class NewStateData1
     {

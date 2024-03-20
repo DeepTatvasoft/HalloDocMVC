@@ -1,0 +1,39 @@
+﻿@model Services.ViewModels.ProviderModal
+<table class="table">
+    <thead style="--bs-table-bg: #efefef">
+        <tr>
+            <th scope="col" class="text-center">Stop Notification</th>
+            <th scope="col">Provider Name</th>
+            <th scope="col">Role</th>
+            <th scope="col">On Call Status</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model.physicians)
+        {
+            <tr>
+                <td class="text-center">
+                    <input type="checkbox" />
+                </td>
+                <td>@obj.Firstname, @obj.Lastname</td>
+                <td>@obj.Role.Name</td>
+                <td>Un Available</td>
+                @if (obj.Status == 1)
+                {
+                    <td>Active</td>
+
+                }
+                else if (obj.Status == 2)
+                {
+                    <td>Pending</td>
+                }
+                <td>
+                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ContactModal">Contact</button>
+                    <a asp-controller="Admin" asp-action="EditPhysician" type="button" class="btn btn-outline-info">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

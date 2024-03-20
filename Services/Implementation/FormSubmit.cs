@@ -1,5 +1,5 @@
-﻿using Data.DataModels;
-using HalloDoc.DataContext;
+﻿using Data.DataContext;
+using Data.DataModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
@@ -48,7 +48,7 @@ namespace Services.Implementation
         }
 
 
-        public void patientinfo(PatientReqSubmit model)
+        public void patientinfo(PatientReqSubmit model,int adminid)
         {
 
             Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
@@ -85,8 +85,13 @@ namespace Services.Implementation
                     Regionid = 1
                 };
                 _context.Users.Add(user1);
-                _context.SaveChanges();
                 user = user1;
+                Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+                {
+                    Userid = user.Aspnetuserid.ToString(),
+                    Roleid = "3"
+                };
+                _context.Aspnetuserroles.Add(aspnetuserrole);
             }
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == 3);
             Request req = new Request
@@ -103,7 +108,6 @@ namespace Services.Implementation
             };
 
             _context.Requests.Add(req);
-            _context.SaveChanges();
 
             Requestclient reqclient = new Requestclient
             {
@@ -124,16 +128,21 @@ namespace Services.Implementation
                 Regionid = 2,
                 Address = model.Room + model.Street + model.City + model.State,
             };
-            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
-            {
-                Userid = user.Aspnetuserid.ToString(),
-                Roleid = "3"
-            };
-            _context.Aspnetuserroles.Add(aspnetuserrole);
             _context.Requestclients.Add(reqclient);
             if (model.Upload != null)
             {
                 AddPatientRequestWiseFile(model.Upload, req.Requestid);
+            }
+            if(model.AdminNotes != null)
+            {
+                Requestnote reqnotes = new Requestnote
+                {
+                    Request = req,
+                    Adminnotes = model.AdminNotes,
+                    Createdby = _context.Admins.FirstOrDefault(u => u.Adminid == adminid).Firstname,
+                    Createddate = DateTime.Now,
+                };
+                _context.Requestnotes.Add(reqnotes);
             }
             _context.SaveChanges();
         }

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Data.DataModels;
 using Microsoft.EntityFrameworkCore;
-namespace HalloDoc.DataContext;
+
+namespace Data.DataContext;
 
 public partial class ApplicationDbContext : DbContext
 {
@@ -100,6 +101,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("admin");
 
             entity.Property(e => e.Adminid)
+                .ValueGeneratedNever()
                 .HasColumnName("adminid");
             entity.Property(e => e.Address1)
                 .HasMaxLength(500)
@@ -158,6 +160,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("adminregion");
 
             entity.Property(e => e.Adminregionid)
+                .ValueGeneratedNever()
                 .HasColumnName("adminregionid");
             entity.Property(e => e.Adminid).HasColumnName("adminid");
             entity.Property(e => e.Regionid).HasColumnName("regionid");
@@ -257,8 +260,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("blockrequests");
 
-            entity.Property(e => e.Blockrequestid)
-                .HasColumnName("blockrequestid");
+            entity.Property(e => e.Blockrequestid).HasColumnName("blockrequestid");
             entity.Property(e => e.Createddate)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("createddate");
@@ -366,6 +368,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("casetag");
 
             entity.Property(e => e.Casetagid)
+                .ValueGeneratedNever()
                 .HasColumnName("casetagid");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -459,6 +462,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("healthprofessionals");
 
             entity.Property(e => e.Vendorid)
+                .ValueGeneratedNever()
                 .HasColumnName("vendorid");
             entity.Property(e => e.Address)
                 .HasMaxLength(150)
@@ -514,6 +518,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("healthprofessionaltype");
 
             entity.Property(e => e.Healthprofessionalid)
+                .ValueGeneratedNever()
                 .HasColumnName("healthprofessionalid");
             entity.Property(e => e.Createddate)
                 .HasColumnType("timestamp without time zone")
@@ -536,6 +541,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("menu");
 
             entity.Property(e => e.Menuid)
+                .ValueGeneratedNever()
                 .HasColumnName("menuid");
             entity.Property(e => e.Accounttype).HasColumnName("accounttype");
             entity.Property(e => e.Name)
@@ -550,8 +556,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("orderdetails");
 
-            entity.Property(e => e.Id)
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Businesscontact)
                 .HasMaxLength(100)
                 .HasColumnName("businesscontact");
@@ -582,6 +587,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("physician");
 
             entity.Property(e => e.Physicianid)
+                .ValueGeneratedNever()
                 .HasColumnName("physicianid");
             entity.Property(e => e.Address1)
                 .HasMaxLength(500)
@@ -676,6 +682,10 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Zip)
                 .HasMaxLength(10)
                 .HasColumnName("zip");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Physicians)
+                .HasForeignKey(d => d.Roleid)
+                .HasConstraintName("roleid_fk");
         });
 
         modelBuilder.Entity<Physicianlocation>(entity =>
@@ -710,6 +720,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("physiciannotification");
 
             entity.Property(e => e.Id)
+                .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.Isnotificationstopped)
                 .HasColumnType("bit(1)")
@@ -729,6 +740,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("physicianregion");
 
             entity.Property(e => e.Physicianregionid)
+                .ValueGeneratedNever()
                 .HasColumnName("physicianregionid");
             entity.Property(e => e.Physicianid).HasColumnName("physicianid");
             entity.Property(e => e.Regionid).HasColumnName("regionid");
@@ -857,6 +869,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("requestbusiness");
 
             entity.Property(e => e.Requestbusinessid)
+                .ValueGeneratedNever()
                 .HasColumnName("requestbusinessid");
             entity.Property(e => e.Businessid).HasColumnName("businessid");
             entity.Property(e => e.Ip)
@@ -963,6 +976,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("requestclosed");
 
             entity.Property(e => e.Requestclosedid)
+                .ValueGeneratedNever()
                 .HasColumnName("requestclosedid");
             entity.Property(e => e.Clientnotes)
                 .HasMaxLength(500)
@@ -994,6 +1008,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("requestconcierge");
 
             entity.Property(e => e.Id)
+                .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.Conciergeid).HasColumnName("conciergeid");
             entity.Property(e => e.Ip)
@@ -1018,8 +1033,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("requestnotes");
 
-            entity.Property(e => e.Requestnotesid)
-                .HasColumnName("requestnotesid");
+            entity.Property(e => e.Requestnotesid).HasColumnName("requestnotesid");
             entity.Property(e => e.Administrativenotes)
                 .HasMaxLength(500)
                 .HasColumnName("administrativenotes");
@@ -1063,8 +1077,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("requeststatuslog");
 
-            entity.Property(e => e.Requeststatuslogid)
-                .HasColumnName("requeststatuslogid");
+            entity.Property(e => e.Requeststatuslogid).HasColumnName("requeststatuslogid");
             entity.Property(e => e.Adminid).HasColumnName("adminid");
             entity.Property(e => e.Createddate)
                 .HasColumnType("timestamp without time zone")
@@ -1170,6 +1183,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("role");
 
             entity.Property(e => e.Roleid)
+                .ValueGeneratedNever()
                 .HasColumnName("roleid");
             entity.Property(e => e.Accounttype).HasColumnName("accounttype");
             entity.Property(e => e.Createdby)
@@ -1202,6 +1216,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("rolemenu");
 
             entity.Property(e => e.Rolemenuid)
+                .ValueGeneratedNever()
                 .HasColumnName("rolemenuid");
             entity.Property(e => e.Menuid).HasColumnName("menuid");
             entity.Property(e => e.Roleid).HasColumnName("roleid");
@@ -1224,6 +1239,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("shift");
 
             entity.Property(e => e.Shiftid)
+                .ValueGeneratedNever()
                 .HasColumnName("shiftid");
             entity.Property(e => e.Createdby)
                 .HasMaxLength(128)
@@ -1258,6 +1274,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("shiftdetail");
 
             entity.Property(e => e.Shiftdetailid)
+                .ValueGeneratedNever()
                 .HasColumnName("shiftdetailid");
             entity.Property(e => e.Endtime).HasColumnName("endtime");
             entity.Property(e => e.Eventid)
@@ -1299,6 +1316,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("shiftdetailregion");
 
             entity.Property(e => e.Shiftdetailregionid)
+                .ValueGeneratedNever()
                 .HasColumnName("shiftdetailregionid");
             entity.Property(e => e.Isdeleted)
                 .HasColumnType("bit(1)")
