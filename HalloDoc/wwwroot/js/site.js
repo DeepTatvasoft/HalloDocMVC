@@ -186,4 +186,8 @@ function ChangePage(Page, status, reqtype, region, searchkey) {
             console.error(error);
         }
     });
+
+}
+function ContactBtn(phyid) {
+    document.getElementById('ContactphyModal').innerHTML = phyid;
 }

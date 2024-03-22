@@ -11,5 +11,6 @@ namespace Services.ViewModels
     {
         public List<Physician>? physicians { get; set; }
         public List<Region>? regions { get; set; }
+        public List<int> physiciannotificationid { get; set; }
     }
 }

@@ -101,7 +101,6 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("admin");
 
             entity.Property(e => e.Adminid)
-                .ValueGeneratedNever()
                 .HasColumnName("adminid");
             entity.Property(e => e.Address1)
                 .HasMaxLength(500)
@@ -151,6 +150,10 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Zip)
                 .HasMaxLength(10)
                 .HasColumnName("zip");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Admins)
+                .HasForeignKey(d => d.Roleid)
+                .HasConstraintName("roleid_fk");
         });
 
         modelBuilder.Entity<Adminregion>(entity =>
@@ -159,9 +162,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("adminregion");
 
-            entity.Property(e => e.Adminregionid)
-                .ValueGeneratedNever()
-                .HasColumnName("adminregionid");
+            entity.Property(e => e.Adminregionid).HasColumnName("adminregionid");
             entity.Property(e => e.Adminid).HasColumnName("adminid");
             entity.Property(e => e.Regionid).HasColumnName("regionid");
 
@@ -540,9 +541,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("menu");
 
-            entity.Property(e => e.Menuid)
-                .ValueGeneratedNever()
-                .HasColumnName("menuid");
+            entity.Property(e => e.Menuid).HasColumnName("menuid");
             entity.Property(e => e.Accounttype).HasColumnName("accounttype");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
@@ -667,14 +666,10 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Npinumber)
                 .HasMaxLength(500)
                 .HasColumnName("npinumber");
-            entity.Property(e => e.Photo)
-                .HasMaxLength(100)
-                .HasColumnName("photo");
+            entity.Property(e => e.Photo).HasColumnName("photo");
             entity.Property(e => e.Regionid).HasColumnName("regionid");
             entity.Property(e => e.Roleid).HasColumnName("roleid");
-            entity.Property(e => e.Signature)
-                .HasMaxLength(100)
-                .HasColumnName("signature");
+            entity.Property(e => e.Signature).HasColumnName("signature");
             entity.Property(e => e.Status).HasColumnName("status");
             entity.Property(e => e.Syncemailaddress)
                 .HasMaxLength(50)
@@ -719,9 +714,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("physiciannotification");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Isnotificationstopped)
                 .HasColumnType("bit(1)")
                 .HasColumnName("isnotificationstopped");
@@ -739,9 +732,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("physicianregion");
 
-            entity.Property(e => e.Physicianregionid)
-                .ValueGeneratedNever()
-                .HasColumnName("physicianregionid");
+            entity.Property(e => e.Physicianregionid).HasColumnName("physicianregionid");
             entity.Property(e => e.Physicianid).HasColumnName("physicianid");
             entity.Property(e => e.Regionid).HasColumnName("regionid");
 
@@ -1182,9 +1173,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("role");
 
-            entity.Property(e => e.Roleid)
-                .ValueGeneratedNever()
-                .HasColumnName("roleid");
+            entity.Property(e => e.Roleid).HasColumnName("roleid");
             entity.Property(e => e.Accounttype).HasColumnName("accounttype");
             entity.Property(e => e.Createdby)
                 .HasMaxLength(128)
@@ -1215,9 +1204,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("rolemenu");
 
-            entity.Property(e => e.Rolemenuid)
-                .ValueGeneratedNever()
-                .HasColumnName("rolemenuid");
+            entity.Property(e => e.Rolemenuid).HasColumnName("rolemenuid");
             entity.Property(e => e.Menuid).HasColumnName("menuid");
             entity.Property(e => e.Roleid).HasColumnName("roleid");
 

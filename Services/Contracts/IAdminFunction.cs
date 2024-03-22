@@ -39,10 +39,21 @@ namespace Services.Contracts
         void Closecaseedit([FromForm] AdminviewDoc formData);
         void AdminResetPassword(AdminProfile modal);
         AdminProfile Profiletab(int adminid);
-        void AdministratorinfoEdit(AdminProfile Modal);
+        void AdministratorinfoEdit(AdminProfile Modal,List<string> chk);
         void MailinginfoEdit(AdminProfile modal);
         byte[] DownloadExcle(NewStateData model);
         ProviderModal Providertab(int regionid);
         Agreementmodal ReviewAgreement(int id);
+        EditPhysicianModal EditPhysician(int id);
+        void PhysicianAccInfo(EditPhysicianModal modal, string adminname);
+        void PhysicianResetPass(EditPhysicianModal modal, string adminname);
+        void PhysicianInfo(EditPhysicianModal modal, string adminname, List<string> chk);
+        void PhysicianMailingInfo(EditPhysicianModal modal, string adminname);
+        void ProviderProfile(EditPhysicianModal modal, string adminname);
+        void ContactPhysician(int phyid, string chk, string message);
+        void EditProviderSign(int physicianid, string base64string);
+        void EditProviderPhoto(int physicianid, string base64string);
+        void PhyNotification(List<string> chk);
+        void DeletePhysician(EditPhysicianModal modal);
     }
 }

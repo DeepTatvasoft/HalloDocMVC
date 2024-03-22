@@ -38,65 +38,22 @@
             </div>
         </div>
     </nav>
-    <div class="collapse" id="collapseExample">
-        <div class="card card-body d-md-none d-block">
-            <ul class="nav nav-tabs d-block" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="home-tab" asp-action="AdminDashboard" asp-controller="Admin">
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location-tab-pane"
-                            type="button" role="tab" aria-controls="location-tab-pane" aria-selected="false">
-                        Provider Location
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="profile-tab" asp-action="Profiletab" asp-controller="Admin">
-                        My Profile
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" asp-action="Providertab" asp-controller="Admin">
-                        Providers
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="Partners-tab" data-bs-toggle="tab" data-bs-target="#Partners-tab-pane"
-                            type="button" role="tab" aria-controls="Partners-tab-pane" aria-selected="false">
-                        Partners
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="Access-tab" data-bs-toggle="tab" data-bs-target="#Access-tab-pane"
-                            type="button" role="tab" aria-controls="Access-tab-pane" aria-selected="false">
-                        Access
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="Records-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane"
-                            type="button" role="tab" aria-controls="Records-tab-pane" aria-selected="false">
-                        Records
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </div>
     <div>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <div class="footer" style="position:absolute;bottom:-35px;">
+    <div class="footer" style="position:absolute;bottom:-50px;">
         <a href="#">Terms Of Condition</a>
         &nbsp; | &nbsp;
         <a href="#">Privacy Policy</a>
     </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>

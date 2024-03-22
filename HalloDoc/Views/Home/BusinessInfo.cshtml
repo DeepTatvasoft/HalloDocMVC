@@ -10,25 +10,27 @@
             <span>Back</span>
         </a>
     </div>
-    <div class="container bg-white" style="background-color: white; padding-bottom:20px" id="maincontent">
+    <div class="container bg-white shadow" style="background-color: white; padding-bottom:20px" id="maincontent">
         <form method="post" asp-controller="Form" asp-action="BusinessInfo" enctype="multipart/form-data">
             <div class="businessInfo">
                 <h4>Business Information</h4>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="BusFirstname" type="text" class="form-control" id="floatingInput" placeholder="Street">
+                            <input asp-for="BusFirstname" type="text" class="form-control" placeholder="Street">
                             <label for="floatingInput">Your First Name</label>
+                            <span asp-validation-for="BusFirstname" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="BusLastname" type="text" class="form-control" id="floatingInput" placeholder="City">
+                            <input asp-for="BusLastname" type="text" class="form-control" placeholder="City">
                             <label for="floatingInput">Your Last Name</label>
+                            <span asp-validation-for="BusLastname" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country" onchange="country_code()">
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -38,22 +40,24 @@
                             </select>
                             <input asp-for="BusPhonenumber" type="tel" class="form-control" id="output" placeholder="Mobile Number">
                         </div>
+                        <span asp-validation-for="BusPhonenumber" class="text-danger"></span>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="BusEmail" type="email" class="form-control" id="floatingInput" placeholder="Email">
+                            <input asp-for="BusEmail" type="email" class="form-control" placeholder="Email">
                             <label for="floatingInput">Your Email</label>
+                            <span asp-validation-for="BusEmail" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="BusProperty" type="text" class="form-control" id="floatingInput" placeholder="Business Property">
+                            <input asp-for="BusProperty" type="text" class="form-control" placeholder="Business Property">
                             <label for="floatingInput">Business/Property Name</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="BusCaseNum" type="text" class="form-control" id="floatingInput" placeholder="Business Property">
+                            <input asp-for="BusCaseNum" type="text" class="form-control" placeholder="Business Property">
                             <label for="floatingInput">Case Number(Optional)</label>
                         </div>
                     </div>
@@ -69,21 +73,24 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatFirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <input asp-for="PatFirstName" type="text" class="form-control" placeholder="Name">
                             <label for="floatingInput">First Name</label>
+                            <span asp-validation-for="PatFirstName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatLastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <input asp-for="PatLastName" type="text" class="form-control" placeholder="Name">
                             <label for="floatingInput">Last Name</label>
+                            <span asp-validation-for="PatLastName" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3 date">
-                        <input asp-for="PatDOB" type="date" class="form-control" id="floatingInput" placeholder="Date">
+                        <input asp-for="PatDOB" type="date" class="form-control" placeholder="Date">
                         <label for="floatingInput">Date Of Birth</label>
+                        <span asp-validation-for="PatDOB" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -92,12 +99,13 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatEmail" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <input asp-for="PatEmail" type="email" class="form-control" placeholder="name@example.com">
                             <label for="floatingInput">Email</label>
+                            <span asp-validation-for="PatEmail" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country2" class="country" onchange="country_code2()">
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -107,6 +115,7 @@
                             </select>
                             <input asp-for="PatPhoneNumber" type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
                         </div>
+                        <span asp-validation-for="PatPhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -115,31 +124,33 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatStreet" type="text" class="form-control" id="floatingInput" placeholder="Street">
+                            <input asp-for="PatStreet" type="text" class="form-control" placeholder="Street">
                             <label for="floatingInput">Street</label>
+                            <span asp-validation-for="PatStreet" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatCity" type="text" class="form-control" id="floatingInput" placeholder="City">
+                            <input asp-for="PatCity" type="text" class="form-control" placeholder="City">
                             <label for="floatingInput">City</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatState" type="text" class="form-control" id="floatingInput" placeholder="State">
+                            <input asp-for="PatState" type="text" class="form-control" placeholder="State">
                             <label for="floatingInput">State</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatZipcode" type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
+                            <input asp-for="PatZipcode" type="text" class="form-control" placeholder="Zip Code">
                             <label for="floatingInput">Zip Code</label>
+                            <span asp-validation-for="PatZipcode" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatRoom" type="text" class="form-control" id="floatingInput" placeholder="Room">
+                            <input asp-for="PatRoom" type="text" class="form-control" placeholder="Room">
                             <label for="floatingInput">Room #/ Suite (Optional)</label>
                         </div>
                     </div>

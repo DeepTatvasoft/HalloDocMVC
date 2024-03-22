@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "";
+}
+@model Services.ViewModels.AccessRoleModal
+<div class=" d-flex justify-content-between">
+    <h4 class="mt-1">Edit Role</h4>
+    <div class="backbtn">
+        <a asp-controller="Admin" asp-action="AccessTab">
+            <button type="button" class="btn btn-outline-info text-center"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
+        </a>
+    </div>
+</div>
+<form asp-action="EditRoleSubmit" asp-controller="Admin" type="post">
+    <div class="bg-white mt-2 p-3 rounded">
+        <input type="hidden" asp-for="@Model.roleid"/>
+        <h5>Details</h5>
+        <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="RoleName" type="text" class="form-control" placeholder="name">
+                    <label for="floatingInput">Role name</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select asp-for="accountType" id="acctype" class="form-select" aria-label="Floating label select example">
+                        <option value="3" selected>All</option>
+                        <option value="1">Admin</option>
+                        <option value="2">Physician</option>
+                    </select>
+                    <label for="floatingSelect">Account Type</label>
+                    <span asp-validation-for="accountType" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-2 d-flex flex-wrap menuchk">
+            @{
+                var f = "";
+            }
+            @foreach (var obj in Model.menu)
+            {
+                f = "";
+                if(Model.selectedmenuid.Contains(obj.Menuid))
+                {
+                    f = "checked";
+                }
+                <span class="me-3">
+                    <input type="checkbox" value="@obj.Menuid" name="AllMenu" @f/> @obj.Name
+                </span>
+            }
+        </div>
+        <div class="d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-info text-white savebtn">Save</button>
+            <button type="reset" class="btn btn-outline-info ms-1 cancelbtn">Cancel</button>
+        </div>
+    </div>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#acctype').on('change', function () {
+            var acctype = $(this).val();
+            $.ajax({
+                url: '/Admin/filtermenu',
+                data: { 'acctype': acctype },
+                success: function (response) {
+                    var menuchk = $('.menuchk');
+                    menuchk.empty();
+                    response.forEach(function (item) {
+                        menuchk.append(
+                            `<span class="me-3">
+                                <input type="checkbox" value=${item.menuid} name="AllMenu"/>
+                                ${item.name}`
+                        );
+                    });
+                },
+            });
+        });
+    });
+</script>

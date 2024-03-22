@@ -379,7 +379,8 @@ namespace HalloDoc.Controllers
         }
         public IActionResult AdministratorinfoEdit(AdminProfile Modal)
         {
-            adminFunction.AdministratorinfoEdit(Modal);
+            var chk = Request.Form["AdminRegion"].ToList();
+            adminFunction.AdministratorinfoEdit(Modal, chk);
             return RedirectToAction("Profiletab", "Admin");
         }
         public IActionResult MailinginfoEdit(AdminProfile modal)
@@ -436,9 +437,184 @@ namespace HalloDoc.Controllers
             return View();
         }
         [Authorization("1")]
-        public IActionResult EditPhysician()
+        public IActionResult EditPhysician(int id)
         {
-            return View();
+            return View(adminFunction.EditPhysician(id));
+        }
+        [HttpPost]
+        public IActionResult PhysicianAccInfo(EditPhysicianModal modal)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            adminFunction.PhysicianAccInfo(modal, adminname);
+            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+        }
+        public IActionResult PhysicianResetPass(EditPhysicianModal modal)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            if (modal.password != null)
+            {
+                adminFunction.PhysicianResetPass(modal, adminname);
+                TempData["success"] = "Your Password is changed Successfuly";
+            }
+            else
+            {
+                TempData["error"] = "Please enter valid password";
+            }
+            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+        }
+        public IActionResult PhysicianInfo(EditPhysicianModal modal)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+
+            var chk = Request.Form["PhysicianRegion"].ToList();
+            adminFunction.PhysicianInfo(modal, adminname, chk);
+            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+        }
+        public IActionResult PhysicianMailingInfo(EditPhysicianModal modal)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            adminFunction.PhysicianMailingInfo(modal, adminname);
+            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+        }
+        public IActionResult ProviderProfile(EditPhysicianModal modal)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            adminFunction.ProviderProfile(modal, adminname);
+            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+        }
+        public IActionResult EditProviderSign(int physicianid, string base64string)
+        {
+            adminFunction.EditProviderSign(physicianid, base64string);
+            return RedirectToAction("EditPhysician", new { id = physicianid });
+        }
+        public IActionResult EditProviderPhoto(int physicianid, string base64string)
+        {
+            adminFunction.EditProviderPhoto(physicianid, base64string);
+            return RedirectToAction("EditPhysician", new { id = physicianid });
+        }
+        [HttpPost]
+        public IActionResult PhyNotification()
+        {
+            var chk = Request.Form["chknotification"].ToList();
+            adminFunction.PhyNotification(chk);
+            return RedirectToAction("Providertab");
+        }
+        public IActionResult DeletePhysician(EditPhysicianModal modal)
+        {
+            adminFunction.DeletePhysician(modal);
+            return RedirectToAction("Providertab");
+        }
+        public IActionResult ContactPhysician(int phyid, string chk, string message)
+        {
+            adminFunction.ContactPhysician(phyid, chk, message);
+            return NoContent();
+        }
+        public IActionResult AccessTab()
+        {
+            AccessRoleModal modal = new AccessRoleModal();
+            modal.roles = _context.Roles.Where(U=>U.Isdeleted == new BitArray(new[] { false })).ToList();
+            return View(modal);
+        }
+        public IActionResult CreateRole()
+        {
+            AccessRoleModal modal = new AccessRoleModal();
+            modal.menu = _context.Menus.ToList();
+            return PartialView("AdminLayout/_CreateRole", modal);
+        }
+        public IActionResult CreateRoleSubmit(AccessRoleModal modal)
+        {
+            var chk = Request.Form["AllMenu"].ToList();
+            string adminname = HttpContext.Session.GetString("Adminname");
+            if (chk.Count == 0 || modal.accountType == 3 || modal.RoleName == null)
+            {
+                TempData["error"] = "Values Can't be Empty";
+                return RedirectToAction("AccessTab");
+            }
+            Role role = new Role
+            {
+                Name = modal.RoleName,
+                Accounttype = (short)modal.accountType,
+                Createddate = DateTime.Now,
+                Createdby = adminname,
+                Isdeleted = new BitArray(new[] { false })
+            };
+            _context.Roles.Add(role);
+            _context.SaveChanges();
+            foreach (var obj in chk)
+            {
+                var s = Int32.Parse(obj);
+                Rolemenu rolemenu = new Rolemenu
+                {
+                    Roleid = role.Roleid,
+                    Menuid = s
+                };
+                _context.Rolemenus.Add(rolemenu);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("AccessTab");
+        }
+        public List<Menu> filtermenu(int acctype)
+        {
+            List<Menu> menu = _context.Menus.Where(u => u.Accounttype == acctype).ToList();
+            if (acctype == 3)
+            {
+                menu = _context.Menus.ToList();
+            }
+            return menu;
+        }
+        public IActionResult EditRole(int roleid)
+        {
+            AccessRoleModal modal = new AccessRoleModal();
+            var role = _context.Roles.FirstOrDefault(u => u.Roleid == roleid);
+            modal.menu = _context.Menus.Where(u => u.Accounttype == role.Accounttype).ToList();
+            modal.selectedmenuid = _context.Rolemenus.Include(r => r.Role).Where(r => r.Roleid == roleid && r.Role.Accounttype == role.Accounttype).Select(r => r.Menu.Menuid).ToList();
+            modal.RoleName = role.Name;
+            modal.accountType = role.Accounttype;
+            modal.roleid = roleid;
+            return PartialView("AdminLayout/_EditRole", modal);
+        }
+        public IActionResult EditRoleSubmit(AccessRoleModal modal)
+        {
+            var chk = Request.Form["AllMenu"].ToList();
+            string adminname = HttpContext.Session.GetString("Adminname");
+            if (chk.Count == 0 || modal.accountType == 3 || modal.RoleName == null)
+            {
+                TempData["error"] = "Values Can't be Empty";
+                return RedirectToAction("AccessTab");
+            }
+            Role role = _context.Roles.FirstOrDefault(u => u.Roleid == modal.roleid);
+
+            role.Name = modal.RoleName;
+            role.Accounttype = (short)modal.accountType;
+            role.Modifieddate = DateTime.Now;
+            role.Modifiedby = adminname;
+            _context.Roles.Update(role);
+            _context.SaveChanges();
+            var rolemenu = _context.Rolemenus.Where(u => u.Roleid == modal.roleid).ToList();
+            foreach(var obj  in rolemenu)
+            {
+                _context.Rolemenus.Remove(obj);
+            }
+            foreach (var obj in chk)
+            {
+                var s = Int32.Parse(obj);
+                Rolemenu newrolemenu = new Rolemenu
+                {
+                    Roleid = role.Roleid,
+                    Menuid = s
+                };
+                _context.Rolemenus.Add(newrolemenu);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("AccessTab");
+        }
+        public IActionResult DeleteRole(int roleid)
+        {
+            var role = _context.Roles.FirstOrDefault(u=>u.Roleid == roleid);
+            role.Isdeleted = new BitArray(new[] { true });
+            _context.Roles.Update(role);
+            _context.SaveChanges();
+            return RedirectToAction("AccessTab");
         }
     }
 }

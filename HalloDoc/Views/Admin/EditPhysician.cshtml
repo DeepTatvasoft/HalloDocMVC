@@ -1,59 +1,69 @@
-﻿@{
+﻿@using System.Collections;
+@{
     ViewData["Title"] = "Admin Profile";
     Layout = "AdminLayout/_AdminDashboard";
 }
-@model Services.ViewModels.ProviderModal
+@model Services.ViewModels.EditPhysicianModal
 <partial name="_Notification" />
-
-<div class="tabnav mt-2 bg-white d-none d-md-block">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="home-tab" asp-action="AdminDashboard" asp-controller="Admin">
-                Dashboard
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location-tab-pane"
-                    type="button" role="tab" aria-controls="location-tab-pane" aria-selected="false">
-                Provider Location
-            </button>
-        </li>
-        <li class="nav-item active" role="presentation">
-            <a class="nav-link" asp-action="Profiletab" asp-controller="Admin">
-                My Profile
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <div class="dropdown">
-                <a class="nav-link active dropdown-toggle" asp-action="Providertab" asp-controller="Admin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Providers
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item nav-link active" href="#">Provider</a></li>
-                    <li><a class="dropdown-item" href="#">Scheduling</a></li>
-                    <li><a class="dropdown-item" href="#">Invoicing</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="Partners-tab" data-bs-toggle="tab" data-bs-target="#Partners-tab-pane"
-                    type="button" role="tab" aria-controls="Partners-tab-pane" aria-selected="false">
-                Partners
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="Access-tab" data-bs-toggle="tab" data-bs-target="#Access-tab-pane"
-                    type="button" role="tab" aria-controls="Access-tab-pane" aria-selected="false">
-                Access
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="Records-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane"
-                    type="button" role="tab" aria-controls="Records-tab-pane" aria-selected="false">
-                Records
-            </button>
-        </li>
-    </ul>
+<style>
+    #sig-canvas {
+        border: 2px dotted #CCCCCC;
+        border-radius: 15px;
+        cursor: crosshair;
+    }
+</style>
+<div class="tabnav mt-2 bg-white">
+    <div class="collapse show" id="collapseExample">
+        <div class="card card-body">
+            <ul class="nav nav-tabs d-block d-md-flex" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="home-tab" asp-action="AdminDashboard" asp-controller="Admin">
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location-tab-pane"
+                            type="button" role="tab" aria-controls="location-tab-pane" aria-selected="false">
+                        Provider Location
+                    </button>
+                </li>
+                <li class="nav-item active" role="presentation">
+                    <a class="nav-link" asp-action="Profiletab" asp-controller="Admin">
+                        My Profile
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <div class="dropdown">
+                        <a class="nav-link active dropdown-toggle" asp-action="Providertab" asp-controller="Admin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Providers
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item nav-link active" href="#">Provider</a></li>
+                            <li><a class="dropdown-item" href="#">Scheduling</a></li>
+                            <li><a class="dropdown-item" href="#">Invoicing</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="Partners-tab" data-bs-toggle="tab" data-bs-target="#Partners-tab-pane"
+                            type="button" role="tab" aria-controls="Partners-tab-pane" aria-selected="false">
+                        Partners
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" asp-action="AccessTab" asp-controller="Admin">
+                        Access
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="Records-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane"
+                            type="button" role="tab" aria-controls="Records-tab-pane" aria-selected="false">
+                        Records
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 
@@ -65,36 +75,36 @@
             <span>Back</span>
         </a>
     </div>
-    <div class="container bg-white" style="padding-bottom:20px" id="maincontent">
-        <form>
+    <div class="container bg-white shadow" style="padding-bottom:20px" id="maincontent">
+        <form asp-action="PhysicianAccInfo" asp-controller="Admin" method="post">
+            <input asp-for="@Model.physician.Physicianid" type="hidden" id="temp1" />
             <div class="accinfo">
                 <h4>Account Information</h4>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" placeholder="Username" disabled>
+                            <input asp-for="Username" type="text" class="form-control firstedit" placeholder="Username" disabled>
                             <label for="floatingInput">User Name</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" placeholder="password">
+                            <input asp-for="password" type="password" class="form-control firstedit" placeholder="password">
                             <label for="floatingInput">Password</label>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="form-floating">
-                            <select class="form-select" aria-label="Floating label select example" disabled>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                        <div class="form-floating mb-3 mb-md-0">
+                            <select asp-for="physician.Status" class="form-select firstedit" aria-label="Floating label select example" disabled>
+                                <option value="4">Active</option>
+                                <option value="2">Pending</option>
                             </select>
                             <label for="floatingSelect">Status</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating">
-                            <select class="form-select" aria-label="Floating label select example" disabled>
+                            <select class="form-select firstedit" aria-label="Floating label select example" disabled>
                                 <option value="1">One</option>
                                 <option value="2">Two</option>
                                 <option value="3">Three</option>
@@ -104,74 +114,83 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits">Edit</button>
-                    <button type="submit" class="btn btn-info text-white d-none saves">Save</button>
-                    <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels">Cancel</button>
-                    <button type="button" class="btn btn-outline-info ms-1">Reset Password</button>
+                    <button type="button" onclick="editoneclick()" class="btn btn-info text-white editf">Edit</button>
+                    <button type="submit" class="btn btn-info text-white d-none savef">Save</button>
+                    <button type="reset" onclick="canceloneclick()" class="btn btn-outline-info ms-1 d-none cancelf">Cancel</button>
+                    <button asp-action="PhysicianResetPass" asp-controller="Admin" type="submit" class="btn btn-outline-info ms-1">Reset Password</button>
                 </div>
             </div>
+        </form>
+
+        <form asp-action="PhysicianInfo" asp-controller="Admin" method="post">
+            <input asp-for="@Model.physician.Physicianid" type="hidden" id="temp2" />
             <div class="PhyInfo mt-5">
                 <h4>Physician Information</h4>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control firstedit" placeholder="FirstName" disabled>
+                            <input asp-for="physician.Firstname" type="text" class="form-control secondedit" placeholder="FirstName" disabled>
                             <label for="floatingInput">First Name</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control firstedit" placeholder="Name" disabled>
+                            <input asp-for="physician.Lastname" type="text" class="form-control secondedit" placeholder="Name" disabled>
                             <label for="floatingInput">Last Name</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control firstedit" placeholder="name@example.com" disabled>
+                            <input asp-for="physician.Email" type="email" class="form-control secondedit" placeholder="name@example.com" disabled>
                             <label for="floatingInput">Email</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="mb-3 numcountry">
-                            <select name="country" id="country" class="country firstedit" onchange="country_code()" disabled>
+                            <select name="country" id="country" class="country secondedit" onchange="country_code()" disabled>
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
                                 <option value="uk">UK</option>
                                 <option value="br">BRAZIL</option>
                                 <option value="ind">INDIA</option>
                             </select>
-                            <input type="tel" class="form-control output firstedit" id="output" placeholder="Mobile Number" disabled>
+                            <input asp-for="physician.Mobile" type="tel" class="form-control output secondedit" id="output" placeholder="Mobile Number" disabled>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control firstedit" placeholder="License" disabled>
+                            <input asp-for="physician.Medicallicense" type="text" class="form-control secondedit" placeholder="License" disabled>
                             <label for="floatingInput">Medical License #</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control firstedit" placeholder="NPI" disabled>
+                            <input asp-for="physician.Npinumber" type="text" class="form-control secondedit" placeholder="NPI" disabled>
                             <label for="floatingInput">NPI Number</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control firstedit" placeholder="name@example.com" disabled>
+                            <input asp-for="physician.Syncemailaddress" type="email" class="form-control secondedit" placeholder="name@example.com" disabled>
                             <label for="floatingInput">Synchronaztion Email Address</label>
                         </div>
                     </div>
-                    @*                    <div class="col d-flex flex-wrap">
-                    @foreach (var obj in Model.regions)
-                    {
-                    <div class="form-check me-2">
-                    <input class="form-check-input firstedit" type="checkbox" value="@obj.Regionid" id="flexCheckChecked-@obj.Regionid" checked disabled>
-                    <label class="form-check-label" for="flexCheckChecked-@obj.Regionid">
-                    @obj.Name
-                    </label>
+                    <div class="col d-flex flex-wrap">
+                        @foreach (var obj in Model.regions)
+                        {
+                            string flag = "";
+                            @if (Model.physicianregions.Contains(obj))
+                            {
+                                flag = "checked";
+                            }
+                            <div class="form-check me-2">
+                                <input class="form-check-input secondedit" name="PhysicianRegion" type="checkbox" value="@obj.Regionid" id="flexCheckChecked-@obj.Regionid" @flag disabled>
+                                <label class="form-check-label" for="flexCheckChecked-@obj.Regionid">
+                                    @obj.Name
+                                </label>
+                            </div>
+                        }
                     </div>
-                    }
-                    </div>*@
                 </div>
                 <div class="d-flex justify-content-end mt-4">
                     <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits">Edit</button>
@@ -179,89 +198,93 @@
                     <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels">Cancel</button>
                 </div>
             </div>
+        </form>
+
+        <form asp-action="PhysicianMailingInfo" asp-controller="Admin" method="post">
             <div class="Mailinginfo">
-                <form method="post" asp-action="MailinginfoEdit" asp-controller="Admin">
-                    <input type="hidden" id="temp3">
-                    <h5>Mailing & Billing Information</h5>
-                    <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-                        <div class="col">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control secondedit" placeholder="FirstName" disabled>
-                                <label for="floatingInput">Address 1</label>
-                            </div>
+                <input asp-for="@Model.physician.Physicianid" type="hidden" id="temp3">
+                <h5>Mailing & Billing Information</h5>
+                <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="physician.Address1" type="text" class="form-control thirdedit" placeholder="Adress1" disabled>
+                            <label for="floatingInput">Address 1</label>
                         </div>
-                        <div class="col">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control secondedit" placeholder="Name" disabled>
-                                <label for="floatingInput">Address 2</label>
-                            </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="physician.Address2" type="text" class="form-control thirdedit" placeholder="Address2" disabled>
+                            <label for="floatingInput">Address 2</label>
                         </div>
-                        <div class="col">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control secondedit" placeholder="name@example.com" disabled>
-                                <label for="floatingInput">City</label>
-                            </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="physician.City" type="text" class="form-control thirdedit" placeholder="name@example.com" disabled>
+                            <label for="floatingInput">City</label>
                         </div>
-                        <div class="col">
-                            <div class="form-floating">
-                                @*                                <select class="form-select secondedit" aria-label="Floating label select example" disabled>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3 mb-md-0">
+                            <select asp-for="@Model.physician.Regionid" class="form-select thirdedit" aria-label="Floating label select example" disabled>
                                 @foreach (var obj in Model.regions)
                                 {
-                                <option value="@obj.Regionid">@obj.Name</option>
+                                    <option value="@obj.Regionid">@obj.Name</option>
                                 }
-                                </select>
-                                <label for="floatingSelect">State</label>*@
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control secondedit" placeholder="name@example.com" disabled>
-                                <label for="floatingInput">Zip</label>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="mb-3 numcountry">
-                                <select name="country" id="country2" class="country secondedit" onchange="country_code2()" disabled>
-                                    <option value="select country">select country</option>
-                                    <option value="us">US</option>
-                                    <option value="uk">UK</option>
-                                    <option value="br">BRAZIL</option>
-                                    <option value="ind">INDIA</option>
-                                </select>
-                                <input type="tel" class="form-control output secondedit" id="output2" placeholder="Mobile Number" disabled>
-                            </div>
+                            </select>
+                            <label for="floatingSelect">State</label>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-end mt-4">
-                        <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits">Edit</button>
-                        <button type="submit" class="btn btn-info text-white d-none saves">Save</button>
-                        <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels">Cancel</button>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="physician.Zip" type="text" class="form-control thirdedit" placeholder="name@example.com" disabled>
+                            <label for="floatingInput">Zip</label>
+                        </div>
                     </div>
-                </form>
+                    <div class="col">
+                        <div class="mb-3 numcountry">
+                            <select name="country" id="country2" class="country thirdedit" onchange="country_code2()" disabled>
+                                <option value="select country">select country</option>
+                                <option value="us">US</option>
+                                <option value="uk">UK</option>
+                                <option value="br">BRAZIL</option>
+                                <option value="ind">INDIA</option>
+                            </select>
+                            <input asp-for="physician.Altphone" type="tel" class="form-control output thirdedit" id="output2" placeholder="Mobile Number" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="button" onclick="editthirdclick()" class="btn btn-info text-white editt">Edit</button>
+                    <button type="submit" class="btn btn-info text-white d-none savet">Save</button>
+                    <button type="reset" onclick="cancelthirdclick()" class="btn btn-outline-info ms-1 d-none cancelt">Cancel</button>
+                </div>
             </div>
+        </form>
+
+        <form asp-action="ProviderProfile" asp-controller="Admin" method="post">
             <div class="ProviderProfile">
-                <input type="hidden" id="temp3">
+                <input asp-for="@Model.physician.Physicianid" type="hidden" id="temp4">
                 <h5>Provider Profile</h5>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control secondedit" placeholder="BusinessName" disabled>
+                            <input asp-for="physician.Businessname" type="text" class="form-control fourthedit" placeholder="BusinessName" disabled>
                             <label for="floatingInput">Business Name</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control secondedit" placeholder="Businesssite" disabled>
+                            <input asp-for="physician.Businesswebsite" type="text" class="form-control fourthedit" placeholder="Businesssite" disabled>
                             <label for="floatingInput">Business Website</label>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="form-group rounded d-flex align-items-center justify-content-between uploadbtndiv bg-body-secondary">
+                        <div class="form-group rounded d-flex align-items-center justify-content-between uploadbtndiv bg-body-secondary mb-3 mb-md-0">
                             <div class="px-3 table-responsive">
-                                <input type="file" multiple hidden />
-                                <label role="button" for="actual-btn" class="choosenfile text-dark text-nowrap">Select Photo</label>
+                                <input id="actual-btn" type="file" hidden />
+                                <label role="button" id="file-chosen" for="actual-btn" class="choosenfile text-dark text-nowrap">Select Photo</label>
                             </div>
-                            <button type="submit" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
+                            <button type="button" id="uploadphoto" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
                                 <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div>Upload</div></label>
                             </button>
                         </div>
@@ -269,86 +292,181 @@
                     <div class="col d-flex">
                         <div class="form-group rounded d-flex align-items-center justify-content-between uploadbtndiv bg-body-secondary" style="width:60%">
                             <div class="px-3 table-responsive">
-                                <input type="file" multiple hidden />
-                                <label role="button" for="actual-btn" class="choosenfile text-dark text-nowrap">Select Signature</label>
+                                <input id="actual-btn2" type="file" hidden disabled />
+                                <label role="button" for="actual-btn2" id="file-chosen" class="choosenfile text-dark text-nowrap">Select Signature</label>
                             </div>
-                            <button type="submit" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
+                            <button id="PhySignSubmit" type="button" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
                                 <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div>Upload</div></label>
                             </button>
                         </div>
-                        <button type="button" class="btn btn-info d-flex align-items-center ms-1 border-0 text-white">
+                        <button type="button" class="btn btn-info d-flex align-items-center ms-1 border-0 text-white" data-bs-toggle="modal" data-bs-target="#ModalToOpen">
                             <i class="fa-solid fa-pencil p-2"></i> Create
                         </button>
                     </div>
+                    <div class="col">
+                        <img class="mt-2" height="150px" src="@Model.physician.Photo">
+                    </div>
+                    <div class="col">
+                        <img class="mt-2" id="physign" src="@Model.physician.Signature">
+                    </div>
                 </div>
                 <div class="form-floating mt-4">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 150px" disabled></textarea>
+                    <textarea asp-for="@Model.physician.Adminnotes" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 150px" disabled></textarea>
                     <label for="floatingTextarea2">Admin Notes</label>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits">Edit</button>
-                    <button type="submit" class="btn btn-info text-white d-none saves">Save</button>
-                    <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels">Cancel</button>
+                    <button type="button" onclick="editfourthclick()" class="btn btn-info text-white editfo">Edit</button>
+                    <button type="submit" class="btn btn-info text-white d-none savefo">Save</button>
+                    <button type="reset" onclick="cancelfourthclick()" class="btn btn-outline-info ms-1 d-none cancelfo">Cancel</button>
                 </div>
             </div>
-            <div class="border mt-2" style="border-bottom:1px solid"></div>
-            <div class="onboarding mt-2">
-                <h5>Onboarding</h5>
-                <div class="d-flex align-items-center">
-                    <div>
-                        <input type="checkbox" class="me-1"> Independent Contractor Agreement
-                    </div>
-                    <button type="button" class="btn btn-info ms-2 border-0 text-white">
-                        Upload
-                    </button>
-                    <button type="button" class="btn btn-info ms-2 border-0 text-white">
-                        View
-                    </button>
-                </div>
-                <div class="d-flex align-items-center mt-2">
-                    <div style="width:274.22px">
-                        <input type="checkbox" class="me-1"> Background Check
-                    </div>
-                    <button type="button" class="btn btn-info ms-2 border-0 text-white">
-                        Upload
-                    </button>
-                    <button type="button" class="btn btn-info ms-2 border-0 text-white">
-                        View
-                    </button>
-                </div>
-                <div class="d-flex align-items-center mt-2">
-                    <div style="width:274.22px">
-                        <input type="checkbox" class="me-1"> HIPAA Compilance
-                    </div>
-                    <button type="button" class="btn btn-info ms-2 border-0 text-white">
-                        Upload
-                    </button>
-                    <button type="button" class="btn btn-info ms-2 border-0 text-white">
-                        View
-                    </button>
-                </div>
-                <div class="d-flex align-items-center mt-2">
-                    <div style="width:274.22px">
-                        <input type="checkbox" class="me-1"> Non-disclosure Agreement
-                    </div>
-                    <button type="button" class="btn btn-info ms-2 border-0 text-white">
-                        Upload
-                    </button>
-                </div>
-                <div class="d-flex align-items-center mt-2">
-                    <div style="width:274.22px">
-                        <input type="checkbox" class="me-1"> License Document
-                    </div>
-                    <button type="button" class="btn btn-info ms-2 border-0 text-white">
-                        Upload
-                    </button>
-                </div>
+        </form>
 
+        <div class="border mt-2" style="border-bottom:1px solid"></div>
+        <div class="onboarding mt-2">
+            <h5>Onboarding</h5>
+            <div class="d-flex align-items-center">
+                <div>
+                    @{
+                        var f = "";
+                        @if (Model.physician.Isagreementdoc == new BitArray(new[] { true }))
+                        {
+                            f = "checked";
+                        }
+                    }
+                    <input type="checkbox" class="me-1" @f> Independent Contractor Agreement
+                </div>
+                <button type="button" class="btn btn-info ms-2 border-0 text-white">
+                    Upload
+                </button>
+                <button type="button" class="btn btn-info ms-2 border-0 text-white">
+                    View
+                </button>
             </div>
-            <div class="border mt-2" style="border-bottom:1px solid"></div>
-            <div class="submit mt-4">
-                <button type="button" class="btn btn-info" style="color: white;">Save</button>
-                <button type="button" class="btn btn-danger ms-2">Delete Account</button>
+            <div class="d-flex align-items-center mt-2">
+                <div style="width:274.22px">
+                    @{
+                        f = "";
+                        @if (Model.physician.Isbackgrounddoc == new BitArray(new[] { true }))
+                        {
+                            f = "checked";
+                        }
+                    }
+                    <input type="checkbox" class="me-1" @f> Background Check
+                </div>
+                <button type="button" class="btn btn-info ms-2 border-0 text-white">
+                    Upload
+                </button>
+                <button type="button" class="btn btn-info ms-2 border-0 text-white">
+                    View
+                </button>
+            </div>
+            <div class="d-flex align-items-center mt-2">
+                <div style="width:274.22px">
+                    @{
+                        f = "";
+                        @if (Model.physician.Iscredentialdoc == new BitArray(new[] { true }))
+                        {
+                            f = "checked";
+                        }
+                    }
+                    <input type="checkbox" class="me-1" @f> HIPAA Compilance
+                </div>
+                <button type="button" class="btn btn-info ms-2 border-0 text-white">
+                    Upload
+                </button>
+                <button type="button" class="btn btn-info ms-2 border-0 text-white">
+                    View
+                </button>
+            </div>
+            <div class="d-flex align-items-center mt-2">
+                <div style="width:274.22px">
+                    @{
+                        f = "";
+                        @if (Model.physician.Isnondisclosuredoc == new BitArray(new[] { true }))
+                        {
+                            f = "checked";
+                        }
+                    }
+                    <input type="checkbox" class="me-1" @f> Non-disclosure Agreement
+                </div>
+                <button type="button" class="btn btn-info ms-2 border-0 text-white">
+                    Upload
+                </button>
+            </div>
+            <div class="d-flex align-items-center mt-2">
+                <div style="width:274.22px">
+                    @{
+                        f = "";
+                        @if (Model.physician.Islicensedoc == new BitArray(new[] { true }))
+                        {
+                            f = "checked";
+                        }
+                    }
+                    <input type="checkbox" class="me-1" @f> License Document
+                </div>
+                <button type="button" class="btn btn-info ms-2 border-0 text-white">
+                    Upload
+                </button>
+            </div>
+
+        </div>
+        <div class="border mt-2" style="border-bottom:1px solid"></div>
+        <div class="submit mt-4">
+            <button type="button" class="btn btn-info" style="color: white;">Save</button>
+            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#DeleteAccount">Delete Account</button>
+        </div>
+    </div>
+</div>
+
+@*SignPad Model*@
+<div class="modal fade" id="ModalToOpen" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <input type="hidden" id="hiddenrequest" value="@Model.physician.Physicianid" />
+            <div class="p-4 m-auto border border-1 border-info rounded-2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>E-Signature</h1>
+                        <p>Sign in the canvas below and save your signature as an image!</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <canvas id="sig-canvas" width="300" height="160">
+                            Get a better browser, bro.
+                        </canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class=" p-2 px-3 text-white bg-info rounded border-info  mx-2 px-3 shadow-none" id="sig-submitBtn">Submit Signature</button>
+                        <button class="btn border-info text-info shadow-none" id="sig-clearBtn">Clear Signature</button>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" id="Cancelbutton" class="btn border-info text-info shadow-none" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*DeleteAccount Model*@
+<div id="DeleteAccount" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <form asp-action="DeletePhysician" asp-controller="Admin">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <input type="text" asp-for="@Model.physician.Physicianid" hidden>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="mb-3" style="height: 80px;"><path fill="#FFD43B" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg>
+                    <h4>Confirmation Delete</h4>
+                    <p>Are sure you want to Delete this Account</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success text-white clearcase" data-bs-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-danger ms-1" data-bs-dismiss="modal">No</button>
+                </div>
             </div>
         </form>
     </div>
@@ -356,10 +474,245 @@
 
 
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 <script>
-    $(document).ready(function () {
+    var signurl = "";
+    (function () {
+        window.requestAnimFrame = (function (callback) {
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimaitonFrame ||
+                function (callback) {
+                    window.setTimeout(callback, 1000 / 60);
+                };
+        })();
 
+        var canvas = document.getElementById("sig-canvas");
+        var ctx = canvas.getContext("2d");
+        ctx.strokeStyle = "#222222";
+        ctx.lineWidth = 4;
+
+        var drawing = false;
+        var mousePos = {
+            x: 0,
+            y: 0
+        };
+        var lastPos = mousePos;
+
+        canvas.addEventListener("mousedown", function (e) {
+            drawing = true;
+            lastPos = getMousePos(canvas, e);
+        }, false);
+
+        canvas.addEventListener("mouseup", function (e) {
+            drawing = false;
+        }, false);
+
+        canvas.addEventListener("mousemove", function (e) {
+            mousePos = getMousePos(canvas, e);
+        }, false);
+
+        // Add touch event support for mobile
+        canvas.addEventListener("touchstart", function (e) {
+
+        }, false);
+
+        canvas.addEventListener("touchmove", function (e) {
+            var touch = e.touches[0];
+            var me = new MouseEvent("mousemove", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(me);
+        }, false);
+
+        canvas.addEventListener("touchstart", function (e) {
+            mousePos = getTouchPos(canvas, e);
+            var touch = e.touches[0];
+            var me = new MouseEvent("mousedown", {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(me);
+        }, false);
+
+        canvas.addEventListener("touchend", function (e) {
+            var me = new MouseEvent("mouseup", {});
+            canvas.dispatchEvent(me);
+        }, false);
+
+        function getMousePos(canvasDom, mouseEvent) {
+            var rect = canvasDom.getBoundingClientRect();
+            return {
+                x: mouseEvent.clientX - rect.left,
+                y: mouseEvent.clientY - rect.top
+            }
+        }
+
+        function getTouchPos(canvasDom, touchEvent) {
+            var rect = canvasDom.getBoundingClientRect();
+            return {
+                x: touchEvent.touches[0].clientX - rect.left,
+                y: touchEvent.touches[0].clientY - rect.top
+            }
+        }
+
+        function renderCanvas() {
+            if (drawing) {
+                ctx.moveTo(lastPos.x, lastPos.y);
+                ctx.lineTo(mousePos.x, mousePos.y);
+                ctx.stroke();
+                lastPos = mousePos;
+            }
+        }
+
+        // Prevent scrolling when touching the canvas
+        document.body.addEventListener("touchstart", function (e) {
+            if (e.target == canvas) {
+                e.preventDefault();
+            }
+        }, false);
+        document.body.addEventListener("touchend", function (e) {
+            if (e.target == canvas) {
+                e.preventDefault();
+            }
+        }, false);
+        document.body.addEventListener("touchmove", function (e) {
+            if (e.target == canvas) {
+                e.preventDefault();
+            }
+        }, false);
+
+        (function drawLoop() {
+            requestAnimFrame(drawLoop);
+            renderCanvas();
+        })();
+
+        function clearCanvas() {
+            canvas.width = canvas.width;
+        }
+
+        // Set up the UI
+        var clearBtn = document.getElementById("sig-clearBtn");
+        var submitBtn = document.getElementById("sig-submitBtn");
+        clearBtn.addEventListener("click", function (e) {
+            clearCanvas();
+        }, false);
+        submitBtn.addEventListener("click", function (e) {
+            var dataUrl = canvas.toDataURL();
+            signurl = dataUrl;
+            $('#physign').attr('src', dataUrl);
+            $('#Cancelbutton').trigger('click');
+        }, false);
+
+    })();
+    $(document).ready(function () {
+        $('#PhySignSubmit').on('click', function () {
+            var dataUrl = signurl;
+            var physicianid = $('#hiddenrequest').val();
+            $.ajax({
+                url: '/Admin/EditProviderSign',
+                type: 'POST',
+                data: { physicianid: physicianid, base64string: dataUrl },
+                success: function (response) {
+                    $('#Cancelbutton').trigger('click');
+                    window.location.reload();
+                }
+            });
+        });
+        $('#uploadphoto').on('click', function () {
+            var fileInput = document.querySelector('#actual-btn');
+            var file = fileInput.files[0];
+            var reader = new FileReader();
+            var physicianid = @Model.physician.Physicianid;
+            reader.onloadend = function () {
+                var base64String = reader.result;
+                $.ajax({
+                    url: '/Admin/EditProviderPhoto',
+                    type: 'POST',
+                    data: { physicianid, base64String },
+                    success: function (response) {
+                        window.location.reload();
+                    }
+                });
+            };
+            reader.readAsDataURL(file);
+        });
     });
+
+</script>
+
+<script>
+    function editoneclick() {
+        $('.savef').removeClass('d-none').addClass('d-inline-block');
+        $('.cancelf').removeClass('d-none').addClass('d-inline-block');
+        $('.editf').removeClass('d-inline-block').addClass('d-none');
+        $('.firstedit').each(function () {
+            $(this).prop('disabled', false);
+        });
+
+    }
+    function canceloneclick() {
+        $('.editf').removeClass('d-none').addClass('d-inline-block');
+        $('.savef').removeClass('d-inline-block').addClass('d-none');
+        $('.cancelf').removeClass('d-inline-block').addClass('d-none');
+        $('.firstedit').each(function () {
+            $(this).prop('disabled', true);
+        });
+    }
+    function editsecondclick() {
+        $('.saves').removeClass('d-none').addClass('d-inline-block');
+        $('.cancels').removeClass('d-none').addClass('d-inline-block');
+        $('.edits').removeClass('d-inline-block').addClass('d-none');
+        $('.secondedit').each(function () {
+            $(this).prop('disabled', false);
+        });
+
+    }
+    function cancelsecondclick() {
+        $('.edits').removeClass('d-none').addClass('d-inline-block');
+        $('.saves').removeClass('d-inline-block').addClass('d-none');
+        $('.cancels').removeClass('d-inline-block').addClass('d-none');
+        $('.secondedit').each(function () {
+            $(this).prop('disabled', true);
+        });
+    }
+    function editthirdclick() {
+        $('.savet').removeClass('d-none').addClass('d-inline-block');
+        $('.cancelt').removeClass('d-none').addClass('d-inline-block');
+        $('.editt').removeClass('d-inline-block').addClass('d-none');
+        $('.thirdedit').each(function () {
+            $(this).prop('disabled', false);
+        });
+
+    }
+    function cancelthirdclick() {
+        $('.editt').removeClass('d-none').addClass('d-inline-block');
+        $('.savet').removeClass('d-inline-block').addClass('d-none');
+        $('.cancelt').removeClass('d-inline-block').addClass('d-none');
+        $('.thirdedit').each(function () {
+            $(this).prop('disabled', true);
+        });
+    }
+    function editfourthclick() {
+        $('.savefo').removeClass('d-none').addClass('d-inline-block');
+        $('.cancelfo').removeClass('d-none').addClass('d-inline-block');
+        $('.editfo').removeClass('d-inline-block').addClass('d-none');
+        $('.fourthedit').each(function () {
+            $(this).prop('disabled', false);
+        });
+
+    }
+    function cancelfourthclick() {
+        $('.editfo').removeClass('d-none').addClass('d-inline-block');
+        $('.savefo').removeClass('d-inline-block').addClass('d-none');
+        $('.cancelfo').removeClass('d-inline-block').addClass('d-none');
+        $('.fourthedit').each(function () {
+            $(this).prop('disabled', true);
+        });
+    }
+
 </script>

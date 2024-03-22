@@ -1,39 +1,77 @@
 ﻿@model Services.ViewModels.ProviderModal
-<table class="table">
-    <thead style="--bs-table-bg: #efefef">
-        <tr>
-            <th scope="col" class="text-center">Stop Notification</th>
-            <th scope="col">Provider Name</th>
-            <th scope="col">Role</th>
-            <th scope="col">On Call Status</th>
-            <th scope="col">Status</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var obj in Model.physicians)
-        {
+<form method="post" asp-action="PhyNotification" asp-controller="Admin">
+    <table class="table">
+        <thead style="--bs-table-bg: #efefef">
             <tr>
-                <td class="text-center">
-                    <input type="checkbox" />
-                </td>
-                <td>@obj.Firstname, @obj.Lastname</td>
-                <td>@obj.Role.Name</td>
-                <td>Un Available</td>
-                @if (obj.Status == 1)
-                {
-                    <td>Active</td>
-
-                }
-                else if (obj.Status == 2)
-                {
-                    <td>Pending</td>
-                }
-                <td>
-                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#ContactModal">Contact</button>
-                    <a asp-controller="Admin" asp-action="EditPhysician" type="button" class="btn btn-outline-info">Edit</a>
-                </td>
+                <th scope="col" class="text-center">Stop Notification</th>
+                <th scope="col" class="text-center">Provider Name</th>
+                <th scope="col" class="text-center">Role</th>
+                <th scope="col" class="text-center">On Call Status</th>
+                <th scope="col" class="text-center">Status</th>
+                <th scope="col" class="text-center">Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model.physicians)
+            {
+                var notificationchk = "";
+                if(Model.physiciannotificationid.Contains(obj.Physicianid))
+                {
+                    notificationchk = "checked";
+                }
+                <tr>
+                    <td class="text-center">
+                        <input name="chknotification" type="checkbox" class="Notification" value="@obj.Physicianid" @notificationchk/>
+                    </td>
+                    <td class="text-center">@obj.Firstname, @obj.Lastname</td>
+                    @if(obj.Role != null)
+                    {
+                        <td class="text-center">@obj.Role.Name</td>
+                    }
+                    else
+                    {
+                        <td class="text-center">-</td>
+                    }
+                    <td class="text-center">Un Available</td>
+                    @if (obj.Status == 4 || obj.Status == 5)
+                    {
+                        <td class="text-center">Active</td>
+
+                    }
+                    else if (obj.Status == 2)
+                    {
+                        <td class="text-center">Pending</td>
+                    }
+                    else
+                    {
+                        <td class="text-center">-</td>
+                    }
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-info" onclick="ContactBtn(@obj.Physicianid)" data-bs-toggle="modal" data-bs-target="#ContactModal">Contact</button>
+                        <a asp-controller="Admin" asp-action="EditPhysician" asp-route-id="@obj.Physicianid" type="button" class="btn btn-outline-info">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-end mt-4">
+        <button type="submit" class="btn btn-info text-white d-none savebtn">Save</button>
+        <button type="reset" class="btn btn-outline-info ms-1 d-none cancelbtn">Cancel</button>
+    </div>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.each($('.Notification'), function () {
+            $(this).on('change', function () {
+                $('.savebtn').removeClass('d-none');
+                $('.cancelbtn').removeClass('d-none');
+            });
+        });
+        $('.cancelbtn').on('click',function(){
+            $('.savebtn').addClass('d-none');
+            $('.cancelbtn').addClass('d-none');
+        });
+    });
+</script>

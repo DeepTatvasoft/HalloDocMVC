@@ -4,48 +4,51 @@
 }
 @model Services.ViewModels.AdminProfile
 <partial name="_Notification" />
-<div class="tabnav mt-2 bg-white d-none d-md-block">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="home-tab" asp-action="AdminDashboard" asp-controller="Admin">
-                Dashboard
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location-tab-pane"
-                    type="button" role="tab" aria-controls="location-tab-pane" aria-selected="false">
-                Provider Location
-            </button>
-        </li>
-        <li class="nav-item active" role="presentation">
-            <a class="nav-link active" asp-action="Profiletab" asp-controller="Admin">
-                My Profile
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" asp-action="Providertab" asp-controller="Admin">
-                Providers
-            </a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="Partners-tab" data-bs-toggle="tab" data-bs-target="#Partners-tab-pane"
-                    type="button" role="tab" aria-controls="Partners-tab-pane" aria-selected="false">
-                Partners
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="Access-tab" data-bs-toggle="tab" data-bs-target="#Access-tab-pane"
-                    type="button" role="tab" aria-controls="Access-tab-pane" aria-selected="false">
-                Access
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="Records-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane"
-                    type="button" role="tab" aria-controls="Records-tab-pane" aria-selected="false">
-                Records
-            </button>
-        </li>
-    </ul>
+<div class="tabnav mt-2 bg-white">
+    <div class="collapse show" id="collapseExample">
+        <div class="card card-body">
+            <ul class="nav nav-tabs d-block d-md-flex" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="home-tab" asp-action="AdminDashboard" asp-controller="Admin">
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location-tab-pane"
+                            type="button" role="tab" aria-controls="location-tab-pane" aria-selected="false">
+                        Provider Location
+                    </button>
+                </li>
+                <li class="nav-item active" role="presentation">
+                    <a class="nav-link active" asp-action="Profiletab" asp-controller="Admin">
+                        My Profile
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" asp-action="Providertab" asp-controller="Admin">
+                        Providers
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="Partners-tab" data-bs-toggle="tab" data-bs-target="#Partners-tab-pane"
+                            type="button" role="tab" aria-controls="Partners-tab-pane" aria-selected="false">
+                        Partners
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" asp-action="AccessTab" asp-controller="Admin">
+                        Access
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="Records-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane"
+                            type="button" role="tab" aria-controls="Records-tab-pane" aria-selected="false">
+                        Records
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 
 
@@ -58,13 +61,12 @@
             </a>
         </div>
     </div>
-    <div class="bg-white p-4 mt-2 rounded">
+    <div class="bg-white p-4 mt-2 rounded shadow">
         <div class="accinfo">
             <form method="post" asp-action="AdminResetPassword" asp-controller="Admin">
                 <input asp-for="@Model.admindata.Adminid" type="hidden" id="temp1">
                 <h5>Account Information</h5>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
-
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="@Model.Username" type="text" class="form-control" placeholder="Name" disabled>
@@ -79,10 +81,15 @@
                     </div>
                     <div class="col">
                         <div class="form-floating">
-                            <select class="form-select" aria-label="Floating label select example" disabled>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                            <select class="form-select mb-3 mb-md-0" aria-label="Floating label select example" disabled>
+                                @if (Model.admindata.Status == 4 || Model.admindata.Status == 5)
+                                {
+                                    <option value="4">Active</option>
+                                }
+                                else if (Model.admindata.Status == 2)
+                                {
+                                    <option value="=2">Pending</option>
+                                }
                             </select>
                             <label for="floatingSelect">Status</label>
                         </div>
@@ -148,8 +155,13 @@
                     <div class="col d-flex flex-wrap">
                         @foreach (var obj in Model.regions)
                         {
+                            var f = "";
+                            @if (Model.adminregions.Contains(obj))
+                            {
+                                f = "checked";
+                            }
                             <div class="form-check me-2">
-                                <input class="form-check-input firstedit" type="checkbox" value="@obj.Regionid" id="flexCheckChecked-@obj.Regionid" checked disabled>
+                                <input class="form-check-input firstedit" name="AdminRegion" type="checkbox" value="@obj.Regionid" id="flexCheckChecked-@obj.Regionid" @f disabled>
                                 <label class="form-check-label" for="flexCheckChecked-@obj.Regionid">
                                     @obj.Name
                                 </label>
@@ -189,7 +201,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div class="form-floating">
+                        <div class="form-floating mb-3 mb-md-0">
                             <select asp-for="@Model.admindata.Regionid" class="form-select secondedit" aria-label="Floating label select example" disabled>
                                 @foreach (var obj in Model.regions)
                                 {

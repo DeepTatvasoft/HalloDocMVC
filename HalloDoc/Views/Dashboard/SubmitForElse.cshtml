@@ -23,21 +23,24 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatFirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <input asp-for="PatFirstName" type="text" class="form-control" placeholder="Name">
                             <label for="floatingInput">First Name</label>
+                            <span asp-validation-for="PatFirstName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatLastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
+                            <input asp-for="PatLastName" type="text" class="form-control" placeholder="Name">
                             <label for="floatingInput">Last Name</label>
+                            <span asp-validation-for="PatLastName" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3 date">
-                        <input asp-for="PatDOB" type="date" class="form-control" id="floatingInput" placeholder="Date">
+                        <input asp-for="PatDOB" type="date" class="form-control" placeholder="Date">
                         <label for="floatingInput">Date Of Birth</label>
+                        <span asp-validation-for="PatDOB" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -48,10 +51,11 @@
                         <div class="form-floating mb-3">
                             <input asp-for="PatEmail" onblur="checkEmailExists()" type="email" class="form-control" id="patientEmail" placeholder="name@example.com">
                             <label for="patientEmail">Email</label>
+                            <span asp-validation-for="PatEmail" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country" class="country" onchange="country_code()">
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -61,6 +65,7 @@
                             </select>
                             <input asp-for="PatPhoneNumber" type="tel" class="form-control output" id="output" placeholder="Mobile Number">
                         </div>
+                        <span asp-validation-for="PatPhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -69,31 +74,33 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatStreet" type="text" class="form-control" id="floatingInput" placeholder="Street">
+                            <input asp-for="PatStreet" type="text" class="form-control" placeholder="Street">
                             <label for="floatingInput">Street</label>
+                            <span asp-validation-for="PatStreet" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatCity" type="text" class="form-control" id="floatingInput" placeholder="City">
+                            <input asp-for="PatCity" type="text" class="form-control" placeholder="City">
                             <label for="floatingInput">City</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatState" type="text" class="form-control" id="floatingInput" placeholder="State">
+                            <input asp-for="PatState" type="text" class="form-control" placeholder="State">
                             <label for="floatingInput">State</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatZipcode" type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
+                            <input asp-for="PatZipcode" type="text" class="form-control" placeholder="Zip Code">
                             <label for="floatingInput">Zip Code</label>
+                            <span asp-validation-for="PatZipcode" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="PatRoom" type="text" class="form-control" id="floatingInput" placeholder="Room">
+                            <input asp-for="PatRoom" type="text" class="form-control" placeholder="Room">
                             <label for="floatingInput">Room #/ Suite (Optional)</label>
                         </div>
                     </div>
@@ -109,10 +116,10 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input  type="text" class="form-control" id="floatingInput" placeholder="Relation">
+                            <input type="text" class="form-control" placeholder="Relation">
                             <label for="floatingInput">Relation With Patient (Optional)</label>
                         </div>
-                    </div>           
+                    </div>
                 </div>
             </div>
             <div class="updoc mt-5">

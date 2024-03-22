@@ -33,7 +33,7 @@
             <span>Back</span>
         </a>
     </div>
-    <div class="container bg-white" style="background-color: white; padding-bottom:20px" id="maincontent">
+    <div class="container bg-white shadow" style="background-color: white; padding-bottom:20px" id="maincontent">
         <form method="post" asp-controller="Form" asp-action="familyinfo" enctype="multipart/form-data">
             <div class="faminfo">
                 <h4>Family/Friend Information</h4>
@@ -42,16 +42,18 @@
                         <div class="form-floating mb-3">
                             <input asp-for="FamFirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
                             <label for="floatingInput">Your First Name</label>
+                            <span asp-validation-for="FamFirstName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="FamLastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
                             <label for="floatingInput">Your Last Name</label>
+                            <span asp-validation-for="FamLastName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country" onchange="country_code()">
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -61,11 +63,13 @@
                             </select>
                             <input asp-for="FamMobile" type="tel" class="form-control" id="output" placeholder="Mobile Number">
                         </div>
+                        <span asp-validation-for="FamMobile" class="text-danger"></span>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="FamEmail" type="email" class="form-control" id="floatingInput" placeholder="Email">
                             <label for="floatingInput">Your Email</label>
+                            <span asp-validation-for="FamEmail" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -88,12 +92,14 @@
                         <div class="form-floating mb-3">
                             <input asp-for="PatFirstName" type="text" class="form-control" id="floatingInput" placeholder="Name">
                             <label for="floatingInput">First Name</label>
+                            <span asp-validation-for="PatFirstName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="PatLastName" type="text" class="form-control" id="floatingInput" placeholder="Name">
                             <label for="floatingInput">Last Name</label>
+                            <span asp-validation-for="PatLastName" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -101,6 +107,7 @@
                     <div class="form-floating mb-3 date">
                         <input asp-for="PatDOB" type="date" class="form-control" id="floatingInput" placeholder="Date">
                         <label for="floatingInput">Date Of Birth</label>
+                        <span asp-validation-for="PatDOB" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -111,10 +118,11 @@
                         <div class="form-floating mb-3">
                             <input asp-for="PatEmail" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
                             <label for="floatingInput">Email</label>
+                            <span asp-validation-for="PatEmail" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country2" class="country" onchange="country_code2()">
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -124,6 +132,7 @@
                             </select>
                             <input asp-for="PatPhoneNumber" type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
                         </div>
+                        <span asp-validation-for="PatPhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -134,6 +143,7 @@
                         <div class="form-floating mb-3">
                             <input asp-for="PatStreet" type="text" class="form-control" id="floatingInput" placeholder="Street">
                             <label for="floatingInput">Street</label>
+                            <span asp-validation-for="PatStreet" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -152,6 +162,7 @@
                         <div class="form-floating mb-3">
                             <input asp-for="PatZipcode" type="text" class="form-control" id="floatingInput" placeholder="Zip Code">
                             <label for="floatingInput">Zip Code</label>
+                            <span asp-validation-for="PatZipcode" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
