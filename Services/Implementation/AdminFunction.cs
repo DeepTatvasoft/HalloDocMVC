@@ -10,7 +10,6 @@ using Services.ViewModels;
 using System.Collections;
 using System.Net.Mail;
 using System.Net;
-using NPOI.SS.Formula.Functions;
 
 namespace Services.Implementation
 {
@@ -544,7 +543,8 @@ namespace Services.Implementation
         }
         public void AdminResetPassword(AdminProfile modal)
         {
-            var aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == modal.admindata.Aspnetuserid);
+            var aspid = _context.Admins.FirstOrDefault(u => u.Adminid == modal.adminid).Aspnetuserid;
+            var aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == aspid);
             aspnetuser.Passwordhash = modal.ResetPassword;
             _context.Aspnetusers.Update(aspnetuser);
             _context.SaveChanges();
@@ -554,27 +554,54 @@ namespace Services.Implementation
             AdminProfile adminProfile = new AdminProfile();
             Admin admindata = _context.Admins.FirstOrDefault(u => u.Adminid == adminid);
             adminProfile.Username = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == admindata.Aspnetuserid).Username;
-            adminProfile.admindata = admindata;
+            adminProfile.firstname = admindata.Firstname;
+            adminProfile.lastname = admindata.Lastname;
+            adminProfile.email = admindata.Email;
+            adminProfile.confirmemail = admindata.Email;
+            adminProfile.phonenumber = admindata.Mobile;
+            adminProfile.address1 = admindata.Address1;
+            adminProfile.address2 = admindata.Address2;
+            adminProfile.city = admindata.City;
+            adminProfile.regionid = admindata.Regionid;
+            adminProfile.zipcode = admindata.Zip;
+            adminProfile.altphone = admindata.Altphone;
+            adminProfile.status = (int)admindata.Status;
             adminProfile.regions = _context.Regions.ToList();
+            adminProfile.adminid = adminid;
+            adminProfile.roleid = admindata.Roleid;
             HashSet<Region> adminregion = _context.Adminregions.Include(u => u.Region).Where(u => u.Adminid == adminid).Select(u => u.Region).ToHashSet();
             adminProfile.adminregions = adminregion;
+            adminProfile.roles = _context.Roles.Where(u => u.Accounttype == 1).ToList();
             return adminProfile;
         }
-        public void AdministratorinfoEdit(AdminProfile Modal, List<string> chk)
+        public bool AdministratorinfoEdit(AdminProfile Modal, List<string> chk)
         {
-            var admin = _context.Admins.FirstOrDefault(u => u.Adminid == Modal.admindata.Adminid);
-            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == Modal.admindata.Adminid);
-            admin.Firstname = Modal.admindata.Firstname;
-            admin.Lastname = Modal.admindata.Lastname;
-            admin.Email = Modal.admindata.Email;
-            admin.Mobile = Modal.admindata.Mobile;
+            bool flag = true;
+            var admin = _context.Admins.FirstOrDefault(u => u.Adminid == Modal.adminid);
+            var checkmail = _context.Aspnetusers.FirstOrDefault(u => u.Email == Modal.email);
+            if (checkmail != null)
+            {
+                flag = false;
+            }
+            if (Modal.email == admin.Email)
+            {
+                flag = true;
+            }
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == Modal.adminid);
+            admin.Firstname = Modal.firstname;
+            admin.Lastname = Modal.lastname;
+            if (flag == true)
+            {
+                admin.Email = Modal.email;
+            }
+            admin.Mobile = Modal.phonenumber;
             admin.Modifieddate = DateTime.Now;
-            aspuser.Phonenumber = Modal.admindata.Mobile;
-            aspuser.Email = Modal.admindata.Email;
+            aspuser.Phonenumber = Modal.phonenumber;
+            aspuser.Email = Modal.email;
             aspuser.Modifieddate = DateTime.Now;
             _context.Aspnetusers.Update(aspuser);
             _context.Admins.Update(admin);
-            var adminregion = _context.Adminregions.Where(u => u.Adminid == Modal.admindata.Adminid).ToList();
+            var adminregion = _context.Adminregions.Where(u => u.Adminid == Modal.adminid).ToList();
             foreach (var obj in adminregion)
             {
                 _context.Adminregions.Remove(obj);
@@ -584,22 +611,24 @@ namespace Services.Implementation
                 var s = Int32.Parse(obj);
                 Adminregion newAdminRegion = new Adminregion
                 {
-                    Adminid = Modal.admindata.Adminid,
+                    Adminid = Modal.adminid,
                     Regionid = s,
                 };
                 _context.Adminregions.Add(newAdminRegion);
+                _context.SaveChanges();
             }
             _context.SaveChanges();
+            return flag;
         }
         public void MailinginfoEdit(AdminProfile modal)
         {
-            var admin = _context.Admins.FirstOrDefault(u => u.Adminid == modal.admindata.Adminid);
-            admin.Address1 = modal.admindata.Address1;
-            admin.Address2 = modal.admindata.Address2;
-            admin.City = modal.admindata.City;
-            admin.Regionid = modal.admindata.Regionid;
-            admin.Zip = modal.admindata.Zip;
-            admin.Altphone = modal.admindata.Altphone;
+            var admin = _context.Admins.FirstOrDefault(u => u.Adminid == modal.adminid);
+            admin.Address1 = modal.address1;
+            admin.Address2 = modal.address2;
+            admin.City = modal.city;
+            admin.Regionid = modal.regionid;
+            admin.Zip = modal.zipcode;
+            admin.Altphone = modal.altphone;
             admin.Modifieddate = DateTime.Now;
             _context.Admins.Update(admin);
             _context.SaveChanges();
@@ -702,14 +731,14 @@ namespace Services.Implementation
         public ProviderModal Providertab(int regionid)
         {
             ProviderModal modal = new ProviderModal();
-            var physician = _context.Physicians.Include(r => r.Role).Where(u=>u.Isdeleted== new BitArray(new[] { false })).ToList();
+            var physician = _context.Physicians.Include(r => r.Role).Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
             modal.regions = _context.Regions.ToList();
             if (regionid != 0)
             {
                 physician = physician.Where(u => u.Regionid == regionid).ToList();
             }
             modal.physicians = physician;
-            List<int> phynotificationid = _context.Physiciannotifications.Where(u=>u.Isnotificationstopped ==  new BitArray(new[] { true })).Select(u=>u.Physicianid).ToList();
+            List<int> phynotificationid = _context.Physiciannotifications.Where(u => u.Isnotificationstopped == new BitArray(new[] { true })).Select(u => u.Physicianid).ToList();
             modal.physiciannotificationid = phynotificationid;
             return modal;
         }
@@ -721,31 +750,59 @@ namespace Services.Implementation
             modal.lastname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Lastname;
             return modal;
         }
+
         public EditPhysicianModal EditPhysician(int id)
         {
             EditPhysicianModal modal = new EditPhysicianModal();
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == id);
-            modal.physician = physician;
+            modal.physicianid = physician.Physicianid;
+            modal.status = (int?)physician.Status;
+            modal.role = (int?)physician.Roleid;
+            modal.Firstname = physician.Firstname;
+            modal.Lastname = physician.Lastname;
+            modal.Email = physician.Email;
+            modal.phonenumber = physician.Mobile;
+            modal.license = physician.Medicallicense;
+            modal.npi = physician.Npinumber;
+            modal.synemail = physician.Syncemailaddress;
+            modal.Address1 = physician.Address1;
+            modal.Address2 = physician.Address2;
+            modal.City = physician.City;
+            modal.State = (int?)physician.Regionid;
+            modal.zipcode = physician.Zip;
+            modal.altphone = physician.Altphone;
+            modal.BusinessName = physician.Businessname;
+            modal.Businesssite = physician.Businesswebsite;
+            modal.Adminnotes = physician.Adminnotes;
+            modal.photo = physician.Photo;
+            modal.sign = physician.Signature;
+            modal.Isagreementdoc = physician.Isagreementdoc;
+            modal.Isbackgrounddoc = physician.Isbackgrounddoc;
+            modal.Iscredentialdoc = physician.Iscredentialdoc;
+            modal.Islicensedoc = physician.Islicensedoc;
+            modal.Isnondisclosuredoc = physician.Isnondisclosuredoc;
             modal.Username = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician.Aspnetuserid).Username;
             modal.regions = _context.Regions.ToList();
             modal.physicianregions = _context.Physicianregions.Include(u => u.Region).Where(u => u.Physicianid == id).Select(u => u.Region).ToHashSet();
+            modal.roles = _context.Roles.Where(u => u.Accounttype == 2).ToList();
             return modal;
         }
         public void PhysicianAccInfo(EditPhysicianModal modal, string adminname)
         {
-            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physician.Physicianid);
+            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
             var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician.Aspnetuserid);
             aspuser.Username = modal.Username;
-            physician.Status = modal.physician.Status;
+            physician.Status = (short?)modal.status;
+            physician.Roleid = modal.role;
             _context.Aspnetusers.Update(aspuser);
             _context.Physicians.Update(physician);
             physician.Modifieddate = DateTime.Now;
             physician.Modifiedby = adminname;
             _context.SaveChanges();
         }
-        public void PhysicianResetPass(EditPhysicianModal modal,string adminname)
+        public void PhysicianResetPass(EditPhysicianModal modal, string adminname)
         {
-            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physician.Physicianid);
+            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
             var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician.Aspnetuserid);
             aspuser.Passwordhash = modal.password;
             _context.Aspnetusers.Update(aspuser);
@@ -753,19 +810,32 @@ namespace Services.Implementation
             physician.Modifiedby = adminname;
             _context.SaveChanges();
         }
-        public void PhysicianInfo(EditPhysicianModal modal, string adminname,List<string> chk)
+        public bool PhysicianInfo(EditPhysicianModal modal, string adminname, List<string> chk)
         {
-            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physician.Physicianid);
-            physician.Firstname = modal.physician.Firstname;
-            physician.Lastname = modal.physician.Lastname;
-            physician.Email = modal.physician.Email;
-            physician.Mobile = modal.physician.Mobile;
-            physician.Medicallicense = modal.physician.Medicallicense;
-            physician.Npinumber = modal.physician.Npinumber;
-            physician.Syncemailaddress = modal.physician.Syncemailaddress;
+            bool flag = true;
+            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
+            var checkmail = _context.Aspnetusers.FirstOrDefault(u => u.Email == modal.Email);
+            if (checkmail != null)
+            {
+                flag = false;
+            }
+            if (modal.Email == physician.Email)
+            {
+                flag = true;
+            }
+            physician.Firstname = modal.Firstname;
+            physician.Lastname = modal.Lastname;
+            if (flag == true)
+            {
+                physician.Email = modal.Email;
+            }
+            physician.Mobile = modal.phonenumber;
+            physician.Medicallicense = modal.license;
+            physician.Npinumber = modal.npi;
+            physician.Syncemailaddress = modal.synemail;
             physician.Modifieddate = DateTime.Now;
             physician.Modifiedby = adminname;
-            var phyregion = _context.Physicianregions.Where(u => u.Physicianid == modal.physician.Physicianid).ToList();
+            var phyregion = _context.Physicianregions.Where(u => u.Physicianid == modal.physicianid).ToList();
             foreach (var obj in phyregion)
             {
                 _context.Physicianregions.Remove(obj);
@@ -775,23 +845,25 @@ namespace Services.Implementation
                 var s = Int32.Parse(obj);
                 Physicianregion physicianregion = new Physicianregion
                 {
-                    Physicianid = modal.physician.Physicianid,
+                    Physicianid = modal.physicianid,
                     Regionid = s
                 };
                 _context.Physicianregions.Add(physicianregion);
+                _context.SaveChanges();
             }
             _context.Physicians.Update(physician);
             _context.SaveChanges();
+            return flag;
         }
         public void PhysicianMailingInfo(EditPhysicianModal modal, string adminname)
         {
-            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physician.Physicianid);
-            physician.Address1 = modal.physician.Address1;
-            physician.Address2 = modal.physician.Address2;
-            physician.City = modal.physician.City;
-            physician.Regionid = modal.physician.Regionid;
-            physician.Zip = modal.physician.Zip;
-            physician.Altphone = modal.physician.Altphone;
+            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
+            physician.Address1 = modal.Address1;
+            physician.Address2 = modal.Address2;
+            physician.City = modal.City;
+            physician.Regionid = modal.regionid;
+            physician.Zip = modal.zipcode;
+            physician.Altphone = modal.altphone;
             physician.Modifieddate = DateTime.Now;
             physician.Modifiedby = adminname;
             _context.Physicians.Update(physician);
@@ -799,10 +871,10 @@ namespace Services.Implementation
         }
         public void ProviderProfile(EditPhysicianModal modal, string adminname)
         {
-            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physician.Physicianid);
-            physician.Businessname = modal.physician.Businessname;
-            physician.Businesswebsite = modal.physician.Businesswebsite;
-            physician.Adminnotes = modal.physician.Adminnotes;
+            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
+            physician.Businessname = modal.BusinessName;
+            physician.Businesswebsite = modal.Businesssite;
+            physician.Adminnotes = modal.Adminnotes;
             physician.Modifieddate = DateTime.Now;
             physician.Modifiedby = adminname;
             _context.Physicians.Update(physician);
@@ -841,7 +913,7 @@ namespace Services.Implementation
         }
         public void DeletePhysician(EditPhysicianModal modal)
         {
-            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physician.Physicianid);
+            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
             physician.Isdeleted = new BitArray(new[] { true });
             _context.Physicians.Update(physician);
             _context.SaveChanges();
@@ -864,8 +936,261 @@ namespace Services.Implementation
             if (chk == "email" || chk == "both")
             {
                 var email = _context.Physicians.FirstOrDefault(u => u.Physicianid == phyid).Email;
-                sendEmail(email, "Contact Physician" , message);
+                sendEmail(email, "Contact Physician", message);
             }
+        }
+
+        public AccessRoleModal AccessTab()
+        {
+            AccessRoleModal modal = new AccessRoleModal();
+            modal.roles = _context.Roles.Where(U => U.Isdeleted == new BitArray(new[] { false })).ToList();
+            return modal;
+        }
+
+        public AccessRoleModal CreateRole()
+        {
+            AccessRoleModal modal = new AccessRoleModal();
+            modal.menu = _context.Menus.ToList();
+            return modal;
+        }
+        public void CreateRoleSubmit(AccessRoleModal modal, List<string> chk, string adminname)
+        {
+            Role role = new Role
+            {
+                Name = modal.RoleName,
+                Accounttype = (short)modal.accountType,
+                Createddate = DateTime.Now,
+                Createdby = adminname,
+                Isdeleted = new BitArray(new[] { false })
+            };
+            _context.Roles.Add(role);
+            _context.SaveChanges();
+            foreach (var obj in chk)
+            {
+                var s = Int32.Parse(obj);
+                Rolemenu rolemenu = new Rolemenu
+                {
+                    Roleid = role.Roleid,
+                    Menuid = s
+                };
+                _context.Rolemenus.Add(rolemenu);
+                _context.SaveChanges();
+            }
+            _context.SaveChanges();
+        }
+        public List<Menu> filtermenu(int acctype)
+        {
+            List<Menu> menu = _context.Menus.Where(u => u.Accounttype == acctype).ToList();
+            if (acctype == 3)
+            {
+                menu = _context.Menus.ToList();
+            }
+            return menu;
+        }
+        public AccessRoleModal EditRole(int roleid)
+        {
+            AccessRoleModal modal = new AccessRoleModal();
+            var role = _context.Roles.FirstOrDefault(u => u.Roleid == roleid);
+            modal.menu = _context.Menus.Where(u => u.Accounttype == role.Accounttype).ToList();
+            modal.selectedmenuid = _context.Rolemenus.Include(r => r.Role).Where(r => r.Roleid == roleid && r.Role.Accounttype == role.Accounttype).Select(r => r.Menu.Menuid).ToList();
+            modal.RoleName = role.Name;
+            modal.accountType = role.Accounttype;
+            modal.roleid = roleid;
+            return modal;
+        }
+        public void EditRoleSubmit(AccessRoleModal modal, List<string> chk, string adminname)
+        {
+            Role role = _context.Roles.FirstOrDefault(u => u.Roleid == modal.roleid);
+            role.Name = modal.RoleName;
+            role.Accounttype = (short)modal.accountType;
+            role.Modifieddate = DateTime.Now;
+            role.Modifiedby = adminname;
+            _context.Roles.Update(role);
+            _context.SaveChanges();
+            var rolemenu = _context.Rolemenus.Where(u => u.Roleid == modal.roleid).ToList();
+            foreach (var obj in rolemenu)
+            {
+                _context.Rolemenus.Remove(obj);
+            }
+            foreach (var obj in chk)
+            {
+                var s = Int32.Parse(obj);
+                Rolemenu newrolemenu = new Rolemenu
+                {
+                    Roleid = role.Roleid,
+                    Menuid = s
+                };
+                _context.Rolemenus.Add(newrolemenu);
+                _context.SaveChanges();
+            }
+            _context.SaveChanges();
+        }
+        public void DeleteRole(int roleid)
+        {
+            var role = _context.Roles.FirstOrDefault(u => u.Roleid == roleid);
+            role.Isdeleted = new BitArray(new[] { true });
+            _context.Roles.Update(role);
+            _context.SaveChanges();
+        }
+        public EditPhysicianModal CreateProviderAcc()
+        {
+            EditPhysicianModal modal = new EditPhysicianModal();
+            modal.regions = _context.Regions.ToList();
+            modal.roles = _context.Roles.Where(u => u.Accounttype == 2).ToList();
+            return modal;
+        }
+        public void CreateProviderAccBtn(EditPhysicianModal modal, List<string> chk, string adminname)
+        {
+            string base64StringWithFileType = "";
+            if (modal.Images != null && modal.Images.Length > 0)
+            {
+                // Convert the image to base64
+                using var memorystream = new MemoryStream();
+                var file = modal.Images;
+                file.CopyTo(memorystream);
+                string converted = Convert.ToBase64String(memorystream.ToArray());
+                var fileType = file.ContentType;
+                base64StringWithFileType = $"data:{fileType};base64,{converted}";
+
+            }
+            Aspnetuser aspuser = new Aspnetuser
+            {
+                Username = modal.Username,
+                Passwordhash = modal.password,
+                Email = modal.Email,
+                Phonenumber = modal.phonenumber,
+                Modifieddate = DateTime.Now
+            };
+            _context.Aspnetusers.Add(aspuser);
+            _context.SaveChanges();
+            Physician physician = new Physician
+            {
+                Aspnetuserid = aspuser.Id.ToString(),
+                Firstname = modal.Firstname,
+                Lastname = modal.Lastname,
+                Email = modal.Email,
+                Mobile = modal.phonenumber,
+                Photo = base64StringWithFileType,
+                Adminnotes = modal.Adminnotes,
+                Address1 = modal.Address1,
+                Address2 = modal.Address2,
+                City = modal.City,
+                Regionid = modal.regionid,
+                Zip = modal.zipcode,
+                Altphone = modal.altphone,
+                Createdby = adminname,
+                Createddate = DateTime.Now,
+                Status = (short?)modal.status,
+                Businessname = modal.BusinessName,
+                Businesswebsite = modal.Businesssite,
+                Isdeleted = new BitArray(new[] { false }),
+                Roleid = modal.role,
+                Npinumber = modal.npi,
+                Syncemailaddress = modal.synemail,
+            };
+            _context.Physicians.Add(physician);
+            _context.SaveChanges();
+            Physiciannotification physiciannotification = new Physiciannotification
+            {
+                Physicianid = physician.Physicianid,
+                Isnotificationstopped = new BitArray(new[] { false })
+            };
+            _context.Physiciannotifications.Add(physiciannotification);
+            foreach (var obj in chk)
+            {
+                var s = Int32.Parse(obj);
+                Physicianregion physicianregion = new Physicianregion
+                {
+                    Physicianid = physician.Physicianid,
+                    Regionid = s
+                };
+                _context.Physicianregions.Add(physicianregion);
+                _context.SaveChanges();
+            }
+
+        }
+        public AdminProfile CreateAdminAcc()
+        {
+            AdminProfile modal = new AdminProfile();
+            modal.roles = _context.Roles.Where(u=>u.Accounttype == 1).ToList();
+            modal.regions = _context.Regions.ToList();
+            return modal;
+        }
+        public void CreateAdminAccBtn(AdminProfile modal, List<string> chk, string adminname)
+        {
+            Aspnetuser aspuser = new Aspnetuser
+            {
+                Username = modal.Username,
+                Passwordhash = modal.ResetPassword,
+                Email = modal.email,
+                Phonenumber = modal.phonenumber,
+                Modifieddate = DateTime.Now
+            };
+            _context.Aspnetusers.Add(aspuser);
+            _context.SaveChanges();
+            Admin admin = new Admin
+            {
+                Aspnetuserid = aspuser.Id.ToString(),
+                Firstname = modal.firstname,
+                Lastname = modal.lastname,
+                Email = modal.email,
+                Mobile = modal.phonenumber,
+                Address1 = modal.address1,
+                Address2 = modal.address2,
+                City = modal.city,
+                Regionid = modal.regionid,
+                Zip = modal.zipcode,
+                Altphone = modal.altphone,
+                Createddate = DateTime.Now,
+                Createdby = adminname,
+                Roleid = modal.roleid,
+                Isdeleted = new BitArray(new[] { false })
+            };
+            _context.Admins.Add(admin);
+            _context.SaveChanges();
+            foreach (var obj in chk)
+            {
+                var s = Int32.Parse(obj);
+                Adminregion newAdminRegion = new Adminregion
+                {
+                    Adminid = admin.Adminid,
+                    Regionid = s,
+                };
+                _context.Adminregions.Add(newAdminRegion);
+                _context.SaveChanges();
+            }
+            Aspnetuserrole asprole = new Aspnetuserrole
+            {
+                Userid = aspuser.Id.ToString(),
+                Roleid = "1"
+            };
+            _context.SaveChanges();
+        }
+        public void phyuploadDoc(int physicianid, string doctype)
+        {
+            var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == physicianid);
+            if (doctype == "ICA")
+            {
+                physician.Isagreementdoc = new BitArray(new[] { true });
+            }
+            else if(doctype == "HIPAA")
+            {
+                physician.Iscredentialdoc = new BitArray(new[] { true });
+            }
+            else if(doctype == "BGCheck")
+            {
+                physician.Isbackgrounddoc = new BitArray(new[] { true });
+            }
+            else if(doctype == "NDDoc")
+            {
+                physician.Isnondisclosuredoc = new BitArray(new[] { true });
+            }
+            else if(doctype == "LDDoc")
+            {
+                physician.Islicensedoc = new BitArray(new[] { true });
+            }
+            _context.Physicians.Update(physician);
+            _context.SaveChanges();
         }
     }
 }

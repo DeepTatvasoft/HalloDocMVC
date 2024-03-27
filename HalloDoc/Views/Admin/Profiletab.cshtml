@@ -64,7 +64,7 @@
     <div class="bg-white p-4 mt-2 rounded shadow">
         <div class="accinfo">
             <form method="post" asp-action="AdminResetPassword" asp-controller="Admin">
-                <input asp-for="@Model.admindata.Adminid" type="hidden" id="temp1">
+                <input asp-for="@Model.adminid" type="hidden" id="temp1">
                 <h5>Account Information</h5>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
@@ -82,11 +82,11 @@
                     <div class="col">
                         <div class="form-floating">
                             <select class="form-select mb-3 mb-md-0" aria-label="Floating label select example" disabled>
-                                @if (Model.admindata.Status == 4 || Model.admindata.Status == 5)
+                                @if (Model.status == 4 || Model.status == 5)
                                 {
                                     <option value="4">Active</option>
                                 }
-                                else if (Model.admindata.Status == 2)
+                                else if (Model.status == 2)
                                 {
                                     <option value="=2">Pending</option>
                                 }
@@ -96,10 +96,12 @@
                     </div>
                     <div class="col">
                         <div class="form-floating">
-                            <select class="form-select" aria-label="Floating label select example" disabled>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                            <select asp-for="@Model.roleid" class="form-select" aria-label="Floating label select example" disabled>
+                                <option>Role</option>
+                                @foreach (var obj in Model.roles)
+                                {
+                                    <option value="@obj.Roleid">@obj.Name</option>
+                                }
                             </select>
                             <label for="floatingSelect">Role</label>
                         </div>
@@ -113,35 +115,39 @@
 
         <div class="Administratorinfo">
             <form method="post" asp-action="AdministratorinfoEdit" asp-controller="Admin">
-                <input asp-for="@Model.admindata.Adminid" type="hidden" id="temp2">
+                <input asp-for="@Model.adminid" type="hidden" id="temp2">
                 <h5>Administrator Information</h5>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.admindata.Firstname" type="text" class="form-control firstedit" placeholder="FirstName" disabled>
+                            <input asp-for="@Model.firstname" type="text" class="form-control firstedit" placeholder="FirstName" disabled>
                             <label for="floatingInput">First Name</label>
+                            <span asp-validation-for="firstname" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.admindata.Lastname" type="text" class="form-control firstedit" placeholder="Name" disabled>
+                            <input asp-for="@Model.lastname" type="text" class="form-control firstedit" placeholder="Name" disabled>
                             <label for="floatingInput">Last Name</label>
+                            <span asp-validation-for="lastname" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.admindata.Email" type="email" class="form-control firstedit" id="email1" placeholder="name@example.com" disabled>
+                            <input asp-for="@Model.email" type="email" class="form-control firstedit" id="email1" placeholder="name@example.com" disabled>
                             <label for="floatingInput">Email</label>
+                            <span asp-validation-for="email" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.admindata.Email" type="email" class="form-control firstedit" id="email2" placeholder="name@example.com" disabled>
+                            <input asp-for="@Model.confirmemail" type="email" class="form-control firstedit" id="email2" placeholder="name@example.com" disabled>
                             <label for="floatingInput">Confirm Email</label>
+                            <span asp-validation-for="confirmemail" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country" class="country firstedit" onchange="country_code()" disabled>
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -149,8 +155,9 @@
                                 <option value="br">BRAZIL</option>
                                 <option value="ind">INDIA</option>
                             </select>
-                            <input asp-for="@Model.admindata.Mobile" type="tel" class="form-control output firstedit" id="output" placeholder="Mobile Number" disabled>
+                            <input asp-for="@Model.phonenumber" type="tel" class="form-control output firstedit" id="output" placeholder="Mobile Number" disabled>
                         </div>
+                        <span asp-validation-for="phonenumber" class="text-danger"></span>
                     </div>
                     <div class="col d-flex flex-wrap">
                         @foreach (var obj in Model.regions)
@@ -179,30 +186,31 @@
 
         <div class="Mailinginfo">
             <form method="post" asp-action="MailinginfoEdit" asp-controller="Admin">
-                <input asp-for="@Model.admindata.Adminid" type="hidden" id="temp3">
+                <input asp-for="@Model.adminid" type="hidden" id="temp3">
                 <h5>Mailing & Billing Information</h5>
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.admindata.Address1" type="text" class="form-control secondedit" placeholder="FirstName" disabled>
+                            <input asp-for="@Model.address1" type="text" class="form-control secondedit" placeholder="FirstName" disabled>
                             <label for="floatingInput">Address 1</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.admindata.Address2" type="text" class="form-control secondedit" placeholder="Name" disabled>
+                            <input asp-for="@Model.address2" type="text" class="form-control secondedit" placeholder="Name" disabled>
                             <label for="floatingInput">Address 2</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.admindata.City" type="text" class="form-control secondedit" placeholder="name@example.com" disabled>
+                            <input asp-for="@Model.city" type="text" class="form-control secondedit" placeholder="name@example.com" disabled>
                             <label for="floatingInput">City</label>
+                            <span asp-validation-for="city" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3 mb-md-0">
-                            <select asp-for="@Model.admindata.Regionid" class="form-select secondedit" aria-label="Floating label select example" disabled>
+                            <select asp-for="@Model.regionid" class="form-select secondedit" aria-label="Floating label select example" disabled>
                                 @foreach (var obj in Model.regions)
                                 {
                                     <option value="@obj.Regionid">@obj.Name</option>
@@ -213,8 +221,9 @@
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.admindata.Zip" type="text" class="form-control secondedit" placeholder="name@example.com" disabled>
+                            <input asp-for="@Model.zipcode" type="text" class="form-control secondedit" placeholder="name@example.com" disabled>
                             <label for="floatingInput">Zip</label>
+                            <span asp-validation-for="zipcode" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -226,7 +235,7 @@
                                 <option value="br">BRAZIL</option>
                                 <option value="ind">INDIA</option>
                             </select>
-                            <input asp-for="@Model.admindata.Altphone" type="tel" class="form-control output secondedit" id="output2" placeholder="Mobile Number" disabled>
+                            <input asp-for="@Model.altphone" type="tel" class="form-control output secondedit" id="output2" placeholder="Mobile Number" disabled>
                         </div>
                     </div>
                 </div>

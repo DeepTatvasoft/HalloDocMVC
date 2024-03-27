@@ -39,7 +39,7 @@ namespace Services.Contracts
         void Closecaseedit([FromForm] AdminviewDoc formData);
         void AdminResetPassword(AdminProfile modal);
         AdminProfile Profiletab(int adminid);
-        void AdministratorinfoEdit(AdminProfile Modal,List<string> chk);
+        bool AdministratorinfoEdit(AdminProfile Modal, List<string> chk);
         void MailinginfoEdit(AdminProfile modal);
         byte[] DownloadExcle(NewStateData model);
         ProviderModal Providertab(int regionid);
@@ -47,7 +47,7 @@ namespace Services.Contracts
         EditPhysicianModal EditPhysician(int id);
         void PhysicianAccInfo(EditPhysicianModal modal, string adminname);
         void PhysicianResetPass(EditPhysicianModal modal, string adminname);
-        void PhysicianInfo(EditPhysicianModal modal, string adminname, List<string> chk);
+        bool PhysicianInfo(EditPhysicianModal modal, string adminname, List<string> chk);
         void PhysicianMailingInfo(EditPhysicianModal modal, string adminname);
         void ProviderProfile(EditPhysicianModal modal, string adminname);
         void ContactPhysician(int phyid, string chk, string message);
@@ -55,5 +55,17 @@ namespace Services.Contracts
         void EditProviderPhoto(int physicianid, string base64string);
         void PhyNotification(List<string> chk);
         void DeletePhysician(EditPhysicianModal modal);
+        AccessRoleModal AccessTab();
+        AccessRoleModal CreateRole();
+        void CreateRoleSubmit(AccessRoleModal modal, List<string> chk, string adminname);
+        List<Menu> filtermenu(int acctype);
+        AccessRoleModal EditRole(int roleid);
+        void EditRoleSubmit(AccessRoleModal modal, List<string> chk, string adminname);
+        void DeleteRole(int roleid);
+        EditPhysicianModal CreateProviderAcc();
+        void CreateProviderAccBtn(EditPhysicianModal modal, List<string> chk, string adminname);
+        AdminProfile CreateAdminAcc();
+        void CreateAdminAccBtn(AdminProfile modal, List<string> chk, string adminname);
+        void phyuploadDoc(int physicianid, string doctype);
     }
 }

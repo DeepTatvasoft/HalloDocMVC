@@ -32,9 +32,6 @@ namespace Services.Implementation
                     item.CopyTo(fileStream);
                 }
 
-                //Request? req = _context.Requests.FirstOrDefault(i => i.Requestid == reqid);
-                //int ReqId = req.Requestid;
-
                 var data3 = new Requestwisefile()
                 {
                     Createddate = DateTime.Now,

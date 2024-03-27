@@ -51,7 +51,7 @@
         </div>
         <div class="d-flex justify-content-end mt-4">
             <button type="submit" class="btn btn-info text-white savebtn">Save</button>
-            <button type="reset" class="btn btn-outline-info ms-1 cancelbtn">Cancel</button>
+            <button type="reset" class="btn btn-outline-info ms-1 cancelbtn" name="@Model.roleid">Cancel</button>
         </div>
     </div>
 </form>
@@ -74,6 +74,16 @@
                                 ${item.name}`
                         );
                     });
+                },
+            });
+        });
+        $('.cancelbtn').on('click', function () {
+            var roleid = $(this).attr('name');
+            $.ajax({
+                url: '/Admin/EditRole',
+                data: { 'roleid': roleid },
+                success: function (response) {
+                    $('.accessdata').html(response);
                 },
             });
         });

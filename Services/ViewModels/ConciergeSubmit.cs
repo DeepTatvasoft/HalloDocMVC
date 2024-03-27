@@ -13,7 +13,7 @@ namespace Services.ViewModels
         [Required(ErrorMessage = "*Last Name is required")]
         public string? ConLastName { get; set; }
 
-        [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "Enter a valid 10-digit mobile number")]
+        [RegularExpression(@"^([0|\+[0-9]{1,5})?([0-9][0-9]{9})$", ErrorMessage = "Enter a valid 10-digit mobile number")]
         [Required(ErrorMessage = "Plese enter your Phone Number")]
         public string? ConPhonenumber { get; set; }
 
@@ -50,7 +50,7 @@ namespace Services.ViewModels
         [Required(ErrorMessage = "Please enter your Email Address")]
         public string? PatEmail { get; set; }
 
-        [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "Enter a valid 10-digit mobile number")]
+        [RegularExpression(@"^([0|\+[0-9]{1,5})?([0-9][0-9]{9})$", ErrorMessage = "Enter a valid 10-digit mobile number")]
         [Required(ErrorMessage = "Plese enter your Phone Number")]
         public string? PatPhoneNumber { get; set; }
 

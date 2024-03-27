@@ -101,6 +101,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("admin");
 
             entity.Property(e => e.Adminid)
+                .HasIdentityOptions(null, null, 2L, null, null, null)
                 .HasColumnName("adminid");
             entity.Property(e => e.Address1)
                 .HasMaxLength(500)
@@ -586,7 +587,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("physician");
 
             entity.Property(e => e.Physicianid)
-                .ValueGeneratedNever()
+                .HasIdentityOptions(null, null, 4L, null, null, null)
                 .HasColumnName("physicianid");
             entity.Property(e => e.Address1)
                 .HasMaxLength(500)

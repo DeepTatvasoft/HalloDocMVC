@@ -68,5 +68,13 @@
                 },
             });
         });
+        $('.cancelbtn').on('click', function () {
+            $.ajax({
+                url: '/Admin/CreateRole',
+                success: function (response) {
+                    $('.accessdata').html(response);
+                },
+            });
+        });
     });
 </script>

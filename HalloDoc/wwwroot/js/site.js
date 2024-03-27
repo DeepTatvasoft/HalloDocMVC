@@ -16,10 +16,8 @@ try {
     })
 }
 catch (error) { }
-console.log(document.cookie);
 window.onload = function () {
     var array = document.cookie.split("=");
-    console.log(array);
     flag = parseInt(array[1]);
     //console.log(flag);
     dark()

@@ -26,7 +26,8 @@ namespace Services.ViewModels
         [Compare("Password")]
         public string? ConfirmPassword { get; set; }
 
-        [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "Enter a valid 10-digit mobile number")]
+
+        [RegularExpression(@"^([0|\+[0-9]{1,5})?([0-9][0-9]{9})$", ErrorMessage = "Enter a valid 10-digit mobile number")]
         [Required(ErrorMessage = "Plese enter your Phone Number")]
         public string? PhoneNumber { get; set; }
 

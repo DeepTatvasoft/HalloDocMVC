@@ -30,6 +30,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\document\" />
+    <Folder Include="wwwroot\PhysicianDocuments\1\" />
   </ItemGroup>
 
   <ItemGroup>

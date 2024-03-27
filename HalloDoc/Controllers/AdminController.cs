@@ -15,6 +15,7 @@ using Authorization = Services.Implementation.Authorization;
 using DataAccess.ServiceRepository.IServiceRepository;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Data.DataContext;
+using NPOI.HPSF;
 
 namespace HalloDoc.Controllers
 {
@@ -170,11 +171,12 @@ namespace HalloDoc.Controllers
                 LoggedInPersonViewModel model = new LoggedInPersonViewModel();
                 model.aspuserid = id;
                 model.username = adminname;
+                var admin = _context.Admins.FirstOrDefault(x => x.Aspnetuserid == id.ToString());
                 model.role = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == id.ToString()).Roleid;
                 //model.userid = _context.Users.FirstOrDefault(u => u.Aspnetuserid == id).Userid;
                 Response.Cookies.Append("jwt", jwtRepository.GenerateJwtToken(model));
                 HttpContext.Session.SetString("Adminname", adminname);
-                HttpContext.Session.SetInt32("Adminid", id);
+                HttpContext.Session.SetInt32("Adminid", admin.Adminid);
                 if (HttpContext.Session.GetString("Adminname") != null)
                 {
                     TempData["success"] = "Admin LogIn Successfully";
@@ -380,7 +382,11 @@ namespace HalloDoc.Controllers
         public IActionResult AdministratorinfoEdit(AdminProfile Modal)
         {
             var chk = Request.Form["AdminRegion"].ToList();
-            adminFunction.AdministratorinfoEdit(Modal, chk);
+            var checkemail = adminFunction.AdministratorinfoEdit(Modal, chk);
+            if (checkemail == false)
+            {
+                TempData["error"] = "Email already exist";
+            }
             return RedirectToAction("Profiletab", "Admin");
         }
         public IActionResult MailinginfoEdit(AdminProfile modal)
@@ -446,7 +452,7 @@ namespace HalloDoc.Controllers
         {
             string adminname = HttpContext.Session.GetString("Adminname");
             adminFunction.PhysicianAccInfo(modal, adminname);
-            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
         }
         public IActionResult PhysicianResetPass(EditPhysicianModal modal)
         {
@@ -460,27 +466,31 @@ namespace HalloDoc.Controllers
             {
                 TempData["error"] = "Please enter valid password";
             }
-            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
         }
         public IActionResult PhysicianInfo(EditPhysicianModal modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname");
 
             var chk = Request.Form["PhysicianRegion"].ToList();
-            adminFunction.PhysicianInfo(modal, adminname, chk);
-            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+            var checkemail = adminFunction.PhysicianInfo(modal, adminname, chk);
+            if (checkemail == false)
+            {
+                TempData["error"] = "Email already exist";
+            }
+            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
         }
         public IActionResult PhysicianMailingInfo(EditPhysicianModal modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname");
             adminFunction.PhysicianMailingInfo(modal, adminname);
-            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
         }
         public IActionResult ProviderProfile(EditPhysicianModal modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname");
             adminFunction.ProviderProfile(modal, adminname);
-            return RedirectToAction("EditPhysician", new { id = modal.physician.Physicianid });
+            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
         }
         public IActionResult EditProviderSign(int physicianid, string base64string)
         {
@@ -511,15 +521,11 @@ namespace HalloDoc.Controllers
         }
         public IActionResult AccessTab()
         {
-            AccessRoleModal modal = new AccessRoleModal();
-            modal.roles = _context.Roles.Where(U=>U.Isdeleted == new BitArray(new[] { false })).ToList();
-            return View(modal);
+            return View(adminFunction.AccessTab());
         }
         public IActionResult CreateRole()
         {
-            AccessRoleModal modal = new AccessRoleModal();
-            modal.menu = _context.Menus.ToList();
-            return PartialView("AdminLayout/_CreateRole", modal);
+            return PartialView("AdminLayout/_CreateRole", adminFunction.CreateRole());
         }
         public IActionResult CreateRoleSubmit(AccessRoleModal modal)
         {
@@ -530,48 +536,16 @@ namespace HalloDoc.Controllers
                 TempData["error"] = "Values Can't be Empty";
                 return RedirectToAction("AccessTab");
             }
-            Role role = new Role
-            {
-                Name = modal.RoleName,
-                Accounttype = (short)modal.accountType,
-                Createddate = DateTime.Now,
-                Createdby = adminname,
-                Isdeleted = new BitArray(new[] { false })
-            };
-            _context.Roles.Add(role);
-            _context.SaveChanges();
-            foreach (var obj in chk)
-            {
-                var s = Int32.Parse(obj);
-                Rolemenu rolemenu = new Rolemenu
-                {
-                    Roleid = role.Roleid,
-                    Menuid = s
-                };
-                _context.Rolemenus.Add(rolemenu);
-            }
-            _context.SaveChanges();
+            adminFunction.CreateRoleSubmit(modal, chk, adminname);
             return RedirectToAction("AccessTab");
         }
         public List<Menu> filtermenu(int acctype)
         {
-            List<Menu> menu = _context.Menus.Where(u => u.Accounttype == acctype).ToList();
-            if (acctype == 3)
-            {
-                menu = _context.Menus.ToList();
-            }
-            return menu;
+            return adminFunction.filtermenu(acctype);
         }
         public IActionResult EditRole(int roleid)
         {
-            AccessRoleModal modal = new AccessRoleModal();
-            var role = _context.Roles.FirstOrDefault(u => u.Roleid == roleid);
-            modal.menu = _context.Menus.Where(u => u.Accounttype == role.Accounttype).ToList();
-            modal.selectedmenuid = _context.Rolemenus.Include(r => r.Role).Where(r => r.Roleid == roleid && r.Role.Accounttype == role.Accounttype).Select(r => r.Menu.Menuid).ToList();
-            modal.RoleName = role.Name;
-            modal.accountType = role.Accounttype;
-            modal.roleid = roleid;
-            return PartialView("AdminLayout/_EditRole", modal);
+            return PartialView("AdminLayout/_EditRole", adminFunction.EditRole(roleid));
         }
         public IActionResult EditRoleSubmit(AccessRoleModal modal)
         {
@@ -582,39 +556,136 @@ namespace HalloDoc.Controllers
                 TempData["error"] = "Values Can't be Empty";
                 return RedirectToAction("AccessTab");
             }
-            Role role = _context.Roles.FirstOrDefault(u => u.Roleid == modal.roleid);
-
-            role.Name = modal.RoleName;
-            role.Accounttype = (short)modal.accountType;
-            role.Modifieddate = DateTime.Now;
-            role.Modifiedby = adminname;
-            _context.Roles.Update(role);
-            _context.SaveChanges();
-            var rolemenu = _context.Rolemenus.Where(u => u.Roleid == modal.roleid).ToList();
-            foreach(var obj  in rolemenu)
-            {
-                _context.Rolemenus.Remove(obj);
-            }
-            foreach (var obj in chk)
-            {
-                var s = Int32.Parse(obj);
-                Rolemenu newrolemenu = new Rolemenu
-                {
-                    Roleid = role.Roleid,
-                    Menuid = s
-                };
-                _context.Rolemenus.Add(newrolemenu);
-            }
-            _context.SaveChanges();
+            adminFunction.EditRoleSubmit(modal, chk, adminname);
             return RedirectToAction("AccessTab");
         }
         public IActionResult DeleteRole(int roleid)
         {
-            var role = _context.Roles.FirstOrDefault(u=>u.Roleid == roleid);
-            role.Isdeleted = new BitArray(new[] { true });
-            _context.Roles.Update(role);
-            _context.SaveChanges();
+            adminFunction.DeleteRole(roleid);
             return RedirectToAction("AccessTab");
+        }
+        public IActionResult CreateProviderAcc()
+        {
+            return View(adminFunction.CreateProviderAcc());
+        }
+        [HttpPost]
+        public IActionResult CreateProviderAccBtn(EditPhysicianModal modal)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            var chk = Request.Form["PhysicianRegion"].ToList();
+            adminFunction.CreateProviderAccBtn(modal, chk, adminname);
+            return RedirectToAction("Providertab");
+        }
+        public IActionResult CreateAdminAcc()
+        {
+            return View(adminFunction.CreateAdminAcc());
+        }
+        public IActionResult CreateAdminAccBtn(AdminProfile modal)
+        {
+            var chk = Request.Form["AdminRegion"].ToList();
+            string adminname = HttpContext.Session.GetString("Adminname");
+            adminFunction.CreateAdminAccBtn(modal, chk, adminname);
+            return RedirectToAction("AccessTab");
+        }
+        public void AddPhysicianDoc(IFormFile file, int physicianid, string filename)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "PhysicianDocuments", physicianid.ToString());
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            string filePath = Path.Combine(path, filename);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+        }
+        [HttpPost]
+        public bool UploadICAdoc(int physicianid, IFormFile file)
+        {
+            string filetype = file.ContentType;
+            if (filetype != "application/pdf")
+            {
+                TempData["error"] = "Upload document in pdf format";
+                return false;
+
+            }
+            string filename = "ICA.pdf";
+            AddPhysicianDoc(file, physicianid, filename);
+            adminFunction.phyuploadDoc(physicianid, "ICA");
+            TempData["success"] = "Document uploaded successfuly";
+            return true;
+        }
+        [HttpPost]
+        public bool UploadHIPAAdoc(int physicianid, IFormFile file)
+        {
+            string filetype = file.ContentType;
+            if (filetype != "application/pdf")
+            {
+                TempData["error"] = "Upload document in pdf format";
+                return false;
+
+            }
+            string filename = "HIPAA.pdf";
+            AddPhysicianDoc(file, physicianid, filename);
+            adminFunction.phyuploadDoc(physicianid, "HIPAA");
+            TempData["success"] = "Document uploaded successfuly";
+            return true;
+        }
+        [HttpPost]
+        public bool UploadBGcheckdoc(int physicianid, IFormFile file)
+        {
+            string filetype = file.ContentType;
+            if (filetype != "application/pdf")
+            {
+                TempData["error"] = "Upload document in pdf format";
+                return false;
+
+            }
+            string filename = "BGCheck.pdf";
+            AddPhysicianDoc(file, physicianid, filename);
+            adminFunction.phyuploadDoc(physicianid, "BGCheck");
+            TempData["success"] = "Document uploaded successfuly";
+            return true;
+        }
+        [HttpPost]
+        public bool UploadNDdoc(int physicianid, IFormFile file)
+        {
+            string filetype = file.ContentType;
+            if (filetype != "application/pdf")
+            {
+                TempData["error"] = "Upload document in pdf format";
+                return false;
+
+            }
+            string filename = "NDDoc.pdf";
+            AddPhysicianDoc(file, physicianid, filename);
+            adminFunction.phyuploadDoc(physicianid, "NDDoc");
+            TempData["success"] = "Document uploaded successfuly";
+            return true;
+        }
+        [HttpPost]
+        public bool UploadLDdoc(int physicianid, IFormFile file)
+        {
+            string filetype = file.ContentType;
+            if (filetype != "application/pdf")
+            {
+                TempData["error"] = "Upload document in pdf format";
+                return false;
+
+            }
+            string filename = "LDDoc.pdf";
+            AddPhysicianDoc(file, physicianid, filename);
+            adminFunction.phyuploadDoc(physicianid, "LDDoc");
+            TempData["success"] = "Document uploaded successfuly";
+            return true;
+        }
+        public IActionResult OpenFile(string fileName, int physicianid)
+        {
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "PhysicianDocuments", physicianid.ToString(), fileName);
+            string mimeType = "application/pdf";
+            Response.Headers["Content-Disposition"] = "inline; filename=" + fileName;
+            return PhysicalFile(filePath, mimeType);
         }
     }
 }
