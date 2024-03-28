@@ -1,43 +1,44 @@
 ﻿@using Data.DataModels;
 @model Services.ViewModels.NewStateData
+
 <ul class="nav nav-tabs d-flex justify-content-around" id="ViewcaseRemove" role="tablist">
     <li class="nav-item card bg-body-secondary" role="presentation">
-        <button class="nav-link active state New" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
+        <button class="nav-link active state New boxshadow" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
                 type="button" role="tab" aria-controls="New-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person-plus me-3 icon"></i>NEW</div>
             <h5>@Model.newcount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
-        <button class="nav-link state Pending" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
+        <button class="nav-link state Pending boxshadow" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
                 type="button" role="tab" aria-controls="Pending-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person me-3 icon"></i>PENDING</div>
             <h5>@Model.pendingcount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
-        <button class="nav-link state Active" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
+        <button class="nav-link state Active boxshadow" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
                 type="button" role="tab" aria-controls="Active-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-check2-circle me-3 icon"></i>ACTIVE</div>
             <h5>@Model.activecount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
-        <button class="nav-link state Conclude" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
+        <button class="nav-link state Conclude boxshadow" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
                 type="button" role="tab" aria-controls="Conclude-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-clock-history me-3 icon"></i>CONCLUDE</div>
             <h5>@Model.concludecount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
-        <button class="nav-link state Toclose" id="ToClose-tab" data-bs-toggle="tab" data-bs-target="#ToClose-tab-pane"
+        <button class="nav-link state Toclose boxshadow" id="ToClose-tab" data-bs-toggle="tab" data-bs-target="#ToClose-tab-pane"
                 type="button" role="tab" aria-controls="ToClose-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-person-x me-3 icon"></i>TO CLOSE</div>
             <h5>@Model.Toclosecount</h5>
         </button>
     </li>
     <li class="nav-item card bg-body-secondary" role="presentation">
-        <button class="nav-link state Unpaid" id="Unpaid-tab" data-bs-toggle="tab" data-bs-target="#Unpaid-tab-pane"
+        <button class="nav-link state Unpaid boxshadow" id="Unpaid-tab" data-bs-toggle="tab" data-bs-target="#Unpaid-tab-pane"
                 type="button" role="tab" aria-controls="Unpaid-tab-pane" aria-selected="false">
             <div class="h5"><i class="bi bi-currency-dollar me-3 icon"></i>UNPAID</div>
             <h5>@Model.Unpaidcount</h5>
@@ -48,13 +49,13 @@
     <div class="d-flex flex-wrap justify-content-between">
         <h4 class="mt-2">Patients (New)</h4>
         <div class="allbtn d-flex">
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#SendLinkModal">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center boxshadowbtn" data-bs-toggle="modal" data-bs-target="#SendLinkModal">
                 <i class="bi bi-send me-1"></i>
                 <span class="d-none d-md-block">
                     Send Link
                 </span>
             </button>
-            <a asp-action="AdminCreateReq" asp-controller="Admin" class="btn btn-info text-white ms-1 d-flex align-items-center">
+            <a asp-action="AdminCreateReq" asp-controller="Admin" class="btn btn-info text-white ms-1 d-flex align-items-center boxshadowbtn">
                 <i class="bi bi-journal-text me-1"></i>
                 <span class="d-none d-md-block">
                     Create Request
@@ -65,7 +66,7 @@
                 <input id="exportregion" asp-for="@Model.region" type="hidden" />
                 <input id="exportstatus" asp-for="@Model.status" value="1" type="hidden" />
                 <input id="exportseach" asp-for="@Model.searchkey" type="hidden" />
-                <button type="submit" class="btn btn-info text-white ms-1 d-flex align-items-center" style="height:38px">
+                <button type="submit" class="btn btn-info text-white ms-1 d-flex align-items-center boxshadowbtn" style="height:39.8px">
                     <i class="fa-solid fa-file-export me-1"></i>
                     <span class="d-none d-md-block">
                         Export
@@ -74,14 +75,14 @@
             </form>
             <form asp-controller="Admin" asp-action="ExportAll">
                 <input id="exportstatusall" asp-for="@Model.status" value="1" type="hidden" />
-                <button class="btn btn-info text-white ms-1 d-flex align-items-center" style="height:38px">
+                <button class="btn btn-info text-white ms-1 d-flex align-items-center boxshadowbtn" style="height:39.8px">
                     <i class="fa-solid fa-file-zipper me-1"></i>
                     <span class="d-none d-md-block">
                         Export All
                     </span>
                 </button>
             </form>
-            <button class="btn btn-info text-white ms-1 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#ReqSupportModal">
+            <button class="btn btn-info text-white ms-1 d-flex align-items-center boxshadowbtn" data-bs-toggle="modal" data-bs-target="#ReqSupportModal">
                 <i class="fa-solid fa-headset me-1"></i>
                 <span class="d-none d-md-block">
                     Request DTY Support
@@ -89,10 +90,10 @@
             </button>
         </div>
     </div>
-    <div class="tablehead mt-4 d-flex flex-wrap justify-content-between bg-white">
+    <div class="tablehead mt-4 d-flex flex-wrap justify-content-between bg-white boxshadow rounded">
         <div class="d-flex flex-wrap align-items-center">
             <div class="searchbar ms-2">
-                <input id="myInput" style="padding-left : 30px;position: relative;top: 13px;" class="form-control me-2" type="search" placeholder=" Search Patients" aria-label="Search">
+                <input id="myInput" style="padding-left : 30px;position: relative;top: 13px;border:1px solid" class="form-control me-2" type="search" placeholder=" Search Patients" aria-label="Search">
                 <i class="bi bi-search searchicon1"></i>
             </div>
             <div class="ms-2">

@@ -8,7 +8,7 @@
 <div class="tabnav mt-2 bg-white">
     <div class="collapse show" id="collapseExample">
         <div class="card card-body">
-            <ul class="nav nav-tabs d-block d-md-flex" id="myTab" role="tablist">
+            <ul class="nav nav-tabs d-block d-md-flex" id="myTab" role="tablist" style="box-shadow: 1px 1px 5px;">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="home-tab" asp-action="AdminDashboard" asp-controller="Admin">
                         Dashboard
@@ -81,6 +81,7 @@
                         <div class="form-floating mb-3">
                             <input asp-for="password" type="password" class="form-control" placeholder="Name">
                             <label for="floatingInput">Password</label>
+                            <span asp-validation-for="password" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -104,22 +105,25 @@
                         <div class="form-floating mb-3">
                             <input asp-for="Firstname" type="text" class="form-control " placeholder="FirstName">
                             <label for="floatingInput">First Name</label>
+                            <span asp-validation-for="Firstname" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="Lastname" type="text" class="form-control " placeholder="Name">
                             <label for="floatingInput">Last Name</label>
+                            <span asp-validation-for="Lastname" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="Email" type="email" class="form-control " placeholder="name@example.com">
+                            <input asp-for="Email" type="email" class="form-control emailcheck" placeholder="name@example.com">
                             <label for="floatingInput">Email</label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country" class="country " onchange="country_code()">
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -129,6 +133,7 @@
                             </select>
                             <input asp-for="phonenumber" type="tel" class="form-control output " id="output" placeholder="Mobile Number">
                         </div>
+                        <span asp-validation-for="phonenumber" class="text-danger"></span>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
@@ -191,6 +196,7 @@
                         <div class="form-floating mb-3">
                             <input asp-for="zipcode" type="text" class="form-control">
                             <label for="floatingInput">Zip</label>
+                            <span asp-validation-for="zipcode" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -214,12 +220,14 @@
                         <div class="form-floating mb-3">
                             <input asp-for="BusinessName" type="text" class="form-control" placeholder="BusinessName">
                             <label for="floatingInput">Business Name</label>
+                            <span asp-validation-for="BusinessName" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="Businesssite" type="text" class="form-control" placeholder="BusinessSite">
                             <label for="floatingInput">Business Website</label>
+                            <span asp-validation-for="Businesssite" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -240,49 +248,151 @@
                 <h5>Onboarding</h5>
                 <div class="d-flex align-items-center">
                     <div>
-                        <input type="checkbox" class="me-1"> Independent Contractor Agreement
+                        <input type="checkbox" class="me-1 btn1"> Independent Contractor Agreement
                     </div>
-                    <button type="button" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
-                        <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up me-1"></i>Upload</label>
+                    <button type="button" data-url="/Admin/UploadICAdoc" class="ms-2 text-white fileuploadbtn bg-info rounded border-info d-flex align-items-center">
+                        <input asp-for="ICAdoc" onclick="phydocupload(this.id ,'file-chosen1')" type="file" class="pdffile" id="actual-btn1" hidden />
+                        <label for="actual-btn1" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
+                        <span id="file-chosen1" class="d-none">Select File</span>
+
                     </button>
                 </div>
                 <div class="d-flex align-items-center mt-2">
                     <div style="width:274.22px">
-                        <input type="checkbox" class="me-1"> Background Check
+                        <input type="checkbox" class="me-1 btn2"> Background Check
                     </div>
-                    <button type="button" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
-                        <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up me-1"></i>Upload</label>
+                    <button type="button" data-url="/Admin/UploadBGcheckdoc" class="ms-2 text-white fileuploadbtn bg-info rounded border-info d-flex align-items-center h-100">
+                        <input asp-for="BGcheckdoc" onclick="phydocupload(this.id ,'file-chosen2')" type="file" class="pdffile" id="actual-btn2" hidden />
+                        <label for="actual-btn2" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
+                        <span id="file-chosen2" class="d-none">Select File</span>
                     </button>
                 </div>
                 <div class="d-flex align-items-center mt-2">
                     <div style="width:274.22px">
-                        <input type="checkbox" class="me-1"> HIPAA Compilance
+                        <input type="checkbox" class="me-1 btn3"> HIPAA Compilance
                     </div>
-                    <button type="button" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
-                        <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up me-1"></i>Upload</label>
+                    <button type="button" data-url="/Admin/UploadHIPAAdoc" class="ms-2 text-white fileuploadbtn bg-info rounded border-info d-flex align-items-center h-100">
+                        <input asp-for="HIPAAdoc" onclick="phydocupload(this.id ,'file-chosen3')" type="file" class="pdffile" id="actual-btn3" hidden />
+                        <label for="actual-btn3" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
+                        <span id="file-chosen3" class="d-none">Select File</span>
                     </button>
                 </div>
                 <div class="d-flex align-items-center mt-2">
                     <div style="width:274.22px">
-                        <input type="checkbox" class="me-1"> Non-disclosure Agreement
+                        <input type="checkbox" class="me-1 btn4"> Non-disclosure Agreement
                     </div>
-                    <button type="button" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
-                        <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up me-1"></i>Upload</label>
+                    <button type="button" data-url="/Admin/UploadNDdoc" class="ms-2 text-white fileuploadbtn bg-info rounded border-info d-flex align-items-center h-100">
+                        <input asp-for="NDdoc" onclick="phydocupload(this.id ,'file-chosen4')" type="file" class="pdffile" id="actual-btn4" hidden />
+                        <label for="actual-btn4" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
+                        <span id="file-chosen4" class="d-none">Select File</span>
                     </button>
                 </div>
                 <div class="d-flex align-items-center mt-2">
                     <div style="width:274.22px">
-                        <input type="checkbox" class="me-1"> License Document
+                        <input type="checkbox" class="me-1 btn5"> License Document
                     </div>
-                    <button type="button" class="uploadbtn btn btn-info d-flex ms-1 border-0 text-white">
-                        <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up me-1"></i>Upload</label>
+                    <button type="button" data-url="/Admin/UploadLDdoc" class="ms-2 text-white fileuploadbtn bg-info rounded border-info d-flex align-items-center h-100">
+                        <input asp-for="LDdoc" onclick="phydocupload(this.id ,'file-chosen5')" type="file" class="pdffile" id="actual-btn5" hidden />
+                        <label for="actual-btn5" class="filelable"><i class="fa-solid fa-upload me-2"></i>Upload</label>
+                        <span id="file-chosen5" class="d-none">Select File</span>
                     </button>
                 </div>
             </div>
             <div class="border mt-3" style="border-bottom:1px solid"></div>
             <div class="d-flex justify-content-end mt-2">
-                <button type="submit" class="btn btn-success">Create Account</button>
+                <button type="submit" class="btn btn-success createacc">Create Account</button>
             </div>
         </div>
     </form>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.fileuploadbtn').on('click', function () {
+            $('#SelectFileToUpload').data('url', $(this).data('url'));
+            $('#SelectFileToUpload').click();
+        });
+        $('#SelectFileToUpload').on('change', function () {
+            var formData = new FormData();
+            formData.append('physicianid', @Model.physicianid);
+            formData.append('file', this.files[0]);
+            $.ajax({
+                url: $(this).data('url'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#errormessageforfile').text(jqXHR.responseText);
+                }
+            });
+        });
+        $('.pdffile').on('change', function () {
+            var file = this.files[0];
+            var contenttype = file.type;
+            if (contenttype != "application/pdf") {
+                toastr.error("Upload file in pdf format");
+            }
+            else {
+                toastr.success("File uploaded successfuly");
+            }
+        });
+        $('#actual-btn1').on('change', function () {
+            var file = this.files[0];
+            var contenttype = file.type;
+            if (contenttype == "application/pdf") {
+                $('.btn1').prop('checked', true);
+            }
+        });
+        $('#actual-btn2').on('change', function () {
+            var file = this.files[0];
+            var contenttype = file.type;
+            if (contenttype == "application/pdf") {
+                $('.btn2').prop('checked', true);
+            }
+        });
+        $('#actual-btn3').on('change', function () {
+            var file = this.files[0];
+            var contenttype = file.type;
+            if (contenttype == "application/pdf") {
+                $('.btn3').prop('checked', true);
+            }
+        });
+        $('#actual-btn4').on('change', function () {
+            var file = this.files[0];
+            var contenttype = file.type;
+            if (contenttype == "application/pdf") {
+                $('.btn4').prop('checked', true);
+            }
+        });
+        $('#actual-btn5').on('change', function () {
+            var file = this.files[0];
+            var contenttype = file.type;
+            if (contenttype == "application/pdf") {
+                $('.btn5').prop('checked', true);
+            }
+        });
+        $('.emailcheck').on('change', function () {
+            var email = $(this).val();
+            $.ajax({
+                url: '/Admin/phyemailcheck',
+                data: {"email" : email},
+                success: function (data) {
+                    if(data == false)
+                    {
+                        toastr.error("Email already exist");
+                        $('.createacc').addClass('d-none');
+                    }
+                    else{
+                        $('.createacc').removeClass('d-none');
+                    }
+                },
+            });
+        });
+    });
+</script>

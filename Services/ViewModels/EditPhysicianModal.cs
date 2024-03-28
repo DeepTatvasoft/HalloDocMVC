@@ -16,6 +16,8 @@ namespace Services.ViewModels
         public string? Username { get; set; }
         public List<Region> regions { get; set; }
         public HashSet<Region> physicianregions { get; set; }
+
+        [Required]
         public string? password { get; set; }
         public List<Role> roles { get; set; }
 
@@ -39,7 +41,6 @@ namespace Services.ViewModels
         public string? phonenumber { get; set; }
 
         [RegularExpression(@"^([0|\+[0-9]{1,5})?([0-9][0-9]{9})$", ErrorMessage = "Enter a valid 10-digit mobile number")]
-        [Required(ErrorMessage = "Plese enter your Phone Number")]
         public string? altphone { get; set; }
         public string? license { get; set; }
         public string? npi { get; set; }
@@ -53,7 +54,11 @@ namespace Services.ViewModels
         [RegularExpression(@"^[1-9][0-9]{5}$", ErrorMessage = "Enter a valid 6-digit zip code")]
         [Required(ErrorMessage = "*Zip Code is required")]
         public string? zipcode { get; set; }
+
+        [Required]
         public string? BusinessName { get; set; }
+
+        [Required]
         public string? Businesssite { get; set; }
         public string? Adminnotes { get; set; }
         public int regionid { get; set; }
@@ -65,5 +70,10 @@ namespace Services.ViewModels
         public BitArray? Islicensedoc { get; set; }
         public IFormFile Images { get; set; }
         public string photo { get; set; }
+        public IFormFile ICAdoc { get; set; }
+        public IFormFile BGcheckdoc { get; set; }
+        public IFormFile HIPAAdoc { get; set; }
+        public IFormFile NDdoc { get; set; }
+        public IFormFile LDdoc { get; set; }
     }
 }

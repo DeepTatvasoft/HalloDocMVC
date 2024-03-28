@@ -115,12 +115,14 @@
             <div class="submit mt-4">
                 <button type="button" class="btn btn-info" style="color: white;" data-bs-toggle="modal" data-bs-target="#exampleModal1">Assign</button>
                 <button type="button" class="btn btn-info ms-2 viewnotes" style="color: white;" name="@Model.req.Requestid">View Notes</button>
-                <button type="button" class="btn btn-danger ms-2">Cancel</button>
+                <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#CancelCaseBtn" onclick="CancelModelName(this.name)" name="@reqclient.Firstname , @reqclient.Lastname+@reqclient.Requestid">Cancel</button>
             </div>
         </form>
-        
+
     </div>
 </div>
+
+@*Assign Case*@
 <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -159,7 +161,39 @@
         </div>
     </div>
 </div>
+
+@*CancelCase Model*@
+<div class="modal fade" id="CancelCaseBtn" tabindex="-1" aria-labelledby="CancelCaseBtn" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="CancelCaseBtn">Confirm Cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span>Patient Name: <span id="cancleModelName" class="text-info"> </span></span>
+                <span id="reqidCancelModel" hidden></span>
+                <select class="form-select mt-4 reason" aria-label="Floating label select example" style="height:58px">
+                    <option selected value="">Reason For Cancellation</option>
+                    @foreach (var obj in Model.casetag)
+                    {
+                        <option value="@obj.Casetagid">@obj.Name</option>
+                    }
+                </select>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control Cancelnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Provide Addtional Notes</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white cancelcase">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.viewnotes').on('click', function (e) {
@@ -214,6 +248,56 @@
                     console.error(error);
                 }
             });
+        });
+        $('.cancelcase').on('click', function (e) {
+            var reqid = $('#reqidCancelModel').text();
+            var casetagid = $('.reason').val();
+            console.log(casetagid);
+            if (casetagid == "") {
+                $('.reason').css('border', '1px solid red');
+            }
+            else {
+                var cancelnotes = $('.Cancelnotes').val();
+                $.ajax({
+                    url: '/admin/cancelcase',
+                    data: { "reqid": reqid, "casetagid": casetagid, "cancelnotes": cancelnotes },
+                    success: function (response) {
+                        $(".CancelCaseBtn").modal("hide");
+                        $("body").removeAttr("style");
+                        $(".modal-backdrop").remove();
+                        window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+        $('.assigncase').on('click', function (e) {
+            var reqid = $('#reqidAssignModel').text();
+            var regid = $('.physiciandata').val();
+            var phyid = $('#physelect').val();
+            var Assignnotes = $('.Assignnotes').val();
+            console.log(regid);
+            if (regid == "") {
+                $('.physiciandata').css('border', '1px solid red');
+            }
+            else if (phyid == "") {
+                $('#physelect').css('border', '1px solid red');
+            }
+            else {
+                $.ajax({
+                    url: '/admin/assigncase',
+                    data: { "reqid": reqid, "regid": regid, "phyid": phyid, "Assignnotes": Assignnotes },
+                    success: function (response) {
+                        window.location.reload();
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
         });
     });
 

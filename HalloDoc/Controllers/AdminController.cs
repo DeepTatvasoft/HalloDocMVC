@@ -687,5 +687,14 @@ namespace HalloDoc.Controllers
             Response.Headers["Content-Disposition"] = "inline; filename=" + fileName;
             return PhysicalFile(filePath, mimeType);
         }
+        public bool phyemailcheck(string email)
+        {
+            var aspnetuser = _context.Aspnetusers.FirstOrDefault(u=>u.Email == email);
+            if (aspnetuser != null)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

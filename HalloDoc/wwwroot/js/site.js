@@ -16,6 +16,19 @@ try {
     })
 }
 catch (error) { }
+
+function phydocupload(btn , file) {
+    const actualBtn = document.getElementById(btn);
+    const fileChosen = document.getElementById(file);
+    var files = "";
+    actualBtn.addEventListener('change', function () {
+        for (var i = 0; i < this.files.length; i++) {
+            files += this.files[i].name;
+        }
+        fileChosen.textContent = files;
+    })
+}
+
 window.onload = function () {
     var array = document.cookie.split("=");
     flag = parseInt(array[1]);

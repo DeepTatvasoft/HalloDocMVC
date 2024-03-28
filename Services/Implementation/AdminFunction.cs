@@ -206,6 +206,7 @@ namespace Services.Implementation
             newStateData1.symptoms = reqclient.Notes;
             var regionselect = _context.Regions.ToList();
             newStateData1.regions = regionselect;
+            newStateData1.casetag = _context.Casetags.ToList();
             return newStateData1;
         }
 
@@ -1039,8 +1040,46 @@ namespace Services.Implementation
             modal.roles = _context.Roles.Where(u => u.Accounttype == 2).ToList();
             return modal;
         }
+        public void AddPhysicianDoc(IFormFile file, int physicianid, string filename)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "PhysicianDocuments", physicianid.ToString());
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            string filePath = Path.Combine(path, filename);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+        }
         public void CreateProviderAccBtn(EditPhysicianModal modal, List<string> chk, string adminname)
         {
+            string ICAdoctype = "";
+            string BGcheckdoctype = "";
+            string HIPAAdoctype = "";
+            string NDdoctype = "";
+            string LDdoctype = "";
+            if (modal.ICAdoc != null)
+            {
+                ICAdoctype = modal.ICAdoc.ContentType;
+            }
+            if (modal.BGcheckdoc != null)
+            {
+                BGcheckdoctype = modal.BGcheckdoc.ContentType;
+            }
+            if (modal.HIPAAdoc != null)
+            {
+                HIPAAdoctype = modal.HIPAAdoc.ContentType;
+            }
+            if (modal.NDdoc != null)
+            {
+                NDdoctype = modal.NDdoc.ContentType;
+            }
+            if (modal.LDdoc != null)
+            {
+                LDdoctype = modal.LDdoc.ContentType;
+            }
             string base64StringWithFileType = "";
             if (modal.Images != null && modal.Images.Length > 0)
             {
@@ -1090,12 +1129,40 @@ namespace Services.Implementation
             };
             _context.Physicians.Add(physician);
             _context.SaveChanges();
+            if (modal.ICAdoc != null && ICAdoctype == "application/pdf")
+            {
+                AddPhysicianDoc(modal.ICAdoc, physician.Physicianid, "ICA.pdf");
+                physician.Isagreementdoc = new BitArray(new[] { true });
+            }
+            if (modal.BGcheckdoc != null && BGcheckdoctype == "application/pdf")
+            {
+                AddPhysicianDoc(modal.BGcheckdoc, physician.Physicianid, "BGCheck.pdf");
+                physician.Isbackgrounddoc = new BitArray(new[] { true });
+            }
+            if (modal.HIPAAdoc != null && HIPAAdoctype == "application/pdf")
+            {
+                AddPhysicianDoc(modal.HIPAAdoc, physician.Physicianid, "HIPAA.pdf");
+                physician.Iscredentialdoc = new BitArray(new[] { true });
+            }
+            if (modal.NDdoc != null && NDdoctype == "application/pdf")
+            {
+                AddPhysicianDoc(modal.NDdoc, physician.Physicianid, "NDDoc.pdf");
+                physician.Isnondisclosuredoc = new BitArray(new[] { true });
+            }
+            if (modal.LDdoc != null && LDdoctype == "application/pdf")
+            {
+                AddPhysicianDoc(modal.LDdoc, physician.Physicianid, "LDDoc.pdf");
+                physician.Islicensedoc = new BitArray(new[] { true });
+            }
+            _context.Physicians.Update(physician);
+            _context.SaveChanges();
             Physiciannotification physiciannotification = new Physiciannotification
             {
                 Physicianid = physician.Physicianid,
                 Isnotificationstopped = new BitArray(new[] { false })
             };
             _context.Physiciannotifications.Add(physiciannotification);
+            _context.SaveChanges();
             foreach (var obj in chk)
             {
                 var s = Int32.Parse(obj);
@@ -1112,7 +1179,7 @@ namespace Services.Implementation
         public AdminProfile CreateAdminAcc()
         {
             AdminProfile modal = new AdminProfile();
-            modal.roles = _context.Roles.Where(u=>u.Accounttype == 1).ToList();
+            modal.roles = _context.Roles.Where(u => u.Accounttype == 1).ToList();
             modal.regions = _context.Regions.ToList();
             return modal;
         }
@@ -1173,19 +1240,19 @@ namespace Services.Implementation
             {
                 physician.Isagreementdoc = new BitArray(new[] { true });
             }
-            else if(doctype == "HIPAA")
+            else if (doctype == "HIPAA")
             {
                 physician.Iscredentialdoc = new BitArray(new[] { true });
             }
-            else if(doctype == "BGCheck")
+            else if (doctype == "BGCheck")
             {
                 physician.Isbackgrounddoc = new BitArray(new[] { true });
             }
-            else if(doctype == "NDDoc")
+            else if (doctype == "NDDoc")
             {
                 physician.Isnondisclosuredoc = new BitArray(new[] { true });
             }
-            else if(doctype == "LDDoc")
+            else if (doctype == "LDDoc")
             {
                 physician.Islicensedoc = new BitArray(new[] { true });
             }

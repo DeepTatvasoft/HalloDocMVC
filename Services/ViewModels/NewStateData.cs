@@ -38,7 +38,7 @@ namespace Services.ViewModels
         public string? room { get; set; }
         public string? symptoms { get; set; }
         public List<Region>? regions { get; set; }
-
+        public List<Casetag> casetag { get; set; }
     }
     public class ViewNotesModel
     {
