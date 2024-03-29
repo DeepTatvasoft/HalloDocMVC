@@ -1,0 +1,51 @@
+﻿@model Services.ViewModels.WeekWiseScheduling
+
+
+<div class="table-responsive">
+    <table class="calendar-table">
+        <tr class="text-white">
+            <th>Staff</th>
+            <th>12A</th>
+            <th>1A</th>
+            <th>2A</th>
+            <th>3A</th>
+            <th>4A</th>
+            <th>5A</th>
+            <th>6A</th>       
+        </tr>
+        <tr>
+            <td>Coverage</td>
+            @for (int i = 0; i < 7; i++)
+            {
+                <td class="dates"></td>
+            }
+        </tr>
+        @foreach (var obj in Model.physicians)
+        {
+            <tr>
+                @if (obj.Photo == null)
+                {
+                    <td class="d-flex"><i class="fa-solid fa-user me-1 mt-1"></i> @obj.Firstname @obj.Lastname.ElementAt(0).</td>
+                }
+                else
+                {
+                    <td class="d-flex"><img class="me-1" src="@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0).</td>
+                }
+                @for (int i = 0; i < 7; i++)
+                {
+                    <td></td>
+                }
+            </tr>
+        }
+    </table>
+
+</div>
+
+
+<script>
+    $('.removeactive').removeClass('active text-white');
+    $('#Week').addClass('active text-white');
+
+    var currentdate = $('#currentMonth').val();
+    $('#showDate').text(currentdate);
+</script>

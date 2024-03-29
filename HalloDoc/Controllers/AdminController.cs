@@ -689,12 +689,160 @@ namespace HalloDoc.Controllers
         }
         public bool phyemailcheck(string email)
         {
-            var aspnetuser = _context.Aspnetusers.FirstOrDefault(u=>u.Email == email);
+            var aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == email);
             if (aspnetuser != null)
             {
                 return false;
             }
             return true;
+        }
+        public IActionResult Scheduling()
+        {
+            Scheduling modal = new Scheduling();
+            modal.regions = _context.Regions.ToList();
+            return View(modal);
+        }
+
+        public IActionResult LoadSchedulingPartial(string PartialName, string date, int regionid)
+        {
+            var currentDate = DateTime.Parse(date);
+            List<Physician> physician = _context.Physicianregions.Include(u => u.Physician).Where(u => u.Regionid == regionid).Select(u => u.Physician).ToList();
+            if (regionid == 0)
+            {
+                physician = _context.Physicians.ToList();
+            }
+
+            switch (PartialName)
+            {
+
+                case "_DayWise":
+                    DayWiseScheduling day = new DayWiseScheduling
+                    {
+                        date = currentDate,
+                        physicians = physician,
+                        shiftdetails = _context.Shiftdetails.Include(u=>u.Shift).ToList()
+                    };
+                    return PartialView("AdminLayout/_DayWise", day);
+
+                case "_WeekWise":
+                    WeekWiseScheduling week = new WeekWiseScheduling
+                    {
+                        date = currentDate,
+                        physicians = physician
+                    };
+                    return PartialView("AdminLayout/_WeekWise", week);
+
+                case "_MonthWise":
+                    MonthWiseScheduling month = new MonthWiseScheduling
+                    {
+                        date = currentDate,
+                    };
+                    return PartialView("AdminLayout/_MonthWise", month);
+
+                default:
+                    return PartialView("AdminLayout/_DayWise");
+            }
+        }
+        public IActionResult AddShift(Scheduling model)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            var chk = Request.Form["repeatdays"].ToList();
+            Shift shift = new Shift
+            {
+                Physicianid = model.physicianid,
+                Startdate = DateOnly.FromDateTime(model.shiftdate),
+                Repeatupto = model.repeatcount,
+                Createddate = DateTime.Now,
+                Createdby = adminname
+            };
+            foreach (var obj in chk)
+            {
+                shift.Weekdays += obj;
+            }
+            if (model.repeatcount > 0)
+            {
+                shift.Isrepeat = new BitArray(new[] { true });
+            }
+            _context.Shifts.Add(shift);
+            _context.SaveChanges();
+            DateTime curdate = model.shiftdate;
+            Shiftdetail shiftdetail = new Shiftdetail();
+            shiftdetail.Shiftid = shift.Shiftid;
+            shiftdetail.Shiftdate = curdate;
+            shiftdetail.Regionid = model.regionid;
+            shiftdetail.Starttime = model.starttime;
+            shiftdetail.Endtime = model.endtime;
+            shiftdetail.Isdeleted = new BitArray(new[] { false });
+            _context.Shiftdetails.Add(shiftdetail);
+            _context.SaveChanges();
+
+            var dayofweek = model.shiftdate.DayOfWeek.ToString();
+            int valueforweek;
+            if (dayofweek == "Sunday")
+            {
+                valueforweek = 0;
+            }
+            else if (dayofweek == "Monday")
+            {
+                valueforweek = 1;
+            }
+            else if (dayofweek == "Tuesday")
+            {
+                valueforweek = 2;
+            }
+            else if (dayofweek == "Wednesday")
+            {
+                valueforweek = 3;
+            }
+            else if (dayofweek == "Thursday")
+            {
+                valueforweek = 4;
+            }
+            else if (dayofweek == "Friday")
+            {
+                valueforweek = 5;
+            }
+            else
+            {
+                valueforweek = 6;
+            }
+
+            for (int j = 0; j < shift.Weekdays.Count(); j++)
+            {
+                var z = shift.Weekdays;
+                var p = shift.Weekdays.ElementAt(j).ToString();
+                int ele = Int32.Parse(p);
+                int x;
+                if (valueforweek > ele)
+                {
+                    x = 6 - valueforweek + 1 + ele;
+                }
+                else
+                {
+                    x = ele - valueforweek;
+                }
+                if (x == 0)
+                {
+                    x = 7;
+                }
+                DateTime newcurdate = model.shiftdate.AddDays(x);
+                for (int i = 0; i < model.repeatcount; i++)
+                {
+                    Shiftdetail shiftdetailnew = new Shiftdetail
+                    {
+                        Shiftid = shift.Shiftid,
+                        Shiftdate = newcurdate,
+                        Regionid = model.regionid,
+                        Starttime = model.starttime,
+                        Endtime = model.endtime,
+                        Isdeleted = new BitArray(new[] { false })
+                    };
+                    _context.Shiftdetails.Add(shiftdetailnew);
+                    _context.SaveChanges();
+                    newcurdate = newcurdate.AddDays(7);
+                }
+            }
+            return RedirectToAction("Scheduling");
         }
     }
 }

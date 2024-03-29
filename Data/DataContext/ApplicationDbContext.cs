@@ -715,7 +715,9 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("physiciannotification");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Id)
+                .HasIdentityOptions(null, null, 3L, null, null, null)
+                .HasColumnName("id");
             entity.Property(e => e.Isnotificationstopped)
                 .HasColumnType("bit(1)")
                 .HasColumnName("isnotificationstopped");
@@ -1226,9 +1228,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("shift");
 
-            entity.Property(e => e.Shiftid)
-                .ValueGeneratedNever()
-                .HasColumnName("shiftid");
+            entity.Property(e => e.Shiftid).HasColumnName("shiftid");
             entity.Property(e => e.Createdby)
                 .HasMaxLength(128)
                 .HasColumnName("createdby");
@@ -1261,9 +1261,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("shiftdetail");
 
-            entity.Property(e => e.Shiftdetailid)
-                .ValueGeneratedNever()
-                .HasColumnName("shiftdetailid");
+            entity.Property(e => e.Shiftdetailid).HasColumnName("shiftdetailid");
             entity.Property(e => e.Endtime).HasColumnName("endtime");
             entity.Property(e => e.Eventid)
                 .HasMaxLength(100)
@@ -1303,9 +1301,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("shiftdetailregion");
 
-            entity.Property(e => e.Shiftdetailregionid)
-                .ValueGeneratedNever()
-                .HasColumnName("shiftdetailregionid");
+            entity.Property(e => e.Shiftdetailregionid).HasColumnName("shiftdetailregionid");
             entity.Property(e => e.Isdeleted)
                 .HasColumnType("bit(1)")
                 .HasColumnName("isdeleted");

@@ -1,0 +1,95 @@
+﻿@model Services.ViewModels.DayWiseScheduling
+
+@{
+    var now = Model.date;
+    var dayweek = Model.date.DayOfWeek.ToString();
+    var currentDay = dayweek + ", " + now.ToString("MMM dd yyyy");
+    <input type="hidden" value="@currentDay" id="currentDay" />
+    var f = 0;
+}
+<div class="table-responsive">
+    <table class="calendar-table">
+        <tr class="text-white">
+            <th>Staff</th>
+            <th>12A</th>
+            <th>1A</th>
+            <th>2A</th>
+            <th>3A</th>
+            <th>4A</th>
+            <th>5A</th>
+            <th>6A</th>
+            <th>7A</th>
+            <th>8A</th>
+            <th>9A</th>
+            <th>10A</th>
+            <th>11A</th>
+            <th>12P</th>
+            <th>1P</th>
+            <th>2P</th>
+            <th>3P</th>
+            <th>4P</th>
+            <th>5P</th>
+            <th>6P</th>
+            <th>7P</th>
+            <th>8P</th>
+            <th>9P</th>
+            <th>10P</th>
+            <th>11P</th>
+        </tr>
+        <tr>
+            <td>Coverage</td>
+            @for (int i = 0; i < 24; i++)
+            {
+                <td class="dates"></td>
+            }
+        </tr>
+        @foreach (var obj in Model.physicians)
+        {
+            var shift = Model.shiftdetails.Where(u => u.Shiftdate == now && u.Shift.Physicianid == obj.Physicianid).ToList();
+            <tr>
+                @if (obj.Photo == null)
+                {
+                    <td class="d-flex"><i class="fa-solid fa-user me-1 mt-1"></i> @obj.Firstname @obj.Lastname.ElementAt(0).</td>
+                }
+                else
+                {
+                    <td class="d-flex"><img class="me-1" src="@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0).</td>
+                }
+                @for (int i = 0; i < 24; i++)
+                {
+                    if (shift.Count() > 0)
+                    {
+                    int flag = 0;
+                        foreach (var item in shift)
+                        {
+                            if (item.Starttime.Hour <= i && item.Endtime.Hour >= i)
+                            {
+                                <td id="i_@obj.Physicianid" class="dates"></td>
+                                flag = 1;
+                            }
+                        }
+                        if(flag == 0)
+                        {
+                            <td id="i_@obj.Physicianid"></td>
+                        }
+                    }
+                    else
+                    {
+                        <td id="i_@obj.Physicianid"></td>
+                    }
+                }
+            </tr>
+        }
+    </table>
+
+</div>
+
+
+<script>
+    $('.removeactive').removeClass('active text-white');
+    $('#Day').addClass('active text-white');
+
+    var currentDay = $('#currentDay').val();
+    $('#showDate').text(currentDay);
+
+</script>

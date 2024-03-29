@@ -1174,7 +1174,13 @@ namespace Services.Implementation
                 _context.Physicianregions.Add(physicianregion);
                 _context.SaveChanges();
             }
-
+            Aspnetuserrole asprole = new Aspnetuserrole
+            {
+                Userid = aspuser.Id.ToString(),
+                Roleid = "2"
+            };
+            _context.Aspnetuserroles.Add(asprole);
+            _context.SaveChanges();
         }
         public AdminProfile CreateAdminAcc()
         {
@@ -1231,6 +1237,7 @@ namespace Services.Implementation
                 Userid = aspuser.Id.ToString(),
                 Roleid = "1"
             };
+            _context.Aspnetuserroles.Add(asprole);
             _context.SaveChanges();
         }
         public void phyuploadDoc(int physicianid, string doctype)

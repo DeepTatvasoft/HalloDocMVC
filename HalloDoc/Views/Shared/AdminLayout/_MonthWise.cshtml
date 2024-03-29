@@ -1,0 +1,96 @@
+﻿@model Services.ViewModels.MonthWiseScheduling
+@using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+
+<div id="calendar" class="my-3">
+    @{
+        // Get the current month and year
+        var now = Model.date;
+        var currentMonth = now.Month;
+        var currentYear = now.Year;
+        var today = now.Day;
+        var todaydate = DateTime.Now.Date;
+        // Generate the calendar table
+        var currentDate = now.ToString("MMMM yyyy");
+        <input type="hidden" id="currentMonth" value="@currentDate" />
+        var daysInMonth = DateTime.DaysInMonth(currentYear, currentMonth);
+        var firstDay = new DateTime(currentYear, currentMonth, 1).DayOfWeek;
+
+        var date = 1;
+        <div class="table-responsive">
+            <table class="calendar-table">
+                <tr class="text-white">
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+                @{
+
+
+                    @for (var i = 0; i < 6; i++)
+                    {
+
+                        <tr>
+                            @for (var j = 0; j < 7; j++)
+                            {
+                                <td class="p-0">
+                                    <table class="w-100">
+                                        <tr>
+                                            @if ((i == 0 && j < (int)firstDay) || date > daysInMonth)
+                                            {
+                                                <td></td>
+                                            }
+
+                                            else if (date == today && todaydate == now)
+                                            {
+                                                <td class="today">
+                                                    @(date++)
+                                                </td>
+
+                                            }
+                                            else
+                                            {
+
+                                                <td class="dates">
+                                                    @(date++)
+                                                </td>
+
+                                            }
+                                        </tr>
+                                        <tr><td></td></tr>
+                                        <tr><td></td></tr>
+                                        <tr><td></td></tr>
+                                        <tr><td></td></tr>
+                                        <tr><td></td> </tr>
+                                    </table>
+                                </td>
+
+
+
+
+                            }
+                        </tr>
+
+
+                    }
+
+                }
+
+
+            </table>
+        </div>
+    }
+</div>
+<script>
+    $('.removeactive').removeClass('active text-white');
+    $('#Month').addClass('active text-white');
+
+    var currentdate = $('#currentMonth').val();
+    $('#showDate').text(currentdate);
+
+</script>
