@@ -26,6 +26,7 @@ namespace Services.ViewModels
     public class MonthWiseScheduling
     {
         public DateTime date { get; set; }
+        public List<Shiftdetail> shiftdetails { get; set; }
 
     }
     public class WeekWiseScheduling

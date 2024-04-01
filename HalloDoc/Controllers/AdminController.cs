@@ -720,7 +720,7 @@ namespace HalloDoc.Controllers
                     {
                         date = currentDate,
                         physicians = physician,
-                        shiftdetails = _context.Shiftdetails.Include(u=>u.Shift).ToList()
+                        shiftdetails = _context.Shiftdetails.Include(u => u.Shift).ToList()
                     };
                     return PartialView("AdminLayout/_DayWise", day);
 
@@ -736,6 +736,7 @@ namespace HalloDoc.Controllers
                     MonthWiseScheduling month = new MonthWiseScheduling
                     {
                         date = currentDate,
+                        shiftdetails = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u=>u.Physician).ToList()
                     };
                     return PartialView("AdminLayout/_MonthWise", month);
 
@@ -747,6 +748,25 @@ namespace HalloDoc.Controllers
         {
             string adminname = HttpContext.Session.GetString("Adminname");
             var chk = Request.Form["repeatdays"].ToList();
+            var shiftid = _context.Shifts.Where(u => u.Physicianid == model.physicianid).Select(u => u.Shiftid).ToList();
+            if (shiftid.Count() > 0)
+            {
+                foreach (var obj in shiftid)
+                {
+                    var shiftdetailchk = _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == model.shiftdate).ToList();
+                    if (shiftdetailchk.Count()>0)
+                    {
+                        foreach (var item in shiftdetailchk)
+                        {
+                            if ((model.starttime >= item.Starttime && model.starttime<=item.Endtime) || (model.endtime>=item.Starttime && model.endtime<=item.Endtime))
+                            {
+                                TempData["error"] = "Shift is already assigned in this time";
+                                return RedirectToAction("Scheduling");
+                            }
+                        }
+                    }
+                }
+            }
             Shift shift = new Shift
             {
                 Physicianid = model.physicianid,
@@ -762,6 +782,10 @@ namespace HalloDoc.Controllers
             if (model.repeatcount > 0)
             {
                 shift.Isrepeat = new BitArray(new[] { true });
+            }
+            else
+            {
+                shift.Isrepeat = new BitArray(new[] { false });
             }
             _context.Shifts.Add(shift);
             _context.SaveChanges();
@@ -807,39 +831,42 @@ namespace HalloDoc.Controllers
                 valueforweek = 6;
             }
 
-            for (int j = 0; j < shift.Weekdays.Count(); j++)
+            if (shift.Isrepeat[0] == true)
             {
-                var z = shift.Weekdays;
-                var p = shift.Weekdays.ElementAt(j).ToString();
-                int ele = Int32.Parse(p);
-                int x;
-                if (valueforweek > ele)
+                for (int j = 0; j < shift.Weekdays.Count(); j++)
                 {
-                    x = 6 - valueforweek + 1 + ele;
-                }
-                else
-                {
-                    x = ele - valueforweek;
-                }
-                if (x == 0)
-                {
-                    x = 7;
-                }
-                DateTime newcurdate = model.shiftdate.AddDays(x);
-                for (int i = 0; i < model.repeatcount; i++)
-                {
-                    Shiftdetail shiftdetailnew = new Shiftdetail
+                    var z = shift.Weekdays;
+                    var p = shift.Weekdays.ElementAt(j).ToString();
+                    int ele = Int32.Parse(p);
+                    int x;
+                    if (valueforweek > ele)
                     {
-                        Shiftid = shift.Shiftid,
-                        Shiftdate = newcurdate,
-                        Regionid = model.regionid,
-                        Starttime = model.starttime,
-                        Endtime = model.endtime,
-                        Isdeleted = new BitArray(new[] { false })
-                    };
-                    _context.Shiftdetails.Add(shiftdetailnew);
-                    _context.SaveChanges();
-                    newcurdate = newcurdate.AddDays(7);
+                        x = 6 - valueforweek + 1 + ele;
+                    }
+                    else
+                    {
+                        x = ele - valueforweek;
+                    }
+                    if (x == 0)
+                    {
+                        x = 7;
+                    }
+                    DateTime newcurdate = model.shiftdate.AddDays(x);
+                    for (int i = 0; i < model.repeatcount; i++)
+                    {
+                        Shiftdetail shiftdetailnew = new Shiftdetail
+                        {
+                            Shiftid = shift.Shiftid,
+                            Shiftdate = newcurdate,
+                            Regionid = model.regionid,
+                            Starttime = model.starttime,
+                            Endtime = model.endtime,
+                            Isdeleted = new BitArray(new[] { false })
+                        };
+                        _context.Shiftdetails.Add(shiftdetailnew);
+                        _context.SaveChanges();
+                        newcurdate = newcurdate.AddDays(7);
+                    }
                 }
             }
             return RedirectToAction("Scheduling");
