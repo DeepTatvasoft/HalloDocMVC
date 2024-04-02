@@ -16,6 +16,7 @@ using DataAccess.ServiceRepository.IServiceRepository;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Data.DataContext;
 using NPOI.HPSF;
+using NPOI.SS.Formula.Functions;
 
 namespace HalloDoc.Controllers
 {
@@ -728,7 +729,9 @@ namespace HalloDoc.Controllers
                     WeekWiseScheduling week = new WeekWiseScheduling
                     {
                         date = currentDate,
-                        physicians = physician
+                        physicians = physician,
+                        shiftdetails = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).ToList()
+
                     };
                     return PartialView("AdminLayout/_WeekWise", week);
 
@@ -736,7 +739,7 @@ namespace HalloDoc.Controllers
                     MonthWiseScheduling month = new MonthWiseScheduling
                     {
                         date = currentDate,
-                        shiftdetails = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u=>u.Physician).ToList()
+                        shiftdetails = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).ToList()
                     };
                     return PartialView("AdminLayout/_MonthWise", month);
 
@@ -754,11 +757,11 @@ namespace HalloDoc.Controllers
                 foreach (var obj in shiftid)
                 {
                     var shiftdetailchk = _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == model.shiftdate).ToList();
-                    if (shiftdetailchk.Count()>0)
+                    if (shiftdetailchk.Count() > 0)
                     {
                         foreach (var item in shiftdetailchk)
                         {
-                            if ((model.starttime >= item.Starttime && model.starttime<=item.Endtime) || (model.endtime>=item.Starttime && model.endtime<=item.Endtime))
+                            if ((model.starttime >= item.Starttime && model.starttime <= item.Endtime) || (model.endtime >= item.Starttime && model.endtime <= item.Endtime))
                             {
                                 TempData["error"] = "Shift is already assigned in this time";
                                 return RedirectToAction("Scheduling");
@@ -799,7 +802,14 @@ namespace HalloDoc.Controllers
             shiftdetail.Isdeleted = new BitArray(new[] { false });
             _context.Shiftdetails.Add(shiftdetail);
             _context.SaveChanges();
-
+            Shiftdetailregion shiftregion = new Shiftdetailregion
+            {
+                Shiftdetailid = shiftdetail.Shiftdetailid,
+                Regionid = model.regionid,
+                Isdeleted = new BitArray(new[] { false })
+            };
+            _context.Shiftdetailregions.Add(shiftregion);
+            _context.SaveChanges();
             var dayofweek = model.shiftdate.DayOfWeek.ToString();
             int valueforweek;
             if (dayofweek == "Sunday")
@@ -865,10 +875,47 @@ namespace HalloDoc.Controllers
                         };
                         _context.Shiftdetails.Add(shiftdetailnew);
                         _context.SaveChanges();
+                        Shiftdetailregion shiftregionnew = new Shiftdetailregion
+                        {
+                            Shiftdetailid = shiftdetailnew.Shiftdetailid,
+                            Regionid = model.regionid,
+                            Isdeleted = new BitArray(new[] { false })
+                        };
+                        _context.Shiftdetailregions.Add(shiftregionnew);
+                        _context.SaveChanges();
                         newcurdate = newcurdate.AddDays(7);
                     }
                 }
             }
+            return RedirectToAction("Scheduling");
+        }
+
+
+        public Scheduling viewshift(int shiftdetailid)
+        {
+            Scheduling modal = new Scheduling();
+            Shiftdetail shiftdetail = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).FirstOrDefault(u=>u.Shiftdetailid == shiftdetailid);
+            modal.regionid = (int)shiftdetail.Regionid;
+            modal.physicianname = shiftdetail.Shift.Physician.Firstname + " " + shiftdetail.Shift.Physician.Lastname;
+            modal.modaldate = shiftdetail.Shiftdate.ToString("yyyy-MM-dd");
+            modal.starttime = shiftdetail.Starttime;
+            modal.endtime = shiftdetail.Endtime;
+            modal.shiftdetailid = shiftdetailid;
+            return modal;
+        }
+        public IActionResult ViewShiftreturn(Scheduling modal)
+        {
+            var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == modal.shiftdetailid);
+            if (shiftdetail.Status == 0)
+            {
+                shiftdetail.Status = 1;
+            }
+            else
+            {
+                shiftdetail.Status = 0;
+            }
+            _context.Shiftdetails.Update(shiftdetail);
+            _context.SaveChanges();
             return RedirectToAction("Scheduling");
         }
     }

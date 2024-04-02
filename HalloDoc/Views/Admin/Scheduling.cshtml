@@ -198,6 +198,66 @@
     </div>
 </div>
 
+@*@ViewShift Modal*@
+<div class="modal fade" id="viewShiftModal" tabindex="-1" aria-labelledby="viewShiftModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="viewShiftModalLabel">View Shift</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="ViewShiftreturn" asp-controller="Admin">
+                <input asp-for="shiftdetailid" type="hidden" id="shiftmodalid"></input>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        <select asp-for="regionid" class="form-select physiciandata2" id="shiftmodalRegion" aria-label="Floating label select example" disabled>
+                            <option value="">Select Region</option>
+                            @if (Model.regions != null)
+                            {
+                                @foreach (var obj in Model.regions)
+                                {
+                                    <option value="@obj.Regionid">@obj.Name</option>
+                                }
+                            }
+                        </select>
+                        <label for="floatingSelect" class="text-info">
+                            Region
+                        </label>
+                    </div>
+                    <select asp-for="physicianid" class="form-select mt-4" id="physelect2" aria-label="Floating label select example" style="height:58px" disabled>
+                        <option id="shiftmodalPhysician" selected>Select Physician</option>
+                    </select>
+                    <div class="form-floating mt-3">
+                        <input asp-for="shiftdate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="shiftmodalDate" class="form-control disable" placeholder="Date" disabled>
+                        <label for="floatingInput">Shift Date</label>
+                    </div>
+                    <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+                        <div class="col mb-3 mb-md-0">
+                            <div class="form-floating">
+                                <input asp-for="starttime" type="time" class="form-control disable" id="shiftmodalStart" placeholder="Date" disabled />
+                                <label for="floatingInput">Start</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating">
+                                <input asp-for="endtime" type="time" class="form-control disable" id="shiftmodalEnd" placeholder="Date" disabled/>
+                                <label for="floatingInput">End</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info text-white">Return</button>
+                    <button type="button" onclick="editclick()" class="btn btn-info text-white edit">Edit</button>
+                    <button type="button" onclick="editclick()" class="btn btn-info text-white d-none save">Save</button>
+                    <button type="reset" onclick="cancelclick()" class="btn btn-outline-info d-none cancel">Cancel</button>
+                    <button type="button" class="btn btn-danger text-white">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     var regionid;
@@ -214,6 +274,23 @@
             error: function (e) {
                 console.log(e);
             }
+        });
+    }
+
+    function editclick() {
+        $('.cancel').removeClass('d-none').addClass('d-inline-block');
+        $('.save').removeClass('d-none').addClass('d-inline-block');
+        $('.edit').removeClass('d-inline-block').addClass('d-none');
+        $('.disable').each(function () {
+            $(this).prop('disabled', false);
+        });
+    }
+    function cancelclick() {
+        $('.edit').removeClass('d-none').addClass('d-inline-block');
+        $('.cancel').removeClass('d-inline-block').addClass('d-none');
+        $('.save').removeClass('d-inline-block').addClass('d-none');
+        $('.disable').each(function () {
+            $(this).prop('disabled', true);
         });
     }
 
@@ -241,6 +318,10 @@
                 var date = filterDate.setDate(filterDate.getDate() - 1);
                 loadSchedulingPartial(currentPartial);
             }
+            else {
+                var date = filterDate.setDate(filterDate.getDate() - 7);
+                loadSchedulingPartial(currentPartial);
+            }
         });
 
         $('#nextDateBtn').on('click', function () {
@@ -252,7 +333,13 @@
                 var date = filterDate.setDate(filterDate.getDate() + 1);
                 loadSchedulingPartial(currentPartial);
             }
+            else {
+                var date = filterDate.setDate(filterDate.getDate() + 7);
+                loadSchedulingPartial(currentPartial);
+            }
         });
+
+
         $('.physiciandata').on('change', function (e) {
             var regionid = $(this).val();
             $.ajax({
@@ -281,6 +368,7 @@
                 }
             });
         });
+        
         $('.repeatchk').on('change', function () {
             if ($(this).prop('checked')) {
                 $('.disable').each(function () {
@@ -294,5 +382,25 @@
             }
 
         });
+
+        $('.cancel').on('click', function () {
+            var shiftdetailid = $('#shiftmodalid').val();
+            $.ajax({
+                url: '/Admin/viewshift',
+                data: { "shiftdetailid": shiftdetailid },
+                success: function (response) {
+                    $('#shiftmodalRegion').val(response.regionid);
+                    $('#shiftmodalPhysician').text(response.physicianname);
+                    $('#shiftmodalDate').val(response.modaldate);
+                    $('#shiftmodalStart').val(response.starttime);
+                    $('#shiftmodalEnd').val(response.endtime);
+                    $('#shiftmodalid').val(response.shiftdetailid);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
     });
 </script>

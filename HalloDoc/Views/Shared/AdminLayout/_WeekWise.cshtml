@@ -1,23 +1,26 @@
 ﻿@model Services.ViewModels.WeekWiseScheduling
 
-
+@{
+    var now = Model.date;
+    var dayweek = Model.date.DayOfWeek.ToString();
+    var currentWeek = Model.date.ToString("MMM dd") + "-" + Model.date.AddDays(6).ToString("MMM dd") + "," + Model.date.Year;
+    <input type="hidden" value="@currentWeek" id="currentWeek" />
+    var f = 0;
+}
 <div class="table-responsive">
     <table class="calendar-table">
         <tr class="text-white">
             <th>Staff</th>
-            <th>12A</th>
-            <th>1A</th>
-            <th>2A</th>
-            <th>3A</th>
-            <th>4A</th>
-            <th>5A</th>
-            <th>6A</th>       
+            @for (int i = 0; i < 7; i++)
+            {
+                <th>@Model.date.AddDays(i).DayOfWeek @Model.date.AddDays(i).Day</th>
+            }
         </tr>
         <tr>
             <td>Coverage</td>
             @for (int i = 0; i < 7; i++)
             {
-                <td class="dates"></td>
+                <td class="dates">0/24</td>
             }
         </tr>
         @foreach (var obj in Model.physicians)
@@ -25,15 +28,44 @@
             <tr>
                 @if (obj.Photo == null)
                 {
-                    <td class="d-flex"><i class="fa-solid fa-user me-1 mt-1"></i> @obj.Firstname @obj.Lastname.ElementAt(0).</td>
+                    <td>
+                        <span class="d-flex">
+                            <i class="fa-solid fa-user me-1 mt-1"></i> @obj.Firstname @obj.Lastname.ElementAt(0).
+                        </span>
+                    </td>
                 }
                 else
                 {
-                    <td class="d-flex"><img class="me-1" src="@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0).</td>
+                    <td>
+                        <span class="d-flex">
+                            <img class="me-1" src="@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0).
+                        </span>
+                    </td>
                 }
                 @for (int i = 0; i < 7; i++)
                 {
-                    <td></td>
+                    var shift = Model.shiftdetails.Where(u => u.Shiftdate >= now && u.Shiftdate <= now.AddDays(6) && u.Shift.Physicianid == obj.Physicianid);
+                    shift = shift.Where(u => u.Shiftdate.Day == now.AddDays(i).Day);
+                    if (shift.Count() > 0)
+                    {
+                        <td>
+                            <div class="d-flex flex-column">
+                                @foreach (var item in shift)
+                                {
+                                    if (item.Shiftdate >= Model.date && item.Shiftdate <= Model.date.AddDays(7))
+                                    {
+                                        <span class="shiftdisplay mb-1">
+                                            @item.Starttime-@item.Endtime , @item.Shift.Physician.Firstname @item.Shift.Physician.Lastname
+                                        </span>
+                                    }
+                                }
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
                 }
             </tr>
         }
@@ -46,6 +78,6 @@
     $('.removeactive').removeClass('active text-white');
     $('#Week').addClass('active text-white');
 
-    var currentdate = $('#currentMonth').val();
+    var currentdate = $('#currentWeek').val();
     $('#showDate').text(currentdate);
 </script>

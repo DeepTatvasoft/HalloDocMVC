@@ -274,7 +274,14 @@ li {
     }
 
 .dates {
+    background-color: #efabd2;
+}
+
+.shiftdisplay {
     background-color: lightpink;
+}
+.shiftdisplay2 {
+    background-color: lightgreen;
 }
 
 .calendar-table td.today {
@@ -283,4 +290,8 @@ li {
 
 .calendar-table td table tr {
     height: 45px
+}
+
+td{
+    vertical-align:top;
 }

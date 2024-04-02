@@ -49,11 +49,19 @@
             <tr>
                 @if (obj.Photo == null)
                 {
-                    <td class="d-flex"><i class="fa-solid fa-user me-1 mt-1"></i> @obj.Firstname @obj.Lastname.ElementAt(0).</td>
+                    <td>
+                        <span class="d-flex">
+                            <i class="fa-solid fa-user me-1 mt-1"></i> @obj.Firstname @obj.Lastname.ElementAt(0).
+                        </span>
+                    </td>
                 }
                 else
                 {
-                    <td class="d-flex"><img class="me-1" src="@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0).</td>
+                    <td>
+                        <span class="d-flex">
+                            <img class="me-1" src="@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0).
+                        </span>
+                    </td>
                 }
                 @for (int i = 0; i < 24; i++)
                 {
@@ -62,23 +70,41 @@
                         int flag = 0;
                         foreach (var item in shift)
                         {
-                            var diff = item.Endtime.Hour - item.Starttime.Hour + 1;
-                            if (item.Starttime.Hour <= i && item.Endtime.Hour >= i)
+                            f = 0;
+                            var diff = item.Endtime.Hour - item.Starttime.Hour;
+                            if (diff <= 0)
+                            {
+                                diff = 1;
+                            }
+                            if (item.Starttime.Hour == i)
                             {
                                 var perstart = (item.Starttime.Minute / 60.00) * 100;
-                                int wid = 100;
-                                if(item.Endtime.Minute != 0)
+                                var perend = ((60.00 - item.Endtime.Minute) / 60.00) * 100;
+                                if (item.Endtime.Minute != 0)
                                 {
-                                    wid = 58;
+                                    diff = diff + 1;
                                 }
-                                perstart /= 2;
+                                perstart /= diff;
+                                perend /= diff;
+                                if (item.Endtime.Minute == 0)
+                                {
+                                    perend = 0;
+                                }
                                 <td id="i_@obj.Physicianid" colspan="@diff" class="p-0">
-                                    <span class="dates d-flex align-items-center justify-content-center" style="margin-left:@perstart%;width:@wid%">
-                                        @item.Starttime-@item.Endtime
-                                    </span>
+                                    @if (item.Status == 0)
+                                    {
+                                        <div class="shiftdisplay shiftmodal d-flex align-items-center justify-content-center" id="@item.Shiftdetailid" style="margin-left:@perstart%;margin-right:@perend%; " data-bs-toggle="modal" data-bs-target="#viewShiftModal">
+                                            @item.Starttime-@item.Endtime
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="shiftdisplay2 shiftmodal d-flex align-items-center justify-content-center" id="@item.Shiftdetailid" style="margin-left:@perstart%;margin-right:@perend%;" data-bs-toggle="modal" data-bs-target="#viewShiftModal">
+                                            @item.Starttime-@item.Endtime
+                                        </div>
+                                    }
                                 </td>
                                 i += (@diff - 1);
-
                                 flag = 1;
                             }
                         }
@@ -99,6 +125,7 @@
 </div>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $('.removeactive').removeClass('active text-white');
     $('#Day').addClass('active text-white');
@@ -106,4 +133,24 @@
     var currentDay = $('#currentDay').val();
     $('#showDate').text(currentDay);
 
+    $(document).ready(function () {
+        $('.shiftmodal').on('click', function () {
+            var shiftdetailid = $(this).attr('id');
+            $.ajax({
+                url: '/Admin/viewshift',
+                data: { "shiftdetailid": shiftdetailid },
+                success: function (response) {
+                    $('#shiftmodalRegion').val(response.regionid);
+                    $('#shiftmodalPhysician').text(response.physicianname);
+                    $('#shiftmodalDate').val(response.modaldate);
+                    $('#shiftmodalStart').val(response.starttime);
+                    $('#shiftmodalEnd').val(response.endtime);
+                    $('#shiftmodalid').val(response.shiftdetailid);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
 </script>
