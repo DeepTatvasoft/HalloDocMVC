@@ -19,6 +19,10 @@ namespace Services.ViewModels
         public string physicianname { get; set; }
         public string modaldate { get; set; }
         public int shiftdetailid { get; set; }
+        public string curdate { get; set; }
+        public string wisetype { get; set; }
+        public List<Physician> Phyoncall { get; set; } 
+        public List<Physician> Phyoffduty { get; set; } 
     }
     public class DayWiseScheduling
     {

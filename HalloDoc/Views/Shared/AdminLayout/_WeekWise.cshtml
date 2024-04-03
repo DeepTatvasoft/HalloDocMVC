@@ -54,9 +54,18 @@
                                 {
                                     if (item.Shiftdate >= Model.date && item.Shiftdate <= Model.date.AddDays(7))
                                     {
-                                        <span class="shiftdisplay mb-1">
-                                            @item.Starttime-@item.Endtime , @item.Shift.Physician.Firstname @item.Shift.Physician.Lastname
-                                        </span>
+                                        if (item.Status == 1)
+                                        {
+                                            <div class="shiftdisplay2 mb-1 shiftmodal" data-bs-toggle="modal" data-bs-target="#viewShiftModal" name="@item.Shiftdetailid">
+                                                @item.Starttime-@item.Endtime , @item.Shift.Physician.Firstname @item.Shift.Physician.Lastname
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="shiftdisplay mb-1 shiftmodal" data-bs-toggle="modal" data-bs-target="#viewShiftModal" name="@item.Shiftdetailid">
+                                                @item.Starttime-@item.Endtime , @item.Shift.Physician.Firstname @item.Shift.Physician.Lastname
+                                            </div>
+                                        }
                                     }
                                 }
                             </div>
@@ -74,10 +83,32 @@
 </div>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $('.removeactive').removeClass('active text-white');
     $('#Week').addClass('active text-white');
 
     var currentdate = $('#currentWeek').val();
     $('#showDate').text(currentdate);
+
+    $(document).ready(function () {
+        $('.shiftmodal').on('click', function () {
+            var shiftdetailid = $(this).attr('name');
+            $.ajax({
+                url: '/Admin/viewshift',
+                data: { "shiftdetailid": shiftdetailid },
+                success: function (response) {
+                    $('#shiftmodalRegion').val(response.regionid);
+                    $('#shiftmodalPhysician').text(response.physicianname);
+                    $('#shiftmodalDate').val(response.modaldate);
+                    $('#shiftmodalStart').val(response.starttime);
+                    $('#shiftmodalEnd').val(response.endtime);
+                    $('#shiftmodalid').val(response.shiftdetailid);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
 </script>

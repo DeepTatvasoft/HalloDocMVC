@@ -250,8 +250,28 @@ li {
     .icon {
         display: none;
     }
+
+    .dashboard {
+        width: 100% !important;
+    }
+    .res{
+        font-size:12px;
+    }
+    .reswidth{
+        width:40px !important;
+    }
 }
 
+@media only screen and (max-width:350px)
+{
+    .resmargin {
+        margin: auto !important;
+    }
+}
+
+.dashboard {
+    width: 80%;
+}
 
 .calendar-table {
     border-collapse: collapse;
@@ -280,6 +300,7 @@ li {
 .shiftdisplay {
     background-color: lightpink;
 }
+
 .shiftdisplay2 {
     background-color: lightgreen;
 }
@@ -292,6 +313,6 @@ li {
     height: 45px
 }
 
-td{
-    vertical-align:top;
+td {
+    vertical-align: top;
 }

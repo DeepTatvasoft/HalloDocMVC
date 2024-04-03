@@ -93,13 +93,13 @@
                                 <td id="i_@obj.Physicianid" colspan="@diff" class="p-0">
                                     @if (item.Status == 0)
                                     {
-                                        <div class="shiftdisplay shiftmodal d-flex align-items-center justify-content-center" id="@item.Shiftdetailid" style="margin-left:@perstart%;margin-right:@perend%; " data-bs-toggle="modal" data-bs-target="#viewShiftModal">
+                                        <div class="shiftdisplay shiftmodal d-flex align-items-center justify-content-center" name="@item.Shiftdetailid" style="margin-left:@perstart%;margin-right:@perend%; " data-bs-toggle="modal" data-bs-target="#viewShiftModal">
                                             @item.Starttime-@item.Endtime
                                         </div>
                                     }
                                     else
                                     {
-                                        <div class="shiftdisplay2 shiftmodal d-flex align-items-center justify-content-center" id="@item.Shiftdetailid" style="margin-left:@perstart%;margin-right:@perend%;" data-bs-toggle="modal" data-bs-target="#viewShiftModal">
+                                        <div class="shiftdisplay2 shiftmodal d-flex align-items-center justify-content-center" name="@item.Shiftdetailid" style="margin-left:@perstart%;margin-right:@perend%;" data-bs-toggle="modal" data-bs-target="#viewShiftModal">
                                             @item.Starttime-@item.Endtime
                                         </div>
                                     }
@@ -135,7 +135,7 @@
 
     $(document).ready(function () {
         $('.shiftmodal').on('click', function () {
-            var shiftdetailid = $(this).attr('id');
+            var shiftdetailid = $(this).attr('name');
             $.ajax({
                 url: '/Admin/viewshift',
                 data: { "shiftdetailid": shiftdetailid },

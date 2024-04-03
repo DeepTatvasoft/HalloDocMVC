@@ -77,11 +77,20 @@
                                                 int count = 4;
                                                 @foreach (var obj in shift)
                                                 {
+                                                    var color = "";
+                                                    if (obj.Status == 1)
+                                                    {
+                                                        color = "lightgreen";
+                                                    }
+                                                    else
+                                                    {
+                                                        color = "lightpink";
+                                                    }
                                                     if (count > 0)
                                                     {
                                                         <tr>
                                                             <td>
-                                                                <div style="background-color:lightpink">
+                                                                <div class="shiftmodal" style="background-color:@color" data-bs-toggle="modal" data-bs-target="#viewShiftModal" name="@obj.Shiftdetailid">
                                                                     @obj.Starttime-@obj.Endtime
                                                                     @obj.Shift.Physician.Firstname, @obj.Shift.Physician.Lastname
                                                                 </div>
@@ -91,9 +100,9 @@
                                                     else
                                                     {
 
-                                                        <tr class="d-none more_@shift.ElementAt(0).Shiftid">
+                                                        <tr class="d-none more_@shift.ElementAt(0).Shiftid shiftmodal" data-bs-toggle="modal" data-bs-target="#viewShiftModal" name="@obj.Shiftdetailid">
                                                             <td>
-                                                                <div style="background-color:lightpink">
+                                                                <div style="background-color:@color">
                                                                     @obj.Starttime-@obj.Endtime
                                                                     @obj.Shift.Physician.Firstname, @obj.Shift.Physician.Lastname
                                                                 </div>
@@ -114,11 +123,20 @@
                                                 int count = 5;
                                                 @foreach (var obj in shift)
                                                 {
+                                                    var color = "";
+                                                    if (obj.Status == 1)
+                                                    {
+                                                        color = "lightgreen";
+                                                    }
+                                                    else
+                                                    {
+                                                        color = "lightpink";
+                                                    }
                                                     if (count > 0)
                                                     {
                                                         <tr>
                                                             <td>
-                                                                <div style="background-color:lightpink">
+                                                                <div class="shiftmodal" style="background-color:@color" data-bs-toggle="modal" data-bs-target="#viewShiftModal" name="@obj.Shiftdetailid">
                                                                     @obj.Starttime-@obj.Endtime
                                                                     @obj.Shift.Physician.Firstname, @obj.Shift.Physician.Lastname
                                                                 </div>
@@ -164,6 +182,8 @@
         </div>
     }
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $('.removeactive').removeClass('active text-white');
     $('#Month').addClass('active text-white');
@@ -184,5 +204,24 @@
             ids[i].classList.toggle('d-none');
         }
     }
-
+    $(document).ready(function () {
+        $('.shiftmodal').on('click', function () {
+            var shiftdetailid = $(this).attr('name');
+            $.ajax({
+                url: '/Admin/viewshift',
+                data: { "shiftdetailid": shiftdetailid },
+                success: function (response) {
+                    $('#shiftmodalRegion').val(response.regionid);
+                    $('#shiftmodalPhysician').text(response.physicianname);
+                    $('#shiftmodalDate').val(response.modaldate);
+                    $('#shiftmodalStart').val(response.starttime);
+                    $('#shiftmodalEnd').val(response.endtime);
+                    $('#shiftmodalid').val(response.shiftdetailid);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
 </script>
