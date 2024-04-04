@@ -70,7 +70,7 @@
 <div class="main">
     <div class="back container mb-3 mt-3 d-flex justify-content-between">
         <h4 class="mt-3">Edit Physician Account</h4>
-        <a asp-controller="Admin" asp-action="Providertab" style="text-decoration: none;" class="backimg">
+        <a asp-controller="Admin" asp-action="Providertab" style="text-decoration: none;" class="backimg boxshadowbtn">
             <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
             <span>Back</span>
         </a>
@@ -116,10 +116,10 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="button" onclick="editoneclick()" class="btn btn-info text-white editf">Edit</button>
-                    <button type="submit" class="btn btn-info text-white d-none savef">Save</button>
-                    <button type="reset" onclick="canceloneclick()" class="btn btn-outline-info ms-1 d-none cancelf">Cancel</button>
-                    <button asp-action="PhysicianResetPass" asp-controller="Admin" type="submit" class="btn btn-outline-info ms-1">Reset Password</button>
+                    <button type="button" onclick="editoneclick()" class="btn btn-info text-white editf boxshadowbtn">Edit</button>
+                    <button type="submit" class="btn btn-info text-white d-none savef boxshadowbtn">Save</button>
+                    <button type="reset" onclick="canceloneclick()" class="btn btn-outline-info ms-1 d-none cancelf boxshadowbtn">Cancel</button>
+                    <button asp-action="PhysicianResetPass" asp-controller="Admin" type="submit" class="btn btn-outline-info ms-1 boxshadowbtn">Reset Password</button>
                 </div>
             </div>
         </form>
@@ -199,9 +199,9 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits">Edit</button>
-                    <button type="submit" class="btn btn-info text-white d-none saves">Save</button>
-                    <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels">Cancel</button>
+                    <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits boxshadowbtn">Edit</button>
+                    <button type="submit" class="btn btn-info text-white d-none saves boxshadowbtn">Save</button>
+                    <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels boxshadowbtn">Cancel</button>
                 </div>
             </div>
         </form>
@@ -261,9 +261,9 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="button" onclick="editthirdclick()" class="btn btn-info text-white editt">Edit</button>
-                    <button type="submit" class="btn btn-info text-white d-none savet">Save</button>
-                    <button type="reset" onclick="cancelthirdclick()" class="btn btn-outline-info ms-1 d-none cancelt">Cancel</button>
+                    <button type="button" onclick="editthirdclick()" class="btn btn-info text-white editt boxshadowbtn">Edit</button>
+                    <button type="submit" class="btn btn-info text-white d-none savet boxshadowbtn">Save</button>
+                    <button type="reset" onclick="cancelthirdclick()" class="btn btn-outline-info ms-1 d-none cancelt boxshadowbtn">Cancel</button>
                 </div>
             </div>
         </form>
@@ -306,7 +306,7 @@
                                 <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div>Upload</div></label>
                             </button>
                         </div>
-                        <button type="button" class="btn btn-info d-flex align-items-center ms-1 border-0 text-white" data-bs-toggle="modal" data-bs-target="#ModalToOpen">
+                        <button type="button" class="btn btn-info d-flex align-items-center ms-1 border-0 text-white boxshadowbtn" data-bs-toggle="modal" data-bs-target="#ModalToOpen">
                             <i class="fa-solid fa-pencil p-2"></i> Create
                         </button>
                     </div>
@@ -322,9 +322,9 @@
                     <label for="floatingTextarea2">Admin Notes</label>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="button" onclick="editfourthclick()" class="btn btn-info text-white editfo">Edit</button>
-                    <button type="submit" class="btn btn-info text-white d-none savefo">Save</button>
-                    <button type="reset" onclick="cancelfourthclick()" class="btn btn-outline-info ms-1 d-none cancelfo">Cancel</button>
+                    <button type="button" onclick="editfourthclick()" class="btn btn-info text-white editfo boxshadowbtn">Edit</button>
+                    <button type="submit" class="btn btn-info text-white d-none savefo boxshadowbtn">Save</button>
+                    <button type="reset" onclick="cancelfourthclick()" class="btn btn-outline-info ms-1 d-none cancelfo boxshadowbtn">Cancel</button>
                 </div>
             </div>
         </form>
@@ -350,7 +350,7 @@
                 </button>
                 @if (f == "checked")
                 {
-                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "ICA.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center">
+                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "ICA.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center boxshadowbtn">
                         <i class="bi  bi-eye-fill"></i>
                         <span class="d-none d-lg-block ps-2">View</span>
                     </a>
@@ -374,7 +374,7 @@
                 </button>
                 @if (f == "checked")
                 {
-                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "BGCheck.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center">
+                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "BGCheck.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center boxshadowbtn">
                         <i class="bi  bi-eye-fill"></i>
                         <span class="d-none d-lg-block ps-2">View</span>
                     </a>
@@ -398,7 +398,7 @@
                 </button>
                 @if (f == "checked")
                 {
-                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "HIPAA.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center">
+                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "HIPAA.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center boxshadowbtn">
                         <i class="bi  bi-eye-fill"></i>
                         <span class="d-none d-lg-block ps-2">View</span>
                     </a>
@@ -422,7 +422,7 @@
                 </button>
                 @if (f == "checked")
                 {
-                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "NDDoc.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center">
+                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "NDDoc.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center boxshadowbtn">
                         <i class="bi  bi-eye-fill"></i>
                         <span class="d-none d-lg-block ps-2">View</span>
                     </a>
@@ -446,7 +446,7 @@
                 </button>
                 @if (f == "checked")
                 {
-                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "LDDoc.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center">
+                    <a href="@Url.Action("OpenFile", "Admin", new { fileName = "LDDoc.pdf" , physicianid = Model.physicianid})" target="_blank" type="submit" class="btn ms-1 p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center boxshadowbtn">
                         <i class="bi  bi-eye-fill"></i>
                         <span class="d-none d-lg-block ps-2">View</span>
                     </a>
@@ -456,8 +456,8 @@
         </div>
         <div class="border mt-2" style="border-bottom:1px solid"></div>
         <div class="submit mt-4">
-            <button type="button" class="btn btn-info" style="color: white;">Save</button>
-            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#DeleteAccount">Delete Account</button>
+            <button type="button" class="btn btn-info boxshadowbtn" style="color: white;">Save</button>
+            <button type="button" class="btn btn-danger ms-2 boxshadowbtn" data-bs-toggle="modal" data-bs-target="#DeleteAccount">Delete Account</button>
         </div>
     </div>
 </div>

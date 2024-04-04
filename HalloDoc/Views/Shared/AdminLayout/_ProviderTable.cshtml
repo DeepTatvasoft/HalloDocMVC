@@ -47,16 +47,16 @@
                         <td class="text-center">-</td>
                     }
                     <td class="text-center">
-                        <button type="button" class="btn btn-outline-info" onclick="ContactBtn(@obj.Physicianid)" data-bs-toggle="modal" data-bs-target="#ContactModal">Contact</button>
-                        <a asp-controller="Admin" asp-action="EditPhysician" asp-route-id="@obj.Physicianid" type="button" class="btn btn-outline-info">Edit</a>
+                        <button type="button" class="btn btn-outline-info boxshadowbtn" onclick="ContactBtn(@obj.Physicianid)" data-bs-toggle="modal" data-bs-target="#ContactModal">Contact</button>
+                        <a asp-controller="Admin" asp-action="EditPhysician" asp-route-id="@obj.Physicianid" type="button" class="btn btn-outline-info boxshadowbtn">Edit</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
     <div class="d-flex justify-content-end mt-4">
-        <button type="submit" class="btn btn-info text-white d-none savebtn">Save</button>
-        <button type="reset" class="btn btn-outline-info ms-1 d-none cancelbtn">Cancel</button>
+        <button type="submit" class="btn btn-info text-white d-none savebtn boxshadowbtn">Save</button>
+        <button type="reset" class="btn btn-outline-info ms-1 d-none cancelbtn boxshadowbtn">Cancel</button>
     </div>
 </form>
 

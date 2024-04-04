@@ -6,7 +6,7 @@
     <h4 class="mt-1">Edit Role</h4>
     <div class="backbtn">
         <a asp-controller="Admin" asp-action="AccessTab">
-            <button type="button" class="btn btn-outline-info text-center"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
+            <button type="button" class="btn btn-outline-info text-center boxshadowbtn"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
         </a>
     </div>
 </div>
@@ -17,13 +17,13 @@
         <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
             <div class="col">
                 <div class="form-floating mb-3">
-                    <input asp-for="RoleName" type="text" class="form-control" placeholder="name">
+                    <input asp-for="RoleName" type="text" class="form-control boxshadowbtn" placeholder="name">
                     <label for="floatingInput">Role name</label>
                 </div>
             </div>
             <div class="col">
                 <div class="form-floating">
-                    <select asp-for="accountType" id="acctype" class="form-select" aria-label="Floating label select example">
+                    <select asp-for="accountType" id="acctype" class="form-select boxshadowbtn" aria-label="Floating label select example">
                         <option value="3" selected>All</option>
                         <option value="1">Admin</option>
                         <option value="2">Physician</option>
@@ -50,8 +50,8 @@
             }
         </div>
         <div class="d-flex justify-content-end mt-4">
-            <button type="submit" class="btn btn-info text-white savebtn">Save</button>
-            <button type="reset" class="btn btn-outline-info ms-1 cancelbtn" name="@Model.roleid">Cancel</button>
+            <button type="submit" class="btn btn-info text-white savebtn boxshadowbtn">Save</button>
+            <button type="reset" class="btn btn-outline-info ms-1 cancelbtn boxshadowbtn" name="@Model.roleid">Cancel</button>
         </div>
     </div>
 </form>

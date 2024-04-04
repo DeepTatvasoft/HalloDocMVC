@@ -63,12 +63,12 @@
         <h5 class="mt-1">Scheduling</h5>
         <div class="backbtn">
             <a asp-controller="Admin" asp-action="Providertab">
-                <button type="button" class="btn btn-outline-info text-center"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
+                <button type="button" class="btn btn-outline-info text-center boxshadowbtn"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
             </a>
         </div>
     </div>
     <div class="mt-2 d-flex flex-wrap justify-content-between">
-        <select id="suggestions" class="region mb-2" style="padding-left:5px">
+        <select id="suggestions" class="region mb-2 boxshadowbtn" style="padding-left:5px">
             <option value="0">All Region</option>
             @foreach (var obj in Model.regions)
             {
@@ -80,10 +80,10 @@
                 <input id="MdsRegion" asp-for="regionid" type="hidden" />
                 <input id="Mdstype" asp-for="wisetype" type="hidden" />
                 <input id="Mdsdate" asp-for="curdate" type="hidden" />
-                <button type="submit" asp-action="ProvidersOnCall" asp-controller="Admin" class="btn btn-info text-white me-1 p-2">Providers On Call</button>
+                <button type="submit" asp-action="ProvidersOnCall" asp-controller="Admin" class="btn btn-info text-white me-1 p-2 boxshadowbtn" style="height:46px">Providers On Call</button>
             </form>
-            <button type="button" class="btn btn-info text-white me-1">Shifts For Review</button>
-            <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#addShiftModal">Add New Shifts</button>
+            <a asp-action="ShiftForReview" asp-controller="Admin" type="button" class="btn btn-info text-white me-1 p-2 boxshadowbtn">Shifts For Review</a>
+            <button type="button" class="btn btn-info text-white boxshadowbtn" data-bs-toggle="modal" data-bs-target="#addShiftModal">Add New Shifts</button>
         </div>
     </div>
     <div class="d-none" id="currentDateValue">
@@ -105,19 +105,19 @@
     </div>
     <div class="d-flex justify-content-between flex-wrap mt-3">
         <div class="calbtn resmargin">
-            <span class="dot bg-info text-center text-white me-1" id="prevDateBtn" style="height:27px;width:27px"><i class="fa-solid fa-chevron-left"></i></span>
+            <span class="dot bg-info text-center text-white me-1 boxshadowbtn" id="prevDateBtn" style="height:27px;width:27px"><i class="fa-solid fa-chevron-left"></i></span>
             <span>
                 <i class="fa-solid fa-calendar-days"></i>
             </span>
-            <span class="dot bg-info text-center text-white ms-1" id="nextDateBtn" style="height:27px;width:27px"><i class="fa-solid fa-chevron-right"></i></span>
+            <span class="dot bg-info text-center text-white ms-1 boxshadowbtn" id="nextDateBtn" style="height:27px;width:27px"><i class="fa-solid fa-chevron-right"></i></span>
         </div>
         <div class="d-flex mt-2">
-            <button type="button" onclick="loadSchedulingPartial('_DayWise')" class="btn btn-outline-info removeactive" id="Day">Day</button>
-            <button type="button" onclick="loadSchedulingPartial('_WeekWise')" class="btn btn-outline-info ms-2 removeactive" id="Week">Week</button>
-            <button type="button" onclick="loadSchedulingPartial('_MonthWise')" class="btn btn-outline-info ms-2 removeactive" id="Month">Month</button>
+            <button type="button" onclick="loadSchedulingPartial('_DayWise')" class="btn btn-outline-info removeactive boxshadowbtn" id="Day">Day</button>
+            <button type="button" onclick="loadSchedulingPartial('_WeekWise')" class="btn btn-outline-info ms-2 removeactive boxshadowbtn" id="Week">Week</button>
+            <button type="button" onclick="loadSchedulingPartial('_MonthWise')" class="btn btn-outline-info ms-2 removeactive boxshadowbtn" id="Month">Month</button>
         </div>
     </div>
-    <div class="calander mt-4">
+    <div class="calander mt-4 shadow">
     </div>
 </div>
 

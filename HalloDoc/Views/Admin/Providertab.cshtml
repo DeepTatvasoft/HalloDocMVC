@@ -64,7 +64,7 @@
     <h4 class="mt-1">Provider Information</h4>
     <div class="d-flex justify-content-between flex-wrap bg-white align-items-center rounded">
         <div>
-            <select id="suggestions" class="region ms-2">
+            <select id="suggestions" class="region ms-2 boxshadowbtn">
                 <option>All Region</option>
                 @foreach (var obj in Model.regions)
                 {
@@ -75,7 +75,7 @@
             <i class="fa-solid fa-chevron-down down"></i>
         </div>
         <div class="btn">
-            <a asp-action="CreateProviderAcc" asp-controller="Admin" class="btn btn-info text-white">Create Provider Account</a>
+            <a asp-action="CreateProviderAcc" asp-controller="Admin" class="btn btn-info text-white boxshadowbtn">Create Provider Account</a>
         </div>
     </div>
     <div class="table-responsive" id="providertable">

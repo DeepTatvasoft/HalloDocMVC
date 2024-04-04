@@ -202,3 +202,21 @@ function ChangePage(Page, status, reqtype, region, searchkey) {
 function ContactBtn(phyid) {
     document.getElementById('ContactphyModal').innerHTML = phyid;
 }
+
+function ChangeShift(currentPage) {
+    $.ajax({
+        url: "/Admin/ShiftReviewTable",
+        data: { "currentPage": currentPage, "regionid": $('#forregionid').val()},
+        type: "POST",
+        dataType: "html",
+        success: function (response) {
+            $('.shifttable').html(response);
+            document.getElementById("page-1").style.backgroundColor = "white";
+            document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+
+}

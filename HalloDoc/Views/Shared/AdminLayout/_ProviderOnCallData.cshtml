@@ -1,0 +1,58 @@
+﻿@model Services.ViewModels.Scheduling
+
+<div class="Oncall p-3">
+    <h6>MD's On Call</h6>
+    <div class="row row-cols-md-3 row-cols-sm-1 row-cols-1 mt-3">
+        @if (Model.Phyoncall.Count() > 0)
+        {
+            @foreach (var obj in Model.Phyoncall)
+            {
+                <input type="hidden" name="oncall" value="@obj.Physicianid" />
+                @if (obj.Photo == null)
+                {
+                    <div class="col mb-3">
+                        <div class="d-flex">
+                            <i class="fa-solid fa-user fa-xl me-1 mt-1 d-flex justify-content-center align-items-center bg-secondary" style="height:50px;width:50px"></i> @obj.Firstname @obj.Lastname.ElementAt(0).
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col mb-3">
+                        <span class="d-flex">
+                            <img class="me-1" src="@obj.Photo" height="50px" width="50px" /> @obj.Firstname @obj.Lastname.ElementAt(0).
+                        </span>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
+<div class="Offduty mt-2 p-3">
+    <h6>Physician Off Duty</h6>
+    <div class="row row-cols-md-3 row-cols-sm-1 row-cols-1 mt-3">
+        @if (Model.Phyoffduty.Count() > 0)
+        {
+            @foreach (var obj in Model.Phyoffduty)
+            {
+                <input type="hidden" name="offduty" value="@obj.Physicianid" />
+                @if (obj.Photo == null)
+                {
+                    <div class="col mb-3">
+                        <div class="d-flex">
+                            <i class="fa-solid fa-user fa-xl me-1 mt-1 d-flex justify-content-center align-items-center bg-secondary" style="height:50px;width:50px"></i> @obj.Firstname @obj.Lastname.ElementAt(0).
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col mb-3">
+                        <span class="d-flex">
+                            <img class="me-1" src="@obj.Photo" height="50px" width="50px" /> @obj.Firstname @obj.Lastname.ElementAt(0).
+                        </span>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>

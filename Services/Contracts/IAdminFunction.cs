@@ -67,5 +67,11 @@ namespace Services.Contracts
         AdminProfile CreateAdminAcc();
         void CreateAdminAccBtn(AdminProfile modal, List<string> chk, string adminname);
         void phyuploadDoc(int physicianid, string doctype);
+        Scheduling Scheduling();
+        List<Physician> GetPhysicians();
+        DayWiseScheduling Daywise(int regionid, DateTime currentDate, List<Physician> physician);
+        WeekWiseScheduling Weekwise(int regionid, DateTime currentDate, List<Physician> physician);
+        MonthWiseScheduling Monthwise(int regionid, DateTime currentDate, List<Physician> physician);
+
     }
 }

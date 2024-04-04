@@ -22,7 +22,9 @@ namespace Services.ViewModels
         public string curdate { get; set; }
         public string wisetype { get; set; }
         public List<Physician> Phyoncall { get; set; } 
-        public List<Physician> Phyoffduty { get; set; } 
+        public List<Physician> Phyoffduty { get; set; }
+        public List<int> oncall { get; set; }
+        public List<int> offcall { get; set; }
     }
     public class DayWiseScheduling
     {
@@ -42,6 +44,14 @@ namespace Services.ViewModels
         public List<Physician> physicians { get; set; }
         public List<Shiftdetail> shiftdetails { get; set; }
 
+    }
+    public class ShiftforReviewModal
+    {
+        public List<Region> regions { get; set; }
+        public List<Shiftdetail> shiftdetail { get; set; }
+        public int totalpages { get; set; }
+        public int currentpage { get; set; }
+        public int regionid { get; set; }
     }
 
 }

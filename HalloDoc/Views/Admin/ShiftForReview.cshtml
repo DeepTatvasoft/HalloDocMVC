@@ -1,8 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Providers On Call";
+    ViewData["Title"] = "Shift for review";
     Layout = "AdminLayout/_AdminDashboard";
 }
-@model Services.ViewModels.Scheduling
+@model Services.ViewModels.ShiftforReviewModal
 <partial name="_Notification" />
 
 <div class="tabnav mt-2 bg-white">
@@ -59,6 +59,7 @@
     </div>
 </div>
 
+
 <div class="container-fluid mt-3 mt-lg-5 dashboard shadow p-3 rounded">
     <div class="d-flex justify-content-between">
         <h5 class="mt-1">MDs On Call</h5>
@@ -68,7 +69,7 @@
             </a>
         </div>
     </div>
-    <div class="mt-2 d-flex flex-wrap justify-content-between">
+    <div class="mt-2 d-flex flex-wrap justify-content-between bg-white p-3 rounded">
         <select id="suggestions" class="region mb-2 boxshadowbtn" style="padding-left:5px">
             <option value="0">All Region</option>
             @foreach (var obj in Model.regions)
@@ -77,38 +78,30 @@
             }
         </select>
         <div class="btns d-flex">
-            <button type="button" class="btn btn-info text-white me-1 boxshadowbtn">Calender View</button>
-            <a asp-action="ShiftForReview" asp-controller="Admin" type="button" class="btn btn-info text-white p-2 boxshadowbtn">Shifts For Review</a>
+            <button type="button" class="btn btn-success text-white me-1 boxshadowbtn">View Current Month Shifts</button>
+            <button type="button" class="btn btn-success text-white me-1 boxshadowbtn">Approved Selected</button>
+            <button type="button" class="btn btn-danger text-white boxshadowbtn">Delete Selected</button>
         </div>
     </div>
-    <div class="bg-white mt-4 provideroncalldata shadow">
-        <partial name="AdminLayout/_ProviderOnCallData" />
+    <div class="shifttable mt-4">
+        <partial name="AdminLayout/_ShiftForReviewTable" />
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        var oncall = [];
-        var offcall = [];
-        $.each($('input[name = "oncall"]'), function (index, ele) {
-            oncall.push($(this).val());
-        });
-        $.each($('input[name = "offduty"]'), function (index, ele) {
-            offcall.push($(this).val());
-        })
-
-        $('.region').on('change', function (e) {
-            var regionid = $('.region').val();
+        $('.region').on('change', function () {
+            $('#MdsRegion').val($('.region').val());
+            regionid = $(this).val();
             $.ajax({
-                url: "/Admin/ProvidersOnCallbyRegion",
-                type: 'POST',
-                data: { regionid: regionid, oncall: oncall, offcall: offcall },
-                success: function (response) {
-                    $('.provideroncalldata').html(response);
+                url: '/Admin/ShiftReviewTable',
+                data: { 'regionid': regionid, 'currentpage': $('#forcurpage').val() },
+                success: function (data) {
+                    $(".shifttable").html(data);
                 },
-                error: function (xhr, status, error) {
-                    console.error(error);
+                error: function (e) {
+                    console.log(e);
                 }
             });
         });
