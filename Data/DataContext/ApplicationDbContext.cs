@@ -464,7 +464,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("healthprofessionals");
 
             entity.Property(e => e.Vendorid)
-                .ValueGeneratedNever()
+                .HasIdentityOptions(null, null, 4L, null, null, null)
                 .HasColumnName("vendorid");
             entity.Property(e => e.Address)
                 .HasMaxLength(150)
@@ -520,7 +520,7 @@ public partial class ApplicationDbContext : DbContext
             entity.ToTable("healthprofessionaltype");
 
             entity.Property(e => e.Healthprofessionalid)
-                .ValueGeneratedNever()
+                .HasIdentityOptions(null, null, 4L, null, null, null)
                 .HasColumnName("healthprofessionalid");
             entity.Property(e => e.Createddate)
                 .HasColumnType("timestamp without time zone")

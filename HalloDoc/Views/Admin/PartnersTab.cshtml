@@ -1,5 +1,61 @@
 ﻿@{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Partner Tab";
     Layout = "AdminLayout/_AdminDashboard";
 }
+@model Services.ViewModels.PartnersModal
 <Partial name="_Notification" />
+
+<div class="container-fluid mt-3 dashboard shadow p-3 rounded">
+    <h5 class="fw-bold">Vendor(s)</h5>
+    <div class="mt-4 d-flex flex-wrap p-2 justify-content-between bg-white boxshadow rounded">
+        <div class="d-flex flex-wrap align-items-center">
+            <div class="searchbar ms-2">
+                <input id="myInput" style="padding-left : 30px;position: relative;top: 13px;border:1px solid" class="form-control me-2" type="search" placeholder=" Search Vendors" aria-label="Search">
+                <i class="bi bi-search searchicon1"></i>
+            </div>
+            <div class="ms-2">
+                <select id="suggestions" class="region profftype">
+                    <option value="0">All Professions</option>
+                    @foreach (var obj in Model.healthprofessionaltypes)
+                    {
+                        <option value="@obj.Healthprofessionalid">@obj.Professionname</option>
+                    }
+                </select>
+                <i class="bi bi-search searchicon2"></i>
+                <i class="fa-solid fa-chevron-down down"></i>
+            </div>
+        </div>
+        <div class="d-flex align-items-center me-2 ms-2 ms-md-0 mt-2 mt-md-0">
+            <a asp-action="AddBusiness" asp-controller="Admin" type="button" class="btn btn-outline-info d-flex align-items-center boxshadowbtn"><i class="fa-solid fa-plus me-1"></i>Add Business</a>
+        </div>
+    </div>
+    <div class="table-responsive mt-3 partenerstable">
+        <partial name="AdminLayout/_PartnerstabTable" />
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    document.getElementById('Partners-tab').classList.add('active');
+    $(document).ready(function () {
+        $('.profftype').on('change', function (e) {
+            var profftype = $(this).val();
+            $.ajax({
+                url: "/Admin/PartenersbyType",
+                data: { profftype: profftype },
+                success: function (response) {
+                    $('.partenerstable').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>

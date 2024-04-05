@@ -1681,5 +1681,76 @@ namespace Services.Implementation
                 _context.SaveChanges();
             }
         }
+        public PartnersModal PartnersTab()
+        {
+            PartnersModal modal = new PartnersModal();
+            modal.healthprofessionals = _context.Healthprofessionals.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            return modal;
+        }
+        public void AddBusinessSubmit(AddBusinessModal modal)
+        {
+            Healthprofessional healthprofessional = new Healthprofessional
+            {
+                Vendorname = modal.businessname,
+                Profession = modal.professiontype,
+                Faxnumber = modal.faxnumber,
+                Address = modal.street,
+                City = modal.city,
+                State = modal.state,
+                Zip = modal.zipcode,
+                Regionid = 1,
+                Createddate = DateTime.Now,
+                Phonenumber = modal.phonenumber,
+                Isdeleted = new BitArray(new[] { false }),
+                Email = modal.email,
+                Businesscontact = modal.buscontact,
+            };
+            _context.Healthprofessionals.Add(healthprofessional);
+            _context.SaveChanges();
+        }
+        public AddBusinessModal EditBusiness(int id)
+        {
+            Healthprofessional data = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == id);
+            AddBusinessModal modal = new AddBusinessModal();
+            modal.businessname = data.Vendorname;
+            modal.professiontype = (int)data.Profession;
+            modal.phonenumber = data.Phonenumber;
+            modal.faxnumber = data.Faxnumber;
+            modal.city = data.City;
+            modal.state = data.City;
+            modal.zipcode = data.Zip;
+            modal.email = data.Email;
+            modal.street = data.Address;
+            modal.buscontact = data.Businesscontact;
+            modal.vendorid = id;
+            modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            return modal;
+        }
+        public void EditBusinessSubmit(AddBusinessModal modal)
+        {
+            var healthprofession = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == modal.vendorid);
+            healthprofession.Vendorname = modal.businessname;
+            healthprofession.Profession = modal.professiontype;
+            healthprofession.Faxnumber = modal.faxnumber;
+            healthprofession.Phonenumber = modal.phonenumber;
+            healthprofession.Email = modal.email;
+            healthprofession.Businesscontact = modal.buscontact;
+            healthprofession.Address = modal.street;
+            healthprofession.City = modal.city;
+            healthprofession.State = modal.state;
+            healthprofession.Zip = modal.zipcode;
+            healthprofession.Modifieddate = DateTime.Now;
+            _context.Healthprofessionals.Update(healthprofession);
+            _context.SaveChanges();
+        }
+        public void DeleteBusiness(int id)
+        {
+            Healthprofessional data = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == id);
+            data.Isdeleted = new BitArray(new[] { true });
+            data.Modifieddate = DateTime.Now;
+            _context.Healthprofessionals.Update(data);
+            _context.SaveChanges();
+        }
     }
 }

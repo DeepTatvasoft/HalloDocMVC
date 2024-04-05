@@ -83,5 +83,10 @@ namespace Services.Contracts
         ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid);
         void ApproveSelected(int[] shiftchk , string adminname);
         void DeleteSelected(int[] shiftchk, string adminname);
+        PartnersModal PartnersTab();
+        void AddBusinessSubmit(AddBusinessModal modal);
+        AddBusinessModal EditBusiness(int id);
+        void EditBusinessSubmit(AddBusinessModal modal);
+        void DeleteBusiness(int id);
     }
 }

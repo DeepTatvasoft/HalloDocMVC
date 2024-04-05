@@ -1,0 +1,43 @@
+﻿@model Services.ViewModels.PartnersModal
+<table class="table p-2">
+    <thead class="table-secondary">
+        <tr>
+            <th scope="col">Profession</th>
+            <th scope="col">Business Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Fax Number</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col" class="text-center">Business Contact</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody id="myTable">
+        @foreach (var obj in Model.healthprofessionals)
+        {
+            var professiontype = Model.healthprofessionaltypes.FirstOrDefault(u => u.Healthprofessionalid == obj.Profession).Professionname;
+            <tr>
+                <td>@professiontype</td>
+                <td>@obj.Vendorname</td>
+                <td>@obj.Email</td>
+                <td>@obj.Faxnumber</td>
+                <td>@obj.Phonenumber</td>
+                <td class="text-center">
+                    @if (@obj.Businesscontact == null)
+                    {
+                        <span>@obj.Businesscontact</span>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="EditBusiness" asp-controller="Admin" asp-route-id="@obj.Vendorid" class="btn btn-outline-info me-1 boxshadowbtn">Edit</a>
+                    <a asp-action="DeleteBusiness" asp-controller="Admin" asp-route-id="@obj.Vendorid" class="btn btn-outline-info boxshadowbtn">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

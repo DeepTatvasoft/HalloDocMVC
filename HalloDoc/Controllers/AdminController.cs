@@ -784,20 +784,73 @@ namespace HalloDoc.Controllers
         public IActionResult ApproveSelected(int[] shiftchk)
         {
             string adminname = HttpContext.Session.GetString("Adminname");
-            adminFunction.ApproveSelected(shiftchk , adminname);
-            TempData["success"] = "Shifts Approved Successfuly";
+            if (shiftchk.Length == 0)
+            {
+                TempData["error"] = "Please select atleast 1 shift";
+            }
+            else
+            {
+                adminFunction.ApproveSelected(shiftchk, adminname);
+                TempData["success"] = "Shifts Approved Successfuly";
+            }
             return RedirectToAction("ShiftForReview");
-        }    
+        }
         public IActionResult DeleteSelected(int[] shiftchk)
         {
             string adminname = HttpContext.Session.GetString("Adminname");
-            adminFunction.DeleteSelected(shiftchk , adminname);
-            TempData["success"] = "Shifts Deleted Successfuly";
+            if (shiftchk.Length == 0)
+            {
+                TempData["error"] = "Please select atleast 1 shift";
+            }
+            else
+            {
+                adminFunction.DeleteSelected(shiftchk, adminname);
+                TempData["success"] = "Shifts Deleted Successfuly";
+            }
             return RedirectToAction("ShiftForReview");
         }
         public IActionResult PartnersTab()
         {
-            return View();
+            return View(adminFunction.PartnersTab());
+        }
+        public IActionResult PartenersbyType(int profftype)
+        {
+            PartnersModal modal = new PartnersModal();
+            modal.healthprofessionals = _context.Healthprofessionals.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            if (profftype != 0)
+            {
+                modal.healthprofessionals = _context.Healthprofessionals.Where(u => u.Profession == profftype && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            }
+            modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            return PartialView("AdminLayout/_PartnerstabTable", modal);
+        }
+        public IActionResult AddBusiness()
+        {
+            AddBusinessModal modal = new AddBusinessModal();
+            modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            return View(modal);
+        }
+        public IActionResult AddBusinessSubmit(AddBusinessModal modal)
+        {
+            adminFunction.AddBusinessSubmit(modal);
+            TempData["success"] = "Business Added Successfuly";
+            return RedirectToAction("PartnersTab");
+        }
+        public IActionResult EditBusiness(int id)
+        {
+            return View(adminFunction.EditBusiness(id));
+        }
+        public IActionResult EditBusinessSubmit(AddBusinessModal modal)
+        {
+            adminFunction.EditBusinessSubmit(modal);
+            TempData["success"] = "Information updated successfuly";
+            return RedirectToAction("PartnersTab");
+        }
+        public IActionResult DeleteBusiness(int id)
+        {
+            adminFunction.DeleteBusiness(id);
+            TempData["error"] = "Business Deleted Successfuly";
+            return RedirectToAction("PartnersTab");
         }
     }
 

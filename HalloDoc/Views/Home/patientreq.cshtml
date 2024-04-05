@@ -148,14 +148,12 @@
                     patientPassword.style.display = 'none';
                     patientConfirmPassword.style.display = 'none';
                     toastr.info("Account Exist");
-                    console.log("exist ")
 
                 }
                 else {
                     patientPassword.style.display = 'block';
                     patientConfirmPassword.style.display = 'block';
                     toastr.error("Account does not Exist");
-                    console.log(" not exist ")
                 }
             })
             .catch(error => console.error('Error:', error));

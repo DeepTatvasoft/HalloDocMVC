@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Edit Business";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.AddBusinessModal
+<Partial name="_Notification" />
+
+<div class="back container mb-3 mt-3 d-flex justify-content-between">
+    <h4 class="mt-3">Update Business</h4>
+    <a asp-controller="Admin" asp-action="PartnersTab" style="text-decoration: none;" class="backimg boxshadowbtn">
+        <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+        <span>Back</span>
+    </a>
+</div>
+<div class="container bg-white shadow" style="padding-bottom:20px" id="maincontent">
+    <h4 class="fw-bold">Submit Information</h4>
+    <form asp-action="EditBusinessSubmit" asp-controller="Admin">
+        <input type="hidden" asp-for="vendorid"/>
+        <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="businessname" type="text" class="form-control" placeholder="Businessname">
+                    <label for="floatingInput">Business Name</label>
+                    <span asp-validation-for="businessname" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3 mb-md-0">
+                    <select asp-for="professiontype" class="form-select" aria-label="Floating label select example">
+                        <option value="" selected>Select Profession</option>
+                        @foreach (var obj in Model.healthprofessionaltypes)
+                        {
+                            <option value="@obj.Healthprofessionalid">@obj.Professionname</option>
+                        }
+                    </select>
+                    <label for="floatingSelect">Profession</label>
+                    <span asp-validation-for="professiontype" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="faxnumber" type="text" class="form-control" placeholder="faxnumber">
+                    <label for="floatingInput">Fax Number</label>
+                    <span asp-validation-for="faxnumber" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3 numcountry">
+                    <select name="country" id="country" class="country" onchange="country_code()">
+                        <option value="select country">select country</option>
+                        <option value="us">US</option>
+                        <option value="uk">UK</option>
+                        <option value="br">BRAZIL</option>
+                        <option value="ind">INDIA</option>
+                    </select>
+                    <input asp-for="phonenumber" type="tel" class="form-control output" id="output" placeholder="Mobile Number">
+                </div>
+                <span asp-validation-for="phonenumber" class="text-danger"></span>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="email" type="email" class="form-control" placeholder="email">
+                    <label for="floatingInput">Email</label>
+                    <span asp-validation-for="email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="buscontact" type="text" class="form-control" placeholder="businesscontact">
+                    <label for="floatingInput">Business Contact</label>
+                    <span asp-validation-for="buscontact" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="street" type="text" class="form-control" placeholder="street">
+                    <label for="floatingInput">Street</label>
+                    <span asp-validation-for="street" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="city" type="text" class="form-control" placeholder="city">
+                    <label for="floatingInput">City</label>
+                    <span asp-validation-for="city" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="state" type="text" class="form-control" placeholder="state">
+                    <label for="floatingInput">State</label>
+                    <span asp-validation-for="state" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="zipcode" type="text" class="form-control" placeholder="zipcode">
+                    <label for="floatingInput">Zip/postal</label>
+                    <span asp-validation-for="zipcode" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-info text-white saves boxshadowbtn">Save</button>
+            <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-2 cancels boxshadowbtn">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('Partners-tab').classList.add('active');
+</script>

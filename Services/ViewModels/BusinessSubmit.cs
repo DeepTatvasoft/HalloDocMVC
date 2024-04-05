@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Data.DataModels;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace Services.ViewModels
 {
     public class BusinessSubmit
     {
+        public List<Healthprofessionaltype> Healthprofessionaltypes { get; set; }
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
         [Required(ErrorMessage = "*First Name is required")]
         public string? BusFirstname { get; set; }
