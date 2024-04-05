@@ -69,23 +69,25 @@
             </a>
         </div>
     </div>
-    <div class="mt-2 d-flex flex-wrap justify-content-between bg-white p-3 rounded">
-        <select id="suggestions" class="region mb-2 boxshadowbtn" style="padding-left:5px">
-            <option value="0">All Region</option>
-            @foreach (var obj in Model.regions)
-            {
-                <option value="@obj.Regionid">@obj.Name</option>
-            }
-        </select>
-        <div class="btns d-flex">
-            <button type="button" class="btn btn-success text-white me-1 boxshadowbtn">View Current Month Shifts</button>
-            <button type="button" class="btn btn-success text-white me-1 boxshadowbtn">Approved Selected</button>
-            <button type="button" class="btn btn-danger text-white boxshadowbtn">Delete Selected</button>
+    <form asp-action="ApproveSelected" asp-controller="Admin">
+        <div class="mt-2 d-flex flex-wrap justify-content-between bg-white p-3 rounded">
+            <select id="suggestions" class="region mb-2 boxshadowbtn" style="padding-left:5px">
+                <option value="0">All Region</option>
+                @foreach (var obj in Model.regions)
+                {
+                    <option value="@obj.Regionid">@obj.Name</option>
+                }
+            </select>
+            <div class="btns d-flex">
+                <button type="submit" class="btn btn-success text-white me-1 cuurrentmonthshift boxshadowbtn">View Current Month Shifts</button>
+                <button type="submit" class="btn btn-success text-white me-1 boxshadowbtn">Approved Selected</button>
+                <button asp-controller="Admin" asp-action="DeleteSelected" type="submit" class="btn btn-danger text-white boxshadowbtn">Delete Selected</button>
+            </div>
         </div>
-    </div>
-    <div class="shifttable mt-4">
-        <partial name="AdminLayout/_ShiftForReviewTable" />
-    </div>
+        <div class="shifttable mt-4">
+            <partial name="AdminLayout/_ShiftForReviewTable" />
+        </div>
+    </form>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -96,13 +98,21 @@
             regionid = $(this).val();
             $.ajax({
                 url: '/Admin/ShiftReviewTable',
-                data: { 'regionid': regionid, 'currentpage': $('#forcurpage').val() },
+                data: { 'regionid': regionid, 'currentpage': 1 },
                 success: function (data) {
                     $(".shifttable").html(data);
                 },
                 error: function (e) {
                     console.log(e);
                 }
+            });
+        });
+        $('.cuurrentmonthshift').on('click',function(){
+            localStorage.setItem('curmonshift', '1');
+            $.ajax({
+                success: function (data) {
+                    window.location.href = "/Admin/Scheduling";
+                },
             });
         });
     });

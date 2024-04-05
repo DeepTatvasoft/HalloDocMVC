@@ -1,12 +1,11 @@
 ﻿@model Services.ViewModels.ShiftforReviewModal
-<partial name="_Notification" />
 
 
 <div class="table-responsive shadow">
     <table class="table">
         <thead class="table-secondary">
             <tr>
-                <th><input type="checkbox" id="chkbox" /></th>
+                <th><input type="checkbox" id="chkbox"/></th>
                 <th>Staff</th>
                 <th>Day</th>
                 <th>Time</th>
@@ -18,7 +17,7 @@
             {
                 <tr>
                     <td>
-                        <input type="checkbox" class="childChkbox" />
+                        <input type="checkbox" class="childChkbox" value="@obj.Shiftdetailid" name="shiftchk" />
                     </td>
                     <td>
                         @obj.Shift.Physician.Firstname @obj.Shift.Physician.Lastname
@@ -53,44 +52,44 @@
         {
             next = Model.totalpages;
         }
-        <button class="@previous pagebtn" onclick="ChangeShift(@previous)" style="width:75px">
+        <button type="button" class="@previous pagebtn" onclick="ChangeShift(@previous)" style="width:75px">
             Previous
         </button>
         @if (Model.totalpages > 5)
         {
             @if (Model.currentpage > Model.totalpages - 3)
             {
-                <button class="1 pagebtn" id="page-1" onclick="ChangeShift(1)" style="width:45px">
+                <button type="button" class="1 pagebtn" id="page-1" onclick="ChangeShift(1)" style="width:45px">
                     1
                 </button>
-                <button class="0 pagebtn" id="page-0" style="width:25px">
+                <button type="button" class="0 pagebtn" id="page-0" style="width:25px">
                     ...
                 </button>
                 @for (var i = Model.totalpages - 3; i <= Model.totalpages; i++)
                 {
-                    <button class="@i pagebtn" id="page-@i" onclick="ChangeShift(@i)" style="width:45px">
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeShift(@i)" style="width:45px">
                         @i
                     </button>
                 }
             }
             else if (Model.currentpage < Model.totalpages - 2 && Model.currentpage > 3)
             {
-                <button class="1" pagebtn id="page-1" onclick="ChangeShift(1)" style="width:45px">
+                <button type="button" class="1" pagebtn id="page-1" onclick="ChangeShift(1)" style="width:45px">
                     1
                 </button>
-                <button class="0 pagebtn" id="page-0" style="width:25px">
+                <button type="button" class="0 pagebtn" id="page-0" style="width:25px">
                     ...
                 </button>
                 @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                 {
-                    <button class="@i pagebtn" id="page-@i" onclick="ChangeShift(@i)" style="width:45px">
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeShift(@i)" style="width:45px">
                         @i
                     </button>
                 }
-                <button class="0" id="page-0" style="width:45px">
+                <button type="button" class="0" id="page-0" style="width:45px">
                     ...
                 </button>
-                <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeShift(@previous)" style="width:45px">
+                <button type="button" class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeShift(@previous)" style="width:45px">
                     @Model.totalpages
                 </button>
             }
@@ -98,14 +97,14 @@
             {
                 @for (var i = 1; i <= 4; i++)
                 {
-                    <button class="@i pagebtn" id="page-@i" onclick="ChangeShift(@i)" style="width:45px">
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeShift(@i)" style="width:45px">
                         @i
                     </button>
                 }
-                <button class="0" id="page-0" style="width:45px">
+                <button type="button" class="0" id="page-0" style="width:45px">
                     ...
                 </button>
-                <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeShift(@Model.totalpages)" style="width:25px">
+                <button type="button" class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeShift(@Model.totalpages)" style="width:25px">
                     @Model.totalpages
                 </button>
             }
@@ -116,16 +115,16 @@
             {
                 var temp = page + 1;
 
-                <button class="@temp pagebtn" id="page-@temp" onclick="ChangeShift(@temp)" style="width:45px">
+                <button type="button" class="@temp pagebtn" id="page-@temp" onclick="ChangeShift(@temp)" style="width:45px">
                     @temp
                 </button>
             }
         }
-        @if (next == 1)
+        @if (next == 1 && Model.totalpages > 1)
         {
             next = 2;
         }
-        <button class="@next pagebtn" onclick="ChangeShift(@next)" style="width:75px">
+        <button type="button" class="@next pagebtn" onclick="ChangeShift(@next)" style="width:75px">
             Next
         </button>
     }

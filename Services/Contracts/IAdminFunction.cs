@@ -72,6 +72,16 @@ namespace Services.Contracts
         DayWiseScheduling Daywise(int regionid, DateTime currentDate, List<Physician> physician);
         WeekWiseScheduling Weekwise(int regionid, DateTime currentDate, List<Physician> physician);
         MonthWiseScheduling Monthwise(int regionid, DateTime currentDate, List<Physician> physician);
-
+        bool AddShift(Scheduling model, string adminname, List<string> chk);
+        Scheduling viewshift(int shiftdetailid);
+        void ViewShiftreturn(int shiftdetailid, string adminname);
+        bool ViewShiftedit(Scheduling modal, string adminname);
+        void DeleteShift(int shiftdetailid, string adminname);
+        Scheduling ProvidersOnCall(Scheduling modal);
+        Scheduling ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall);
+        ShiftforReviewModal ShiftForReview();
+        ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid);
+        void ApproveSelected(int[] shiftchk , string adminname);
+        void DeleteSelected(int[] shiftchk, string adminname);
     }
 }

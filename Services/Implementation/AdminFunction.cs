@@ -571,7 +571,7 @@ namespace Services.Implementation
             adminProfile.regions = _context.Regions.ToList();
             adminProfile.adminid = adminid;
             adminProfile.roleid = admindata.Roleid;
-            HashSet<Region> adminregion = _context.Adminregions.Include(u => u.Region).Where(u => u.Adminid == adminid).Select(u => u.Region).ToHashSet();
+            HashSet<Data.DataModels.Region> adminregion = _context.Adminregions.Include(u => u.Region).Where(u => u.Adminid == adminid).Select(u => u.Region).ToHashSet();
             adminProfile.adminregions = adminregion;
             adminProfile.roles = _context.Roles.Where(u => u.Accounttype == 1).ToList();
             return adminProfile;
@@ -1459,6 +1459,227 @@ namespace Services.Implementation
                 }
             }
             return true;
+        }
+
+        public Scheduling viewshift(int shiftdetailid)
+        {
+            Scheduling modal = new Scheduling();
+            Shiftdetail shiftdetail = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
+            modal.regionid = (int)shiftdetail.Regionid;
+            modal.physicianname = shiftdetail.Shift.Physician.Firstname + " " + shiftdetail.Shift.Physician.Lastname;
+            modal.modaldate = shiftdetail.Shiftdate.ToString("yyyy-MM-dd");
+            modal.starttime = shiftdetail.Starttime;
+            modal.endtime = shiftdetail.Endtime;
+            modal.shiftdetailid = shiftdetailid;
+            return modal;
+        }
+
+        public void ViewShiftreturn(int shiftdetailid , string adminname)
+        {
+            var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
+            if (shiftdetail.Status == 0)
+            {
+                shiftdetail.Status = 1;
+            }
+            else
+            {
+                shiftdetail.Status = 0;
+            }
+            shiftdetail.Modifieddate = DateTime.Now;
+            shiftdetail.Modifiedby = adminname;
+            _context.Shiftdetails.Update(shiftdetail);
+            _context.SaveChanges();
+        }
+        public bool ViewShiftedit(Scheduling modal,string adminname)
+        {
+            var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == modal.shiftdetailid);
+            var checkshift = _context.Shiftdetails.Where(u => u.Shiftdate == shiftdetail.Shiftdate).ToList();
+            if (checkshift.Count() > 0)
+            {
+                foreach (var obj in checkshift)
+                {
+                    if (((modal.starttime >= obj.Starttime && modal.starttime < obj.Endtime) || (modal.endtime > obj.Starttime && modal.endtime <= obj.Endtime)) && modal.shiftdetailid != obj.Shiftdetailid)
+                    {
+                        return false;
+                    }
+                }
+            }
+            shiftdetail.Shiftdate = modal.shiftdate;
+            shiftdetail.Starttime = modal.starttime;
+            shiftdetail.Endtime = modal.endtime;
+            shiftdetail.Modifieddate = DateTime.Now;
+            shiftdetail.Modifiedby = adminname;
+            _context.Shiftdetails.Update(shiftdetail);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public void DeleteShift(int shiftdetailid , string adminname)
+        {
+            var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
+            shiftdetail.Isdeleted = new BitArray(new[] { true });
+            shiftdetail.Modifieddate = DateTime.Now;
+            shiftdetail.Modifiedby = adminname;
+            _context.Shiftdetails.Update(shiftdetail);
+            _context.SaveChanges();
+            var shiftregion = _context.Shiftdetailregions.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
+            shiftregion.Isdeleted = new BitArray(new[] { true });
+            _context.Shiftdetailregions.Update(shiftregion);
+            _context.SaveChanges();
+        }
+
+        public Scheduling ProvidersOnCall(Scheduling modal)
+        {
+            var currentDate = DateTime.Parse(modal.curdate.ToString());
+            modal.regions = _context.Regions.ToList();
+            HashSet<int> phyid = new HashSet<int>();
+            HashSet<int> offdutyphyid = _context.Physicians.Select(u => u.Physicianid).ToHashSet();
+            List<Physician> phyoncall = new List<Physician>();
+            List<Physician> phyoffduty = new List<Physician>();
+            if (modal.wisetype == "_DayWise")
+            {
+                if (modal.regionid == 0)
+                {
+                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate == currentDate && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                }
+                else
+                {
+                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate == currentDate && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                }
+            }
+            else if (modal.wisetype == "_WeekWise")
+            {
+                if (modal.regionid == 0)
+                {
+                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate >= currentDate && u.Shiftdate <= currentDate.AddDays(6) && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                }
+                else
+                {
+                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate >= currentDate && u.Shiftdate <= currentDate.AddDays(6) && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                }
+            }
+            else
+            {
+                if (modal.regionid == 0)
+                {
+                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate.Month == currentDate.Month && u.Shiftdate.Year == currentDate.Year && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                }
+                else
+                {
+                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate.Month == currentDate.Month && u.Shiftdate.Year == currentDate.Year && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                }
+            }
+
+            offdutyphyid.ExceptWith(phyid);
+            foreach (var obj in phyid)
+            {
+                Physician physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                phyoncall.Add(physician);
+            }
+            foreach (var obj in offdutyphyid)
+            {
+                Physician physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                phyoffduty.Add(physician);
+            }
+            modal.Phyoffduty = phyoffduty;
+            modal.Phyoncall = phyoncall;
+            return modal;
+        }
+
+        public Scheduling ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
+        {
+            Scheduling modal = new Scheduling();
+            var listoncall = new List<Physician>();
+            var listoffcall = new List<Physician>();
+            foreach (var obj in oncall)
+            {
+                var phy = new Physician();
+                if (regionid == 0)
+                {
+                    phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                }
+                else
+                {
+                    phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj && u.Regionid == regionid);
+                }
+                if (phy != null)
+                {
+                    listoncall.Add(phy);
+                }
+            }
+            foreach (var obj in offcall)
+            {
+                var phy = new Physician();
+                if (regionid == 0)
+                {
+                    phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                }
+                else
+                {
+                    phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj && u.Regionid == regionid);
+                }
+                if (phy != null)
+                {
+                    listoffcall.Add(phy);
+                }
+            }
+            modal.Phyoncall = listoncall;
+            modal.Phyoffduty = listoffcall;
+            return modal;
+        }
+
+        public ShiftforReviewModal ShiftForReview()
+        {
+            ShiftforReviewModal modal = new ShiftforReviewModal();
+            modal.regions = _context.Regions.ToList();
+            modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u=>u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.shiftdetail.Count() / 10.00);
+            modal.shiftdetail = modal.shiftdetail.Skip((1 - 1) * 10).Take(10).ToList();
+            return modal;
+        }
+        public ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid)
+        {
+            ShiftforReviewModal modal = new ShiftforReviewModal();
+            modal.regions = _context.Regions.ToList();
+            modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u=>u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            if (regionid != 0)
+            {
+                modal.shiftdetail = modal.shiftdetail.Where(u => u.Regionid == regionid && u.Status == 0).ToList();
+            }
+            modal.totalpages = (int)Math.Ceiling(modal.shiftdetail.Count() / 10.00);
+            modal.shiftdetail = modal.shiftdetail.Skip((currentPage - 1) * 10).Take(10).ToList();
+            modal.currentpage = currentPage;
+            modal.regionid = regionid;
+            return modal;
+        }
+
+        public void ApproveSelected(int[] shiftchk , string adminname)
+        {
+            foreach (var obj in shiftchk)
+            {
+                var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == obj);
+                shiftdetail.Status = 1;
+                shiftdetail.Modifieddate = DateTime.Now;
+                shiftdetail.Modifiedby = adminname;
+                _context.Shiftdetails.Update(shiftdetail);
+                _context.SaveChanges();
+            }
+        }
+        public void DeleteSelected(int[] shiftchk , string adminname)
+        {
+            foreach (var obj in shiftchk)
+            {
+                var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == obj);
+                shiftdetail.Isdeleted = new BitArray(new[] { true });
+                shiftdetail.Modifieddate = DateTime.Now;
+                shiftdetail.Modifiedby = adminname;
+                _context.Shiftdetails.Update(shiftdetail);
+                _context.SaveChanges();
+                var shiftregion = _context.Shiftdetailregions.FirstOrDefault(u => u.Shiftdetailid == obj);
+                shiftregion.Isdeleted = new BitArray(new[] { true });
+                _context.Shiftdetailregions.Update(shiftregion);
+                _context.SaveChanges();
+            }
         }
     }
 }

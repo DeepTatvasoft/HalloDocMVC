@@ -3,53 +3,7 @@
     Layout = "AdminLayout/_AdminDashboard";
 }
 <Partial name="_Notification" />
-<div class="tabnav bg-white">
-    <div class="collapse show" id="collapseExample">
-        <div class="card card-body">
-            <ul class="nav nav-tabs d-block d-md-flex" id="myTab" role="tablist" style="box-shadow: 1px 1px 5px;">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane"
-                            type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">
-                        Dashboard
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location-tab-pane"
-                            type="button" role="tab" aria-controls="location-tab-pane" aria-selected="false">
-                        Provider Location
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" asp-action="Profiletab" asp-controller="Admin">
-                        My Profile
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" asp-action="Providertab" asp-controller="Admin">
-                        Providers
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="Partners-tab" data-bs-toggle="tab" data-bs-target="#Partners-tab-pane"
-                            type="button" role="tab" aria-controls="Partners-tab-pane" aria-selected="false">
-                        Partners
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" asp-action="AccessTab" asp-controller="Admin">
-                        Access
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="Records-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane"
-                            type="button" role="tab" aria-controls="Records-tab-pane" aria-selected="false">
-                        Records
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+
 
 <div class="tab-content mt-4" id="myTabContent">
     <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">

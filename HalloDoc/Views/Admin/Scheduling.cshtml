@@ -303,7 +303,14 @@
     }
 
     $(document).ready(function () {
-        loadSchedulingPartial('_DayWise');
+        var tmp = localStorage.getItem('curmonshift');
+        if (tmp == '1') {
+            loadSchedulingPartial('_MonthWise');
+        }
+        else {
+            loadSchedulingPartial('_DayWise');
+        }
+        localStorage.setItem('curmonshift', '0');
         $('#MdsRegion').val($('.region').val());
         $('.region').on('change', function () {
             $('#MdsRegion').val($('.region').val());
