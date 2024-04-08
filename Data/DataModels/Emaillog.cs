@@ -6,7 +6,7 @@ namespace Data.DataModels;
 
 public partial class Emaillog
 {
-    public decimal Emaillogid { get; set; }
+    public int Emaillogid { get; set; }
 
     public string Emailtemplate { get; set; } = null!;
 

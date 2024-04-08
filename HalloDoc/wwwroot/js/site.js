@@ -223,3 +223,41 @@ function ChangeShift(currentPage) {
     });
 
 }
+function ChangeRecord(currentPage) {
+    var form = $('#recordsForm'); 
+    $('#curpageinput').val(currentPage);
+    $.ajax({
+        url: "/Admin/RecordsTable",
+        data: form.serialize(),
+        type: "POST",
+        dataType: "html",
+        success: function (response) {
+            $('.recordstable').html(response);
+            document.getElementById("page-1").style.backgroundColor = "white";
+            document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+
+}
+function ChangeBlockHistory(currentPage) {
+    var form = $('#BlockForm'); 
+    $('#curpageinput').val(currentPage);
+    $.ajax({
+        url: "/Admin/BlockHistoryTable",
+        data: form.serialize(),
+        type: "POST",
+        dataType: "html",
+        success: function (response) {
+            $('.blockhistorytable').html(response);
+            document.getElementById("page-1").style.backgroundColor = "white";
+            document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+
+}

@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "Email Logs";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.EmailLogsModal
+
+<div class="container-fluid mt-3 dashboard shadow p-3 rounded">
+    <h5 class="fw-bold">Patient Histroy</h5>
+    <form id="emaillogForm">
+        <input asp-for="currentpage" id="curpageinput" type="hidden" />
+        <div class="mt-3 p-2 bg-white boxshadow rounded">
+            <div class="row row-cols-xl-5 row-cols-md-2 row-cols-1">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <select asp-for="roleid" class="form-select" aria-label="Floating label select example">
+                            <option>Role</option>
+                            @foreach (var obj in Model.aspnetrole)
+                            {
+                                <option value="@obj.Id">@obj.Name</option>
+                            }
+                        </select>
+                        <label for="floatingSelect">Role</label>
+                    </div>
+
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="receivername" type="text" class="form-control" placeholder="receivername">
+                        <label for="floatingInput">Receiver Name</label>
+                    </div>
+
+                </div>
+                <div class="col">
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="email" type="email" class="form-control" placeholder="email">
+                        <label for="floatingInput">Email id</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="createddate" type="date" class="form-control" placeholder="createddate">
+                        <label for="floatingInput">Created Date</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="sentdate" type="date" class="form-control" placeholder="sentdate">
+                        <label for="floatingInput">Sent Date</label>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="reset" class="btn btn-outline-info me-1 boxshadowbtn" onclick="ResetFormWithJS()">Clear</button>
+                <button type="submit" class="btn btn-info text-white boxshadowbtn">Search</button>
+            </div>
+        </div>
+    </form>
+    <div class="table-responsive mt-3 emaillogtable">
+        <partial name="AdminLayout/_EmaillogsTable" />
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('Records-tab').classList.add('active');
+    document.getElementById('emaillogs').classList.add('active');
+    function ResetFormWithJS() {
+        document.getElementById('myForm').reset();
+        document.getElementById('curpageinput').disabled = false;
+    }
+    $(document).ready(function () {
+        $("#emaillogForm").submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: '/Admin/EmailLogTable',
+                data: form.serialize(),
+                success: function (data) {
+                    $('.emaillogtable').html(data);
+                }
+            });
+        });
+    });
+</script>

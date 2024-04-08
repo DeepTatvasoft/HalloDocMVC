@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Block History";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.BlockHistoryModal
+
+<div class="container-fluid mt-3 dashboard shadow p-3 rounded">
+    <h5 class="fw-bold">Block Histroy</h5>
+    <form id="BlockForm">
+        <input asp-for="currentpage" id="curpageinput" type="hidden" />
+        <div class="mt-3 p-2 bg-white boxshadow rounded">
+            <div class="row row-cols-xl-4 row-cols-md-2 row-cols-1">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="name" type="text" class="form-control" placeholder="name">
+                        <label for="floatingInput">Name</label>
+                    </div>
+
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="date" type="date" class="form-control" placeholder="date">
+                        <label for="floatingInput">Date</label>
+                    </div>
+
+                </div>
+                <div class="col">
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="email" type="email" class="form-control" placeholder="email">
+                        <label for="floatingInput">Email</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="phonenumber" type="text" class="form-control" placeholder="phone">
+                        <label for="floatingInput">Phone Number</label>
+                    </div>
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="reset" class="btn btn-outline-info me-1 boxshadowbtn" onclick="ResetFormWithJS()">Clear</button>
+                <button type="submit" class="btn btn-info text-white boxshadowbtn">Search</button>
+            </div>
+        </div>
+    </form>
+    <div class="table-responsive mt-3 blockhistorytable">
+        <partial name="AdminLayout/_BlockHistoryTable" />
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    document.getElementById('Records-tab').classList.add('active');
+    document.getElementById('blockhistory').classList.add('active');
+    function ResetFormWithJS() {
+        document.getElementById('myForm').reset();
+        document.getElementById('curpageinput').disabled = false;
+    }
+    $(document).ready(function () {
+        $("#BlockForm").submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: '/Admin/BlockHistoryTable',
+                data: form.serialize(),
+                success: function (data) {
+                    $('.blockhistorytable').html(data);
+                }
+            });
+        });
+    });
+</script>

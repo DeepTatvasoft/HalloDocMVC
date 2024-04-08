@@ -521,7 +521,8 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ContactPhysician(int phyid, string chk, string message)
         {
-            adminFunction.ContactPhysician(phyid, chk, message);
+            int adminid = (int)HttpContext.Session.GetInt32("Adminid");
+            adminFunction.ContactPhysician(phyid, chk, message , adminid);
             return NoContent();
         }
         public IActionResult AccessTab()
@@ -851,6 +852,77 @@ namespace HalloDoc.Controllers
             adminFunction.DeleteBusiness(id);
             TempData["error"] = "Business Deleted Successfuly";
             return RedirectToAction("PartnersTab");
+        }
+        public IActionResult Recordstab()
+        {
+            RecordstabModal modal = new RecordstabModal();
+            modal.req = _context.Requests.Include(u => u.Requestclients).ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
+            modal.req = modal.req.Skip((1 - 1) * 10).Take(10).ToList();
+            return View(modal);
+        }
+        public IActionResult RecordsTable(RecordstabModal modal)
+        {
+            modal.req = _context.Requests.Include(u => u.Requestclients).ToList();
+            if (!string.IsNullOrWhiteSpace(modal.firstname))
+            {
+                modal.req = modal.req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(modal.firstname.ToLower()))).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.lastname))
+            {
+                modal.req = modal.req.Where(a => a.Requestclients.Any(rc => rc.Lastname.ToLower().Contains(modal.lastname.ToLower()))).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.req = modal.req.Where(a => a.Requestclients.Any(rc => rc.Email.ToLower().Contains(modal.email.ToLower()))).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.phonenumber))
+            {
+                modal.req = modal.req.Where(a => a.Requestclients.Any(rc => rc.Phonenumber.ToLower().Contains(modal.phonenumber.ToLower()))).ToList();
+            }
+            modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
+            modal.req = modal.req.Skip((modal.currentpage - 1) * 10).Take(10).ToList();
+            return PartialView("AdminLayout/_RecordstabTable", modal);
+        }
+        public IActionResult BlockHistory()
+        {
+            BlockHistoryModal modal = new BlockHistoryModal();
+            modal.blockrequests = _context.Blockrequests.ToList();
+            modal.reqclient = _context.Requestclients.ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.blockrequests.Count() / 5.00);
+            modal.blockrequests = modal.blockrequests.Skip((1 - 1) * 10).Take(10).ToList();
+            return View(modal);
+        }
+        public IActionResult BlockHistoryTable(BlockHistoryModal modal)
+        {
+            modal.blockrequests = _context.Blockrequests.ToList();
+            modal.reqclient = _context.Requestclients.ToList();
+            if (!string.IsNullOrWhiteSpace(modal.name))
+            {
+                modal.reqclient = modal.reqclient.Where(rc => rc.Firstname.ToLower().Contains(modal.name.ToLower()) || rc.Lastname.ToLower().Contains(modal.name.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.date.ToString()))
+            {
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Createddate.Value.Date == modal.date.Value.Date).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Email.ToLower().Contains(modal.email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.phonenumber))
+            {
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+            }
+            modal.totalpages = (int)Math.Ceiling(modal.blockrequests.Count() / 5.00);
+            modal.blockrequests = modal.blockrequests.Skip((modal.currentpage - 1) * 10).Take(10).ToList();
+            return PartialView("AdminLayout/_BlockHistoryTable" , modal);
+        }
+        public IActionResult EmailLogs()
+        {
+            EmailLogsModal modal = new EmailLogsModal();
+            modal.aspnetrole = _context.Aspnetroles.ToList();
+            modal.emaillogs = _context.Emaillogs.ToList();
+            return View(modal);
         }
     }
 

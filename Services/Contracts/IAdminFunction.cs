@@ -50,7 +50,7 @@ namespace Services.Contracts
         bool PhysicianInfo(EditPhysicianModal modal, string adminname, List<string> chk);
         void PhysicianMailingInfo(EditPhysicianModal modal, string adminname);
         void ProviderProfile(EditPhysicianModal modal, string adminname);
-        void ContactPhysician(int phyid, string chk, string message);
+        void ContactPhysician(int phyid, string chk, string message, int adminid);
         void EditProviderSign(int physicianid, string base64string);
         void EditProviderPhoto(int physicianid, string base64string);
         void PhyNotification(List<string> chk);
@@ -81,7 +81,7 @@ namespace Services.Contracts
         Scheduling ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall);
         ShiftforReviewModal ShiftForReview();
         ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid);
-        void ApproveSelected(int[] shiftchk , string adminname);
+        void ApproveSelected(int[] shiftchk, string adminname);
         void DeleteSelected(int[] shiftchk, string adminname);
         PartnersModal PartnersTab();
         void AddBusinessSubmit(AddBusinessModal modal);

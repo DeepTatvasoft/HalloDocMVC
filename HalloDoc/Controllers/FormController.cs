@@ -5,6 +5,7 @@ using Services.ViewModels;
 using System.Net.Mail;
 using System.Net;
 using Data.DataContext;
+using System.Collections;
 
 namespace HalloDoc.Controllers
 {
@@ -30,9 +31,11 @@ namespace HalloDoc.Controllers
             (bool f,int id) = formSubmit.familyinfo(model);
             if (f == false)
             {
+                int adminid = (int)HttpContext.Session.GetInt32("Adminid");
                 var email = model.PatEmail;
                 //int id = formSubmit.familyinfo(model).Item2;
-                sendEmail(email, "hello", "hello reset password https://localhost:44325/Home/CreateAccount/id="+id+"");
+                sendEmail(email, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id="+id+"");
+                formSubmit.Emailentry(email, adminid, id);
             }
             return RedirectToAction("patientlogin", "Home");
         }

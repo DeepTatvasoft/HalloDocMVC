@@ -1,0 +1,141 @@
+﻿@model Services.ViewModels.BlockHistoryModal
+
+<table class="table">
+    <thead style="--bs-table-bg: #efefef">
+        <tr>
+            <th scope="col">Patient Name</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Email</th>
+            <th scope="col">Created Date</th>
+            <th scope="col">Notes</th>
+            <th scope="col">is Active</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model.blockrequests)
+        {
+            var reqclient = Model.reqclient.FirstOrDefault(u => u.Requestid.ToString() == obj.Requestid);
+            var chk = "";
+            if (reqclient != null)
+            {
+                <tr>
+                    <td>@reqclient.Firstname @reqclient.Lastname</td>
+                    <td>@obj.Phonenumber</td>
+                    <td>@obj.Email</td>
+                    <td>@obj.Createddate</td>
+                    <td>@obj.Reason</td>
+                    <td>
+                        @if (obj.Isactive[0] == true)
+                        {
+                            chk = "checked";
+                        }
+                        <input type="checkbox" @chk />
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-info boxshadowbtn">Unblock</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<div class="d-flex justify-content-center gap-3 mt-3">
+    <input type="hidden" id="forcurpage" value="@Model.currentpage" />
+    @if (Model.totalpages > 0)
+    {
+        var previous = Model.currentpage - 1;
+        var next = Model.currentpage + 1;
+        if (previous <= 0)
+        {
+            previous = 1;
+        }
+        if (next > Model.totalpages)
+        {
+            next = Model.totalpages;
+        }
+        <button type="button" class="@previous pagebtn" onclick="ChangeBlockHistory(@previous)" style="width:75px">
+            Previous
+        </button>
+        @if (Model.totalpages > 5)
+        {
+            @if (Model.currentpage > Model.totalpages - 3)
+            {
+                <button type="button" class="1 pagebtn" id="page-1" onclick="ChangeBlockHistory(1)" style="width:45px">
+                    1
+                </button>
+                <button type="button" class="0 pagebtn" id="page-0" style="width:25px">
+                    ...
+                </button>
+                @for (var i = Model.totalpages - 3; i <= Model.totalpages; i++)
+                {
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeBlockHistory(@i)" style="width:45px">
+                        @i
+                    </button>
+                }
+            }
+            else if (Model.currentpage < Model.totalpages - 2 && Model.currentpage > 3)
+            {
+                <button type="button" class="1" pagebtn id="page-1" onclick="ChangeBlockHistory(1)" style="width:45px">
+                    1
+                </button>
+                <button type="button" class="0 pagebtn" id="page-0" style="width:25px">
+                    ...
+                </button>
+                @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
+                {
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeBlockHistory(@i)" style="width:45px">
+                        @i
+                    </button>
+                }
+                <button type="button" class="0" id="page-0" style="width:45px">
+                    ...
+                </button>
+                <button type="button" class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeBlockHistory(@previous)" style="width:45px">
+                    @Model.totalpages
+                </button>
+            }
+            else
+            {
+                @for (var i = 1; i <= 4; i++)
+                {
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeBlockHistory(@i)" style="width:45px">
+                        @i
+                    </button>
+                }
+                <button type="button" class="0" id="page-0" style="width:45px">
+                    ...
+                </button>
+                <button type="button" class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeBlockHistory(@Model.totalpages)" style="width:25px">
+                    @Model.totalpages
+                </button>
+            }
+        }
+        else
+        {
+            @for (int page = 0; page < Model.totalpages; page++)
+            {
+                var temp = page + 1;
+
+                <button type="button" class="@temp pagebtn" id="page-@temp" onclick="ChangeBlockHistory(@temp)" style="width:45px">
+                    @temp
+                </button>
+            }
+        }
+        @if (next == 1 && Model.totalpages > 1)
+        {
+            next = 2;
+        }
+        <button type="button" class="@next pagebtn" onclick="ChangeBlockHistory(@next)" style="width:75px">
+            Next
+        </button>
+    }
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    var page = document.getElementById("page-1");
+    if (page != null) {
+        page.style.backgroundColor = "lightblue";
+    }
+</script>

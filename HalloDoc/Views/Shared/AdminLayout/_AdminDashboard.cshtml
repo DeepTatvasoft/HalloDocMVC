@@ -59,7 +59,7 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <div class="dropdown">
-                            <a class="nav-link dropdown-toggle" id="providertab" asp-action="Providertab" asp-controller="Admin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" id="providertab" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Providers
                             </a>
                             <ul class="dropdown-menu">
@@ -80,10 +80,16 @@
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="Records-tab" data-bs-toggle="tab" data-bs-target="#Records-tab-pane"
-                                type="button" role="tab" aria-controls="Records-tab-pane" aria-selected="false">
+                        <a class="nav-link dropdown-toggle" id="Records-tab" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Records
-                        </button>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item nav-link">Search Records</a></li>
+                            <li><a class="dropdown-item nav-link id="emaillogs" asp-action="EmailLogs" asp-controller="Admin">Email Logs</a></li>
+                            <li><a class="dropdown-item nav-link">SMS Logs</a></li>
+                            <li><a class="dropdown-item nav-link" id="patientrecord" asp-action="Recordstab" asp-controller="Admin">Patient Records</a></li>
+                            <li><a class="dropdown-item nav-link" id="blockhistory" asp-action="BlockHistory" asp-controller="Admin">Blocked History</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>

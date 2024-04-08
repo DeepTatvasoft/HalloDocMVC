@@ -10,5 +10,6 @@ namespace Services.Contracts
         void ConciergeInfo(ConciergeSubmit model);
         (bool, int) familyinfo(FamilyFriendReqSubmit model);
         void patientinfo(PatientReqSubmit model, int adminid);
+        void Emailentry(string email, int adminid, int id);
     }
 }

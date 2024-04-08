@@ -422,9 +422,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("emaillog");
 
-            entity.Property(e => e.Emaillogid)
-                .HasPrecision(9)
-                .HasColumnName("emaillogid");
+            entity.Property(e => e.Emaillogid).HasColumnName("emaillogid");
             entity.Property(e => e.Action).HasColumnName("action");
             entity.Property(e => e.Adminid).HasColumnName("adminid");
             entity.Property(e => e.Confirmationnumber)

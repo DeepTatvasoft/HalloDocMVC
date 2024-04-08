@@ -933,12 +933,27 @@ namespace Services.Implementation
 
             return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
         }
-        public void ContactPhysician(int phyid, string chk, string message)
+        public void ContactPhysician(int phyid, string chk, string message,int adminid)
         {
             if (chk == "email" || chk == "both")
             {
                 var email = _context.Physicians.FirstOrDefault(u => u.Physicianid == phyid).Email;
                 sendEmail(email, "Contact Physician", message);
+                Emaillog emaillog = new Emaillog
+                {
+                    Emailid = email,
+                    Emailtemplate= "Contact Physician",
+                    Subjectname="Physician Contact",
+                    Roleid=2,
+                    Adminid = adminid,
+                    Physicianid=phyid,
+                    Createdate = DateTime.Now,
+                    Sentdate = DateTime.Now,
+                    Isemailsent = new BitArray(new[] { true }),
+                    Senttries = 1
+                };
+                _context.Emaillogs.Add(emaillog);
+                _context.SaveChanges();
             }
         }
 
@@ -1278,7 +1293,7 @@ namespace Services.Implementation
         {
             return _context.Physicians.ToList();
         }
-        public DayWiseScheduling Daywise(int regionid , DateTime currentDate, List<Physician> physician)
+        public DayWiseScheduling Daywise(int regionid, DateTime currentDate, List<Physician> physician)
         {
             DayWiseScheduling day = new DayWiseScheduling
             {
@@ -1321,7 +1336,7 @@ namespace Services.Implementation
             }
             return month;
         }
-        public bool AddShift(Scheduling model,string adminname,List<string> chk)
+        public bool AddShift(Scheduling model, string adminname, List<string> chk)
         {
             var shiftid = _context.Shifts.Where(u => u.Physicianid == model.physicianid).Select(u => u.Shiftid).ToList();
             if (shiftid.Count() > 0)
@@ -1333,6 +1348,10 @@ namespace Services.Implementation
                     {
                         foreach (var item in shiftdetailchk)
                         {
+                            if (model.starttime <= item.Starttime && model.endtime >= item.Endtime)
+                            {
+                                return false;
+                            }
                             if (((model.starttime >= item.Starttime && model.starttime < item.Endtime) || (model.endtime > item.Starttime && model.endtime <= item.Endtime)) && item.Isdeleted == new BitArray(new[] { false }))
                             {
                                 return false;
@@ -1474,7 +1493,7 @@ namespace Services.Implementation
             return modal;
         }
 
-        public void ViewShiftreturn(int shiftdetailid , string adminname)
+        public void ViewShiftreturn(int shiftdetailid, string adminname)
         {
             var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
             if (shiftdetail.Status == 0)
@@ -1490,7 +1509,7 @@ namespace Services.Implementation
             _context.Shiftdetails.Update(shiftdetail);
             _context.SaveChanges();
         }
-        public bool ViewShiftedit(Scheduling modal,string adminname)
+        public bool ViewShiftedit(Scheduling modal, string adminname)
         {
             var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == modal.shiftdetailid);
             var checkshift = _context.Shiftdetails.Where(u => u.Shiftdate == shiftdetail.Shiftdate).ToList();
@@ -1514,7 +1533,7 @@ namespace Services.Implementation
             return true;
         }
 
-        public void DeleteShift(int shiftdetailid , string adminname)
+        public void DeleteShift(int shiftdetailid, string adminname)
         {
             var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
             shiftdetail.Isdeleted = new BitArray(new[] { true });
@@ -1632,7 +1651,7 @@ namespace Services.Implementation
         {
             ShiftforReviewModal modal = new ShiftforReviewModal();
             modal.regions = _context.Regions.ToList();
-            modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u=>u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u => u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
             modal.totalpages = (int)Math.Ceiling(modal.shiftdetail.Count() / 10.00);
             modal.shiftdetail = modal.shiftdetail.Skip((1 - 1) * 10).Take(10).ToList();
             return modal;
@@ -1641,7 +1660,7 @@ namespace Services.Implementation
         {
             ShiftforReviewModal modal = new ShiftforReviewModal();
             modal.regions = _context.Regions.ToList();
-            modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u=>u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u => u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
             if (regionid != 0)
             {
                 modal.shiftdetail = modal.shiftdetail.Where(u => u.Regionid == regionid && u.Status == 0).ToList();
@@ -1653,7 +1672,7 @@ namespace Services.Implementation
             return modal;
         }
 
-        public void ApproveSelected(int[] shiftchk , string adminname)
+        public void ApproveSelected(int[] shiftchk, string adminname)
         {
             foreach (var obj in shiftchk)
             {
@@ -1665,7 +1684,7 @@ namespace Services.Implementation
                 _context.SaveChanges();
             }
         }
-        public void DeleteSelected(int[] shiftchk , string adminname)
+        public void DeleteSelected(int[] shiftchk, string adminname)
         {
             foreach (var obj in shiftchk)
             {

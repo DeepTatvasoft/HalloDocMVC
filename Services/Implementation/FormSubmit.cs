@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -362,6 +363,24 @@ namespace Services.Implementation
                 Roleid = "3"
             };
             _context.Aspnetuserroles.Add(aspnetuserrole);
+            _context.SaveChanges();
+        }
+        public void Emailentry(string email,int adminid,int id)
+        {
+            Emaillog emaillog = new Emaillog
+            {
+                Subjectname = "hello",
+                Emailid = email,
+                Emailtemplate = "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + id + "",
+                Roleid = 3,
+                Requestid = id,
+                Adminid = adminid,
+                Createdate = DateTime.Now,
+                Sentdate = DateTime.Now,
+                Isemailsent = new BitArray(new[] { true }),
+                Senttries = 1
+            };
+            _context.Emaillogs.Add(emaillog);
             _context.SaveChanges();
         }
     }
