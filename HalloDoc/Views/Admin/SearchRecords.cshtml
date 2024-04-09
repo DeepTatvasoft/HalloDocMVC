@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Search Record";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.SearchRecordModal
+<partial name="_Notification" />
+
+<div class="container-fluid mt-3 dashboard shadow p-3 rounded w-100">
+    <div class="d-flex justify-content-between">
+        <h5 class="fw-bold">Search Records</h5>
+        <div>
+            <button class="btn btn-info text-white"><i class="fa-solid fa-file-export me-1"></i>Export Data To Excel</button>
+        </div>
+    </div>
+    <form id="SearchrecordsForm">
+        <input asp-for="currentpage" id="curpageinput" type="hidden" />
+        <div class="mt-3 p-2 bg-white boxshadow rounded">
+            <div class="row row-cols-xl-4 row-cols-md-2 row-cols-1">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <select asp-for="reqstatus" class="form-select" aria-label="Floating label select example">
+                            <option value="0">All</option>
+                            <option value="1">New</option>
+                            <option value="2">Pending</option>
+                            <option value="4">Active</option>
+                            <option value="6">Conclude</option>
+                            <option value="3">To-Close</option>
+                            <option value="9">Unpaid</option>
+                        </select>
+                        <label for="floatingSelect">Select Request Status</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="patientname" type="text" class="form-control" placeholder="patientname">
+                        <label for="floatingInput">Patient Name</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <select asp-for="reqtype" class="form-select" aria-label="Floating label select example">
+                            <option value="0">All</option>
+                            <option value="1">Patient</option>
+                            <option value="2">Family</option>
+                            <option value="3">Concierge</option>
+                            <option value="4">Business</option>
+                        </select>
+                        <label for="floatingSelect">Select Request Type</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="fromDOS" type="date" class="form-control" placeholder="fromdos">
+                        <label for="floatingInput">From Date Of Service</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="toDOS" type="date" class="form-control" placeholder="todos">
+                        <label for="floatingInput">To Date Of Service</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="providername" type="text" class="form-control" placeholder="providername">
+                        <label for="floatingInput">Provider Name</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="email" type="text" class="form-control" placeholder="email">
+                        <label for="floatingInput">Email</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input asp-for="phonenumber" type="text" class="form-control" placeholder="phone">
+                        <label for="floatingInput">Phone Number</label>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="reset" class="btn btn-outline-info me-1 boxshadowbtn" onclick="ResetFormWithJS()">Clear</button>
+                <button type="submit" class="btn btn-info text-white boxshadowbtn">Search</button>
+            </div>
+        </div>
+    </form>
+    <div class="table-responsive mt-3 searchrecordstable">
+        <partial name="AdminLayout/_SearchrecordTable" />
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    function ResetFormWithJS() {
+        document.getElementById('SearchrecordsForm').reset();
+        document.getElementById('curpageinput').disabled = false;
+    }
+    document.getElementById('Records-tab').classList.add('active');
+    document.getElementById('searchrecord').classList.add('active');
+    $(document).ready(function () {
+        $("#SearchrecordsForm").submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: '/Admin/SearchRecordTable',
+                data: form.serialize(),
+                success: function (data) {
+                    $('.searchrecordstable').html(data);
+                }
+            });
+        });
+    });
+</script>

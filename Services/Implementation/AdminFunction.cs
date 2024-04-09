@@ -312,6 +312,14 @@ namespace Services.Implementation
                 };
                 _context.Requeststatuslogs.Add(requeststatuslog);
                 _context.SaveChanges();
+                Requestclosed reqclosed = new Requestclosed
+                {
+                    Requestid = reqid,
+                    Requeststatuslogid = requeststatuslog.Requeststatuslogid,
+                    Clientnotes = cancelnotes,
+                };
+                _context.Requestcloseds.Add(reqclosed);
+                _context.SaveChanges();
             }
         }
         public List<Physician> filterregion(string regionid)

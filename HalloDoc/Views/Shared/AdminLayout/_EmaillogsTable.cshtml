@@ -20,7 +20,7 @@
 
             <tr>
                 <td></td>
-                <td></td>
+                <td>-</td>
                 <td>@Model.aspnetrole.FirstOrDefault(u=>u.Id==obj.Roleid.ToString()).Name</td>
                 <td>@obj.Emailid</td>
                 <td>@obj.Createdate</td>
@@ -56,14 +56,14 @@
         {
             next = Model.totalpages;
         }
-        <button type="button" class="@previous pagebtn" onclick="ChangeBlockHistory(@previous)" style="width:75px">
+        <button type="button" class="@previous pagebtn" onclick="ChangeEmaillogs(@previous)" style="width:75px">
             Previous
         </button>
         @if (Model.totalpages > 5)
         {
             @if (Model.currentpage > Model.totalpages - 3)
             {
-                <button type="button" class="1 pagebtn" id="page-1" onclick="ChangeBlockHistory(1)" style="width:45px">
+                <button type="button" class="1 pagebtn" id="page-1" onclick="ChangeEmaillogs(1)" style="width:45px">
                     1
                 </button>
                 <button type="button" class="0 pagebtn" id="page-0" style="width:25px">
@@ -71,14 +71,14 @@
                 </button>
                 @for (var i = Model.totalpages - 3; i <= Model.totalpages; i++)
                 {
-                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeBlockHistory(@i)" style="width:45px">
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeEmaillogs(@i)" style="width:45px">
                         @i
                     </button>
                 }
             }
             else if (Model.currentpage < Model.totalpages - 2 && Model.currentpage > 3)
             {
-                <button type="button" class="1" pagebtn id="page-1" onclick="ChangeBlockHistory(1)" style="width:45px">
+                <button type="button" class="1" pagebtn id="page-1" onclick="ChangeEmaillogs(1)" style="width:45px">
                     1
                 </button>
                 <button type="button" class="0 pagebtn" id="page-0" style="width:25px">
@@ -86,14 +86,14 @@
                 </button>
                 @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                 {
-                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeBlockHistory(@i)" style="width:45px">
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeEmaillogs(@i)" style="width:45px">
                         @i
                     </button>
                 }
                 <button type="button" class="0" id="page-0" style="width:45px">
                     ...
                 </button>
-                <button type="button" class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeBlockHistory(@previous)" style="width:45px">
+                <button type="button" class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeEmaillogs(@previous)" style="width:45px">
                     @Model.totalpages
                 </button>
             }
@@ -101,14 +101,14 @@
             {
                 @for (var i = 1; i <= 4; i++)
                 {
-                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeBlockHistory(@i)" style="width:45px">
+                    <button type="button" class="@i pagebtn" id="page-@i" onclick="ChangeEmaillogs(@i)" style="width:45px">
                         @i
                     </button>
                 }
                 <button type="button" class="0" id="page-0" style="width:45px">
                     ...
                 </button>
-                <button type="button" class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeBlockHistory(@Model.totalpages)" style="width:25px">
+                <button type="button" class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangeEmaillogs(@Model.totalpages)" style="width:25px">
                     @Model.totalpages
                 </button>
             }
@@ -119,7 +119,7 @@
             {
                 var temp = page + 1;
 
-                <button type="button" class="@temp pagebtn" id="page-@temp" onclick="ChangeBlockHistory(@temp)" style="width:45px">
+                <button type="button" class="@temp pagebtn" id="page-@temp" onclick="ChangeEmaillogs(@temp)" style="width:45px">
                     @temp
                 </button>
             }
@@ -128,8 +128,19 @@
         {
             next = 2;
         }
-        <button type="button" class="@next pagebtn" onclick="ChangeBlockHistory(@next)" style="width:75px">
+        <button type="button" class="@next pagebtn" onclick="ChangeEmaillogs(@next)" style="width:75px">
             Next
         </button>
     }
 </div>
+
+<script>
+    var num = document.getElementById("curpageinput");
+    if (@Model.currentpage == 1) {
+        document.getElementById("page-1").style.backgroundColor = "lightblue";
+    }
+    var page = document.getElementById("page-" + num.value);
+    if (page != null) {
+        page.style.backgroundColor = "lightblue";
+    }
+</script>

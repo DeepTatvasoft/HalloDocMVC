@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "Explore Patient";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.ExploreModal
+<partial name="_Notification" />
+
+<div class="container-fluid mt-3 dashboard shadow p-3 rounded">
+    <div class="d-flex justify-content-between">
+        <h5 class="fw-bold">Patient Record</h5>
+        <div class="backbtn">
+            <a asp-controller="Admin" asp-action="Recordstab">
+                <button type="button" class="btn btn-outline-info text-center boxshadowbtn"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
+            </a>
+        </div>
+    </div>
+    <div class="table-responsive mt-3">
+        <table class="table">
+            <thead style="--bs-table-bg: #efefef">
+                <tr>
+                    <th scope="col">Client/Member</th>
+                    <th scope="col">Created Date</th>
+                    <th scope="col">Conformation</th>
+                    <th scope="col">Provider Name</th>
+                    <th scope="col">Concluded Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Final Report</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model.reqclient)
+                {
+                    <tr>
+                        <td>@obj.Firstname, @obj.Lastname</td>
+                        <td>@obj.Request.Createddate</td>
+                        <td>@obj.Request.Confirmationnumber</td>
+                        <td>
+                            @if (@obj.Request.Physician != null)
+                            {
+                                <span>Dr.</span> @obj.Request.Physician.Firstname
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.Request.Accepteddate != null)
+                            {
+                                <span>@obj.Request.Accepteddate</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>
+                            @if (obj.Request.Status == 1)
+                            {
+                                <span>New</span>
+                            }
+                            else if (obj.Request.Status == 2)
+                            {
+                                <span>Pending</span>
+                            }
+                            else if (obj.Request.Status == 4 || obj.Request.Status == 5)
+                            {
+                                <span>Active</span>
+                            }
+                            else if (obj.Request.Status == 6)
+                            {
+                                <span>Conclude</span>
+                            }
+                            else if (obj.Request.Status == 3 || obj.Request.Status == 7 || obj.Request.Status == 8)
+                            {
+                                <span>To-Close</span>
+                            }
+                            else if (obj.Request.Status == 9)
+                            {
+                                <span>Unpaid</span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-info">View</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-info">Actions</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

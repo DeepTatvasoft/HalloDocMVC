@@ -78,7 +78,7 @@ namespace HalloDoc.Controllers
             HttpContext.Session.Remove("Userid");
             return RedirectToAction("patientlogin", "Home");
         }
-        public IActionResult newaccount(PatientReqSubmit model , string id)
+        public IActionResult newaccount(PatientReqSubmit model, string id)
         {
             if (model.Password == model.ConfirmPassword && model.Password != null)
             {
@@ -86,9 +86,9 @@ namespace HalloDoc.Controllers
                 if (aspuser != null)
                 {
                     TempData["error"] = "Email Already Exist";
-                    return RedirectToAction("CreateAccount", "Home" , new { id = id });
+                    return RedirectToAction("CreateAccount", "Home", new { id = id });
                 }
-                homefunction.newaccount(model , id);
+                homefunction.newaccount(model, id);
                 TempData["success"] = "Your Account Created Sucessfuly";
                 return RedirectToAction("patientlogin", "Home");
             }
@@ -104,10 +104,10 @@ namespace HalloDoc.Controllers
         public async Task<IActionResult> validate([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
             var obj = homefunction.ValidateUser(aspNetUser).Item1;
-            if (obj != null)
+            var user = homefunction.ValidateUser(aspNetUser).Item2;
+            if (obj != null && user != null)
             {
                 TempData["success"] = "User LogIn Successfully";
-                var user = homefunction.ValidateUser(aspNetUser).Item2;
                 HttpContext.Session.SetString("Username", obj.Username);
                 HttpContext.Session.SetInt32("Userid", user.Userid);
                 HttpContext.Session.SetInt32("AspUserid", (int)user.Aspnetuserid);

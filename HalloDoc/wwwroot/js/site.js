@@ -261,3 +261,42 @@ function ChangeBlockHistory(currentPage) {
     });
 
 }
+function ChangeEmaillogs(currentPage) {
+    var form = $('#emaillogForm'); 
+    $('#curpageinput').val(currentPage);
+    $.ajax({
+        url: "/Admin/EmailLogTable",
+        data: form.serialize(),
+        type: "POST",
+        dataType: "html",
+        success: function (response) {
+            $('.emaillogtable').html(response);
+            document.getElementById("page-1").style.backgroundColor = "white";
+            document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+
+}
+function ChangeSearchRecord(currentPage) {
+    var form = $('#SearchrecordsForm'); 
+    $('#curpageinput').val(currentPage);
+    $.ajax({
+        url: "/Admin/SearchRecordTable",
+        data: form.serialize(),
+        type: "POST",
+        dataType: "html",
+        success: function (response) {
+            $('.searchrecordstable').html(response);
+            document.getElementById("page-1").style.backgroundColor = "white";
+            document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+
+}
+

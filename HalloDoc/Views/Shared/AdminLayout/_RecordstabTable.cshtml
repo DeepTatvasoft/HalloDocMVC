@@ -12,17 +12,16 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var obj in Model.req)
+        @foreach (var obj in Model.user)
         {
-            var reqclient = obj.Requestclients.ElementAt(0);
             <tr>
-                <td>@reqclient.Firstname</td>
-                <td>@reqclient.Lastname</td>
-                <td>@reqclient.Email</td>
-                <td>@reqclient.Phonenumber</td>
-                <td>@reqclient.Address</td>
+                <td>@obj.Firstname</td>
+                <td>@obj.Lastname</td>
+                <td>@obj.Email</td>
+                <td>@obj.Mobile</td>
+                <td>@obj.Street @obj.City</td>
                 <td>
-                    <button type="reset" class="btn btn-outline-info boxshadowbtn">Explore</button>
+                    <a asp-action="ExplorePatient" asp-controller="Admin" asp-route-id="@obj.Userid" type="reset" class="btn btn-outline-info boxshadowbtn">Explore</a>
                 </td>
             </tr>
         }
@@ -120,9 +119,12 @@
     }
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    var page = document.getElementById("page-1");
+    var num = document.getElementById("curpageinput");
+    if (@Model.currentpage == 1) {
+        document.getElementById("page-1").style.backgroundColor = "lightblue";
+    }
+    var page = document.getElementById("page-" + num.value);
     if (page != null) {
         page.style.backgroundColor = "lightblue";
     }

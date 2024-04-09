@@ -9,7 +9,7 @@ namespace Services.ViewModels
 {
     public class RecordstabModal
     {
-        public List<Request> req { get; set; }
+        public List<User> user { get; set; }
         public int totalpages { get; set; }
         public int currentpage { get; set; }
         public string? firstname { get; set; }
@@ -40,5 +40,25 @@ namespace Services.ViewModels
         public int currentpage { get; set; }
         public List<Aspnetrole> aspnetrole { get; set; }
         public List<Emaillog> emaillogs { get; set; }
+    }
+
+    public class SearchRecordModal
+    {
+        public int? reqstatus { get; set; }
+        public string? patientname { get; set; }
+        public int? reqtype { get; set; }
+        public DateTime? fromDOS { get; set; }
+        public DateTime? toDOS { get; set; }
+        public string? providername { get; set; }
+        public string? email { get; set; }
+        public string? phonenumber { get; set; }
+        public int totalpages { get; set; }
+        public int currentpage { get; set; }
+        public List<Request> req { get; set; }
+    }
+
+    public class ExploreModal
+    {
+        public List<Requestclient> reqclient { get; set; }
     }
 }

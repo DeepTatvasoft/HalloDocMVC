@@ -522,7 +522,7 @@ namespace HalloDoc.Controllers
         public IActionResult ContactPhysician(int phyid, string chk, string message)
         {
             int adminid = (int)HttpContext.Session.GetInt32("Adminid");
-            adminFunction.ContactPhysician(phyid, chk, message , adminid);
+            adminFunction.ContactPhysician(phyid, chk, message, adminid);
             return NoContent();
         }
         public IActionResult AccessTab()
@@ -856,32 +856,37 @@ namespace HalloDoc.Controllers
         public IActionResult Recordstab()
         {
             RecordstabModal modal = new RecordstabModal();
-            modal.req = _context.Requests.Include(u => u.Requestclients).ToList();
-            modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
-            modal.req = modal.req.Skip((1 - 1) * 10).Take(10).ToList();
+            modal.user = _context.Users.ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.user.Count() / 10.00);
+            modal.user = modal.user.Skip((1 - 1) * 10).Take(10).ToList();
+            modal.currentpage = 1;
             return View(modal);
         }
         public IActionResult RecordsTable(RecordstabModal modal)
         {
-            modal.req = _context.Requests.Include(u => u.Requestclients).ToList();
+            modal.user = _context.Users.ToList();
             if (!string.IsNullOrWhiteSpace(modal.firstname))
             {
-                modal.req = modal.req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(modal.firstname.ToLower()))).ToList();
+                modal.user = modal.user.Where(rc => rc.Firstname.ToLower().Contains(modal.firstname.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.lastname))
             {
-                modal.req = modal.req.Where(a => a.Requestclients.Any(rc => rc.Lastname.ToLower().Contains(modal.lastname.ToLower()))).ToList();
+                modal.user = modal.user.Where(rc => rc.Lastname.ToLower().Contains(modal.lastname.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.email))
             {
-                modal.req = modal.req.Where(a => a.Requestclients.Any(rc => rc.Email.ToLower().Contains(modal.email.ToLower()))).ToList();
+                modal.user = modal.user.Where(rc => rc.Email.ToLower().Contains(modal.email.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.phonenumber))
             {
-                modal.req = modal.req.Where(a => a.Requestclients.Any(rc => rc.Phonenumber.ToLower().Contains(modal.phonenumber.ToLower()))).ToList();
+                modal.user = modal.user.Where(rc => rc.Mobile.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
             }
-            modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
-            modal.req = modal.req.Skip((modal.currentpage - 1) * 10).Take(10).ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.user.Count() / 10.00);
+            if (modal.currentpage > modal.totalpages)
+            {
+                modal.currentpage = 1;
+            }
+            modal.user = modal.user.Skip((modal.currentpage - 1) * 10).Take(10).ToList();
             return PartialView("AdminLayout/_RecordstabTable", modal);
         }
         public IActionResult BlockHistory()
@@ -890,7 +895,8 @@ namespace HalloDoc.Controllers
             modal.blockrequests = _context.Blockrequests.ToList();
             modal.reqclient = _context.Requestclients.ToList();
             modal.totalpages = (int)Math.Ceiling(modal.blockrequests.Count() / 5.00);
-            modal.blockrequests = modal.blockrequests.Skip((1 - 1) * 10).Take(10).ToList();
+            modal.blockrequests = modal.blockrequests.Skip((1 - 1) * 5).Take(5).ToList();
+            modal.currentpage = 1;
             return View(modal);
         }
         public IActionResult BlockHistoryTable(BlockHistoryModal modal)
@@ -914,14 +920,113 @@ namespace HalloDoc.Controllers
                 modal.blockrequests = modal.blockrequests.Where(rc => rc.Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
             }
             modal.totalpages = (int)Math.Ceiling(modal.blockrequests.Count() / 5.00);
-            modal.blockrequests = modal.blockrequests.Skip((modal.currentpage - 1) * 10).Take(10).ToList();
-            return PartialView("AdminLayout/_BlockHistoryTable" , modal);
+            if (modal.currentpage > modal.totalpages)
+            {
+                modal.currentpage = 1;
+            }
+            modal.blockrequests = modal.blockrequests.Skip((modal.currentpage - 1) * 5).Take(5).ToList();
+            return PartialView("AdminLayout/_BlockHistoryTable", modal);
         }
         public IActionResult EmailLogs()
         {
             EmailLogsModal modal = new EmailLogsModal();
             modal.aspnetrole = _context.Aspnetroles.ToList();
             modal.emaillogs = _context.Emaillogs.ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.emaillogs.Count() / 5.00);
+            modal.emaillogs = modal.emaillogs.Skip((1 - 1) * 5).Take(5).ToList();
+            modal.currentpage = 1;
+            return View(modal);
+        }
+
+        public IActionResult EmailLogTable(EmailLogsModal modal)
+        {
+            modal.aspnetrole = _context.Aspnetroles.ToList();
+            modal.emaillogs = _context.Emaillogs.ToList();
+            if (modal.roleid != 0)
+            {
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Roleid == modal.roleid).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Emailid.ToLower().Contains(modal.email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.createddate.ToString()))
+            {
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Createdate.Date == modal.createddate.Value.Date).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.sentdate.ToString()))
+            {
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Sentdate.Value.Date == modal.sentdate.Value.Date).ToList();
+            }
+            modal.totalpages = (int)Math.Ceiling(modal.emaillogs.Count() / 5.00);
+            if (modal.currentpage > modal.totalpages)
+            {
+                modal.currentpage = 1;
+            }
+            modal.emaillogs = modal.emaillogs.Skip((modal.currentpage - 1) * 5).Take(5).ToList();
+            return PartialView("AdminLayout/_EMaillogsTable", modal);
+        }
+        public IActionResult SearchRecords()
+        {
+            SearchRecordModal modal = new SearchRecordModal();
+            modal.req = _context.Requests.Include(u => u.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Include(u => u.Requestnotes).Where(u => u.Status != 200).ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
+            modal.req = modal.req.Skip((1 - 1) * 10).Take(10).ToList();
+            modal.currentpage = 1;
+            return View(modal);
+        }
+        public IActionResult SearchRecordTable(SearchRecordModal modal)
+        {
+            modal.req = _context.Requests.Include(u => u.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Include(u => u.Requestnotes).Where(u => u.Status != 200).ToList();
+            if (modal.reqstatus != 0)
+            {
+                modal.req = modal.req.Where(u => u.Status == modal.reqstatus).ToList();
+
+            }
+            if (!string.IsNullOrWhiteSpace(modal.patientname))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Firstname.ToLower().Contains(modal.patientname.ToLower()) || rc.Requestclients.ElementAt(0).Lastname.ToLower().Contains(modal.patientname.ToLower())).ToList();
+            }
+            if (modal.reqtype != 0)
+            {
+                modal.req = modal.req.Where(u => u.Requesttypeid == modal.reqtype).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.providername))
+            {
+                modal.req = modal.req.Where(u => u.Physicianid != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Physician.Firstname.ToLower().Contains(modal.providername.ToLower()) || rc.Physician.Lastname.ToLower().Contains(modal.providername.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Email.ToLower().Contains(modal.email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.phonenumber))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.toDOS.ToString()))
+            {
+                modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date <= modal.toDOS.Value.Date).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.fromDOS.ToString()))
+            {
+                modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date >= modal.fromDOS.Value.Date).ToList();
+            }
+
+            modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
+            if (modal.currentpage > modal.totalpages)
+            {
+                modal.currentpage = 1;
+            }
+            modal.req = modal.req.Skip((modal.currentpage - 1) * 10).Take(10).ToList();
+            return PartialView("AdminLayout/_SearchrecordTable", modal);
+        }
+        public IActionResult ExplorePatient(int id)
+        {
+            ExploreModal modal = new ExploreModal();
+            modal.reqclient = _context.Requestclients.Include(u => u.Request).ThenInclude(u => u.Physician).Where(u=>u.Request.Userid == id).ToList();
             return View(modal);
         }
     }

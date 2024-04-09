@@ -13,7 +13,7 @@
                 <div class="col">
                     <div class="form-floating mb-3">
                         <select asp-for="roleid" class="form-select" aria-label="Floating label select example">
-                            <option>Role</option>
+                            <option value="0">All</option>
                             @foreach (var obj in Model.aspnetrole)
                             {
                                 <option value="@obj.Id">@obj.Name</option>
@@ -33,7 +33,7 @@
                 <div class="col">
 
                     <div class="form-floating mb-3">
-                        <input asp-for="email" type="email" class="form-control" placeholder="email">
+                        <input asp-for="email" type="text" class="form-control" placeholder="email">
                         <label for="floatingInput">Email id</label>
                     </div>
                 </div>
@@ -62,6 +62,7 @@
 </div>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     document.getElementById('Records-tab').classList.add('active');
     document.getElementById('emaillogs').classList.add('active');
