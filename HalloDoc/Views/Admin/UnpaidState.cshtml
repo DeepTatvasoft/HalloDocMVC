@@ -99,10 +99,10 @@
                                         Actions
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li style="cursor : pointer"><a class="dropdown-item text-secondary viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
-                                        <li style="cursor : pointer"><a class="dropdown-item text-secondary"><i class="fa-regular fa-file me-2"></i>View Uploads</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="fa-regular fa-file me-2"></i>View Uploads</a></li>
                                         <li>
-                                            <a class="dropdown-item text-secondary viewnotes" name="@obj.Requestid">
+                                            <a class="dropdown-item viewnotes" name="@obj.Requestid">
                                                 <i class="fa-solid fa-book-journal-whills me-2"></i>View Notes
                                             </a>
                                         </li>
@@ -301,6 +301,7 @@
 <script>
     $(document).ready(function () {
         $('.viewcase').on('click', function (e) {
+            localStorage.setItem('state', 'unpaid');
             e.preventDefault();
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
@@ -323,6 +324,7 @@
         });
         $('.viewnotes').on('click', function (e) {
             e.preventDefault();
+            localStorage.setItem('state', 'unpaid');
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
             var reqid = $(this).attr('name');

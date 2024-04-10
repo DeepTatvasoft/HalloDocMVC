@@ -194,6 +194,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
+        var backbtntarget = localStorage.getItem('state');
+        console.log(backbtntarget);
+        switch (backbtntarget) {
+            case 'new':
+                $('#New-tab').trigger('click');
+                break;
+            case 'pending':
+                $('#Pending-tab').trigger('click');
+                break;
+            case 'active':
+                $('#Active-tab').trigger('click');
+                break;
+            case 'conclude':
+                $('#Conclude-tab').trigger('click');
+                break;
+            case 'toclose':
+                $('#ToClose-tab').trigger('click');
+                break;
+            case 'unpaid':
+                $('#Unpaid-tab').trigger('click');
+                break;
+        }
+        var url = "";
         var search;
         var url = '/Admin/NewState';
         $('#myInput').keyup(function () {
@@ -223,38 +246,43 @@
             switch (target) {
                 case '#New-tab-pane':
                     url = '/Admin/NewState';
+                    localStorage.setItem('state','new');
                     status = '1';
                     break;
                 case '#Pending-tab-pane':
                     url = '/Admin/PendingState';
+                    localStorage.setItem('state', 'pending');
                     status = '2';
                     break;
                 case '#Active-tab-pane':
                     url = '/Admin/ActiveState';
+                    localStorage.setItem('state', 'active');
                     status = '4';
                     break;
                 case '#Conclude-tab-pane':
                     url = '/Admin/ConcludeState';
+                    localStorage.setItem('state', 'conclude');
                     status = '6';
                     break;
                 case '#ToClose-tab-pane':
                     url = '/Admin/ToCloseState';
+                    localStorage.setItem('state', 'toclose');
                     status = '3';
                     break;
                 case '#Unpaid-tab-pane':
                     url = '/Admin/UnpaidState';
+                    localStorage.setItem('state', 'unpaid');
                     status = '9';
                     break;
                 default:
                     status = '1';
-                    url = 'Admin/AdminDashboard';
+                    url = '/Admin/AdminDashboard';
             }
             $.ajax({
                 url: url,
                 data: { "currentPage": currentpage, "searchkey": search },
                 success: function (response) {
                     $('#status-tabContent').html(response);
-                    //console.log($('#exportstatus'));
                     $('#exportstatus').val(status);
                     $('#exportstatusall').val(status);
                     globalregion = 0;
@@ -269,7 +297,7 @@
                     });
 
                     $('#exportreqtype').val("");
-                    $('#exportregion').val("Select Region");
+                    $('#exportregion').val("Select Region");                  
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

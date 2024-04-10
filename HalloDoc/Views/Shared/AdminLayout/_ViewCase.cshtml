@@ -32,12 +32,12 @@
         <h3 class="mt-2 fw-bold">
             New Request <span class="headtag d-sm-inline-block d-none" style="border-radius:15px;font-size:23px;background-color:@color;color:white;padding:5px;">@type</span>
         </h3>
-        <a asp-controller="Admin" asp-action="AdminDashboard" style="text-decoration: none;" class="backimg">
+        <a style="text-decoration: none;" class="backimg">
             <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
             <span>Back</span>
         </a>
     </div>
-    <div class="container bg-white" style="padding-bottom:20px" id="maincontent">
+    <div class="container bg-white lightmode" style="padding-bottom:20px" id="maincontent">
         <form method="post">
             <div class="confirmNum">
                 Confirmation Number
@@ -196,13 +196,13 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
+        dark();
         $('.viewnotes').on('click', function (e) {
             e.preventDefault();
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
             var reqid = $(this).attr('name');
             //console.log(reqid);
-            console.log($('#ViewcaseRemove').attr('id'));
             $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
             //$('#myTab').remove();
 
@@ -220,7 +220,6 @@
         });
         $('.physiciandata').on('change', function (e) {
             var regionid = $(this).val();
-            console.log(regionid);
 
             $.ajax({
                 url: '/admin/filterregion',
@@ -252,7 +251,6 @@
         $('.cancelcase').on('click', function (e) {
             var reqid = $('#reqidCancelModel').text();
             var casetagid = $('.reason').val();
-            console.log(casetagid);
             if (casetagid == "") {
                 $('.reason').css('border', '1px solid red');
             }
@@ -299,6 +297,16 @@
                 });
             }
         });
+        $('.backimg').on('click', function () {
+            $.ajax({
+                success: function (response) {
+                    window.location.href = "/Admin/Admindashboard";
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
     });
-
+</script>
 

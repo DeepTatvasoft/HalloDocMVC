@@ -9,7 +9,7 @@
             <span>Back</span>
         </a>
     </div>
-    <div class="container bg-white" style="padding-bottom:20px" id="maincontent">
+    <div class="container bg-white lightmode" style="padding-bottom:20px" id="maincontent">
         <form asp-controller="Admin" asp-action="OrderSubmit" method="post">
             <input asp-for="@Model.reqid" type="hidden">
             <input asp-for="@Model.createdby" type="hidden">
@@ -70,6 +70,7 @@
 </div>
 <script>
     $(document).ready(function () {
+        dark();
         var profession = $('.profession');
         $.ajax({
             url: '/Admin/getprofession',

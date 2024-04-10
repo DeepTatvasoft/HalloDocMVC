@@ -29,10 +29,12 @@ function phydocupload(btn, file) {
     })
 }
 
+
 window.onload = function () {
     var array = document.cookie.split("=");
+
     flag = parseInt(array[1]);
-    //console.log(flag);
+    //console.log(localStorage.getItem('darkmode'));
     dark()
 }
 
@@ -43,18 +45,16 @@ function dark() {
         var darkmode = document.getElementById('darkmode');
         var navlink = document.getElementsByClassName('nav-link');
         var active = document.getElementsByClassName('nav-link active');
+        var activeState = document.getElementsByClassName('state active');
         var lightmode = document.getElementsByClassName('lightmode');
     } catch (error) { }
-    if (flag == 0) {
+    if (localStorage.getItem('darkmode') == '0') {
         document.querySelector('body').setAttribute('data-bs-theme', 'dark');
         var thead = document.querySelector('thead');
         if (lightmode.length > 0) {
             for (var i = 0; i < lightmode.length; i++) {
                 lightmode[i].classList.replace('bg-white', 'bg-dark');
             }
-        }
-        if (thead != null) {
-            thead.style.backgroundColor = "#0e0d0d"
         }
         for (var i = 0; i < navlink.length; i++) {
             navlink[i].classList.add('text-white');
@@ -63,12 +63,13 @@ function dark() {
             active[i].classList.remove('text-white');
             active[i].classList.add('text-info');
         }
+        if (activeState.length > 0) {
+            activeState[0].classList.remove('text-info');
+        }
         try {
             maincontent.classList.replace('bg-white', 'bg-dark');
             darkmode.classList.replace('bg-white', 'bg-dark');
         } catch (error) { }
-        document.cookie = "flag = " + flag;
-        flag = 1;
     }
     else {
         document.querySelector('body').setAttribute('data-bs-theme', 'light');
@@ -87,9 +88,17 @@ function dark() {
             maincontent.classList.replace('bg-dark', 'bg-white');
             darkmode.classList.replace('bg-dark', 'bg-white');
         } catch (error) { }
-        document.cookie = "flag = " + flag;
-        flag = 0;
     }
+}
+
+function darktoggle() {
+    if (localStorage.getItem('darkmode') == '0') {
+        localStorage.setItem('darkmode', '1');
+    }
+    else {
+        localStorage.setItem('darkmode', '0');
+    }
+    dark();
 }
 function passtoggle() {
     // console.log('hello');

@@ -15,10 +15,9 @@
             </a>
         </div>
     </div>
-    <div class="documenthead mt-4 bg-white p-3 rounded">
+    <div class="documenthead mt-4 bg-white lightmode p-3 rounded">
         <span class="text-body-secondary">Patient Name</span>
         <h5 class="text-info">@Model.Username (@Model.ConfirmationNum)</h5>
-
         <span class="text-body-secondary">Check here for any files that you and doctors of your subsequents requestors have attached for you to review</span>
         <form enctype="multipart/form-data">
             <input type="hidden" name="@Model.reqid" id="docid">
@@ -107,13 +106,13 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    // jQuery script to handle leader checkbox click event
+ 
     $(document).ready(function () {
+        dark();
         $('#chkbox').click(function () {
             $('.childChkbox').prop('checked', $(this).prop('checked'));
         });
 
-        // Handle individual checkbox clicks to update the leader checkbox state
         $('.childChkbox').click(function () {
             $('#chkbox').prop('checked', $('.childChkbox:checked').length === $('.childChkbox').length);
         });

@@ -97,7 +97,7 @@
                         <option value="" selected>Select Physician</option>
                     </select>
                     <div class="form-floating mt-3">
-                        <input asp-for="shiftdate" type="date" class="form-control" placeholder="Date">
+                        <input asp-for="shiftdate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" placeholder="Date">
                         <label for="floatingInput">Shift Date</label>
                     </div>
                     <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
@@ -180,7 +180,7 @@
                         <option id="shiftmodalPhysician" selected>Select Physician</option>
                     </select>
                     <div class="form-floating mt-3">
-                        <input asp-for="shiftdate" type="date" id="shiftmodalDate" class="form-control disable" placeholder="Date" disabled>
+                        <input asp-for="shiftdate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="shiftmodalDate" class="form-control disable" placeholder="Date" disabled>
                         <label for="floatingInput">Shift Date</label>
                     </div>
                     <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
