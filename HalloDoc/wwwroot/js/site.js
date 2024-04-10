@@ -17,7 +17,7 @@ try {
 }
 catch (error) { }
 
-function phydocupload(btn , file) {
+function phydocupload(btn, file) {
     const actualBtn = document.getElementById(btn);
     const fileChosen = document.getElementById(file);
     var files = "";
@@ -40,25 +40,52 @@ function dark() {
     try {
         //console.log(theme);
         var maincontent = document.getElementById('maincontent');
-        var darkmode = document.getElementById('darkmode');        
-        var navbar = document.getElementById('navbar');
+        var darkmode = document.getElementById('darkmode');
+        var navlink = document.getElementsByClassName('nav-link');
+        var active = document.getElementsByClassName('nav-link active');
+        var lightmode = document.getElementsByClassName('lightmode');
     } catch (error) { }
     if (flag == 0) {
         document.querySelector('body').setAttribute('data-bs-theme', 'dark');
+        var thead = document.querySelector('thead');
+        if (lightmode.length > 0) {
+            for (var i = 0; i < lightmode.length; i++) {
+                lightmode[i].classList.replace('bg-white', 'bg-dark');
+            }
+        }
+        if (thead != null) {
+            thead.style.backgroundColor = "#0e0d0d"
+        }
+        for (var i = 0; i < navlink.length; i++) {
+            navlink[i].classList.add('text-white');
+        }
+        for (var i = 0; i < active.length; i++) {
+            active[i].classList.remove('text-white');
+            active[i].classList.add('text-info');
+        }
         try {
             maincontent.classList.replace('bg-white', 'bg-dark');
             darkmode.classList.replace('bg-white', 'bg-dark');
-            navbar.classList.replace('bg-white', 'bg-dark');
         } catch (error) { }
         document.cookie = "flag = " + flag;
         flag = 1;
     }
     else {
         document.querySelector('body').setAttribute('data-bs-theme', 'light');
+        if (lightmode.length > 0) {
+            for (var i = 0; i < lightmode.length; i++) {
+                lightmode[i].classList.replace('bg-dark', 'bg-white');
+            }
+        }
+        for (var i = 0; i < navlink.length; i++) {
+            navlink[i].classList.remove('text-white');
+        }
+        for (var i = 0; i < active.length; i++) {
+            active[i].classList.remove('text-info');
+        }
         try {
             maincontent.classList.replace('bg-dark', 'bg-white');
             darkmode.classList.replace('bg-dark', 'bg-white');
-            navbar.classList.replace('bg-dark', 'bg-white');
         } catch (error) { }
         document.cookie = "flag = " + flag;
         flag = 0;
@@ -209,12 +236,11 @@ function ContactBtn(phyid) {
 function ChangeShift(currentPage) {
     $.ajax({
         url: "/Admin/ShiftReviewTable",
-        data: { "currentPage": currentPage, "regionid": $('#forregionid').val()},
+        data: { "currentPage": currentPage, "regionid": $('#forregionid').val() },
         type: "POST",
         dataType: "html",
         success: function (response) {
             $('.shifttable').html(response);
-            document.getElementById("page-1").style.backgroundColor = "white";
             document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
         },
         error: function (xhr, status, error) {
@@ -224,7 +250,7 @@ function ChangeShift(currentPage) {
 
 }
 function ChangeRecord(currentPage) {
-    var form = $('#recordsForm'); 
+    var form = $('#recordsForm');
     $('#curpageinput').val(currentPage);
     $.ajax({
         url: "/Admin/RecordsTable",
@@ -233,7 +259,6 @@ function ChangeRecord(currentPage) {
         dataType: "html",
         success: function (response) {
             $('.recordstable').html(response);
-            document.getElementById("page-1").style.backgroundColor = "white";
             document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
         },
         error: function (xhr, status, error) {
@@ -243,7 +268,7 @@ function ChangeRecord(currentPage) {
 
 }
 function ChangeBlockHistory(currentPage) {
-    var form = $('#BlockForm'); 
+    var form = $('#BlockForm');
     $('#curpageinput').val(currentPage);
     $.ajax({
         url: "/Admin/BlockHistoryTable",
@@ -252,7 +277,6 @@ function ChangeBlockHistory(currentPage) {
         dataType: "html",
         success: function (response) {
             $('.blockhistorytable').html(response);
-            document.getElementById("page-1").style.backgroundColor = "white";
             document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
         },
         error: function (xhr, status, error) {
@@ -262,7 +286,7 @@ function ChangeBlockHistory(currentPage) {
 
 }
 function ChangeEmaillogs(currentPage) {
-    var form = $('#emaillogForm'); 
+    var form = $('#emaillogForm');
     $('#curpageinput').val(currentPage);
     $.ajax({
         url: "/Admin/EmailLogTable",
@@ -271,7 +295,6 @@ function ChangeEmaillogs(currentPage) {
         dataType: "html",
         success: function (response) {
             $('.emaillogtable').html(response);
-            document.getElementById("page-1").style.backgroundColor = "white";
             document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
         },
         error: function (xhr, status, error) {
@@ -281,7 +304,7 @@ function ChangeEmaillogs(currentPage) {
 
 }
 function ChangeSearchRecord(currentPage) {
-    var form = $('#SearchrecordsForm'); 
+    var form = $('#SearchrecordsForm');
     $('#curpageinput').val(currentPage);
     $.ajax({
         url: "/Admin/SearchRecordTable",
@@ -290,7 +313,6 @@ function ChangeSearchRecord(currentPage) {
         dataType: "html",
         success: function (response) {
             $('.searchrecordstable').html(response);
-            document.getElementById("page-1").style.backgroundColor = "white";
             document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
         },
         error: function (xhr, status, error) {

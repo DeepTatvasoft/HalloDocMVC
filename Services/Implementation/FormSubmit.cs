@@ -102,6 +102,7 @@ namespace Services.Implementation
                 Requesttypeid = 1,
                 Status = 1,
                 User = user,
+                Isdeleted = new BitArray(new[] { false }),
                 Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.LastName.Substring(0, 2) + model.FirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
             };
 
@@ -163,7 +164,8 @@ namespace Services.Implementation
                     Createddate = DateTime.Now,
                     Status = 1,
                     Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-                    User = user
+                    Isdeleted = new BitArray(new[] { false }),
+                    User = user,
                 };
 
                 _context.Requests.Add(req);
@@ -213,6 +215,7 @@ namespace Services.Implementation
                     Relationname = model.FamRelation,
                     Createddate = DateTime.Now,
                     Status = 1,
+                    Isdeleted = new BitArray(new[] { false }),
                 };
                 _context.Requests.Add(req);
                 _context.SaveChanges();
@@ -272,7 +275,8 @@ namespace Services.Implementation
                 Createddate = DateTime.Now,
                 Requesttypeid = 3,
                 Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-                User = user
+                User = user,
+                Isdeleted = new BitArray(new[] { false }),
             };
             _context.Requests.Add(req);
             _context.SaveChanges();
@@ -320,7 +324,8 @@ namespace Services.Implementation
                 Status = 1,
                 Createddate = DateTime.Now,
                 Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-                User = user
+                Isdeleted = new BitArray(new[] { false }),
+                User = user,
             };
             _context.Requests.Add(req);
             _context.SaveChanges();

@@ -16,8 +16,8 @@
 </head>
 <Partial name="_Notification" />
 <body class="bg-body-secondary" data-bs-theme="light">
-    <nav class="navbar bg-white">
-        <div class="container-fluid uppernav" style="border : none">
+    <nav class="navbar bg-white lightmode">
+        <div class="container-fluid uppernav bg-white lightmode" style="border : none">
             <a class="navbar-brand ms-2" href="#">
                 <img class="d-none d-md-inline-block" src="~/images/image_2024_01_17T04_17_17_750Z.png" alt="Bootstrap" width="120" height="80">
             <p class="d-md-none mt-3">
@@ -38,7 +38,7 @@
             </div>
         </div>
     </nav>
-    <div class="tabnav bg-white">
+    <div class="tabnav bg-white lightmode">
         <div class="collapse show" id="collapseExample">
             <div class="card card-body">
                 <ul class="nav nav-tabs d-block d-md-flex" id="myTab" role="tablist" style="box-shadow: 1px 1px 5px;">
@@ -48,9 +48,9 @@
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="location-tab">
+                        <a asp-action="LocationTab" asp-controller="Admin" class="nav-link" id="location-tab">
                             Provider Location
-                        </button>
+                        </a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="profiletab" asp-action="Profiletab" asp-controller="Admin">
@@ -65,7 +65,7 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item nav-link" id="providerdrop" asp-action="Providertab" asp-controller="Admin">Provider</a></li>
                                 <li><a class="dropdown-item nav-link" id="schedulingdrop" asp-action="Scheduling" asp-controller="Admin">Scheduling</a></li>
-                                <li><a class="dropdown-item" href="#">Invoicing</a></li>
+                                <li><a class="dropdown-item nav-link" href="#">Invoicing</a></li>
                             </ul>
                         </div>
                     </li>

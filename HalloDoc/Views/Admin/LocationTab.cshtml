@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Provider Location";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.LocationtabModal
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<div class="container pt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <span class="fw-bolder bigtext">Provider Location</span>
+        <a class="btn btn-outline-info" asp-action="AdminDashboard" asp-controller="Admin">
+            <i class="fa-solid fa-angle-left"></i>
+            Back
+        </a>
+    </div>
+    <div class="content p-3 mt-3" style="margin-bottom:80px;">
+        <div id="map" style="height:60vh"></div>
+    </div>
+</div>
+<script>
+    var map = L.map('map').setView([20.5937, 78.9629], 5);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    var locations = @Html.Raw(Model.physicianlocations);
+    if (locations != null) {
+        for (var i = 0; i < locations.length; i++) {
+            var marker = L.marker([locations[i].Latitude, locations[i].Longitude]).addTo(map);
+            marker.bindPopup("<b>" + locations[i].Physicianname + "</b>").openPopup();
+        }
+    }
+</script>
+
+
+<script>
+    document.getElementById('location-tab').classList.add('active');
+</script>

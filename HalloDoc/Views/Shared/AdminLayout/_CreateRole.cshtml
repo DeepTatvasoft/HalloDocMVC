@@ -11,18 +11,18 @@
     </div>
 </div>
 <form asp-action="CreateRoleSubmit" asp-controller="Admin" type="post">
-    <div class="bg-white mt-2 p-3 rounded">
+    <div class="bg-white lightmode mt-2 p-3 rounded">
         <h5>Details</h5>
         <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
             <div class="col">
                 <div class="form-floating mb-3">
-                    <input asp-for="RoleName" type="text" class="form-control boxshadowbtn" placeholder="name">
+                    <input asp-for="RoleName" type="text" class="form-control" placeholder="name">
                     <label for="floatingInput">Role name</label>
                 </div>
             </div>
             <div class="col">
                 <div class="form-floating">
-                    <select asp-for="accountType" id="acctype" class="form-select boxshadowbtn" aria-label="Floating label select example">
+                    <select asp-for="accountType" id="acctype" class="form-select" aria-label="Floating label select example">
                         <option value="3" selected>All</option>
                         <option value="1">Admin</option>
                         <option value="2">Physician</option>

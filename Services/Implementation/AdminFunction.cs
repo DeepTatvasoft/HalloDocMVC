@@ -11,6 +11,7 @@ using System.Collections;
 using System.Net.Mail;
 using System.Net;
 using System.Drawing;
+using System;
 
 namespace Services.Implementation
 {
@@ -941,7 +942,7 @@ namespace Services.Implementation
 
             return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
         }
-        public void ContactPhysician(int phyid, string chk, string message,int adminid)
+        public void ContactPhysician(int phyid, string chk, string message, int adminid)
         {
             if (chk == "email" || chk == "both")
             {
@@ -950,11 +951,11 @@ namespace Services.Implementation
                 Emaillog emaillog = new Emaillog
                 {
                     Emailid = email,
-                    Emailtemplate= "Contact Physician",
-                    Subjectname="Physician Contact",
-                    Roleid=2,
+                    Emailtemplate = "Contact Physician",
+                    Subjectname = "Physician Contact",
+                    Roleid = 2,
                     Adminid = adminid,
-                    Physicianid=phyid,
+                    Physicianid = phyid,
                     Createdate = DateTime.Now,
                     Sentdate = DateTime.Now,
                     Isemailsent = new BitArray(new[] { true }),
@@ -1662,6 +1663,7 @@ namespace Services.Implementation
             modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u => u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
             modal.totalpages = (int)Math.Ceiling(modal.shiftdetail.Count() / 10.00);
             modal.shiftdetail = modal.shiftdetail.Skip((1 - 1) * 10).Take(10).ToList();
+            modal.currentpage = 1;
             return modal;
         }
         public ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid)
@@ -1777,6 +1779,367 @@ namespace Services.Implementation
             data.Isdeleted = new BitArray(new[] { true });
             data.Modifieddate = DateTime.Now;
             _context.Healthprofessionals.Update(data);
+            _context.SaveChanges();
+        }
+
+        public byte[] ExportSearchRecord(SearchRecordModal model)
+        {
+            using (var workbook = new XSSFWorkbook())
+            {
+                ISheet sheet = workbook.CreateSheet("FilteredRecord");
+                IRow headerRow = sheet.CreateRow(0);
+                headerRow.CreateCell(0).SetCellValue("Sr No.");
+                headerRow.CreateCell(1).SetCellValue("Patient Name");
+                headerRow.CreateCell(2).SetCellValue("Requestor");
+                headerRow.CreateCell(3).SetCellValue("Date Of Service");
+                headerRow.CreateCell(4).SetCellValue("Close Case Date");
+                headerRow.CreateCell(5).SetCellValue("Email");
+                headerRow.CreateCell(6).SetCellValue("Phone Number");
+                headerRow.CreateCell(7).SetCellValue("Address");
+                headerRow.CreateCell(8).SetCellValue("Zip");
+                headerRow.CreateCell(9).SetCellValue("Request Status");
+                headerRow.CreateCell(10).SetCellValue("Physician");
+                headerRow.CreateCell(11).SetCellValue("Physician Note");
+                headerRow.CreateCell(12).SetCellValue("Cancelled By Provider Note");
+                headerRow.CreateCell(13).SetCellValue("Admin Note");
+                headerRow.CreateCell(14).SetCellValue("Patient Note");
+
+                for (int i = 0; i < model.req.Count; i++)
+                {
+                    var reqclient = model.req.ElementAt(i).Requestclients.ElementAt(0);
+                    var req = model.req.ElementAt(i);
+                    var status = "";
+                    if (req.Status == 1)
+                    {
+                        status = "New";
+                    }
+                    else if (req.Status == 2)
+                    {
+                        status = "Pending";
+                    }
+                    else if (req.Status == 4 || req.Status == 5)
+                    {
+                        status = "Active";
+                    }
+                    else if (req.Status == 6)
+                    {
+                        status = "Conclude";
+                    }
+                    else if (req.Status == 3 || req.Status == 7 || req.Status == 8)
+                    {
+                        status = "To-Close";
+                    }
+                    else if (req.Status == 9)
+                    {
+                        status = "Unpaid";
+                    }
+                    else
+                    {
+                        status = "-";
+                    }
+                    IRow row = sheet.CreateRow(i + 1);
+                    row.CreateCell(0).SetCellValue(i + 1);
+                    row.CreateCell(1).SetCellValue(@reqclient.Firstname + " " + @reqclient.Lastname);
+                    row.CreateCell(2).SetCellValue(@req.Firstname + " " + @req.Lastname);
+                    if (@req.Accepteddate != null)
+                    {
+                        row.CreateCell(3).SetCellValue(@req.Accepteddate.Value.ToString("MMM dd yyyy"));
+                    }
+                    else
+                    {
+                        row.CreateCell(3).SetCellValue("-");
+                    }
+                    if (@req.Status == 3 || @req.Status == 7 || @req.Status == 8)
+                    {
+                        row.CreateCell(4).SetCellValue(@req.Requeststatuslogs.LastOrDefault(u => u.Requestid == @req.Requestid).Createddate.ToString("MMM dd yyyy"));
+                    }
+                    else
+                    {
+                        row.CreateCell(4).SetCellValue("-");
+                    }
+                    row.CreateCell(5).SetCellValue(@reqclient.Email);
+                    row.CreateCell(6).SetCellValue(@reqclient.Phonenumber);
+                    row.CreateCell(7).SetCellValue(@reqclient.Address);
+                    row.CreateCell(8).SetCellValue(@reqclient.Zipcode);
+                    row.CreateCell(9).SetCellValue(status);
+                    if (req.Physician != null)
+                    {
+                        row.CreateCell(10).SetCellValue(req.Physician.Firstname + " " + req.Physician.Lastname);
+                    }
+                    else
+                    {
+                        row.CreateCell(10).SetCellValue("-");
+                    }
+                    if (req.Requestnotes.Count() > 0 && req.Requestnotes.ElementAt(0).Physiciannotes != null)
+                    {
+                        row.CreateCell(11).SetCellValue(req.Requestnotes.ElementAt(0).Physiciannotes);
+                    }
+                    else
+                    {
+                        row.CreateCell(11).SetCellValue("-");
+                    }
+                    if (req.Status == 3 || req.Status == 7 || req.Status == 8)
+                    {
+                        row.CreateCell(12).SetCellValue(req.Requeststatuslogs.LastOrDefault(u => u.Requestid == req.Requestid).Notes);
+                    }
+                    else
+                    {
+                        row.CreateCell(12).SetCellValue("-");
+                    }
+                    if (req.Requestnotes.Count() > 0)
+                    {
+                        row.CreateCell(13).SetCellValue(req.Requestnotes.ElementAt(0).Adminnotes);
+                    }
+                    else
+                    {
+                        row.CreateCell(13).SetCellValue("-");
+                    }
+                    if (reqclient.Notes != null)
+                    {
+                        row.CreateCell(14).SetCellValue(@reqclient.Notes);
+                    }
+                    else
+                    {
+                        row.CreateCell(14).SetCellValue("-");
+                    }
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.Write(stream);
+                    var content = stream.ToArray();
+                    return content;
+                }
+            }
+        }
+
+        public RecordstabModal Recordstab()
+        {
+            RecordstabModal modal = new RecordstabModal();
+            modal.user = _context.Users.ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.user.Count() / 10.00);
+            modal.user = modal.user.Skip((1 - 1) * 10).Take(10).ToList();
+            modal.currentpage = 1;
+            return modal;
+        }
+
+        public RecordstabModal RecordsTable(RecordstabModal modal)
+        {
+            modal.user = _context.Users.ToList();
+            if (!string.IsNullOrWhiteSpace(modal.firstname))
+            {
+                modal.user = modal.user.Where(rc => rc.Firstname.ToLower().Contains(modal.firstname.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.lastname))
+            {
+                modal.user = modal.user.Where(rc => rc.Lastname.ToLower().Contains(modal.lastname.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.user = modal.user.Where(rc => rc.Email.ToLower().Contains(modal.email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.phonenumber))
+            {
+                modal.user = modal.user.Where(rc => rc.Mobile.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+            }
+            modal.totalpages = (int)Math.Ceiling(modal.user.Count() / 10.00);
+            if (modal.currentpage > modal.totalpages)
+            {
+                modal.currentpage = 1;
+            }
+            modal.user = modal.user.Skip((modal.currentpage - 1) * 10).Take(10).ToList();
+            return modal;
+        }
+
+        public BlockHistoryModal BlockHistory()
+        {
+            BlockHistoryModal modal = new BlockHistoryModal();
+            modal.blockrequests = _context.Blockrequests.ToList();
+            modal.reqclient = _context.Requestclients.ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.blockrequests.Count() / 5.00);
+            modal.blockrequests = modal.blockrequests.Skip((1 - 1) * 5).Take(5).ToList();
+            modal.currentpage = 1;
+            return modal;
+        }
+        public BlockHistoryModal BlockHistoryTable(BlockHistoryModal modal)
+        {
+            modal.blockrequests = _context.Blockrequests.ToList();
+            modal.reqclient = _context.Requestclients.ToList();
+            if (!string.IsNullOrWhiteSpace(modal.name))
+            {
+                modal.reqclient = modal.reqclient.Where(rc => rc.Firstname.ToLower().Contains(modal.name.ToLower()) || rc.Lastname.ToLower().Contains(modal.name.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.date.ToString()))
+            {
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Createddate.Value.Date == modal.date.Value.Date).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Email.ToLower().Contains(modal.email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.phonenumber))
+            {
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+            }
+            modal.totalpages = (int)Math.Ceiling(modal.blockrequests.Count() / 5.00);
+            if (modal.currentpage > modal.totalpages)
+            {
+                modal.currentpage = 1;
+            }
+            modal.blockrequests = modal.blockrequests.Skip((modal.currentpage - 1) * 5).Take(5).ToList();
+            return modal;
+        }
+
+        public EmailLogsModal EmailLogs()
+        {
+            EmailLogsModal modal = new EmailLogsModal();
+            modal.aspnetrole = _context.Aspnetroles.ToList();
+            modal.emaillogs = _context.Emaillogs.ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.emaillogs.Count() / 5.00);
+            modal.emaillogs = modal.emaillogs.Skip((1 - 1) * 5).Take(5).ToList();
+            modal.currentpage = 1;
+            return modal;
+        }
+
+        public EmailLogsModal EmailLogTable(EmailLogsModal modal)
+        {
+            modal.aspnetrole = _context.Aspnetroles.ToList();
+            modal.emaillogs = _context.Emaillogs.ToList();
+            if (modal.roleid != 0)
+            {
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Roleid == modal.roleid).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Emailid.ToLower().Contains(modal.email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.createddate.ToString()))
+            {
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Createdate.Date == modal.createddate.Value.Date).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.sentdate.ToString()))
+            {
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Sentdate.Value.Date == modal.sentdate.Value.Date).ToList();
+            }
+            modal.totalpages = (int)Math.Ceiling(modal.emaillogs.Count() / 5.00);
+            if (modal.currentpage > modal.totalpages)
+            {
+                modal.currentpage = 1;
+            }
+            modal.emaillogs = modal.emaillogs.Skip((modal.currentpage - 1) * 5).Take(5).ToList();
+            return modal;
+        }
+
+        public SearchRecordModal SearchRecords()
+        {
+            SearchRecordModal modal = new SearchRecordModal();
+            modal.req = _context.Requests.Include(u => u.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Include(u => u.Requestnotes).Where(u => u.Status != 200 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
+            modal.req = modal.req.Skip((1 - 1) * 10).Take(10).ToList();
+            modal.currentpage = 1;
+            return modal;
+        }
+        public SearchRecordModal SearchRecordTable(SearchRecordModal modal)
+        {
+            modal.req = _context.Requests.Include(u => u.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Include(u => u.Requestnotes).Where(u => u.Status != 200 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            if (modal.reqstatus != 0)
+            {
+                modal.req = modal.req.Where(u => u.Status == modal.reqstatus).ToList();
+
+            }
+            if (!string.IsNullOrWhiteSpace(modal.patientname))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Firstname.ToLower().Contains(modal.patientname.ToLower()) || rc.Requestclients.ElementAt(0).Lastname.ToLower().Contains(modal.patientname.ToLower())).ToList();
+            }
+            if (modal.reqtype != 0)
+            {
+                modal.req = modal.req.Where(u => u.Requesttypeid == modal.reqtype).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.providername))
+            {
+                modal.req = modal.req.Where(u => u.Physicianid != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Physician.Firstname.ToLower().Contains(modal.providername.ToLower()) || rc.Physician.Lastname.ToLower().Contains(modal.providername.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Email.ToLower().Contains(modal.email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.phonenumber))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.toDOS.ToString()))
+            {
+                modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date <= modal.toDOS.Value.Date).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.fromDOS.ToString()))
+            {
+                modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date >= modal.fromDOS.Value.Date).ToList();
+            }
+
+            modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
+            if (modal.currentpage > modal.totalpages)
+            {
+                modal.currentpage = 1;
+            }
+            modal.req = modal.req.Skip((modal.currentpage - 1) * 10).Take(10).ToList();
+            return modal;
+        }
+
+        public ExploreModal ExplorePatient(int id)
+        {
+            ExploreModal modal = new ExploreModal();
+            modal.reqclient = _context.Requestclients.Include(u => u.Request).ThenInclude(u => u.Physician).Where(u => u.Request.Userid == id && u.Request.Isdeleted == new BitArray(new[] { false })).ToList();
+            return modal;
+        }
+        public SearchRecordModal ExportSearchRecordData(SearchRecordModal modal)
+        {
+            modal.req = _context.Requests.Include(u => u.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Include(u => u.Requestnotes).Where(u => u.Status != 200 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            if (modal.reqstatus != 0)
+            {
+                modal.req = modal.req.Where(u => u.Status == modal.reqstatus).ToList();
+
+            }
+            if (!string.IsNullOrWhiteSpace(modal.patientname))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Firstname.ToLower().Contains(modal.patientname.ToLower()) || rc.Requestclients.ElementAt(0).Lastname.ToLower().Contains(modal.patientname.ToLower())).ToList();
+            }
+            if (modal.reqtype != 0)
+            {
+                modal.req = modal.req.Where(u => u.Requesttypeid == modal.reqtype).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.providername))
+            {
+                modal.req = modal.req.Where(u => u.Physicianid != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Physician.Firstname.ToLower().Contains(modal.providername.ToLower()) || rc.Physician.Lastname.ToLower().Contains(modal.providername.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.email))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Email.ToLower().Contains(modal.email.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.phonenumber))
+            {
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.toDOS.ToString()))
+            {
+                modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date <= modal.toDOS.Value.Date).ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(modal.fromDOS.ToString()))
+            {
+                modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date >= modal.fromDOS.Value.Date).ToList();
+            }
+            return modal;
+        }
+        public void DeleteSearchRecord(int id)
+        {
+            var req = _context.Requests.FirstOrDefault(u => u.Requestid == id);
+            req.Isdeleted = new BitArray(new[] { true });
+            _context.Requests.Update(req);
             _context.SaveChanges();
         }
     }

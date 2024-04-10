@@ -6,14 +6,14 @@
 <Partial name="_Notification" />
 
 <div class="back container mb-3 mt-3 d-flex justify-content-between">
-    <h4 class="mt-3">Update Business</h4>
+    <h4 class="mt-3 fw-bold">Update Business</h4>
     <a asp-controller="Admin" asp-action="PartnersTab" style="text-decoration: none;" class="backimg boxshadowbtn">
         <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
         <span>Back</span>
     </a>
 </div>
 <div class="container bg-white shadow" style="padding-bottom:20px" id="maincontent">
-    <h4 class="fw-bold">Submit Information</h4>
+    <h4>Submit Information</h4>
     <form asp-action="EditBusinessSubmit" asp-controller="Admin">
         <input type="hidden" asp-for="vendorid"/>
         <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">

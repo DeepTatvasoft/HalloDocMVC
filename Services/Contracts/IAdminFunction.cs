@@ -88,5 +88,17 @@ namespace Services.Contracts
         AddBusinessModal EditBusiness(int id);
         void EditBusinessSubmit(AddBusinessModal modal);
         void DeleteBusiness(int id);
+        byte[] ExportSearchRecord(SearchRecordModal model);
+        RecordstabModal Recordstab();
+        RecordstabModal RecordsTable(RecordstabModal modal);
+        BlockHistoryModal BlockHistory();
+        BlockHistoryModal BlockHistoryTable(BlockHistoryModal modal);
+        EmailLogsModal EmailLogs();
+        EmailLogsModal EmailLogTable(EmailLogsModal modal);
+        SearchRecordModal SearchRecords();
+        SearchRecordModal SearchRecordTable(SearchRecordModal modal);
+        ExploreModal ExplorePatient(int id);
+        SearchRecordModal ExportSearchRecordData(SearchRecordModal modal);
+        void DeleteSearchRecord(int id);
     }
 }

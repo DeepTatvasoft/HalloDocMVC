@@ -2,7 +2,7 @@
 
 
 <table class="table">
-    <thead style="--bs-table-bg: #efefef">
+    <thead class="table-secondary">
         <tr>
             <th scope="col">Patient Name</th>
             <th scope="col">Requestor</th>
@@ -29,9 +29,9 @@
                 <td>@reqclient.Firstname @reqclient.Lastname</td>
                 <td>@obj.Firstname @obj.Lastname</td>
                 <td>
-                    @if (@obj.Modifieddate != null)
+                    @if (@obj.Accepteddate != null)
                     {
-                        @obj.Modifieddate.Value.ToString("MMM dd yyyy")
+                        @obj.Accepteddate.Value.ToString("MMM dd yyyy")
                     }
                     else
                     {
@@ -124,7 +124,7 @@
                 </td>
                 <td>@reqclient.Notes</td>
                 <td>
-                    <button class="btn btn-outline-info">Delete</button>
+                    <a asp-action="DeleteSearchRecord" asp-controller="Admin" asp-route-id="@obj.Requestid" class="btn btn-outline-info">Delete</a>
                 </td>
             </tr>
         }

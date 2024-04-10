@@ -5,7 +5,7 @@
     <table class="table">
         <thead class="table-secondary">
             <tr>
-                <th><input type="checkbox" id="chkbox"/></th>
+                <th><input type="checkbox" id="chkbox" /></th>
                 <th>Staff</th>
                 <th>Day</th>
                 <th>Time</th>
@@ -29,7 +29,14 @@
                         @obj.Starttime - @obj.Endtime
                     </td>
                     <td>
-                        @obj.Shiftdetailregions.ElementAt(0).Region.Name
+                        @if (@obj.Shiftdetailregions.Count() > 0)
+                        {
+                            @obj.Shiftdetailregions.ElementAt(0).Region.Name
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </td>
                 </tr>
             }
@@ -132,7 +139,10 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    var page = document.getElementById("page-1");
+    if (@Model.currentpage == 1) {
+        document.getElementById("page-1").style.backgroundColor = "lightblue";
+    }
+    var page = document.getElementById("page-" + @Model.currentpage);
     if (page != null) {
         page.style.backgroundColor = "lightblue";
     }
