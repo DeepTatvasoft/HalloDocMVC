@@ -29,14 +29,19 @@ namespace Services.Implementation
             if (obj != null)
             {
                 var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == obj.Id.ToString());
+                var physician = _context.Physicians.FirstOrDefault(u => u.Aspnetuserid == obj.Id.ToString());
                 int id = obj.Id;
-                if (admin == null)
+                if (admin != null)
                 {
-                    return (false, null, id);
+                    return (true, obj.Username, id);
+                }
+                else if(physician != null)
+                {
+                    return (true, obj.Username, id);
                 }
                 else
                 {
-                    return (true, obj.Username, id);
+                    return (false, null, id);
                 }
             }
             else

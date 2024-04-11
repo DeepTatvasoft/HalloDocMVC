@@ -178,17 +178,31 @@ namespace HalloDoc.Controllers
                 LoggedInPersonViewModel model = new LoggedInPersonViewModel();
                 model.aspuserid = id;
                 model.username = adminname;
-                var admin = _context.Admins.FirstOrDefault(x => x.Aspnetuserid == id.ToString());
                 model.role = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == id.ToString()).Roleid;
                 //model.userid = _context.Users.FirstOrDefault(u => u.Aspnetuserid == id).Userid;
                 Response.Cookies.Append("jwt", jwtRepository.GenerateJwtToken(model));
-                HttpContext.Session.SetString("Adminname", adminname);
-                HttpContext.Session.SetInt32("Adminid", admin.Adminid);
-                if (HttpContext.Session.GetString("Adminname") != null)
+                if (model.role == "1")
                 {
-                    TempData["success"] = "Admin LogIn Successfully";
+                    var admin = _context.Admins.FirstOrDefault(x => x.Aspnetuserid == id.ToString());
+                    HttpContext.Session.SetString("Adminname", adminname);
+                    HttpContext.Session.SetInt32("Adminid", admin.Adminid);
+                    if (HttpContext.Session.GetString("Adminname") != null)
+                    {
+                        TempData["success"] = "Admin LogIn Successfully";
+                    }
+                    return RedirectToAction("Admindashboard", "Admin");
                 }
-                return RedirectToAction("Admindashboard", "Admin");
+                else
+                {
+                    var physician = _context.Physicians.FirstOrDefault(u=>u.Aspnetuserid==id.ToString());
+                    HttpContext.Session.SetString("physicianname", adminname);
+                    HttpContext.Session.SetInt32("physicianid", physician.Physicianid);
+                    if (HttpContext.Session.GetString("physicianname") != null)
+                    {
+                        TempData["success"] = "Physician LogIn Successfully";
+                    }
+                    return RedirectToAction("Admindashboard", "Admin");
+                }
             }
         }
         public List<Physician> filterregion(string regionid)
