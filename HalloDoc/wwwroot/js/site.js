@@ -2,7 +2,15 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
 var flag;
+
+var active = document.getElementsByClassName('active');
+for (var i = 0; i < active.length; i++) {
+    active[i].classList.add('border-bottom');
+    active[i].classList.add('border-info');
+}
+
 try {
 
     const actualBtn = document.getElementById('actual-btn');
@@ -331,3 +339,48 @@ function ChangeSearchRecord(currentPage) {
 
 }
 
+function ChangePagePhy(Page, status, reqtype, region, searchkey) {
+    var currentPage = Page;
+    var status = status;
+    var regionid = region;
+    var reqtypeid = reqtype;
+    var url;
+    if (status == 1) {
+        url = "/Physician/NewStatePhy/"
+    }
+    else if (status == 2) {
+        url = "/Physician/PendingStatePhy/"
+    }
+    else if (status == 4) {
+        url = "/Physician/ActiveStatePhy/"
+    }
+    else if (status == 6) {
+        url = "/Physician/ConcludeStatePhy/"
+    }
+    else if (status == 3) {
+        url = "/Physician/TocloseStatePhy/"
+    }
+    else {
+        url = "/Physician/UnpaidStatePhy/"
+    }
+    $.ajax({
+        url: url,
+        data: { "currentPage": currentPage, "regionid": regionid, "reqtypeid": reqtypeid, "status": status, "searchkey": searchkey },
+        type: "POST",
+        dataType: "html",
+        success: function (response) {
+            $('#status-tabContent').html(response);
+            document.getElementById("page-1").style.backgroundColor = "white";
+            document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
+            $('#exportpage').val(currentPage);
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+
+}
+
+function EncounterModalOpen(reqid) {
+    document.getElementById('reqidhidden').value = reqid;
+}

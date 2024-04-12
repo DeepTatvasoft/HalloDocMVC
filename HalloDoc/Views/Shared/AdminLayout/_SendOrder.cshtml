@@ -4,7 +4,7 @@
         <h3 class="mt-2">
             Send Orders
         </h3>
-        <a asp-controller="Admin" asp-action="AdminDashboard" style="text-decoration: none;" class="backimg">
+        <a style="text-decoration: none;" class="backimg">
             <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
             <span>Back</span>
         </a>
@@ -132,6 +132,16 @@
                     $('input[name="contact"]').val(response.businesscontact);
                     $('input[name="email"]').val(response.email);
                     $('input[name="fax"]').val(response.faxnumber);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.backimg').on('click', function () {
+            $.ajax({
+                success: function (response) {
+                    window.location.reload();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

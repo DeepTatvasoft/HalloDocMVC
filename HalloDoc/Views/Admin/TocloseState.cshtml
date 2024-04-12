@@ -255,44 +255,44 @@
                 {
                     next = Model.totalpages;
                 }
-                <button class="@previous pagebtn" id="page-0" onclick="ChangePage(@previous ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:68px">
+                <button class="@previous pagebtn" id="page-0" onclick="ChangePage(@previous ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:75px">
                     Previous
                 </button>
                 @if (Model.totalpages > 5)
                 {
                     @if (Model.currentpage > Model.totalpages - 3)
                     {
-                        <button class="1 pagebtn" id="page-1" onclick="ChangePage(1 ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:25px">
+                        <button class="1 pagebtn" id="page-1" onclick="ChangePage(1 ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
                             1
                         </button>
-                        <button class="0 pagebtn" id="page-0" style="width:25px">
+                        <button class="0 pagebtn" id="page-0" >
                             ...
                         </button>
                         @for (var i = Model.totalpages - 3; i <= Model.totalpages; i++)
                         {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePage(@i ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:25px">
+                            <button class="@i pagebtn" id="page-@i" onclick="ChangePage(@i ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
                                 @i
                             </button>
                         }
                     }
                     else if (Model.currentpage < Model.totalpages - 2 && Model.currentpage > 3)
                     {
-                        <button class="1 pagebtn" id="page-1" onclick="ChangePage(1 ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:25px">
+                        <button class="1 pagebtn" id="page-1" onclick="ChangePage(1 ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
                             1
                         </button>
-                        <button class="0 pagebtn" id="page-0" style="width:25px">
+                        <button class="0 pagebtn" id="page-0" >
                             ...
                         </button>
                         @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                         {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePage(@i ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:25px">
+                            <button class="@i pagebtn" id="page-@i" onclick="ChangePage(@i ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
                                 @i
                             </button>
                         }
-                        <button class="0 pagebtn" id="page-0" style="width:25px">
+                        <button class="0 pagebtn" id="page-0" >
                             ...
                         </button>
-                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePage(@Model.totalpages ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:25px">
+                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePage(@Model.totalpages ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
                             @Model.totalpages
                         </button>
                     }
@@ -300,14 +300,14 @@
                     {
                         @for (var i = 1; i <= 4; i++)
                         {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePage(@i ,3, '@Model.reqtype' , @Model.region)" style="width:25px">
+                            <button class="@i pagebtn" id="page-@i" onclick="ChangePage(@i ,3, '@Model.reqtype' , @Model.region)" >
                                 @i
                             </button>
                         }
-                        <button class="0 pagebtn" id="page-0" style="width:25px">
+                        <button class="0 pagebtn" id="page-0" >
                             ...
                         </button>
-                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePage(@Model.totalpages ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:25px">
+                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePage(@Model.totalpages ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
                             @Model.totalpages
                         </button>
                     }
@@ -318,12 +318,12 @@
                     {
                         var temp = page + 1;
 
-                        <button class="@temp pagebtn" id="page-@temp" onclick="ChangePage(@temp ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:25px">
+                        <button class="@temp pagebtn" id="page-@temp" onclick="ChangePage(@temp ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
                             @temp
                         </button>
                     }
                 }
-                <button class="@next pagebtn" id="page-@next" onclick="ChangePage(@next ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:50px">
+                <button class="@next pagebtn" id="page-@next" onclick="ChangePage(@next ,3, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:75px">
                     Next
                 </button>
             }

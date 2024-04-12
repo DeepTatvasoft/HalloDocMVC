@@ -201,7 +201,7 @@ namespace HalloDoc.Controllers
                     {
                         TempData["success"] = "Physician LogIn Successfully";
                     }
-                    return RedirectToAction("Admindashboard", "Admin");
+                    return RedirectToAction("PhysicianDashboard", "Physician");
                 }
             }
         }

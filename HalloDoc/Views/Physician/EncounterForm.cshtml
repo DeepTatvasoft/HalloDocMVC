@@ -1,0 +1,266 @@
+﻿@{
+    ViewData["Title"] = "Encounter Form";
+    Layout = "PhysicianLayout/_PhysicianDashboard";
+}
+<Partial name="_Notification" />
+@model Services.ViewModels.EncounterFormViewModel
+
+<div class="back container mb-3 mt-3 d-flex justify-content-between">
+    <h4 class="mt-3 fw-bold">Encounter Form</h4>
+    <a asp-controller="Physician" asp-action="PhysicianDashboard" style="text-decoration: none;" class="backimg boxshadowbtn">
+        <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+        <span>Back</span>
+    </a>
+</div>
+<form>
+    <input type="hidden" asp-for="RequestId"/>
+    <div class="container bg-white shadow" style="padding-bottom:20px" id="maincontent">
+        <h3 class="text-center text-info fw-bold">Medical Report-Confidential</h3>
+        <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="Firstname" type="text" class="form-control" placeholder="firstname">
+                    <label for="floatingInput">First Name</label>
+                    <span asp-validation-for="Firstname" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="Lastname" type="text" class="form-control" placeholder="lastname">
+                    <label for="floatingInput">Last Name</label>
+                    <span asp-validation-for="Lastname" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col w-100">
+                <div class="form-floating mb-3">
+                    <input asp-for="Location" type="text" class="form-control" placeholder="location">
+                    <label for="floatingInput">Location</label>
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="DOB" type="date" class="form-control" placeholder="dob">
+                    <label for="floatingInput">Date Of Birth</label>
+                    <span asp-validation-for="DOB" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="Dateofservice" type="date" class="form-control" placeholder="dos">
+                    <label for="floatingInput">Date</label>
+                    <span asp-validation-for="Dateofservice" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3 numcountry">
+                    <select name="country" id="country" class="country" onchange="country_code()">
+                        <option value="select country">select country</option>
+                        <option value="us">US</option>
+                        <option value="uk">UK</option>
+                        <option value="br">BRAZIL</option>
+                        <option value="ind">INDIA</option>
+                    </select>
+                    <input asp-for="Mobile" type="tel" class="form-control output" id="output" placeholder="Mobile Number">
+                </div>
+                <span asp-validation-for="Mobile" class="text-danger"></span>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" type="email" class="form-control" placeholder="email">
+                    <label for="floatingInput">Email</label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="HistoryOfIllness" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">History Of Present Illness Or Injury</label>
+                    <span asp-validation-for="HistoryOfIllness" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="MedicalHistory" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Medical History</label>
+                    <span asp-validation-for="MedicalHistory" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Medication" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Medications</label>
+                    <span asp-validation-for="Medication" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Allergies" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Allergies</label>
+                    <span asp-validation-for="Allergies" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col w-100">
+                <div class="row row-cols-md-3 row-cols-sm-1 row-cols-1">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Temp" type="text" class="form-control" placeholder="temp">
+                            <label for="floatingInput">Temp</label>
+                            <span asp-validation-for="Temp" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="HR" type="text" class="form-control" placeholder="hr">
+                            <label for="floatingInput">HR</label>
+                            <span asp-validation-for="HR" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="RR" type="text" class="form-control" placeholder="rr">
+                            <label for="floatingInput">RR</label>
+                            <span asp-validation-for="RR" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col w-100">
+                <div class="row row-cols-md-3 row-cols-sm-1 row-cols-1">
+                    <div class="col">
+                        <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1">
+                            <div class="col">
+                                <div class="form-floating mb-3" style="overflow:hidden">
+                                    <input asp-for="BPs" type="text" class="form-control" placeholder="bps">
+                                    <label for="floatingInput">Blood Pressure(S..</label>
+                                    <span asp-validation-for="BPs" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3" style="overflow:hidden">
+                                    <input asp-for="BPd" type="text" class="form-control" placeholder="bpd">
+                                    <label for="floatingInput">Blood Pressure(D..</label>
+                                    <span asp-validation-for="BPd" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="O2" type="text" class="form-control" placeholder="O2">
+                            <label for="floatingInput">O2</label>
+                            <span asp-validation-for="O2" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input asp-for="Pain" type="text" class="form-control" placeholder="pain">
+                            <label for="floatingInput">Pain</label>
+                            <span asp-validation-for="Pain" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Heent" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Heent</label>
+                    <span asp-validation-for="Heent" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="CV" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">CV</label>
+                    <span asp-validation-for="CV" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Chest" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Chest</label>
+                    <span asp-validation-for="Chest" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="ABD" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">ABD</label>
+                    <span asp-validation-for="ABD" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Extr" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Extr</label>
+                    <span asp-validation-for="Extr" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Skin" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Skin</label>
+                    <span asp-validation-for="Skin" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Neuro" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Neuro</label>
+                    <span asp-validation-for="Neuro" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Other" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Other</label>
+                    <span asp-validation-for="Other" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Diagnosis" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Diagnosis</label>
+                    <span asp-validation-for="Diagnosis" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="TreatmentPlan" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Treat Plan</label>
+                    <span asp-validation-for="TreatmentPlan" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="MedicationsDispended" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Medications Dispensed</label>
+                    <span asp-validation-for="MedicationsDispended" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Procedure" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Procedures</label>
+                    <span asp-validation-for="Procedure" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col w-100">
+                <div class="form-floating mb-3">
+                    <textarea asp-for="Followup" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 80px"></textarea>
+                    <label for="floatingTextarea2">Followup</label>
+                    <span asp-validation-for="Followup" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-4">
+            <button type="submit" asp-action="EncounterFormSubmit" asp-controller="Physician" class="btn btn-info text-white saves boxshadowbtn">Save Changes</button>
+            <button type="button" class="btn text-white boxshadowbtn ms-2" style="background-color:blueviolet">Finalize</button>
+            <button type="reset" class="btn btn-outline-info ms-2 cancels boxshadowbtn">Cancel</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.getElementById('Home-tab').classList.add('active');
+</script>

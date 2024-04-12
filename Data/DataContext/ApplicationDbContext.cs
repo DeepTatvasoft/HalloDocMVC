@@ -38,6 +38,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Emaillog> Emaillogs { get; set; }
 
+    public virtual DbSet<Encounter> Encounters { get; set; }
+
     public virtual DbSet<Healthprofessional> Healthprofessionals { get; set; }
 
     public virtual DbSet<Healthprofessionaltype> Healthprofessionaltypes { get; set; }
@@ -89,7 +91,7 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("User ID =postgres;Password=deep2292002;Server=localhost;Port=5432;Database=HalloDocMVC;Integrated Security=true;Pooling=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -455,6 +457,53 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("subjectname");
         });
 
+        modelBuilder.Entity<Encounter>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Encounter_pkey");
+
+            entity.ToTable("encounter");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"Encounter_Id_seq\"'::regclass)");
+            entity.Property(e => e.Abd)
+                .HasMaxLength(200)
+                .HasColumnName("ABD");
+            entity.Property(e => e.Allergies).HasMaxLength(200);
+            entity.Property(e => e.BpD).HasColumnName("BP(D)");
+            entity.Property(e => e.BpS).HasColumnName("BP(S)");
+            entity.Property(e => e.Chest).HasMaxLength(200);
+            entity.Property(e => e.Cv)
+                .HasMaxLength(200)
+                .HasColumnName("CV");
+            entity.Property(e => e.Date).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.Diagnosis).HasMaxLength(200);
+            entity.Property(e => e.Extr).HasMaxLength(200);
+            entity.Property(e => e.FollowUp).HasMaxLength(200);
+            entity.Property(e => e.Heent)
+                .HasMaxLength(200)
+                .HasColumnName("HEENT");
+            entity.Property(e => e.HistoryIllness).HasMaxLength(200);
+            entity.Property(e => e.Hr).HasColumnName("HR");
+            entity.Property(e => e.IsFinalized)
+                .HasDefaultValueSql("'0'::\"bit\"")
+                .HasColumnType("bit(1)")
+                .HasColumnName("isFinalized");
+            entity.Property(e => e.MedicalHistory).HasMaxLength(200);
+            entity.Property(e => e.MedicationDispensed).HasMaxLength(200);
+            entity.Property(e => e.Medications).HasMaxLength(200);
+            entity.Property(e => e.Neuro).HasMaxLength(200);
+            entity.Property(e => e.Other).HasMaxLength(200);
+            entity.Property(e => e.Pain).HasMaxLength(200);
+            entity.Property(e => e.Procedures).HasMaxLength(200);
+            entity.Property(e => e.Rr).HasColumnName("RR");
+            entity.Property(e => e.Skin).HasMaxLength(200);
+            entity.Property(e => e.TreatmentPlan).HasMaxLength(200);
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Encounters)
+                .HasForeignKey(d => d.RequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_encounter_request");
+        });
+
         modelBuilder.Entity<Healthprofessional>(entity =>
         {
             entity.HasKey(e => e.Vendorid).HasName("healthprofessionals_pkey");
@@ -684,10 +733,11 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Physicianlocation>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("physicianlocation");
+            entity.HasKey(e => e.Locationid).HasName("physicianlocation_pkey");
 
+            entity.ToTable("physicianlocation");
+
+            entity.Property(e => e.Locationid).HasColumnName("locationid");
             entity.Property(e => e.Address)
                 .HasMaxLength(500)
                 .HasColumnName("address");
@@ -695,11 +745,10 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("createddate");
             entity.Property(e => e.Latitude)
-                .HasPrecision(9)
+                .HasPrecision(11, 8)
                 .HasColumnName("latitude");
-            entity.Property(e => e.Locationid).HasColumnName("locationid");
             entity.Property(e => e.Longitude)
-                .HasPrecision(9)
+                .HasPrecision(11, 8)
                 .HasColumnName("longitude");
             entity.Property(e => e.Physicianid).HasColumnName("physicianid");
             entity.Property(e => e.Physicianname)
@@ -860,9 +909,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("requestbusiness");
 
-            entity.Property(e => e.Requestbusinessid)
-                .ValueGeneratedNever()
-                .HasColumnName("requestbusinessid");
+            entity.Property(e => e.Requestbusinessid).HasColumnName("requestbusinessid");
             entity.Property(e => e.Businessid).HasColumnName("businessid");
             entity.Property(e => e.Ip)
                 .HasMaxLength(20)
@@ -967,9 +1014,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("requestclosed");
 
-            entity.Property(e => e.Requestclosedid)
-                .ValueGeneratedNever()
-                .HasColumnName("requestclosedid");
+            entity.Property(e => e.Requestclosedid).HasColumnName("requestclosedid");
             entity.Property(e => e.Clientnotes)
                 .HasMaxLength(500)
                 .HasColumnName("clientnotes");
@@ -999,9 +1044,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("requestconcierge");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Conciergeid).HasColumnName("conciergeid");
             entity.Property(e => e.Ip)
                 .HasMaxLength(20)

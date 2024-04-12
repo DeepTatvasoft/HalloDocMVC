@@ -130,7 +130,7 @@ namespace HalloDoc.Controllers
         public IActionResult SendAgreement(NewStateData modal)
         {
             sendEmail(modal.emaill, "Link for Agreement", "https://localhost:44325/admin/ReviewAgreement/" + modal.reqid + "");
-            return RedirectToAction("AdminDashboard","Admin");
+            return NoContent();
         }
         public IActionResult SendLink(NewStateData modal)
         {

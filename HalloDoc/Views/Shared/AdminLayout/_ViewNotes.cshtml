@@ -1,8 +1,8 @@
 ﻿@model Services.ViewModels.ViewNotesModel;
 <div class="main">
     <div class="back container mt-3 d-flex justify-content-between">
-        <h3 class="mt-2">Notes</h3>
-        <a asp-controller="Admin" asp-action="AdminDashboard" style="text-decoration: none;" class="backimg">
+        <h3 class="mt-2 fw-bold">Notes</h3>
+        <a style="text-decoration: none;cursor:pointer" class="backimg">
             <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
             <span>Back</span>
         </a>
@@ -77,6 +77,16 @@
             success: function (response) {
                 $('#alldata').html(response);
                 console.log("Fetch success");
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+    $('.backimg').on('click', function () {
+        $.ajax({
+            success: function (response) {
+                window.location.reload();
             },
             error: function (xhr, status, error) {
                 console.error(error);

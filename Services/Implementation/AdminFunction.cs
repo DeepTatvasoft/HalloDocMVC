@@ -35,7 +35,7 @@ namespace Services.Implementation
                 {
                     return (true, obj.Username, id);
                 }
-                else if(physician != null)
+                else if (physician != null)
                 {
                     return (true, obj.Username, id);
                 }
@@ -1350,6 +1350,8 @@ namespace Services.Implementation
             }
             return month;
         }
+
+
         public bool AddShift(Scheduling model, string adminname, List<string> chk)
         {
             var shiftid = _context.Shifts.Where(u => u.Physicianid == model.physicianid).Select(u => u.Shiftid).ToList();
@@ -1357,7 +1359,7 @@ namespace Services.Implementation
             {
                 foreach (var obj in shiftid)
                 {
-                    var shiftdetailchk = _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == model.shiftdate).ToList();
+                    var shiftdetailchk = _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == model.shiftdate && u.Isdeleted == new BitArray(new[] { false })).ToList();
                     if (shiftdetailchk.Count() > 0)
                     {
                         foreach (var item in shiftdetailchk)
@@ -1366,7 +1368,7 @@ namespace Services.Implementation
                             {
                                 return false;
                             }
-                            if (((model.starttime >= item.Starttime && model.starttime < item.Endtime) || (model.endtime > item.Starttime && model.endtime <= item.Endtime)) && item.Isdeleted == new BitArray(new[] { false }))
+                            if (((model.starttime >= item.Starttime && model.starttime < item.Endtime) || (model.endtime > item.Starttime && model.endtime <= item.Endtime)))
                             {
                                 return false;
                             }
@@ -1468,6 +1470,29 @@ namespace Services.Implementation
                     DateTime newcurdate = model.shiftdate.AddDays(x);
                     for (int i = 0; i < model.repeatcount; i++)
                     {
+
+                        if (shiftid.Count() > 0)
+                        {
+                            foreach (var obj in shiftid)
+                            {
+                                var shiftdetailchk = _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == newcurdate && u.Isdeleted == new BitArray(new[] { false })).ToList();
+                                if (shiftdetailchk.Count() > 0)
+                                {
+                                    foreach (var item in shiftdetailchk)
+                                    {
+                                        if (model.starttime <= item.Starttime && model.endtime >= item.Endtime)
+                                        {
+                                            return false;
+                                        }
+                                        if (((model.starttime >= item.Starttime && model.starttime < item.Endtime) || (model.endtime > item.Starttime && model.endtime <= item.Endtime)))
+                                        {
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         Shiftdetail shiftdetailnew = new Shiftdetail
                         {
                             Shiftid = shift.Shiftid,
@@ -1606,13 +1631,19 @@ namespace Services.Implementation
             offdutyphyid.ExceptWith(phyid);
             foreach (var obj in phyid)
             {
-                Physician physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
-                phyoncall.Add(physician);
+                var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                if (physician != null)
+                {
+                    phyoncall.Add(physician);
+                }
             }
             foreach (var obj in offdutyphyid)
             {
-                Physician physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
-                phyoffduty.Add(physician);
+                var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                if (physician != null)
+                {
+                    phyoffduty.Add(physician);
+                }
             }
             modal.Phyoffduty = phyoffduty;
             modal.Phyoncall = phyoncall;

@@ -21,6 +21,7 @@ builder.Services.AddTransient<IHomeFunction, HomeFunction>();
 builder.Services.AddTransient<IDashboard, Dashboard>();
 builder.Services.AddTransient<IAdminFunction, AdminFunction>();
 builder.Services.AddTransient<IAuthorization, Authorization>();
+builder.Services.AddTransient<IPhysicianFunction, PhysicianFunction>();
 builder.Services.AddTransient<IJwtRepository, JwtRepo>();
 
 var app = builder.Build();

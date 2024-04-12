@@ -9,10 +9,8 @@
 <div class="container-fluid mt-5 dashboard" style="width: 90%;">
     <div class="d-flex justify-content-between">
         <h4>Documents</h4>
-        <div class="backbtn">
-            <a asp-controller="Admin" asp-action="AdminDashboard">
-                <button type="button" class="btn btn-outline-info text-center"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
-            </a>
+        <div class="backbtn" style="cursor:pointer">
+            <button type="button" class="btn btn-outline-info text-center backimg"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
         </div>
     </div>
     <div class="documenthead mt-4 bg-white lightmode p-3 rounded">
@@ -200,6 +198,15 @@
                 }
             });
         });
-
+        $('.backimg').on('click', function () {
+            $.ajax({
+                success: function (response) {
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
     });
 </script>
