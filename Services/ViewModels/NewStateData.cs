@@ -28,6 +28,7 @@ namespace Services.ViewModels
         public string searchkey { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
+        public List<Encounter> encounters { get; set; }
     }
     public class NewStateData1
     {
@@ -46,6 +47,7 @@ namespace Services.ViewModels
         public string? adminname { get; set; }
         public string? phyname { get; set; }
         public string? adminnotes { get; set; }
+        public string? physiciannotes { get; set; }
         public int reqid { get; set; }
     }
     public class AdminviewDoc
@@ -60,6 +62,7 @@ namespace Services.ViewModels
         public DateTime DOB { get; set; }
         public string? phonenumber { get; set; }
         public string? email { get; set; }
+        public string? providernotes { get; set; }
     }
     public class SendOrders
     {

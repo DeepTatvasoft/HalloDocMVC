@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "Conclude Care";
+    Layout = "PhysicianLayout/_PhysicianDashboard";
+}
+@model Services.ViewModels.AdminviewDoc
+<Partial name="_Notification" />
+<div class="container-fluid mt-5 dashboard" style="width: 90%;">
+    <div class="d-flex justify-content-between">
+        <h4 class="fw-bold mt-3">Conclude Care</h4>
+        <div class="backbtn" style="cursor:pointer">
+            <a asp-action="PhysicianDashboard" asp-controller="Physician" class="btn btn-outline-info text-center backimg boxshadowbtn"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</a>
+        </div>
+    </div>
+    <div class="documenthead mt-4 bg-white lightmode p-3 rounded">
+        <span class="text-body-secondary">Patient Name</span>
+        <h5 class="text-info fw-bold">@Model.Username</h5>
+        <form enctype="multipart/form-data">
+            <input type="hidden" name="@Model.reqid" id="docid">
+            <div class="d-flex justify-content-between">
+                <h5 class="mt-2 fw-bold">Encounter Form</h5>
+                <div class="row d-flex">
+                    <div class="form-group rounded d-flex align-items-center justify-content-between uploadbtndiv">
+                        <div class="px-3 table-responsive">
+                            <input type="file" id="actual-btn" class="uploadbtn" asp-for="Upload" multiple hidden />
+                        </div>
+                        <button type="button" class="btn btn-outline-info d-flex ms-1 boxshadowbtn">
+                            <label role="button" for="actual-btn" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-1"></i><div>Upload</div></label>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <form method="post" asp-controller="Dashboard" asp-action="DownloadFile">
+            <div class="table-responsive">
+                <table class="table mt-2" id="dtBasicExample">
+                    <thead>
+                        <tr>
+                            <th class="bg-body-secondary" scope="col">Documents</th>
+                            <th class="bg-body-secondary text-end" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.reqfile.Count() == 0)
+                        {
+                            <tr>
+                                <td colspan="2" class="text-center text-secondary">No Documents Found</td>
+                            </tr>
+                        }
+                        @foreach (var obj in Model.reqfile)
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                                        var file = obj.Filename.Split("document\\");
+                                    }
+                                    @if (file.Length > 1)
+                                    {
+                                        @file[1]
+
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn btn-outline-info">
+                                        <a asp-controller="Dashboard" asp-action="SingleDownload" asp-route-id="@obj.Requestwisefileid">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                        </a>
+                                    </div>
+                                    <div class="btn btn-outline-info SingleDelete" name="@obj.Requestwisefileid">
+                                        <a>
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <form asp-action="ConcludeCareBtn" asp-controller="Physician">
+            <input type="hidden" asp-for="reqid"/>
+            <div class="providernotes mt-4">
+                <span class="fw-bold">Provider Notes</span>
+                <div class="form-floating mt-1">
+                    <textarea asp-for="providernotes" class="form-control fourthedit" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 115px"></textarea>
+                    <label for="floatingTextarea2">Provider Notes</label>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-info text-white saves boxshadowbtn">Conclude Care</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    document.getElementById('Home-tab').classList.add('active');
+    $(document).ready(function () {
+        dark();
+        $('.uploadbtn').on('change', function () {
+            var myfile = $('#actual-btn')[0].files;
+            var formData = new FormData();
+            var reqid = $('#docid').attr('name');
+            console.log(myfile);
+            if (myfile.length > 0) {
+                for (var i = 0; i < files.length; i++) {
+                    formData.append('myfile', myfile[i]);
+                }
+            }
+            formData.append('reqid', reqid);
+            //console.log(reqid);
+            //console.log(formData);
+
+            $.ajax({
+                url: '/Admin/DocUpload',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    window.location.reload();
+                },
+            });
+        });
+        $('.SingleDelete').on('click', function () {
+            var reqfileid = $(this).attr('name');
+
+            $.ajax({
+                url: '/Admin/SingleDelete',
+                data: { 'reqfileid': reqfileid },
+                success: function (response) {
+                    window.location.reload();
+                },
+            });
+        });
+
+
+    });
+</script>

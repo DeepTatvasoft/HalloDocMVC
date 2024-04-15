@@ -5,6 +5,31 @@
 
 var flag;
 
+function showSessionExpiryPopup() {
+    $.ajax({
+        success: function (response) {
+            Swal.fire({
+                title: "Session Expire!",
+                text: "Your Session is Expired",
+                icon: "warning"
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+}
+// Start a timer to show the popup before session expiration
+function startSessionExpiryTimer() {
+    const sessionTimeoutMinutes = 60; // Set this to match your session timeout
+    const millisecondsBeforeExpiry = (sessionTimeoutMinutes - 1) * 60 * 1000;
+
+    setTimeout(showSessionExpiryPopup, millisecondsBeforeExpiry);
+}
+
+// Call this function when the page loads
+startSessionExpiryTimer();
+
 var active = document.getElementsByClassName('active');
 for (var i = 0; i < active.length; i++) {
     active[i].classList.add('border-bottom');

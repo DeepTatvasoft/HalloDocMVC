@@ -34,6 +34,12 @@
                     </tr>
                 </thead>
                 <tbody style="--bs-table-color: white;" id="myTable">
+                    @if (Model.req.Count() == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-secondary">No Data Found</td>
+                        </tr>
+                    }
                     @foreach (var obj in Model.req)
                     {
                         var reqclient = obj.Requestclients.ElementAt(0);
@@ -81,7 +87,7 @@
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a class="dropdown-item" href="#">
+                                            <a class="dropdown-item" asp-action="ConcludeCare" asp-controller="Physician" asp-route-id="@obj.Requestid">
                                                 <i class="fa-solid fa-heart-pulse me-2"></i>Conclude Care
                                             </a>
                                         </li>
@@ -93,9 +99,21 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" asp-action="EncounterForm" asp-controller="Physician" asp-route-id="@obj.Requestid">
-                                                <i class="fa-solid fa-file me-2"></i>Encounter
-                                            </a>
+                                            @{
+                                                Model.encounters = Model.encounters.Where(u => u.RequestId == obj.Requestid).ToList();
+                                            }
+                                            @if (Model.encounters.Count() > 0 && Model.encounters.ElementAt(0).IsFinalized[0] == true)
+                                            {
+                                                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="EncounterModalOpen(@obj.Requestid)">
+                                                    <i class="fa-solid fa-file me-2"></i>Encounter
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="dropdown-item" asp-action="EncounterForm" asp-controller="Physician" asp-route-id="@obj.Requestid">
+                                                    <i class="fa-solid fa-file me-2"></i>Encounter
+                                                </a>
+                                            }
                                         </li>
                                     </ul>
                                 </div>
@@ -104,7 +122,7 @@
                     }
                 </tbody>
             </table>
-       
+
             <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
 
                 <div class="accordion-item">
@@ -216,37 +234,37 @@
                 {
                     @if (Model.currentpage > Model.totalpages - 3)
                     {
-                        <button class="1 pagebtn" id="page-1" onclick="ChangePagePhy(1 ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
+                        <button class="1 pagebtn" id="page-1" onclick="ChangePagePhy(1 ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
                             1
                         </button>
-                        <button class="0 pagebtn" id="page-0" >
+                        <button class="0 pagebtn" id="page-0">
                             ...
                         </button>
                         @for (var i = Model.totalpages - 3; i <= Model.totalpages; i++)
                         {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
+                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
                                 @i
                             </button>
                         }
                     }
                     else if (Model.currentpage < Model.totalpages - 2 && Model.currentpage > 3)
                     {
-                        <button class="1 pagebtn" id="page-1" onclick="ChangePagePhy(1 ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
+                        <button class="1 pagebtn" id="page-1" onclick="ChangePagePhy(1 ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
                             1
                         </button>
-                        <button class="0 pagebtn" id="page-0" >
+                        <button class="0 pagebtn" id="page-0">
                             ...
                         </button>
                         @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                         {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
+                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
                                 @i
                             </button>
                         }
-                        <button class="0 pagebtn" id="page-0" >
+                        <button class="0 pagebtn" id="page-0">
                             ...
                         </button>
-                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePagePhy(@Model.totalpages ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
+                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePagePhy(@Model.totalpages ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
                             @Model.totalpages
                         </button>
                     }
@@ -254,14 +272,14 @@
                     {
                         @for (var i = 1; i <= 4; i++)
                         {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
+                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
                                 @i
                             </button>
                         }
-                        <button class="0 pagebtn" id="page-0" >
+                        <button class="0 pagebtn" id="page-0">
                             ...
                         </button>
-                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePagePhy(@Model.totalpages ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
+                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePagePhy(@Model.totalpages ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
                             @Model.totalpages
                         </button>
                     }
@@ -272,7 +290,7 @@
                     {
                         var temp = page + 1;
 
-                        <button class="@temp pagebtn" id="page-@temp" onclick="ChangePagePhy(@temp ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
+                        <button class="@temp pagebtn" id="page-@temp" onclick="ChangePagePhy(@temp ,6, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
                             @temp
                         </button>
                     }
@@ -285,99 +303,24 @@
     </div>
 </div>
 
-@*AssignCase Model*@
-<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+@*Encounter Modal*@
+<div class="modal fade" id="encounterModal" tabindex="-1" aria-labelledby="encounterModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                To assign this request, search and select another Physician.
-                <span id="reqidAssignModel" hidden></span>
-                <div class="form-floating">
-                    <select class="form-select physiciandata" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Select Region</option>
-                        @if (Model.regions != null)
-                        {
-                            @foreach (var obj in Model.regions)
-                            {
-                                <option value="@obj.Regionid">@obj.Name</option>
-                            }
-                        }
-                    </select>
-                    <label for="floatingSelect" class="text-info">
-                        Narrow Search by Region
-                    </label>
+        <form asp-action="DownloadEncounter" asp-controller="Physician">
+            <input type="hidden" asp-for="reqid" id="reqidhidden" />
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h1 class="modal-title fs-5" id="encounterModal">Encounter Form</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <select class="form-select mt-4" id="physelect" aria-label="Floating label select example" style="height:58px">
-                </select>
-                <div class="form-floating mt-4">
-                    <textarea class="form-control Assignnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
-                    <label for="floatingTextarea">Description</label>
+                <div class="modal-body">
+                    Encounter form is finalized successfully!
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-info text-white">Download</button>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info text-white assigncase" data-bs-dismiss="modal">Submit</button>
-                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@*CancelCase Model*@
-<div class="modal fade" id="CancelCaseBtn" tabindex="-1" aria-labelledby="CancelCaseBtn" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h1 class="modal-title fs-5" id="CancelCaseBtn">Confirm Cancellation</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <span>Patient Name: <span id="cancleModelName" class="text-info"> </span></span>
-                <span id="reqidCancelModel" hidden></span>
-                <select class="form-select mt-4 reason" aria-label="Floating label select example" style="height:58px">
-                    <option selected>Reason For Cancellation</option>
-                    @foreach (var obj in Model.casetags)
-                    {
-                        <option value="@obj.Casetagid">@obj.Name</option>
-                    }
-                </select>
-                <div class="form-floating mt-4">
-                    <textarea class="form-control Cancelnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
-                    <label for="floatingTextarea">Provide Addtional Notes</label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info text-white cancelcase" data-bs-dismiss="modal">Confirm</button>
-                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@*BlockCase Modal*@
-<div class="modal fade" id="BlockCaseBtn" tabindex="-1" aria-labelledby="BlockCaseBtn" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h1 class="modal-title fs-5" id="BlockCaseBtn">Confirm Block</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <span>Patient Name: <span id="BlockModelName" class="text-info"> </span></span>
-                <span id="reqidBlockModel" hidden></span>
-                <div class="form-floating mt-4">
-                    <textarea class="form-control Blocknotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
-                    <label for="floatingTextarea">Provide Addtional Notes</label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info text-white blockcase" data-bs-dismiss="modal">Confirm</button>
-                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 

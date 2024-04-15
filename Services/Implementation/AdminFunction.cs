@@ -375,12 +375,15 @@ namespace Services.Implementation
         public ViewNotesModel ViewNotes(int reqid)
         {
             ViewNotesModel viewNotesModel = new ViewNotesModel();
-            var reqstatuslog = _context.Requeststatuslogs.FirstOrDefault(u => u.Requestid == reqid);
+            var reqstatuslog = _context.Requeststatuslogs.FirstOrDefault(u => u.Requestid == reqid && u.Status == 2);
             var requestnotes = _context.Requestnotes.FirstOrDefault(u => u.Requestid == reqid);
             if (reqstatuslog != null)
             {
-                string adminname = _context.Admins.FirstOrDefault(u => u.Adminid == reqstatuslog.Adminid).Firstname;
-                viewNotesModel.adminname = adminname;
+                var admin = _context.Admins.FirstOrDefault(u => u.Adminid == reqstatuslog.Adminid);
+                if (admin != null)
+                {
+                    viewNotesModel.adminname = admin.Firstname;
+                }
                 string phyname;
                 if (reqstatuslog.Transtophysicianid != null)
                 {
@@ -393,6 +396,7 @@ namespace Services.Implementation
             if (requestnotes != null)
             {
                 viewNotesModel.adminnotes = requestnotes.Adminnotes;
+                viewNotesModel.physiciannotes = requestnotes.Physiciannotes;
             }
             viewNotesModel.reqid = reqid;
             return viewNotesModel;
@@ -468,7 +472,7 @@ namespace Services.Implementation
             List<Healthprofessional> list = _context.Healthprofessionals.Where(u => u.Profession == professionid).ToList();
             return list;
         }
-        public Healthprofessional? filterbusiness(int vendorid)
+        public Healthprofessional filterbusiness(int vendorid)
         {
             Healthprofessional? profession = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == vendorid);
             return profession;

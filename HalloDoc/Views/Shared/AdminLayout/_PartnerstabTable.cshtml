@@ -33,11 +33,41 @@
                 </td>
                 <td>
                     <a asp-action="EditBusiness" asp-controller="Admin" asp-route-id="@obj.Vendorid" class="btn btn-outline-info me-1 boxshadowbtn">Edit</a>
-                    <a asp-action="DeleteBusiness" asp-controller="Admin" asp-route-id="@obj.Vendorid" class="btn btn-outline-info boxshadowbtn">Delete</a>
+                    <a value="@obj.Vendorid" class="btn btn-outline-info boxshadowbtn deletebtn">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $('.deletebtn').on('click', function (e) {
+        var id = $(this).attr("value");
+        swal.fire({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: '/Admin/DeleteBusiness',
+                    data: { "id": id },
+                    success: function (response) {
+                        var link = document.createElement('a');
+                        link.href = "/Admin/PartnersTab";
+                        link.click();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            } else {
+                console.log('Cancelled!');
+            }
+        });
+    });
+</script>

@@ -16,11 +16,13 @@ namespace HalloDoc.Controllers
     public class PhysicianController : Controller
     {
         private readonly IPhysicianFunction physicianFunction;
+        private readonly IAdminFunction adminFunction;
         private readonly ApplicationDbContext _context;
-        public PhysicianController(ApplicationDbContext context, IPhysicianFunction physicianFunction)
+        public PhysicianController(ApplicationDbContext context, IPhysicianFunction physicianFunction, IAdminFunction adminFunction)
         {
             _context = context;
             this.physicianFunction = physicianFunction;
+            this.adminFunction = adminFunction;
         }
         public IActionResult PhysicianDashboard()
         {
@@ -239,6 +241,69 @@ namespace HalloDoc.Controllers
             _context.SaveChanges();
             TempData["success"] = "Data Saved Successfuly";
             return RedirectToAction("EncounterForm", new { id = model.RequestId });
+        }
+        public IActionResult EncounterFormFinalize(EncounterFormViewModel modal)
+        {
+            var encounter = _context.Encounters.FirstOrDefault(u => u.RequestId == modal.RequestId);
+            if (encounter != null)
+            {
+                encounter.IsFinalized = new BitArray(new[] { true });
+                _context.Encounters.Update(encounter);
+                _context.SaveChanges();
+            }
+            TempData["success"] = "Encounter form finalized successfully";
+            return RedirectToAction("PhysicianDashboard");
+        }
+        public IActionResult ConcludeCare(int id)
+        {
+            return View(adminFunction.AdminuploadDoc(id));
+        }
+        public IActionResult ConcludeCareBtn(AdminviewDoc modal)
+        {
+            int phyid = (int)HttpContext.Session.GetInt32("physicianid");
+            var enc = _context.Encounters.FirstOrDefault(u => u.RequestId == modal.reqid);
+            if (enc == null || enc.IsFinalized[0] == false)
+            {
+                TempData["error"] = "You cannot conclude the case until encounter form is Finalized";
+                return RedirectToAction("ConcludeCare", new { id = modal.reqid });
+            }
+            var req = _context.Requests.FirstOrDefault(u => u.Requestid == modal.reqid);
+            req.Status = 8;
+            req.Modifieddate = DateTime.Now;
+            _context.Requests.Update(req);
+            _context.SaveChanges();
+            Requeststatuslog requeststatuslog = new Requeststatuslog
+            {
+                Requestid = req.Requestid,
+                Status = 8,
+                Notes = modal.providernotes,
+                Createddate = DateTime.Now,
+                Transtoadmin = new BitArray(new[] { false }),
+                Physicianid = phyid
+            };
+            _context.Requeststatuslogs.Add(requeststatuslog);
+            _context.SaveChanges();
+            return RedirectToAction("PhysicianDashboard");
+        }
+        public IActionResult DownloadEncounter(NewStateData modal)
+        {
+            return physicianFunction.DownloadEncounter(modal.reqid);
+        }
+        public bool CheckSession()
+        {
+            if (HttpContext.Session.GetString("physicianname") != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        [HttpPost]
+        public IActionResult PhysicianNotesSaveChanges(int reqid, string physiciannotes)
+        {
+            string phyname = HttpContext.Session.GetString("physicianname");
+            physicianFunction.PhysicianNotesSaveChanges(reqid, physiciannotes, phyname);
+            return PartialView("AdminLayout/_ViewNotes", adminFunction.ViewNotes(reqid));
         }
     }
 }

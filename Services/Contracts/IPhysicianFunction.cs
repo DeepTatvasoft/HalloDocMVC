@@ -1,4 +1,5 @@
-﻿using Services.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services.ViewModels;
 
 namespace Services.Contracts
 {
@@ -12,5 +13,7 @@ namespace Services.Contracts
         int getPendingRequestCount(int phyid);
         NewStateData toogletable(string reqtypeid, string status, int currentPage, int phyid, string searchkey = "");
         void PhysicianAccept(int id);
+        IActionResult DownloadEncounter(int id);
+        void PhysicianNotesSaveChanges(int reqid, string physiciannotes, string physicianname);
     }
 }

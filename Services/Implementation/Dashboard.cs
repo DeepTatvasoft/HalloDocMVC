@@ -53,9 +53,12 @@ namespace Services.Implementation
         {
             PatientDashboardedit dashedit = new PatientDashboardedit();
             var data = _context.Users.FirstOrDefault(u => u.Userid == temp);
-            dashedit.User = data;
-            DateTime tempDateTime = new DateTime(Convert.ToInt32(data.Intyear), Convert.ToInt32(data.Strmonth), (int)data.Intdate);
-            dashedit.tempdate = tempDateTime;
+            if (data != null)
+            {
+                dashedit.User = data;
+                DateTime tempDateTime = new DateTime(Convert.ToInt32(data.Intyear), Convert.ToInt32(data.Strmonth), (int)data.Intdate);
+                dashedit.tempdate = tempDateTime;
+            }
             List<Requestwisefile> reqfile = (from m in _context.Requestwisefiles select m).ToList();
             dashedit.requestwisefiles = reqfile;
             var requestdata = _context.Requests.Where(u => u.Userid == temp);
@@ -65,32 +68,45 @@ namespace Services.Implementation
         public string editUser(PatientDashboardedit dashedit, int id, int aspid)
         {
             var user = _context.Users.FirstOrDefault(u => u.Userid == id);
-            user.Firstname = dashedit.User.Firstname;
-            user.Lastname = dashedit.User.Lastname;
-            string str = user.Firstname + " " + user.Lastname;
-            user.Intdate = dashedit.tempdate.Day;
-            user.Strmonth = (dashedit.tempdate.Month).ToString();
-            user.Intyear = dashedit.tempdate.Year;
-            user.Email = dashedit.User.Email;
-            user.Mobile = dashedit.User.Mobile;
-            user.Street = dashedit.User.Street;
-            user.City = dashedit.User.City;
-            user.State = dashedit.User.State;
-            user.Zipcode = dashedit.User.Zipcode;
-            _context.Users.Update(user);
-            _context.SaveChanges();
+            string str = "";
+            if (user != null)
+            {
+                user.Firstname = dashedit.User.Firstname;
+                user.Lastname = dashedit.User.Lastname;
+                str = user.Firstname + " " + user.Lastname;
+                user.Intdate = dashedit.tempdate.Day;
+                user.Strmonth = (dashedit.tempdate.Month).ToString();
+                user.Intyear = dashedit.tempdate.Year;
+                user.Email = dashedit.User.Email;
+                user.Mobile = dashedit.User.Mobile;
+                user.Street = dashedit.User.Street;
+                user.City = dashedit.User.City;
+                user.State = dashedit.User.State;
+                user.Zipcode = dashedit.User.Zipcode;
+                _context.Users.Update(user);
+                _context.SaveChanges();
+            }
 
             var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == aspid);
-            aspuser.Username = str;
-            _context.Aspnetusers.Update(aspuser);
-            _context.SaveChanges();
+            if (aspuser != null)
+            {
+                aspuser.Username = str;
+                _context.Aspnetusers.Update(aspuser);
+                _context.SaveChanges();
+            }
 
             var req = _context.Requests.FirstOrDefault(u => u.Userid == id);
-            var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == req.Requestid);
-            reqclient.Firstname = dashedit.User.Firstname;
-            reqclient.Lastname = dashedit.User.Lastname;
-            _context.Requestclients.Update(reqclient);
-            _context.SaveChanges();
+            if (req != null)
+            {
+                var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == req.Requestid);
+                if (reqclient != null)
+                {
+                    reqclient.Firstname = dashedit.User.Firstname;
+                    reqclient.Lastname = dashedit.User.Lastname;
+                    _context.Requestclients.Update(reqclient);
+                    _context.SaveChanges();
+                }
+            }
             return str;
         }
 
@@ -107,7 +123,12 @@ namespace Services.Implementation
         }
         public (byte[], string, string) FileDownload(int id)
         {
-            var fname = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == id).Filename;
+            var reqfile = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == id);
+            var fname = "";
+            if (reqfile != null)
+            {
+                fname = reqfile.Filename;
+            }
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "document", fname);
             var provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(path, out var contentType))
@@ -117,7 +138,7 @@ namespace Services.Implementation
             var bytes = System.IO.File.ReadAllBytes(path);
             return (bytes, contentType, Path.GetFileName(path));
         }
-        public (byte[],string,string) DownloadFile(PatientDashboardedit dashedit,List<string> chk)
+        public (byte[], string, string) DownloadFile(PatientDashboardedit dashedit, List<string> chk)
         {
             using (var memorystream = new MemoryStream())
             {
@@ -127,7 +148,11 @@ namespace Services.Implementation
                     {
                         var s = Int32.Parse(item);
                         var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == s);
-                        var path = file.Filename;
+                        var path = "";
+                        if (file != null)
+                        {
+                            path = file.Filename;
+                        }
                         var bytes = System.IO.File.ReadAllBytes(path);
                         var zipEntry = zip.CreateEntry(file.Filename.Split("\\document\\")[1], CompressionLevel.Fastest);
                         using (var zipStream = zipEntry.Open())

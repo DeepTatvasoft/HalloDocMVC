@@ -32,7 +32,6 @@
                         <th scope="col">Region</th>
                         <th scope="col">Physician Name</th>
                         <th scope="col">Date Of Service</th>
-
                         <th scope="col">Address</th>
                         <th scope="col">Notes</th>
                         <th scope="col">Chat With</th>
@@ -40,6 +39,12 @@
                     </tr>
                 </thead>
                 <tbody style="--bs-table-color: white;" id="myTable">
+                    @if (Model.req.Count() == 0)
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center text-secondary">No Data Found</td>
+                        </tr>
+                    }
                     @foreach (var obj in Model.req)
                     {
                         var reqclient = obj.Requestclients.ElementAt(0);

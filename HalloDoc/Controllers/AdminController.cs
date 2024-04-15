@@ -863,11 +863,10 @@ namespace HalloDoc.Controllers
             TempData["success"] = "Information updated successfuly";
             return RedirectToAction("PartnersTab");
         }
-        public IActionResult DeleteBusiness(int id)
+        public void DeleteBusiness(int id)
         {
             adminFunction.DeleteBusiness(id);
-            TempData["error"] = "Business Deleted Successfuly";
-            return RedirectToAction("PartnersTab");
+            TempData["success"] = "Business Deleted Successfuly";
         }
         public IActionResult Recordstab()
         {
