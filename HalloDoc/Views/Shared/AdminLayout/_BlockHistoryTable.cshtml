@@ -13,9 +13,9 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var obj in Model.blockrequests)
+        @foreach (var obj in Model.blockrequests!)
         {
-            var reqclient = Model.reqclient.FirstOrDefault(u => u.Requestid.ToString() == obj.Requestid);
+            var reqclient = Model.reqclient!.FirstOrDefault(u => u.Requestid.ToString() == obj.Requestid);
             var chk = "";
             if (reqclient != null)
             {
@@ -26,7 +26,7 @@
                     <td>@obj.Createddate</td>
                     <td>@obj.Reason</td>
                     <td>
-                        @if (obj.Isactive[0] == true)
+                        @if (obj.Isactive![0] == true)
                         {
                             chk = "checked";
                         }

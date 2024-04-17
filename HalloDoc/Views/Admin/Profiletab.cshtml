@@ -51,7 +51,7 @@
                         <div class="form-floating">
                             <select asp-for="@Model.roleid" class="form-select" aria-label="Floating label select example" disabled>
                                 <option>Role</option>
-                                @foreach (var obj in Model.roles)
+                                @foreach (var obj in Model.roles!)
                                 {
                                     <option value="@obj.Roleid">@obj.Name</option>
                                 }
@@ -113,10 +113,10 @@
                         <span asp-validation-for="phonenumber" class="text-danger"></span>
                     </div>
                     <div class="col d-flex flex-wrap">
-                        @foreach (var obj in Model.regions)
+                        @foreach (var obj in Model.regions!)
                         {
                             var f = "";
-                            @if (Model.adminregions.Contains(obj))
+                            @if (Model.adminregions!.Contains(obj))
                             {
                                 f = "checked";
                             }

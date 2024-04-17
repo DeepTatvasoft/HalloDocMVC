@@ -49,8 +49,8 @@ namespace Services.Implementation
         public void patientinfo(PatientReqSubmit model,int adminid)
         {
 
-            Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+            Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email)!;
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.Email)!;
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             if (aspuser == null && user == null)
             {
@@ -66,9 +66,9 @@ namespace Services.Implementation
 
                 User user1 = new User
                 {
-                    Firstname = model.FirstName,
+                    Firstname = model.FirstName!,
                     Lastname = model.LastName,
-                    Email = model.Email,
+                    Email = model.Email!,
                     Mobile = model.PhoneNumber,
                     Street = model.Street,
                     City = model.City,
@@ -86,7 +86,7 @@ namespace Services.Implementation
                 user = user1;
                 Aspnetuserrole aspnetuserrole = new Aspnetuserrole
                 {
-                    Userid = user.Aspnetuserid.ToString(),
+                    Userid = user.Aspnetuserid.ToString()!,
                     Roleid = "3"
                 };
                 _context.Aspnetuserroles.Add(aspnetuserrole);
@@ -103,7 +103,7 @@ namespace Services.Implementation
                 Status = 1,
                 User = user,
                 Isdeleted = new BitArray(new[] { false }),
-                Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.LastName.Substring(0, 2) + model.FirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
+                Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.LastName!.Substring(0, 2) + model.FirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
             };
 
             _context.Requests.Add(req);
@@ -138,7 +138,7 @@ namespace Services.Implementation
                 {
                     Request = req,
                     Adminnotes = model.AdminNotes,
-                    Createdby = _context.Admins.FirstOrDefault(u => u.Adminid == adminid).Firstname,
+                    Createdby = _context.Admins.FirstOrDefault(u => u.Adminid == adminid)!.Firstname,
                     Createddate = DateTime.Now,
                 };
                 _context.Requestnotes.Add(reqnotes);
@@ -148,7 +148,7 @@ namespace Services.Implementation
 
         public (bool, int) familyinfo(FamilyFriendReqSubmit model)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
             if (user != null)
             {
                 var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
@@ -163,7 +163,7 @@ namespace Services.Implementation
                     Relationname = model.FamRelation,
                     Createddate = DateTime.Now,
                     Status = 1,
-                    Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
+                    Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
                     Isdeleted = new BitArray(new[] { false }),
                     User = user,
                 };
@@ -191,7 +191,7 @@ namespace Services.Implementation
                 };
                 Aspnetuserrole aspnetuserrole = new Aspnetuserrole
                 {
-                    Userid = user.Aspnetuserid.ToString(),
+                    Userid = user.Aspnetuserid.ToString()!,
                     Roleid = "3"
                 };
                 _context.Aspnetuserroles.Add(aspnetuserrole);
@@ -222,7 +222,7 @@ namespace Services.Implementation
                 Requestclient reqclient = new Requestclient
                 {
                     Notes = model.PatSymptoms,
-                    Firstname = model.PatFirstName,
+                    Firstname = model.PatFirstName!,
                     Lastname = model.PatLastName,
                     Intdate = model.PatDOB.Day,
                     Intyear = model.PatDOB.Year,
@@ -250,7 +250,7 @@ namespace Services.Implementation
 
         public void ConciergeInfo(ConciergeSubmit model)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             string name = model.ConFirstName + model.ConLastName;
@@ -258,10 +258,10 @@ namespace Services.Implementation
             {
                 Conciergename = name,
                 Address = model.ConProperty,
-                Street = model.ConStreet,
-                City = model.ConCity,
-                State = model.ConState,
-                Zipcode = model.ConZipcode,
+                Street = model.ConStreet!,
+                City = model.ConCity!,
+                State = model.ConState!,
+                Zipcode = model.ConZipcode!,
                 Createddate = DateTime.Now,
                 Regionid = 1
             };
@@ -274,7 +274,7 @@ namespace Services.Implementation
                 Email = model.ConEmail,
                 Createddate = DateTime.Now,
                 Requesttypeid = 3,
-                Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
+                Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
                 User = user,
                 Isdeleted = new BitArray(new[] { false }),
             };
@@ -302,7 +302,7 @@ namespace Services.Implementation
             _context.Requestclients.Add(reqclient);
             Aspnetuserrole aspnetuserrole = new Aspnetuserrole
             {
-                Userid = user.Aspnetuserid.ToString(),
+                Userid = user.Aspnetuserid.ToString()!,
                 Roleid = "3"
             };
             _context.Aspnetuserroles.Add(aspnetuserrole);
@@ -311,7 +311,7 @@ namespace Services.Implementation
 
         public void BusinessInfo(BusinessSubmit model)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail);
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             Request req = new Request
@@ -323,7 +323,7 @@ namespace Services.Implementation
                 Requesttypeid = 4,
                 Status = 1,
                 Createddate = DateTime.Now,
-                Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName.Substring(0, 2) + model.PatFirstName.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
+                Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
                 Isdeleted = new BitArray(new[] { false }),
                 User = user,
             };
@@ -364,7 +364,7 @@ namespace Services.Implementation
             _context.Businesses.Add(bus);
             Aspnetuserrole aspnetuserrole = new Aspnetuserrole
             {
-                Userid = user.Aspnetuserid.ToString(),
+                Userid = user.Aspnetuserid.ToString()!,
                 Roleid = "3"
             };
             _context.Aspnetuserroles.Add(aspnetuserrole);

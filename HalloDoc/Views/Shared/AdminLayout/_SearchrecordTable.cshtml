@@ -22,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var obj in Model.req)
+        @foreach (var obj in Model.req!)
         {
             var reqclient = obj.Requestclients.ElementAt(0);
             <tr>
@@ -41,7 +41,7 @@
                 <td>
                     @if (obj.Status == 3 || obj.Status == 7 || obj.Status == 8)
                     {
-                        @obj.Requeststatuslogs.LastOrDefault(u=>u.Requestid == obj.Requestid).Createddate.ToString("MMM dd yyyy")
+                        @obj.Requeststatuslogs.LastOrDefault(u=>u.Requestid == obj.Requestid)!.Createddate.ToString("MMM dd yyyy")
                     }
                     else
                     {
@@ -73,7 +73,7 @@
                     {
                         <span>To-Close</span>
                     }
-                    else if(obj.Status == 9)
+                    else if (obj.Status == 9)
                     {
                         <span>Unpaid</span>
                     }
@@ -83,7 +83,7 @@
                     }
                 </td>
                 <td>
-                    @if(obj.Physician != null)
+                    @if (obj.Physician != null)
                     {
                         @obj.Physician.Firstname @obj.Physician.Lastname
                     }
@@ -93,7 +93,7 @@
                     }
                 </td>
                 <td>
-                    @if(obj.Requestnotes.Count()>0)
+                    @if (obj.Requestnotes.Count() > 0)
                     {
                         @obj.Requestnotes.ElementAt(0).Physiciannotes
                     }
@@ -103,9 +103,9 @@
                     }
                 </td>
                 <td>
-                    @if (obj.Status == 3 || obj.Status == 7 || obj.Status == 8)
+                    @if (obj.Status == 3)
                     {
-                        @obj.Requeststatuslogs.LastOrDefault(u=>u.Requestid == obj.Requestid).Notes
+                        @obj.Requeststatuslogs.LastOrDefault(u=>u.Requestid == obj.Requestid)!.Notes
                     }
                     else
                     {
@@ -124,7 +124,7 @@
                 </td>
                 <td>@reqclient.Notes</td>
                 <td>
-                    <a asp-action="DeleteSearchRecord" asp-controller="Admin" asp-route-id="@obj.Requestid" class="btn btn-outline-info">Delete</a>
+                    <a value="@obj.Requestid" class="btn btn-outline-info deletebtn">Delete</a>
                 </td>
             </tr>
         }
@@ -222,14 +222,43 @@
     }
 </div>
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     var num = document.getElementById("curpageinput");
-    if(@Model.currentpage == 1)
-    {
+    if (@Model.currentpage == 1) {
         document.getElementById("page-1").style.backgroundColor = "lightblue";
     }
-    var page = document.getElementById("page-"+ num.value);
+    var page = document.getElementById("page-" + num.value);
     if (page != null) {
         page.style.backgroundColor = "lightblue";
     }
+    $('.deletebtn').on('click', function (e) {
+        var id = $(this).attr("value");
+        swal.fire({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: '/Admin/DeleteSearchRecord',
+                    data: { "id": id },
+                    success: function (response) {
+                        var link = document.createElement('a');
+                        link.href = "/Admin/SearchRecords";
+                        link.click();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            } else {
+                console.log('Cancelled!');
+            }
+        });
+    });
 </script>

@@ -7,30 +7,30 @@
 <Partial name="_Notification" />
 
 
-<div class="tab-content mt-4">
-    <ul class="nav nav-tabs d-flex justify-content-around" id="ViewcaseRemove" role="tablist">
-        <li class="nav-item card bg-body-secondary" role="presentation">
+<div class="tab-content mt-3" id="alldata">
+    <ul class="nav nav-tabs d-flex" id="ViewcaseRemove" role="tablist">
+        <li class="nav-item card bg-body-secondary ms-2" role="presentation">
             <button class="nav-link active state New boxshadow" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
                     type="button" role="tab" aria-controls="New-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person-plus me-3 icon"></i>NEW</div>
                 <h5>@Model.newcount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary ms-2" role="presentation">
             <button class="nav-link state Pending boxshadow" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
                     type="button" role="tab" aria-controls="Pending-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person me-3 icon"></i>PENDING</div>
                 <h5>@Model.pendingcount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary ms-2" role="presentation">
             <button class="nav-link state Active boxshadow" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
                     type="button" role="tab" aria-controls="Active-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-check2-circle me-3 icon"></i>ACTIVE</div>
                 <h5>@Model.activecount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary ms-2" role="presentation">
             <button class="nav-link state Conclude boxshadow" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
                     type="button" role="tab" aria-controls="Conclude-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-clock-history me-3 icon"></i>CONCLUDE</div>
@@ -38,7 +38,7 @@
             </button>
         </li>
     </ul>
-    <div class="container-fluid mt-4" id="alldata">
+    <div class="container-fluid mt-4">
         <div class="d-flex flex-wrap justify-content-between">
             <h4 class="mt-2">Patients (<span class="headstatus"></span>)</h4>
             <div class="allbtn d-flex">

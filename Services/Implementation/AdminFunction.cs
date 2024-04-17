@@ -41,33 +41,29 @@ namespace Services.Implementation
                 }
                 else
                 {
-                    return (false, null, id);
+                    return (false, null!, id);
                 }
             }
             else
             {
-                return (false, null, 0);
+                return (false, null!, 0);
             }
         }
         public NewStateData AdminDashboarddata(int status, int currentPage, string searchkey = "")
         {
             NewStateData data = new NewStateData();
             List<Request> req = new List<Request>();
-            List<Requeststatuslog> requeststatuslogs = new List<Requeststatuslog>();
             if (status == 4)
             {
-                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == 4 || u.Status == 5).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 4 || u.Status == 5).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => (u.Status == 4 || u.Status == 5) && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
             else if (status == 3)
             {
-                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => (u.Status == 3 || u.Status == 7 || u.Status == 8) && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
             else
             {
-                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == status).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == status).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(z => z.Physician).Where(u => u.Status == status && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
             data.newcount = getNewRequestCount();
             data.activecount = getActiveRequestCount();
@@ -79,7 +75,7 @@ namespace Services.Implementation
             data.regions = regions;
             if (!string.IsNullOrWhiteSpace(searchkey))
             {
-                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
+                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname!.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
             data.totalpages = (int)Math.Ceiling(req.Count() / 5.00);
             if (currentPage != 0)
@@ -87,12 +83,11 @@ namespace Services.Implementation
                 req = req.Skip((currentPage - 1) * 5).Take(5).ToList();
             }
             var casetag = _context.Casetags.ToList();
-            data.req = req;
-            data.requeststatuslogs = requeststatuslogs;
             data.casetags = casetag;
             data.currentpage = currentPage;
             data.searchkey = searchkey;
             data.status = Convert.ToInt32(status);
+            data.req = req;
             return data;
         }
         public NewStateData AdminDashboard()
@@ -111,23 +106,18 @@ namespace Services.Implementation
         {
             NewStateData newStateData = new NewStateData();
             List<Request> req;
-            List<Requeststatuslog> requeststatuslogs;
             if (status == "4")
             {
-                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status == 4 || u.Status == 5).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 4 || u.Status == 5).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(u=>u.Physician).Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 4 || u.Status == 5) && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
             else if (status == "3")
             {
-                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 3 || u.Status == 7 || u.Status == 8)).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(u => u.Physician).Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 3 || u.Status == 7 || u.Status == 8) && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
             else
             {
-                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(u=>u.Physician).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
-            newStateData.requeststatuslogs = requeststatuslogs;
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
@@ -135,7 +125,7 @@ namespace Services.Implementation
             newStateData.reqtype = reqtypeid;
             if (!string.IsNullOrWhiteSpace(searchkey))
             {
-                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
+                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname!.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
             newStateData.totalpages = (int)Math.Ceiling(req.Count() / 5.00);
             if (currentPage != 0)
@@ -152,39 +142,28 @@ namespace Services.Implementation
         {
             NewStateData newStateData = new NewStateData();
             newStateData.region = regionid;
-            var reqclient = _context.Requestclients.Include(m => m.Request).Where(u => u.Regionid == regionid).ToList();
-            List<Requeststatuslog> requeststatuslogs;
-            newStateData.requestclients = reqclient;
-            List<Request> req = new List<Request>();
-            foreach (var obj in reqclient)
-            {
-                req.Add(obj.Request);
-            }
+            var req = _context.Requests.Include(m => m.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Where(u => u.Requestclients.First().Regionid == regionid && u.Isdeleted == new BitArray(new[] {false})).ToList();
             if (status == "4")
             {
-                req = req.Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status == 4 || u.Status == 5).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 4 || u.Status == 5).ToList();
+                req = req.Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 4 || u.Status == 5)).ToList();
             }
             else if (status == "3")
             {
-                req = req.Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
+                req = req.Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 3 || u.Status == 7 || u.Status == 8)).ToList();
             }
             else
             {
                 req = req.Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
             }
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
             newStateData.casetags = casetag;
             newStateData.reqtype = reqtypeid;
-            newStateData.requeststatuslogs = requeststatuslogs;
             newStateData.currentpage = currentPage;
             if (!string.IsNullOrWhiteSpace(searchkey))
             {
-                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
+                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname!.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
             newStateData.totalpages = (int)Math.Ceiling(req.Count() / 5.00);
             if (currentPage != 0)
@@ -201,12 +180,12 @@ namespace Services.Implementation
             NewStateData1 newStateData1 = new NewStateData1();
             Request? req = _context.Requests.Include(r => r.Requestclients).FirstOrDefault(u => u.Requestid == id);
             newStateData1.req = req;
-            var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == req.Requestid);
-            int date = (int)reqclient.Intdate;
-            int year = (int)reqclient.Intyear;
-            string month = reqclient.Strmonth.ToString();
+            var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == req!.Requestid);
+            int date = (int)reqclient!.Intdate!;
+            int year = (int)reqclient.Intyear!;
+            string month = reqclient.Strmonth!.ToString();
             var region = _context.Regions.FirstOrDefault(u => u.Regionid == reqclient.Regionid);
-            newStateData1.region = region.Name;
+            newStateData1.region = region!.Name;
             newStateData1.DateOnly = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), (int)date).Date;
             newStateData1.address = reqclient.Address;
             newStateData1.room = reqclient.Location;
@@ -221,38 +200,27 @@ namespace Services.Implementation
         {
             NewStateData newStateData = new NewStateData();
             newStateData.region = regionid;
-            var reqclient = _context.Requestclients.Include(m => m.Request).Where(u => u.Regionid == regionid).ToList();
-            List<Requeststatuslog> requeststatuslogs;
-            newStateData.requestclients = reqclient;
-            List<Request> req = new List<Request>();
-            foreach (var obj in reqclient)
-            {
-                req.Add(obj.Request);
-            }
+            var req = _context.Requests.Include(m => m.Requestclients).Include(u=>u.Physician).Include(u=>u.Requeststatuslogs).Where(u => u.Requestclients.First().Regionid == regionid).ToList();
             if (status == "4")
             {
-                req = req.Where(u => u.Status == 4 || u.Status == 5).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 4 || u.Status == 5).ToList();
+                req = req.Where(u => u.Status == 4 || u.Status == 5 && u.Isdeleted![0] == false).ToList();
             }
             else if (status == "3")
             {
-                req = req.Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8).ToList();
+                req = req.Where(u => u.Status == 3 || u.Status == 7 || u.Status == 8 && u.Isdeleted![0] == false).ToList();
             }
             else
             {
-                req = req.Where(u => u.Status.ToString() == status).ToList();
-                requeststatuslogs = _context.Requeststatuslogs.Include(r => r.Transtophysician).Where(u => u.Status.ToString() == status).ToList();
+                req = req.Where(u => u.Status.ToString() == status && u.Isdeleted![0] == false).ToList();
             }
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
             var casetag = _context.Casetags.ToList();
             newStateData.casetags = casetag;
             newStateData.currentpage = currentPage;
-            newStateData.requeststatuslogs = requeststatuslogs;
             if (!string.IsNullOrWhiteSpace(searchkey))
             {
-                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname.ToLower().Contains(searchkey.ToLower()))).ToList();
+                req = req.Where(a => a.Requestclients.Any(rc => rc.Firstname.ToLower().Contains(searchkey.ToLower()) || rc.Lastname!.ToLower().Contains(searchkey.ToLower()))).ToList();
             }
             newStateData.totalpages = (int)Math.Ceiling(req.Count() / 5.00);
             if (currentPage != 0)
@@ -266,41 +234,41 @@ namespace Services.Implementation
         }
         public int getToCloseRequestCount()
         {
-            return _context.Requests.Count(rc => rc.Status == 3 || rc.Status == 7 || rc.Status == 8);
+            return _context.Requests.Count(rc => rc.Status == 3 || rc.Status == 7 || rc.Status == 8 && rc.Isdeleted == new BitArray(new[] { false }));
         }
 
         public int getActiveRequestCount()
         {
-            return _context.Requests.Count(rc => rc.Status == 4 || rc.Status == 5);
+            return _context.Requests.Count(rc => rc.Status == 4 || rc.Status == 5 && rc.Isdeleted == new BitArray(new[] { false }));
         }
 
         public int getConcludeRequestCount()
         {
-            return _context.Requests.Count(rc => rc.Status == 6);
+            return _context.Requests.Count(rc => rc.Status == 6 && rc.Isdeleted == new BitArray(new[] { false }));
         }
 
         public int getNewRequestCount()
         {
-            return _context.Requests.Count(r => r.Status == 1);
+            return _context.Requests.Count(r => r.Status == 1 && r.Isdeleted == new BitArray(new[] { false }));
         }
 
         public int getPendingRequestCount()
         {
-            return _context.Requests.Count(rc => rc.Status == 2);
+            return _context.Requests.Count(rc => rc.Status == 2 && rc.Isdeleted == new BitArray(new[] { false }));
         }
 
         public int getUnpaidRequestCount()
         {
-            return _context.Requests.Count(rc => rc.Status == 9);
+            return _context.Requests.Count(rc => rc.Status == 9 && rc.Isdeleted == new BitArray(new[] { false }));
         }
         public void cancelcase(int reqid, int casetagid, string cancelnotes, string adminname, int id)
         {
-            if (cancelnotes != null && casetagid != null)
+            if (cancelnotes != null)
             {
                 var request = _context.Requests.FirstOrDefault(u => u.Requestid == reqid);
-                request.Modifieddate = DateTime.Now;
+                request!.Modifieddate = DateTime.Now;
                 request.Declinedby = adminname;
-                string casetag = _context.Casetags.FirstOrDefault(u => u.Casetagid == casetagid).Name;
+                string casetag = _context.Casetags.FirstOrDefault(u => u.Casetagid == casetagid)!.Name;
                 request.Casetag = casetag;
                 request.Status = 3;
                 _context.Requests.Update(request);
@@ -311,10 +279,10 @@ namespace Services.Implementation
                 {
                     Requestid = reqid,
                     Status = 3,
-                    Adminid = admin.Adminid,
+                    Adminid = admin!.Adminid,
                     Notes = cancelnotes,
                     Createddate = DateTime.Now,
-
+                    Transtoadmin = new BitArray(new[] { false })
                 };
                 _context.Requeststatuslogs.Add(requeststatuslog);
                 _context.SaveChanges();
@@ -338,17 +306,18 @@ namespace Services.Implementation
             if (phyid != 0)
             {
                 var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqid);
-                req.Modifieddate = DateTime.Now;
-                req.Status = 2;
+                req!.Modifieddate = DateTime.Now;
+                req.Status = 1;
                 req.Physicianid = phyid;
                 _context.Requests.Update(req);
                 Requeststatuslog requeststatuslog = new Requeststatuslog
                 {
                     Requestid = reqid,
-                    Status = 2,
+                    Status = 1,
                     Adminid = id,
                     Transtophysicianid = phyid,
                     Notes = Assignnotes,
+                    Transtoadmin = new BitArray(new[] { false }),
                     Createddate = DateTime.Now,
                 };
                 _context.Requeststatuslogs.Add(requeststatuslog);
@@ -358,7 +327,7 @@ namespace Services.Implementation
         public void blockcase(int reqid, string Blocknotes)
         {
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqid);
-            req.Status = 200;
+            req!.Status = 200;
             _context.Update(req);
             _context.SaveChanges();
             Blockrequest blockrequest = new Blockrequest
@@ -387,7 +356,7 @@ namespace Services.Implementation
                 string phyname;
                 if (reqstatuslog.Transtophysicianid != null)
                 {
-                    phyname = _context.Physicians.FirstOrDefault(u => u.Physicianid == reqstatuslog.Transtophysicianid).Firstname;
+                    phyname = _context.Physicians.FirstOrDefault(u => u.Physicianid == reqstatuslog.Transtophysicianid)!.Firstname;
                     viewNotesModel.phyname = phyname;
 
                 }
@@ -427,15 +396,15 @@ namespace Services.Implementation
         public AdminviewDoc AdminuploadDoc(int reqid)
         {
             AdminviewDoc adminviewDoc = new AdminviewDoc();
-            adminviewDoc.Username = _context.Requests.FirstOrDefault(u => u.Requestid == reqid).Firstname;
-            adminviewDoc.ConfirmationNum = _context.Requests.FirstOrDefault(u => u.Requestid == reqid).Confirmationnumber;
+            adminviewDoc.Username = _context.Requests.FirstOrDefault(u => u.Requestid == reqid)!.Firstname;
+            adminviewDoc.ConfirmationNum = _context.Requests.FirstOrDefault(u => u.Requestid == reqid)!.Confirmationnumber;
             var reqfile = _context.Requestwisefiles.Where(u => u.Requestid == reqid && u.Isdeleted != new BitArray(new[] { true })).ToList();
             adminviewDoc.reqfile = reqfile;
             adminviewDoc.reqid = reqid;
             var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == reqid);
-            adminviewDoc.firstname = reqclient.Firstname;
+            adminviewDoc.firstname = reqclient!.Firstname;
             adminviewDoc.lastname = reqclient.Lastname;
-            DateTime tempDateTime = new DateTime(Convert.ToInt32(reqclient.Intyear), Convert.ToInt32(reqclient.Strmonth), (int)reqclient.Intdate);
+            DateTime tempDateTime = new DateTime(Convert.ToInt32(reqclient.Intyear), Convert.ToInt32(reqclient.Strmonth), (int)reqclient.Intdate!);
             adminviewDoc.DOB = tempDateTime;
             adminviewDoc.phonenumber = reqclient.Phonenumber;
             adminviewDoc.email = reqclient.Email;
@@ -445,7 +414,7 @@ namespace Services.Implementation
         public int SingleDelete(int reqfileid)
         {
             var requestwisefile = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == reqfileid);
-            int reqid = requestwisefile.Requestid;
+            int reqid = requestwisefile!.Requestid;
             requestwisefile.Isdeleted = new BitArray(new[] { true });
             _context.Requestwisefiles.Update(requestwisefile);
             _context.SaveChanges();
@@ -457,7 +426,7 @@ namespace Services.Implementation
             List<string> filenames = new List<string>();
             foreach (var item in reqwiseid)
             {
-                var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == item).Filename;
+                var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == item)!.Filename;
                 filenames.Add(file);
             }
             return filenames;
@@ -475,7 +444,7 @@ namespace Services.Implementation
         public Healthprofessional filterbusiness(int vendorid)
         {
             Healthprofessional? profession = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == vendorid);
-            return profession;
+            return profession!;
         }
         public void OrderSubmit(SendOrders sendorder)
         {
@@ -497,14 +466,14 @@ namespace Services.Implementation
         public void clearcase(int reqid)
         {
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqid);
-            req.Status = 10;
+            req!.Status = 10;
             _context.Requests.Update(req);
             _context.SaveChanges();
         }
         public void AcceptAgreement(int id)
         {
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == id);
-            req.Status = 4;
+            req!.Status = 4;
             req.Accepteddate = DateTime.Now;
             _context.Requests.Update(req);
             Requeststatuslog reqstatuslog = new Requeststatuslog
@@ -519,7 +488,7 @@ namespace Services.Implementation
         public void CancelAgreement(Agreementmodal modal)
         {
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == modal.reqid);
-            req.Status = 3;
+            req!.Status = 3;
             req.Accepteddate = DateTime.Now;
             _context.Requests.Update(req);
             Requeststatuslog reqstatuslog = new Requeststatuslog
@@ -535,7 +504,7 @@ namespace Services.Implementation
         public void CloseCasebtn(int id)
         {
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == id);
-            req.Status = 9;
+            req!.Status = 9;
             req.Modifieddate = DateTime.Now;
             _context.Requests.Update(req);
             _context.SaveChanges();
@@ -551,7 +520,7 @@ namespace Services.Implementation
         public void Closecaseedit([FromForm] AdminviewDoc formData)
         {
             var reqclient = _context.Requestclients.FirstOrDefault(u => u.Requestid == formData.reqid);
-            reqclient.Firstname = formData.firstname;
+            reqclient!.Firstname = formData.firstname!;
             reqclient.Lastname = formData.lastname;
             reqclient.Intdate = formData.DOB.Day;
             reqclient.Strmonth = formData.DOB.Month.ToString();
@@ -563,17 +532,17 @@ namespace Services.Implementation
         }
         public void AdminResetPassword(AdminProfile modal)
         {
-            var aspid = _context.Admins.FirstOrDefault(u => u.Adminid == modal.adminid).Aspnetuserid;
+            var aspid = _context.Admins.FirstOrDefault(u => u.Adminid == modal.adminid)!.Aspnetuserid;
             var aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == aspid);
-            aspnetuser.Passwordhash = modal.ResetPassword;
+            aspnetuser!.Passwordhash = modal.ResetPassword;
             _context.Aspnetusers.Update(aspnetuser);
             _context.SaveChanges();
         }
         public AdminProfile Profiletab(int adminid)
         {
             AdminProfile adminProfile = new AdminProfile();
-            Admin admindata = _context.Admins.FirstOrDefault(u => u.Adminid == adminid);
-            adminProfile.Username = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == admindata.Aspnetuserid).Username;
+            Admin admindata = _context.Admins.FirstOrDefault(u => u.Adminid == adminid)!;
+            adminProfile.Username = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == admindata.Aspnetuserid)!.Username;
             adminProfile.firstname = admindata.Firstname;
             adminProfile.lastname = admindata.Lastname;
             adminProfile.email = admindata.Email;
@@ -585,7 +554,7 @@ namespace Services.Implementation
             adminProfile.regionid = admindata.Regionid;
             adminProfile.zipcode = admindata.Zip;
             adminProfile.altphone = admindata.Altphone;
-            adminProfile.status = (int)admindata.Status;
+            adminProfile.status = (int)admindata.Status!;
             adminProfile.regions = _context.Regions.ToList();
             adminProfile.adminid = adminid;
             adminProfile.roleid = admindata.Roleid;
@@ -603,20 +572,20 @@ namespace Services.Implementation
             {
                 flag = false;
             }
-            if (Modal.email == admin.Email)
+            if (Modal.email == admin!.Email)
             {
                 flag = true;
             }
             var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == Modal.adminid);
-            admin.Firstname = Modal.firstname;
+            admin.Firstname = Modal.firstname!;
             admin.Lastname = Modal.lastname;
             if (flag == true)
             {
-                admin.Email = Modal.email;
+                admin.Email = Modal.email!;
             }
             admin.Mobile = Modal.phonenumber;
             admin.Modifieddate = DateTime.Now;
-            aspuser.Phonenumber = Modal.phonenumber;
+            aspuser!.Phonenumber = Modal.phonenumber;
             aspuser.Email = Modal.email;
             aspuser.Modifieddate = DateTime.Now;
             _context.Aspnetusers.Update(aspuser);
@@ -643,7 +612,7 @@ namespace Services.Implementation
         public void MailinginfoEdit(AdminProfile modal)
         {
             var admin = _context.Admins.FirstOrDefault(u => u.Adminid == modal.adminid);
-            admin.Address1 = modal.address1;
+            admin!.Address1 = modal.address1;
             admin.Address2 = modal.address2;
             admin.City = modal.city;
             admin.Regionid = modal.regionid;
@@ -678,7 +647,7 @@ namespace Services.Implementation
                 headerRow.CreateCell(16).SetCellValue("PhysicainName");
                 headerRow.CreateCell(17).SetCellValue("Status");
 
-                for (int i = 0; i < model.req.Count; i++)
+                for (int i = 0; i < model.req!.Count; i++)
                 {
                     var reqclient = model.req.ElementAt(i).Requestclients.ElementAt(0);
                     var type = "";
@@ -706,7 +675,7 @@ namespace Services.Implementation
                     row.CreateCell(4).SetCellValue(model.req.ElementAt(i).Firstname);
                     row.CreateCell(5).SetCellValue(model.req.ElementAt(i).Createddate);
                     row.CreateCell(6).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Phonenumber);
-                    if (model.requeststatuslogs.Count == 0)
+                    if (model.requeststatuslogs!.Count == 0)
                     {
                         row.CreateCell(7).SetCellValue("");
                     }
@@ -728,14 +697,14 @@ namespace Services.Implementation
                     }
                     row.CreateCell(13).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Email);
                     row.CreateCell(14).SetCellValue(type);
-                    row.CreateCell(15).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Region.Name);
+                    row.CreateCell(15).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Region!.Name);
                     if (model.req.ElementAt(i).Physician == null)
                     {
                         row.CreateCell(16).SetCellValue("");
                     }
                     else
                     {
-                        row.CreateCell(16).SetCellValue(model.req.ElementAt(i).Physician.Firstname);
+                        row.CreateCell(16).SetCellValue(model.req.ElementAt(i).Physician!.Firstname);
                     }
                     row.CreateCell(17).SetCellValue(model.status);
                 }
@@ -766,8 +735,8 @@ namespace Services.Implementation
         {
             Agreementmodal modal = new Agreementmodal();
             modal.reqid = id;
-            modal.firstname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Firstname;
-            modal.lastname = _context.Requests.FirstOrDefault(u => u.Requestid == id).Lastname;
+            modal.firstname = _context.Requests.FirstOrDefault(u => u.Requestid == id)!.Firstname;
+            modal.lastname = _context.Requests.FirstOrDefault(u => u.Requestid == id)!.Lastname;
             return modal;
         }
 
@@ -775,7 +744,7 @@ namespace Services.Implementation
         {
             EditPhysicianModal modal = new EditPhysicianModal();
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == id);
-            modal.physicianid = physician.Physicianid;
+            modal.physicianid = physician!.Physicianid;
             modal.status = (int?)physician.Status;
             modal.role = (int?)physician.Roleid;
             modal.Firstname = physician.Firstname;
@@ -794,14 +763,14 @@ namespace Services.Implementation
             modal.BusinessName = physician.Businessname;
             modal.Businesssite = physician.Businesswebsite;
             modal.Adminnotes = physician.Adminnotes;
-            modal.photo = physician.Photo;
+            modal.photo = physician.Photo!;
             modal.sign = physician.Signature;
             modal.Isagreementdoc = physician.Isagreementdoc;
             modal.Isbackgrounddoc = physician.Isbackgrounddoc;
             modal.Iscredentialdoc = physician.Iscredentialdoc;
             modal.Islicensedoc = physician.Islicensedoc;
             modal.Isnondisclosuredoc = physician.Isnondisclosuredoc;
-            modal.Username = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician.Aspnetuserid).Username;
+            modal.Username = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician.Aspnetuserid)!.Username;
             modal.regions = _context.Regions.ToList();
             modal.physicianregions = _context.Physicianregions.Include(u => u.Region).Where(u => u.Physicianid == id).Select(u => u.Region).ToHashSet();
             modal.roles = _context.Roles.Where(u => u.Accounttype == 2).ToList();
@@ -810,9 +779,9 @@ namespace Services.Implementation
         public void PhysicianAccInfo(EditPhysicianModal modal, string adminname)
         {
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
-            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician.Aspnetuserid);
-            aspuser.Username = modal.Username;
-            physician.Status = (short?)modal.status;
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician!.Aspnetuserid);
+            aspuser!.Username = modal.Username!;
+            physician!.Status = (short?)modal.status;
             physician.Roleid = modal.role;
             _context.Aspnetusers.Update(aspuser);
             _context.Physicians.Update(physician);
@@ -823,10 +792,10 @@ namespace Services.Implementation
         public void PhysicianResetPass(EditPhysicianModal modal, string adminname)
         {
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
-            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician.Aspnetuserid);
-            aspuser.Passwordhash = modal.password;
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id.ToString() == physician!.Aspnetuserid);
+            aspuser!.Passwordhash = modal.password;
             _context.Aspnetusers.Update(aspuser);
-            physician.Modifieddate = DateTime.Now;
+            physician!.Modifieddate = DateTime.Now;
             physician.Modifiedby = adminname;
             _context.SaveChanges();
         }
@@ -839,15 +808,15 @@ namespace Services.Implementation
             {
                 flag = false;
             }
-            if (modal.Email == physician.Email)
+            if (modal.Email == physician!.Email)
             {
                 flag = true;
             }
-            physician.Firstname = modal.Firstname;
+            physician.Firstname = modal.Firstname!;
             physician.Lastname = modal.Lastname;
             if (flag == true)
             {
-                physician.Email = modal.Email;
+                physician.Email = modal.Email!;
             }
             physician.Mobile = modal.phonenumber;
             physician.Medicallicense = modal.license;
@@ -878,7 +847,7 @@ namespace Services.Implementation
         public void PhysicianMailingInfo(EditPhysicianModal modal, string adminname)
         {
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
-            physician.Address1 = modal.Address1;
+            physician!.Address1 = modal.Address1;
             physician.Address2 = modal.Address2;
             physician.City = modal.City;
             physician.Regionid = modal.regionid;
@@ -892,8 +861,8 @@ namespace Services.Implementation
         public void ProviderProfile(EditPhysicianModal modal, string adminname)
         {
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
-            physician.Businessname = modal.BusinessName;
-            physician.Businesswebsite = modal.Businesssite;
+            physician!.Businessname = modal.BusinessName!;
+            physician.Businesswebsite = modal.Businesssite!;
             physician.Adminnotes = modal.Adminnotes;
             physician.Modifieddate = DateTime.Now;
             physician.Modifiedby = adminname;
@@ -903,14 +872,14 @@ namespace Services.Implementation
         public void EditProviderSign(int physicianid, string base64string)
         {
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == physicianid);
-            physician.Signature = base64string;
+            physician!.Signature = base64string;
             _context.Physicians.Update(physician);
             _context.SaveChanges();
         }
         public void EditProviderPhoto(int physicianid, string base64string)
         {
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == physicianid);
-            physician.Photo = base64string;
+            physician!.Photo = base64string;
             _context.Physicians.Update(physician);
             _context.SaveChanges();
         }
@@ -926,7 +895,7 @@ namespace Services.Implementation
             {
                 var s = Int32.Parse(obj);
                 var phynotification = _context.Physiciannotifications.FirstOrDefault(u => u.Physicianid == s);
-                phynotification.Isnotificationstopped = new BitArray(new[] { true });
+                phynotification!.Isnotificationstopped = new BitArray(new[] { true });
                 _context.Physiciannotifications.Update(phynotification);
             }
             _context.SaveChanges();
@@ -934,7 +903,7 @@ namespace Services.Implementation
         public void DeletePhysician(EditPhysicianModal modal)
         {
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == modal.physicianid);
-            physician.Isdeleted = new BitArray(new[] { true });
+            physician!.Isdeleted = new BitArray(new[] { true });
             _context.Physicians.Update(physician);
             _context.SaveChanges();
         }
@@ -955,7 +924,7 @@ namespace Services.Implementation
         {
             if (chk == "email" || chk == "both")
             {
-                var email = _context.Physicians.FirstOrDefault(u => u.Physicianid == phyid).Email;
+                var email = _context.Physicians.FirstOrDefault(u => u.Physicianid == phyid)!.Email;
                 sendEmail(email, "Contact Physician", message);
                 Emaillog emaillog = new Emaillog
                 {
@@ -992,7 +961,7 @@ namespace Services.Implementation
         {
             Role role = new Role
             {
-                Name = modal.RoleName,
+                Name = modal.RoleName!,
                 Accounttype = (short)modal.accountType,
                 Createddate = DateTime.Now,
                 Createdby = adminname,
@@ -1026,17 +995,17 @@ namespace Services.Implementation
         {
             AccessRoleModal modal = new AccessRoleModal();
             var role = _context.Roles.FirstOrDefault(u => u.Roleid == roleid);
-            modal.menu = _context.Menus.Where(u => u.Accounttype == role.Accounttype).ToList();
-            modal.selectedmenuid = _context.Rolemenus.Include(r => r.Role).Where(r => r.Roleid == roleid && r.Role.Accounttype == role.Accounttype).Select(r => r.Menu.Menuid).ToList();
-            modal.RoleName = role.Name;
+            modal.menu = _context.Menus.Where(u => u.Accounttype == role!.Accounttype).ToList();
+            modal.selectedmenuid = _context.Rolemenus.Include(r => r.Role).Where(r => r.Roleid == roleid && r.Role.Accounttype == role!.Accounttype).Select(r => r.Menu.Menuid).ToList();
+            modal.RoleName = role!.Name;
             modal.accountType = role.Accounttype;
             modal.roleid = roleid;
             return modal;
         }
         public void EditRoleSubmit(AccessRoleModal modal, List<string> chk, string adminname)
         {
-            Role role = _context.Roles.FirstOrDefault(u => u.Roleid == modal.roleid);
-            role.Name = modal.RoleName;
+            Role role = _context.Roles.FirstOrDefault(u => u.Roleid == modal.roleid)!;
+            role.Name = modal.RoleName!;
             role.Accounttype = (short)modal.accountType;
             role.Modifieddate = DateTime.Now;
             role.Modifiedby = adminname;
@@ -1063,7 +1032,7 @@ namespace Services.Implementation
         public void DeleteRole(int roleid)
         {
             var role = _context.Roles.FirstOrDefault(u => u.Roleid == roleid);
-            role.Isdeleted = new BitArray(new[] { true });
+            role!.Isdeleted = new BitArray(new[] { true });
             _context.Roles.Update(role);
             _context.SaveChanges();
         }
@@ -1128,7 +1097,7 @@ namespace Services.Implementation
             }
             Aspnetuser aspuser = new Aspnetuser
             {
-                Username = modal.Username,
+                Username = modal.Username!,
                 Passwordhash = modal.password,
                 Email = modal.Email,
                 Phonenumber = modal.phonenumber,
@@ -1139,9 +1108,9 @@ namespace Services.Implementation
             Physician physician = new Physician
             {
                 Aspnetuserid = aspuser.Id.ToString(),
-                Firstname = modal.Firstname,
+                Firstname = modal.Firstname!,
                 Lastname = modal.Lastname,
-                Email = modal.Email,
+                Email = modal.Email!,
                 Mobile = modal.phonenumber,
                 Photo = base64StringWithFileType,
                 Adminnotes = modal.Adminnotes,
@@ -1154,8 +1123,8 @@ namespace Services.Implementation
                 Createdby = adminname,
                 Createddate = DateTime.Now,
                 Status = (short?)modal.status,
-                Businessname = modal.BusinessName,
-                Businesswebsite = modal.Businesssite,
+                Businessname = modal.BusinessName!,
+                Businesswebsite = modal.Businesssite!,
                 Isdeleted = new BitArray(new[] { false }),
                 Roleid = modal.role,
                 Npinumber = modal.npi,
@@ -1227,7 +1196,7 @@ namespace Services.Implementation
         {
             Aspnetuser aspuser = new Aspnetuser
             {
-                Username = modal.Username,
+                Username = modal.Username!,
                 Passwordhash = modal.ResetPassword,
                 Email = modal.email,
                 Phonenumber = modal.phonenumber,
@@ -1238,9 +1207,9 @@ namespace Services.Implementation
             Admin admin = new Admin
             {
                 Aspnetuserid = aspuser.Id.ToString(),
-                Firstname = modal.firstname,
+                Firstname = modal.firstname!,
                 Lastname = modal.lastname,
-                Email = modal.email,
+                Email = modal.email!,
                 Mobile = modal.phonenumber,
                 Address1 = modal.address1,
                 Address2 = modal.address2,
@@ -1279,25 +1248,25 @@ namespace Services.Implementation
             var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == physicianid);
             if (doctype == "ICA")
             {
-                physician.Isagreementdoc = new BitArray(new[] { true });
+                physician!.Isagreementdoc = new BitArray(new[] { true });
             }
             else if (doctype == "HIPAA")
             {
-                physician.Iscredentialdoc = new BitArray(new[] { true });
+                physician!.Iscredentialdoc = new BitArray(new[] { true });
             }
             else if (doctype == "BGCheck")
             {
-                physician.Isbackgrounddoc = new BitArray(new[] { true });
+                physician!.Isbackgrounddoc = new BitArray(new[] { true });
             }
             else if (doctype == "NDDoc")
             {
-                physician.Isnondisclosuredoc = new BitArray(new[] { true });
+                physician!.Isnondisclosuredoc = new BitArray(new[] { true });
             }
             else if (doctype == "LDDoc")
             {
-                physician.Islicensedoc = new BitArray(new[] { true });
+                physician!.Islicensedoc = new BitArray(new[] { true });
             }
-            _context.Physicians.Update(physician);
+            _context.Physicians.Update(physician!);
             _context.SaveChanges();
         }
 
@@ -1453,10 +1422,10 @@ namespace Services.Implementation
 
             if (shift.Isrepeat[0] == true)
             {
-                for (int j = 0; j < shift.Weekdays.Count(); j++)
+                for (int j = 0; j < shift.Weekdays!.Count(); j++)
                 {
                     var z = shift.Weekdays;
-                    var p = shift.Weekdays.ElementAt(j).ToString();
+                    var p = shift.Weekdays!.ElementAt(j).ToString();
                     int ele = Int32.Parse(p);
                     int x;
                     if (valueforweek > ele)
@@ -1526,8 +1495,8 @@ namespace Services.Implementation
         public Scheduling viewshift(int shiftdetailid)
         {
             Scheduling modal = new Scheduling();
-            Shiftdetail shiftdetail = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
-            modal.regionid = (int)shiftdetail.Regionid;
+            Shiftdetail shiftdetail = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).FirstOrDefault(u => u.Shiftdetailid == shiftdetailid)!;
+            modal.regionid = (int)shiftdetail.Regionid!;
             modal.physicianname = shiftdetail.Shift.Physician.Firstname + " " + shiftdetail.Shift.Physician.Lastname;
             modal.modaldate = shiftdetail.Shiftdate.ToString("yyyy-MM-dd");
             modal.starttime = shiftdetail.Starttime;
@@ -1539,7 +1508,7 @@ namespace Services.Implementation
         public void ViewShiftreturn(int shiftdetailid, string adminname)
         {
             var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
-            if (shiftdetail.Status == 0)
+            if (shiftdetail!.Status == 0)
             {
                 shiftdetail.Status = 1;
             }
@@ -1555,7 +1524,7 @@ namespace Services.Implementation
         public bool ViewShiftedit(Scheduling modal, string adminname)
         {
             var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == modal.shiftdetailid);
-            var checkshift = _context.Shiftdetails.Where(u => u.Shiftdate == shiftdetail.Shiftdate).ToList();
+            var checkshift = _context.Shiftdetails.Where(u => u.Shiftdate == shiftdetail!.Shiftdate).ToList();
             if (checkshift.Count() > 0)
             {
                 foreach (var obj in checkshift)
@@ -1566,7 +1535,7 @@ namespace Services.Implementation
                     }
                 }
             }
-            shiftdetail.Shiftdate = modal.shiftdate;
+            shiftdetail!.Shiftdate = modal.shiftdate;
             shiftdetail.Starttime = modal.starttime;
             shiftdetail.Endtime = modal.endtime;
             shiftdetail.Modifieddate = DateTime.Now;
@@ -1579,13 +1548,13 @@ namespace Services.Implementation
         public void DeleteShift(int shiftdetailid, string adminname)
         {
             var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
-            shiftdetail.Isdeleted = new BitArray(new[] { true });
+            shiftdetail!.Isdeleted = new BitArray(new[] { true });
             shiftdetail.Modifieddate = DateTime.Now;
             shiftdetail.Modifiedby = adminname;
             _context.Shiftdetails.Update(shiftdetail);
             _context.SaveChanges();
             var shiftregion = _context.Shiftdetailregions.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
-            shiftregion.Isdeleted = new BitArray(new[] { true });
+            shiftregion!.Isdeleted = new BitArray(new[] { true });
             _context.Shiftdetailregions.Update(shiftregion);
             _context.SaveChanges();
         }
@@ -1727,7 +1696,7 @@ namespace Services.Implementation
             foreach (var obj in shiftchk)
             {
                 var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == obj);
-                shiftdetail.Status = 1;
+                shiftdetail!.Status = 1;
                 shiftdetail.Modifieddate = DateTime.Now;
                 shiftdetail.Modifiedby = adminname;
                 _context.Shiftdetails.Update(shiftdetail);
@@ -1739,13 +1708,13 @@ namespace Services.Implementation
             foreach (var obj in shiftchk)
             {
                 var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == obj);
-                shiftdetail.Isdeleted = new BitArray(new[] { true });
+                shiftdetail!.Isdeleted = new BitArray(new[] { true });
                 shiftdetail.Modifieddate = DateTime.Now;
                 shiftdetail.Modifiedby = adminname;
                 _context.Shiftdetails.Update(shiftdetail);
                 _context.SaveChanges();
                 var shiftregion = _context.Shiftdetailregions.FirstOrDefault(u => u.Shiftdetailid == obj);
-                shiftregion.Isdeleted = new BitArray(new[] { true });
+                shiftregion!.Isdeleted = new BitArray(new[] { true });
                 _context.Shiftdetailregions.Update(shiftregion);
                 _context.SaveChanges();
             }
@@ -1780,18 +1749,18 @@ namespace Services.Implementation
         }
         public AddBusinessModal EditBusiness(int id)
         {
-            Healthprofessional data = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == id);
+            Healthprofessional data = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == id)!;
             AddBusinessModal modal = new AddBusinessModal();
             modal.businessname = data.Vendorname;
-            modal.professiontype = (int)data.Profession;
-            modal.phonenumber = data.Phonenumber;
+            modal.professiontype = (int)data.Profession!;
+            modal.phonenumber = data.Phonenumber!;
             modal.faxnumber = data.Faxnumber;
-            modal.city = data.City;
-            modal.state = data.City;
-            modal.zipcode = data.Zip;
-            modal.email = data.Email;
-            modal.street = data.Address;
-            modal.buscontact = data.Businesscontact;
+            modal.city = data.City!;
+            modal.state = data.City!;
+            modal.zipcode = data.Zip!;
+            modal.email = data.Email!;
+            modal.street = data.Address!;
+            modal.buscontact = data.Businesscontact!;
             modal.vendorid = id;
             modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
             return modal;
@@ -1799,7 +1768,7 @@ namespace Services.Implementation
         public void EditBusinessSubmit(AddBusinessModal modal)
         {
             var healthprofession = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == modal.vendorid);
-            healthprofession.Vendorname = modal.businessname;
+            healthprofession!.Vendorname = modal.businessname;
             healthprofession.Profession = modal.professiontype;
             healthprofession.Faxnumber = modal.faxnumber;
             healthprofession.Phonenumber = modal.phonenumber;
@@ -1815,7 +1784,7 @@ namespace Services.Implementation
         }
         public void DeleteBusiness(int id)
         {
-            Healthprofessional data = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == id);
+            Healthprofessional data = _context.Healthprofessionals.FirstOrDefault(u => u.Vendorid == id)!;
             data.Isdeleted = new BitArray(new[] { true });
             data.Modifieddate = DateTime.Now;
             _context.Healthprofessionals.Update(data);
@@ -1844,7 +1813,7 @@ namespace Services.Implementation
                 headerRow.CreateCell(13).SetCellValue("Admin Note");
                 headerRow.CreateCell(14).SetCellValue("Patient Note");
 
-                for (int i = 0; i < model.req.Count; i++)
+                for (int i = 0; i < model.req!.Count; i++)
                 {
                     var reqclient = model.req.ElementAt(i).Requestclients.ElementAt(0);
                     var req = model.req.ElementAt(i);
@@ -1891,7 +1860,7 @@ namespace Services.Implementation
                     }
                     if (@req.Status == 3 || @req.Status == 7 || @req.Status == 8)
                     {
-                        row.CreateCell(4).SetCellValue(@req.Requeststatuslogs.LastOrDefault(u => u.Requestid == @req.Requestid).Createddate.ToString("MMM dd yyyy"));
+                        row.CreateCell(4).SetCellValue(@req.Requeststatuslogs.LastOrDefault(u => u.Requestid == @req.Requestid)!.Createddate.ToString("MMM dd yyyy"));
                     }
                     else
                     {
@@ -1920,7 +1889,7 @@ namespace Services.Implementation
                     }
                     if (req.Status == 3 || req.Status == 7 || req.Status == 8)
                     {
-                        row.CreateCell(12).SetCellValue(req.Requeststatuslogs.LastOrDefault(u => u.Requestid == req.Requestid).Notes);
+                        row.CreateCell(12).SetCellValue(req.Requeststatuslogs.LastOrDefault(u => u.Requestid == req.Requestid)!.Notes);
                     }
                     else
                     {
@@ -1972,7 +1941,7 @@ namespace Services.Implementation
             }
             if (!string.IsNullOrWhiteSpace(modal.lastname))
             {
-                modal.user = modal.user.Where(rc => rc.Lastname.ToLower().Contains(modal.lastname.ToLower())).ToList();
+                modal.user = modal.user.Where(rc => rc.Lastname!.ToLower().Contains(modal.lastname.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.email))
             {
@@ -1980,7 +1949,7 @@ namespace Services.Implementation
             }
             if (!string.IsNullOrWhiteSpace(modal.phonenumber))
             {
-                modal.user = modal.user.Where(rc => rc.Mobile.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+                modal.user = modal.user.Where(rc => rc.Mobile!.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
             }
             modal.totalpages = (int)Math.Ceiling(modal.user.Count() / 10.00);
             if (modal.currentpage > modal.totalpages)
@@ -2007,19 +1976,19 @@ namespace Services.Implementation
             modal.reqclient = _context.Requestclients.ToList();
             if (!string.IsNullOrWhiteSpace(modal.name))
             {
-                modal.reqclient = modal.reqclient.Where(rc => rc.Firstname.ToLower().Contains(modal.name.ToLower()) || rc.Lastname.ToLower().Contains(modal.name.ToLower())).ToList();
+                modal.reqclient = modal.reqclient.Where(rc => rc.Firstname.ToLower().Contains(modal.name.ToLower()) || rc.Lastname!.ToLower().Contains(modal.name.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.date.ToString()))
             {
-                modal.blockrequests = modal.blockrequests.Where(rc => rc.Createddate.Value.Date == modal.date.Value.Date).ToList();
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Createddate!.Value.Date == modal.date!.Value.Date).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.email))
             {
-                modal.blockrequests = modal.blockrequests.Where(rc => rc.Email.ToLower().Contains(modal.email.ToLower())).ToList();
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Email!.ToLower().Contains(modal.email.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.phonenumber))
             {
-                modal.blockrequests = modal.blockrequests.Where(rc => rc.Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+                modal.blockrequests = modal.blockrequests.Where(rc => rc.Phonenumber!.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
             }
             modal.totalpages = (int)Math.Ceiling(modal.blockrequests.Count() / 5.00);
             if (modal.currentpage > modal.totalpages)
@@ -2055,11 +2024,11 @@ namespace Services.Implementation
             }
             if (!string.IsNullOrWhiteSpace(modal.createddate.ToString()))
             {
-                modal.emaillogs = modal.emaillogs.Where(rc => rc.Createdate.Date == modal.createddate.Value.Date).ToList();
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Createdate.Date == modal.createddate!.Value.Date).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.sentdate.ToString()))
             {
-                modal.emaillogs = modal.emaillogs.Where(rc => rc.Sentdate.Value.Date == modal.sentdate.Value.Date).ToList();
+                modal.emaillogs = modal.emaillogs.Where(rc => rc.Sentdate!.Value.Date == modal.sentdate!.Value.Date).ToList();
             }
             modal.totalpages = (int)Math.Ceiling(modal.emaillogs.Count() / 5.00);
             if (modal.currentpage > modal.totalpages)
@@ -2089,7 +2058,7 @@ namespace Services.Implementation
             }
             if (!string.IsNullOrWhiteSpace(modal.patientname))
             {
-                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Firstname.ToLower().Contains(modal.patientname.ToLower()) || rc.Requestclients.ElementAt(0).Lastname.ToLower().Contains(modal.patientname.ToLower())).ToList();
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Firstname.ToLower().Contains(modal.patientname.ToLower()) || rc.Requestclients.ElementAt(0).Lastname!.ToLower().Contains(modal.patientname.ToLower())).ToList();
             }
             if (modal.reqtype != 0)
             {
@@ -2098,25 +2067,25 @@ namespace Services.Implementation
             if (!string.IsNullOrWhiteSpace(modal.providername))
             {
                 modal.req = modal.req.Where(u => u.Physicianid != null).ToList();
-                modal.req = modal.req.Where(rc => rc.Physician.Firstname.ToLower().Contains(modal.providername.ToLower()) || rc.Physician.Lastname.ToLower().Contains(modal.providername.ToLower())).ToList();
+                modal.req = modal.req.Where(rc => rc.Physician!.Firstname.ToLower().Contains(modal.providername.ToLower()) || rc.Physician.Lastname!.ToLower().Contains(modal.providername.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.email))
             {
-                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Email.ToLower().Contains(modal.email.ToLower())).ToList();
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Email!.ToLower().Contains(modal.email.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.phonenumber))
             {
-                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Phonenumber!.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.toDOS.ToString()))
             {
                 modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
-                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date <= modal.toDOS.Value.Date).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate!.Value.Date <= modal.toDOS!.Value.Date).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.fromDOS.ToString()))
             {
                 modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
-                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date >= modal.fromDOS.Value.Date).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate!.Value.Date >= modal.fromDOS!.Value.Date).ToList();
             }
 
             modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
@@ -2131,7 +2100,7 @@ namespace Services.Implementation
         public ExploreModal ExplorePatient(int id)
         {
             ExploreModal modal = new ExploreModal();
-            modal.reqclient = _context.Requestclients.Include(u => u.Request).ThenInclude(u => u.Physician).Where(u => u.Request.Userid == id && u.Request.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.reqclient = _context.Requestclients.Include(u => u.Request).ThenInclude(u => u.Physician).Include(u=>u.Request.Requestwisefiles).Where(u => u.Request.Userid == id && u.Request.Isdeleted == new BitArray(new[] { false })).ToList();
             return modal;
         }
         public SearchRecordModal ExportSearchRecordData(SearchRecordModal modal)
@@ -2144,7 +2113,7 @@ namespace Services.Implementation
             }
             if (!string.IsNullOrWhiteSpace(modal.patientname))
             {
-                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Firstname.ToLower().Contains(modal.patientname.ToLower()) || rc.Requestclients.ElementAt(0).Lastname.ToLower().Contains(modal.patientname.ToLower())).ToList();
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Firstname.ToLower().Contains(modal.patientname.ToLower()) || rc.Requestclients.ElementAt(0).Lastname!.ToLower().Contains(modal.patientname.ToLower())).ToList();
             }
             if (modal.reqtype != 0)
             {
@@ -2153,34 +2122,44 @@ namespace Services.Implementation
             if (!string.IsNullOrWhiteSpace(modal.providername))
             {
                 modal.req = modal.req.Where(u => u.Physicianid != null).ToList();
-                modal.req = modal.req.Where(rc => rc.Physician.Firstname.ToLower().Contains(modal.providername.ToLower()) || rc.Physician.Lastname.ToLower().Contains(modal.providername.ToLower())).ToList();
+                modal.req = modal.req.Where(rc => rc.Physician!.Firstname.ToLower().Contains(modal.providername.ToLower()) || rc.Physician.Lastname!.ToLower().Contains(modal.providername.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.email))
             {
-                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Email.ToLower().Contains(modal.email.ToLower())).ToList();
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Email!.ToLower().Contains(modal.email.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.phonenumber))
             {
-                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Phonenumber.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
+                modal.req = modal.req.Where(rc => rc.Requestclients.ElementAt(0).Phonenumber!.ToLower().Contains(modal.phonenumber.ToLower())).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.toDOS.ToString()))
             {
                 modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
-                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date <= modal.toDOS.Value.Date).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate!.Value.Date <= modal.toDOS!.Value.Date).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.fromDOS.ToString()))
             {
                 modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
-                modal.req = modal.req.Where(rc => rc.Modifieddate.Value.Date >= modal.fromDOS.Value.Date).ToList();
+                modal.req = modal.req.Where(rc => rc.Modifieddate!.Value.Date >= modal.fromDOS!.Value.Date).ToList();
             }
             return modal;
         }
         public void DeleteSearchRecord(int id)
         {
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == id);
-            req.Isdeleted = new BitArray(new[] { true });
+            req!.Isdeleted = new BitArray(new[] { true });
             _context.Requests.Update(req);
             _context.SaveChanges();
+        }
+        public UserAccessModal UserAccess()
+        {
+            UserAccessModal modal = new UserAccessModal();
+            modal.aspnetroles = _context.Aspnetroles.ToList();
+            modal.aspnetusers = _context.Aspnetusers.ToList();
+            modal.aspnetuserroles = _context.Aspnetuserroles.ToList();
+            modal.admincount = _context.Requests.ToList().Count();
+            modal.req = _context.Requests.Include(u => u.Physician).Include(u=>u.User).ToList();
+            return modal;
         }
     }
 }

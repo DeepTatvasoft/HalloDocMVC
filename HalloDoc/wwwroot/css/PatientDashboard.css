@@ -5,15 +5,19 @@
     /* border-color: var(--bs-nav-tabs-link-active-border-color); */
 }
 
-.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
-    isolation: isolate;
-    border-color: white;
-    border-bottom: 1px solid #0dcaf0;
+.nav-tabs .nav-link {
+    border: none;
 }
 
 .nav-link {
     color: black;
     transition: none;
+    border-bottom: none !important;
+}
+
+
+.activenone {
+    border-bottom: none !important;
 }
 
 .uppernav {
@@ -51,4 +55,3 @@
         display: block;
     }
 }
-

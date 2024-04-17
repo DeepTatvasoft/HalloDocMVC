@@ -20,276 +20,274 @@
     }
 </style>
 
-<div class="container-fluid">
-    <div id="status-tabContent" style="box-shadow: 1px 1px 5px; padding-bottom:15px">
-        <div class="table-responsive text-white mt-3">
-            <table class="table d-none d-md-table" id="maintable">
-                <thead>
+<div id="status-tabContent" style="box-shadow: 1px 1px 5px; padding-bottom:15px">
+    <div class="table-responsive text-white mt-3">
+        <table class="table d-none d-md-table" id="maintable">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col"> </th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody style="--bs-table-color: white;" id="myTable">
+                @if (Model.req!.Count() == 0)
+                {
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col"> </th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Actions</th>
+                        <td colspan="5" class="text-center text-secondary">No Data Found</td>
                     </tr>
-                </thead>
-                <tbody style="--bs-table-color: white;" id="myTable">
-                    @if (Model.req.Count() == 0)
+                }
+                @foreach (var obj in Model.req!)
+                {
+                    var reqclient = obj.Requestclients.ElementAt(0);
+                    var reqstatuslog = obj.Requeststatuslogs.LastOrDefault();
+                    var color = "mediumpurple";
+                    var type = "";
+                    @if (obj.Requesttypeid == 1)
                     {
-                        <tr>
-                            <td colspan="5" class="text-center text-secondary">No Data Found</td>
-                        </tr>
+                        color = "rgb(72 169 70)";
+                        type = "Patient";
                     }
-                    @foreach (var obj in Model.req)
+                    else if (obj.Requesttypeid == 2)
                     {
-                        var reqclient = obj.Requestclients.ElementAt(0);
-                        var reqstatuslog = obj.Requeststatuslogs.LastOrDefault();
-                        var color = "mediumpurple";
-                        var type = "";
-                        @if (obj.Requesttypeid == 1)
-                        {
-                            color = "rgb(72 169 70)";
-                            type = "Patient";
-                        }
-                        else if (obj.Requesttypeid == 2)
-                        {
-                            color = "#f5a33e";
-                            type = "Family";
-                        }
-                        else if (obj.Requesttypeid == 4)
-                        {
-                            color = "hotpink";
-                            type = "Business";
-                        }
-                        else if (obj.Requesttypeid == 3)
-                        {
-                            color = "dodgerblue";
-                            type = "Concierge";
-                        }
-                        <tr style="--bs-table-bg:@color">
-                            <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
-                            <td scope="row">
-                                <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
-                            </td>
-                            <td scope="row">
-                                <div class="phone">@reqclient.Phonenumber</div>
-                                (Patient)
-                                @if (type != "Patient")
-                                {
-                                    <div class="phone">@obj.Phonenumber</div>
-                                    <span>(@type)</span>
-                                }
-                            </td>
-                            <td scope="row">@reqclient.Address</td>
-                            <td scope="row">
-                                <div class="dropdown ms-2">
-                                    <button class="btn btn-outline-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Actions
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#SendAgreement" onclick="SendAgreement(this.name,@obj.Requesttypeid,'@obj.Phonenumber','@obj.Email')" name="@obj.Requestid">
-                                                <i class="fa-solid fa-file-contract me-2"></i>Send Agreement
-                                            </a>
-                                        </li>
-                                        <li style="cursor : pointer"><a class="dropdown-item viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
-                                        <li style="cursor : pointer"><a class="dropdown-item viewuploads" name="@obj.Requestid"><i class="fa-regular fa-file me-2"></i>View Uploads</a></li>
-                                        <li>
-                                            <a class="dropdown-item viewnotes" name="@obj.Requestid">
-                                                <i class="fa-solid fa-book-journal-whills me-2"></i>View Notes
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#transferModal" onclick="AssignModelName(this.name)" name="@obj.Requestid">
-                                                <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>Transfer
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
+                        color = "#f5a33e";
+                        type = "Family";
                     }
-                </tbody>
-            </table>
-
-            <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
-
-                <div class="accordion-item">
-                    @foreach (var item in Model.req)
+                    else if (obj.Requesttypeid == 4)
                     {
-                        var reqclient = item.Requestclients.ElementAt(0);
-                        var type = "";
-                        var color = "mediumpurple";
-                        @if (item.Requesttypeid == 1)
-                        {
-                            color = "rgb(72 169 70)";
-                            type = "Patient";
-                        }
-                        else if (item.Requesttypeid == 2)
-                        {
-                            color = "#f5a33e";
-                            type = "Family";
-                        }
-                        else if (item.Requesttypeid == 4)
-                        {
-                            color = "hotpink";
-                            type = "Business";
-                        }
-                        else if (item.Requesttypeid == 3)
-                        {
-                            color = "dodgerblue";
-                            type = "Concierge";
-                        }
-                        <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.Requestid" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+                        color = "hotpink";
+                        type = "Business";
+                    }
+                    else if (obj.Requesttypeid == 3)
+                    {
+                        color = "dodgerblue";
+                        type = "Concierge";
+                    }
+                    <tr style="--bs-table-bg:@color">
+                        <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
+                        <td scope="row">
+                            <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                        </td>
+                        <td scope="row">
+                            <div class="phone">@reqclient.Phonenumber</div>
+                            (Patient)
+                            @if (type != "Patient")
+                            {
+                                <div class="phone">@obj.Phonenumber</div>
+                                <span>(@type)</span>
+                            }
+                        </td>
+                        <td scope="row">@reqclient.Address</td>
+                        <td scope="row">
+                            <div class="dropdown ms-2">
+                                <button class="btn btn-outline-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#SendAgreement" onclick="SendAgreement(this.name,@obj.Requesttypeid,'@obj.Phonenumber','@obj.Email')" name="@obj.Requestid">
+                                            <i class="fa-solid fa-file-contract me-2"></i>Send Agreement
+                                        </a>
+                                    </li>
+                                    <li style="cursor : pointer"><a class="dropdown-item viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
+                                    <li style="cursor : pointer"><a class="dropdown-item viewuploads" name="@obj.Requestid"><i class="fa-regular fa-file me-2"></i>View Uploads</a></li>
+                                    <li>
+                                        <a class="dropdown-item viewnotes" name="@obj.Requestid">
+                                            <i class="fa-solid fa-book-journal-whills me-2"></i>View Notes
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#transferModal" onclick="AssignModelName(this.name)" name="@obj.Requestid">
+                                            <i class="fa-solid fa-arrow-right-arrow-left me-2"></i>Transfer
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-                                <div class="col d-flex flex-column">
-                                    <span class="">@reqclient.Firstname, @reqclient.Lastname</span>
-                                    <span class=" mt-4">@reqclient.Address</span>
-                                    <span class="mt-3"><i class="bi bi-clock text-info h6 me-2 icns"></i>Wait Time: DEC5, 2023</span>
-                                </div>
-                                <div class="col d-flex flex-column text-end mt-2 p-0">
+        <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+
+            <div class="accordion-item">
+                @foreach (var item in Model.req)
+                {
+                    var reqclient = item.Requestclients.ElementAt(0);
+                    var type = "";
+                    var color = "mediumpurple";
+                    @if (item.Requesttypeid == 1)
+                    {
+                        color = "rgb(72 169 70)";
+                        type = "Patient";
+                    }
+                    else if (item.Requesttypeid == 2)
+                    {
+                        color = "#f5a33e";
+                        type = "Family";
+                    }
+                    else if (item.Requesttypeid == 4)
+                    {
+                        color = "hotpink";
+                        type = "Business";
+                    }
+                    else if (item.Requesttypeid == 3)
+                    {
+                        color = "dodgerblue";
+                        type = "Concierge";
+                    }
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.Requestid" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+
+                            <div class="col d-flex flex-column">
+                                <span class="">@reqclient.Firstname, @reqclient.Lastname</span>
+                                <span class=" mt-4">@reqclient.Address</span>
+                                <span class="mt-3"><i class="bi bi-clock text-info h6 me-2 icns"></i>Wait Time: DEC5, 2023</span>
+                            </div>
+                            <div class="col d-flex flex-column text-end mt-2 p-0">
+                                <div>
                                     <div>
-                                        <div>
-                                            <div class="ms-3" id="1">@type<span class="dot ms-2" style="Background-color :@color;"></span></div>
-                                        </div>
-                                        <div class=" btn rounded-pill text-info border-info float-end p-1 mt-3" style="width:120px">
-                                            Map Location
-                                        </div>
+                                        <div class="ms-3" id="1">@type<span class="dot ms-2" style="Background-color :@color; "></span></div>
+                                    </div>
+                                    <div class=" btn rounded-pill text-info border-info float-end p-1 mt-3" style="width:120px">
+                                        Map Location
                                     </div>
                                 </div>
-                            </button>
-                            <hr class="m-0">
-                        </h2>
-                        <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
-                            <button type="button" class="btn btn-outline-light text-black float-end viewcase bg-white rounded-5 border border-black mt-1" id="@item.Requestid">View Case</button>
-                            <div class="accordion-body d-flex flex-column gap-1 w-100">
-                                <div><i class="bi bi-calendar2-minus me-1 icn"></i>Date of birth: @reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</div>
-                                <div><i class="bi bi-envelope me-1 icn"></i>Email: @reqclient.Email</div>
-                                <div>
-                                    <i class="bi bi-telephone me-1 icn"></i>Patient: @reqclient.Phonenumber
-                                </div>
-                                <div>
-                                    <i class="fa-regular fa-calendar-days icn me-1"></i>Date Of Services: @item.Modifieddate
-                                </div>
-                                <div><i class="bi bi-person me-1 icn"></i>Requestor: @item.Firstname, @item.Lastname</div>
                             </div>
-                            <div class="row mx-3">
-                                <div class="col-6 mb-2">
-                                    <a class="btn w-100  text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#SendAgreement" onclick="SendAgreement(this.name,@item.Requesttypeid,'@item.Phonenumber','@item.Email')" name="@item.Requestid" style="background-color:orangered;font-size:11px;height:29.5px">Send Agreement</a>
-                                </div>
-                                <div class="col-6 mb-2">
-                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid" style="background-color:green;font-size:13px">View Notes</a>
-                                </div>
-                                <div class="col-6 mb-2">
-                                    <a class="btn w-100 bg-info text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#transferModal" onclick="AssignModelName(this.name)" name="@item.Requestid" style="font-size:13px">Transfer</a>
-                                </div>
-                                <div class="col-6 mb-2">
-                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid" style="background-color:green;font-size:13px">View Uploads</a>
-                                </div>
-                                <div class="col-6 mb-2">
-                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#ClearCase" onclick="ClearCaseName(this.name)" name="@item.Requestid" style="background-color:orangered;font-size:13px">Clear Case</a>
-                                </div>
-                                <div class="col-6 mb-2">
-                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
-                                </div>
+                        </button>
+                        <hr class="m-0">
+                    </h2>
+                    <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                        <button type="button" class="btn btn-outline-light text-black float-end viewcase bg-white rounded-5 border border-black mt-1" id="@item.Requestid">View Case</button>
+                        <div class="accordion-body d-flex flex-column gap-1 w-100">
+                            <div><i class="bi bi-calendar2-minus me-1 icn"></i>Date of birth: @reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</div>
+                            <div><i class="bi bi-envelope me-1 icn"></i>Email: @reqclient.Email</div>
+                            <div>
+                                <i class="bi bi-telephone me-1 icn"></i>Patient: @reqclient.Phonenumber
                             </div>
-                            <div class="mt-2 me-sm-4 d-flex justify-content-end align-items-center">
-                                <span class="me-2">Chat With:</span>
-                                <button class="btn btn-outline-info btn-sm me-2"><i class="fa-solid fa-user-injured me-1"></i>Patient</button>
-                                <button class="btn btn-outline-info btn-sm"><i class="bi bi-person me-1"></i>Provider</button>
+                            <div>
+                                <i class="fa-regular fa-calendar-days icn me-1"></i>Date Of Services: @item.Modifieddate
+                            </div>
+                            <div><i class="bi bi-person me-1 icn"></i>Requestor: @item.Firstname, @item.Lastname</div>
+                        </div>
+                        <div class="row mx-3">
+                            <div class="col-6 mb-2">
+                                <a class="btn w-100  text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#SendAgreement" onclick="SendAgreement(this.name,@item.Requesttypeid,'@item.Phonenumber','@item.Email')" name="@item.Requestid" style="background-color:orangered;font-size:11px;height:29.5px">Send Agreement</a>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid" style="background-color:green;font-size:13px">View Notes</a>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <a class="btn w-100 bg-info text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#transferModal" onclick="AssignModelName(this.name)" name="@item.Requestid" style="font-size:13px">Transfer</a>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid" style="background-color:green;font-size:13px">View Uploads</a>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#ClearCase" onclick="ClearCaseName(this.name)" name="@item.Requestid" style="background-color:orangered;font-size:13px">Clear Case</a>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
                             </div>
                         </div>
-                    }
-                </div>
+                        <div class="mt-2 me-sm-4 d-flex justify-content-end align-items-center">
+                            <span class="me-2">Chat With:</span>
+                            <button class="btn btn-outline-info btn-sm me-2"><i class="fa-solid fa-user-injured me-1"></i>Patient</button>
+                            <button class="btn btn-outline-info btn-sm"><i class="bi bi-person me-1"></i>Provider</button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
-        <div class="d-flex justify-content-center gap-3">
-            @if (Model.totalpages > 0)
+    </div>
+    <div class="d-flex justify-content-center gap-3 mt-3">
+        @if (Model.totalpages > 0)
+        {
+            var previous = Model.currentpage - 1;
+            var next = Model.currentpage + 1;
+            if (previous <= 0)
             {
-                var previous = Model.currentpage - 1;
-                var next = Model.currentpage + 1;
-                if (previous <= 0)
+                previous = 1;
+            }
+            if (next > Model.totalpages)
+            {
+                next = Model.totalpages;
+            }
+            <button class="@previous pagebtn" id="page-0" onclick="ChangePage(@previous ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:75px">
+                Previous
+            </button>
+            @if (Model.totalpages > 5)
+            {
+                @if (Model.currentpage > Model.totalpages - 3)
                 {
-                    previous = 1;
+                    <button class="1 pagebtn" id="page-1" onclick="ChangePagePhy(1 ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
+                        1
+                    </button>
+                    <button class="0 pagebtn" id="page-0">
+                        ...
+                    </button>
+                    @for (var i = Model.totalpages - 3; i <= Model.totalpages; i++)
+                    {
+                        <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
+                            @i
+                        </button>
+                    }
                 }
-                if (next > Model.totalpages)
+                else if (Model.currentpage < Model.totalpages - 2 && Model.currentpage > 3)
                 {
-                    next = Model.totalpages;
-                }
-                <button class="@previous pagebtn" id="page-0" onclick="ChangePage(@previous ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:75px">
-                    Previous
-                </button>
-                @if (Model.totalpages > 5)
-                {
-                    @if (Model.currentpage > Model.totalpages - 3)
+                    <button class="1 pagebtn" id="page-1" onclick="ChangePagePhy(1 ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
+                        1
+                    </button>
+                    <button class="0 pagebtn" id="page-0">
+                        ...
+                    </button>
+                    @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                     {
-                        <button class="1 pagebtn" id="page-1" onclick="ChangePagePhy(1 ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
-                            1
-                        </button>
-                        <button class="0 pagebtn" id="page-0" >
-                            ...
-                        </button>
-                        @for (var i = Model.totalpages - 3; i <= Model.totalpages; i++)
-                        {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
-                                @i
-                            </button>
-                        }
-                    }
-                    else if (Model.currentpage < Model.totalpages - 2 && Model.currentpage > 3)
-                    {
-                        <button class="1 pagebtn" id="page-1" onclick="ChangePagePhy(1 ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
-                            1
-                        </button>
-                        <button class="0 pagebtn" id="page-0" >
-                            ...
-                        </button>
-                        @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
-                        {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
-                                @i
-                            </button>
-                        }
-                        <button class="0 pagebtn" id="page-0" >
-                            ...
-                        </button>
-                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePagePhy(@Model.totalpages ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
-                            @Model.totalpages
+                        <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
+                            @i
                         </button>
                     }
-                    else
-                    {
-                        @for (var i = 1; i <= 4; i++)
-                        {
-                            <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
-                                @i
-                            </button>
-                        }
-                        <button class="0 pagebtn" id="page-0" >
-                            ...
-                        </button>
-                        <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePagePhy(@Model.totalpages ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
-                            @Model.totalpages
-                        </button>
-                    }
+                    <button class="0 pagebtn" id="page-0">
+                        ...
+                    </button>
+                    <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePagePhy(@Model.totalpages ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
+                        @Model.totalpages
+                    </button>
                 }
                 else
                 {
-                    @for (int page = 0; page < Model.totalpages; page++)
+                    @for (var i = 1; i <= 4; i++)
                     {
-                        var temp = page + 1;
-
-                        <button class="@temp pagebtn" id="page-@temp" onclick="ChangePagePhy(@temp ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" >
-                            @temp
+                        <button class="@i pagebtn" id="page-@i" onclick="ChangePagePhy(@i ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
+                            @i
                         </button>
                     }
+                    <button class="0 pagebtn" id="page-0">
+                        ...
+                    </button>
+                    <button class="@Model.totalpages pagebtn" id="page-@Model.totalpages" onclick="ChangePagePhy(@Model.totalpages ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
+                        @Model.totalpages
+                    </button>
                 }
-                <button class="@next pagebtn" id="page-@next" onclick="ChangePagePhy(@next ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:75px">
-                    Next
-                </button>
             }
-        </div>
+            else
+            {
+                @for (int page = 0; page < Model.totalpages; page++)
+                {
+                    var temp = page + 1;
+
+                    <button class="@temp pagebtn" id="page-@temp" onclick="ChangePagePhy(@temp ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')">
+                        @temp
+                    </button>
+                }
+            }
+            <button class="@next pagebtn" id="page-@next" onclick="ChangePagePhy(@next ,2, '@Model.reqtype' , @Model.region,'@Model.searchkey')" style="width:75px">
+                Next
+            </button>
+        }
     </div>
 </div>
 
@@ -350,6 +348,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.transfer').on('click', function (e) {
@@ -367,7 +366,7 @@
 
                 $.ajax({
                     url: '/Physician/Transfer',
-                    data: { "reqid": reqid,"Assignnotes": Assignnotes },
+                    data: { "reqid": reqid, "Assignnotes": Assignnotes },
                     success: function (response) {
                         window.location.reload();
                     },
@@ -462,7 +461,7 @@
                 url: '/Admin/AdminuploadDoc',
                 data: { "reqid": reqid },
                 success: function (response) {
-                    $('#home-tab-pane').html(response);
+                    $('#alldata').html(response);
                     console.log("Fetch success");
                 },
                 error: function (xhr, status, error) {
@@ -483,5 +482,13 @@
                 }
             });
         });
+        if (@Model.req.Count()> 0) {
+            $('#maintable').DataTable({
+                info: false,
+                ordering: true,
+                paging: false,
+                searching: false,
+            });
+        }
     });
 </script>

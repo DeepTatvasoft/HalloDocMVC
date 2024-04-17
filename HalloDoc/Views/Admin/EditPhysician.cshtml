@@ -282,7 +282,7 @@
                 <div>
                     @{
                         var f = "";
-                        BitArray p = Model.Isagreementdoc;
+                        BitArray p = Model.Isagreementdoc!;
                         @if (p != null && p[0] == true)
                         {
                             f = "checked";
@@ -306,7 +306,7 @@
                 <div style="width:274.22px">
                     @{
                         f = "";
-                        p = Model.Isbackgrounddoc;
+                        p = Model.Isbackgrounddoc!;
                         @if (p != null && p[0] == true)
                         {
                             f = "checked";
@@ -330,7 +330,7 @@
                 <div style="width:274.22px">
                     @{
                         f = "";
-                        p = Model.Iscredentialdoc;
+                        p = Model.Iscredentialdoc!;
                         @if (p != null && p[0] == true)
                         {
                             f = "checked";
@@ -354,7 +354,7 @@
                 <div style="width:274.22px">
                     @{
                         f = "";
-                        p = Model.Isnondisclosuredoc;
+                        p = Model.Isnondisclosuredoc!;
                         @if (p != null && p[0] == true)
                         {
                             f = "checked";
@@ -378,7 +378,7 @@
                 <div style="width:274.22px">
                     @{
                         f = "";
-                        p = Model.Islicensedoc;
+                        p = Model.Islicensedoc!;
                         @if (p != null && p[0] == true)
                         {
                             f = "checked";

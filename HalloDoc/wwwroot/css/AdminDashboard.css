@@ -37,11 +37,11 @@
 }
 
 .boxshadow {
-    box-shadow: 1px 1px 2px;
+    box-shadow: 0px 0px 4px;
 }
 
 .boxshadowbtn {
-    box-shadow: 1px 2px 2px grey;
+    box-shadow: 0px 0px 2px #00ccff;
 }
 
 .requestby{
@@ -50,8 +50,9 @@
 
 .region {
     height: 38px;
-    width: 233px;
+    width: 247px;
     padding-left: 32px;
+    border-radius: 6px;
 }
 
 
@@ -244,14 +245,16 @@ input#dt-search-0.dt-input {
 li {
     cursor: pointer;
 }
-
+.activenone {
+    border-bottom: none !important;
+}
 @media only screen and (max-width:767px) {
     .state {
         width: 100px;
     }
 
     button .h5 {
-        font-size: 12px !important;
+        font-size: 11px !important;
     }
 
     .icon {

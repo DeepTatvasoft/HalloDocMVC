@@ -15,18 +15,18 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var obj in Model.emaillogs)
+        @foreach (var obj in Model.emaillogs!)
         {
 
             <tr>
                 <td></td>
                 <td>-</td>
-                <td>@Model.aspnetrole.FirstOrDefault(u=>u.Id==obj.Roleid.ToString()).Name</td>
+                <td>@Model.aspnetrole!.FirstOrDefault(u=>u.Id==obj.Roleid.ToString())!.Name</td>
                 <td>@obj.Emailid</td>
                 <td>@obj.Createdate</td>
                 <td>@obj.Sentdate</td>
                 <td>
-                    @if (obj.Isemailsent[0] == true)
+                    @if (obj.Isemailsent![0] == true)
                     {
                         <span>Yes</span>
                     }

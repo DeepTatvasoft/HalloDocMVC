@@ -22,18 +22,18 @@
 </head>
 <Partial name="_Notification" />
 <body class="bg-body-secondary" data-bs-theme="light">
-    <nav class="navbar bg-white">
+    <nav class="navbar bg-white lightmode">
         <div class="container-fluid uppernav">
             <a class="navbar-brand ms-2" href="#">
                 <img src="~/images/image_2024_01_17T04_17_17_750Z.png" alt="Bootstrap" width="120" height="80">
             </a>
             <div class="navbar-brand ms-2 d-flex" href="#">
-                <span class="me-2 d-none d-md-block">Welcome @HttpContextAccessor.HttpContext.Session.GetString("Username")</span>
+                <span class="me-2 d-none d-md-block">Welcome @HttpContextAccessor.HttpContext!.Session.GetString("Username")</span>
                 <a asp-controller="Home" asp-action="logout" style="display:contents">
                     <button type="button" class="btn btn-outline-info logouttext">Log Out</button>
                     <button type="button" class="btn btn-outline-info logouticon"><i class="bi bi-box-arrow-right"></i></button>
                 </a>
-                <button class="ms-3" id="darkmode" onclick="dark()">
+                <button class="ms-3" id="darkmode" onclick="darktoggle()">
                     <img src="~/images/image_2024_01_17T04_17_17_762Z.png" alt="error">
                 </button>
             </div>

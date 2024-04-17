@@ -5,7 +5,6 @@
     var dayweek = Model.date.DayOfWeek.ToString();
     var currentDay = dayweek + ", " + now.ToString("MMM dd yyyy");
     <input type="hidden" value="@currentDay" id="currentDay" />
-    var f = 0;
 }
 <div class="table-responsive">
     <table class="calendar-table">
@@ -51,7 +50,7 @@
                 {
                     <td>
                         <span class="d-flex">
-                            <i class="fa-solid fa-user me-1 mt-1 d-flex justify-content-center align-items-center bg-secondary" style="height:25px;width:25px"></i> @obj.Firstname @obj.Lastname.ElementAt(0).
+                            <i class="fa-solid fa-user me-1 mt-1 d-flex justify-content-center align-items-center bg-secondary" style="height:25px;width:25px"></i> @obj.Firstname @obj.Lastname!.ElementAt(0).
                         </span>
                     </td>
                 }
@@ -59,7 +58,7 @@
                 {
                     <td>
                         <span class="d-flex">
-                            <img class="me-1" src="@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0).
+                            <img class="me-1" src="@obj.Photo" height="25" width="25" /> @obj.Firstname @obj.Lastname!.ElementAt(0).
                         </span>
                     </td>
                 }
@@ -70,7 +69,6 @@
                         int flag = 0;
                         foreach (var item in shift)
                         {
-                            f = 0;
                             var diff = item.Endtime.Hour - item.Starttime.Hour;
                             if (diff <= 0)
                             {

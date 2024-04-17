@@ -34,8 +34,10 @@ namespace Services.ViewModels
         [Required]
         public string? Street { get; set; }
 
+        [Required]
         public string? City { get; set; }
 
+        [Required]
         public string? State { get; set; }
 
         [StringLength(6, ErrorMessage = "Enter valid Zip Code")]

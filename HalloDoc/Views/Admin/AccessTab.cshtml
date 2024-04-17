@@ -51,6 +51,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     document.getElementById('accesstab').classList.add('active');
+    document.getElementById('accesstabDrop').classList.add('active');
     $(document).ready(function () {
         $('.createAccess').on('click', function () {
             $.ajax({
@@ -70,15 +71,38 @@
                 },
             });
         });
-        $('.deleterole').on('click', function () {
+        $('.deleterole').on('click', function (e) {
             var roleid = $(this).attr('name');
-            $.ajax({
-                url: '/Admin/DeleteRole',
-                data: { 'roleid': roleid },
-                success: function (response) {
-                    window.location.reload();
-                },
+            swal.fire({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes",
+                closeOnConfirm: false
+            }).then(function (result) {
+                if (result.value) {
+                    $.ajax({
+                        url: '/Admin/DeleteRole',
+                        data: { 'roleid': roleid },
+                        success: function (response) {
+                            window.location.reload();
+                        },
+                    });
+                } else {
+                    console.log('Cancelled!');
+                }
             });
         });
+        //$('.deleterole').on('click', function () {
+        //    var roleid = $(this).attr('name');
+        //    $.ajax({
+        //        url: '/Admin/DeleteRole',
+        //        data: { 'roleid': roleid },
+        //        success: function (response) {
+        //            window.location.reload();
+        //        },
+        //    });
+        //});
     });
 </script>

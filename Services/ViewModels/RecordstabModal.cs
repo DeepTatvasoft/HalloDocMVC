@@ -9,7 +9,7 @@ namespace Services.ViewModels
 {
     public class RecordstabModal
     {
-        public List<User> user { get; set; }
+        public List<User>? user { get; set; }
         public int totalpages { get; set; }
         public int currentpage { get; set; }
         public string? firstname { get; set; }
@@ -19,8 +19,8 @@ namespace Services.ViewModels
     }
     public class BlockHistoryModal
     {
-        public List<Blockrequest> blockrequests { get; set; }
-        public List<Requestclient> reqclient { get; set; }
+        public List<Blockrequest>? blockrequests { get; set; }
+        public List<Requestclient>? reqclient { get; set; }
         public int totalpages { get; set; }
         public int currentpage { get; set; }
         public string? name { get; set; }
@@ -38,8 +38,8 @@ namespace Services.ViewModels
         public DateTime? sentdate { get; set; }
         public int totalpages { get; set; }
         public int currentpage { get; set; }
-        public List<Aspnetrole> aspnetrole { get; set; }
-        public List<Emaillog> emaillogs { get; set; }
+        public List<Aspnetrole>? aspnetrole { get; set; }
+        public List<Emaillog>? emaillogs { get; set; }
     }
 
     public class SearchRecordModal
@@ -54,11 +54,11 @@ namespace Services.ViewModels
         public string? phonenumber { get; set; }
         public int totalpages { get; set; }
         public int currentpage { get; set; }
-        public List<Request> req { get; set; }
+        public List<Request>? req { get; set; }
     }
 
     public class ExploreModal
     {
-        public List<Requestclient> reqclient { get; set; }
+        public List<Requestclient>? reqclient { get; set; }
     }
 }

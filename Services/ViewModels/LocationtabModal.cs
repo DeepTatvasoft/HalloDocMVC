@@ -9,6 +9,6 @@ namespace Services.ViewModels
 {
     public class LocationtabModal
     {
-        public  string physicianlocations {  get; set; }
+        public  string? physicianlocations {  get; set; }
     }
 }

@@ -95,12 +95,14 @@
                         <div class="form-floating mb-3">
                             <input asp-for="City" type="text" class="form-control" placeholder="City">
                             <label for="floatingInput">City</label>
+                            <span asp-validation-for="City" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="State" type="text" class="form-control" placeholder="State">
                             <label for="floatingInput">State</label>
+                            <span asp-validation-for="State" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">

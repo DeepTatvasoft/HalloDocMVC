@@ -29,11 +29,11 @@ namespace HalloDoc.Controllers
             //User user = new User();
             if (HttpContext.Session.GetInt32("Userid") != null)
             {
-                int temp = (int)HttpContext.Session.GetInt32("Userid");
+                int temp = (int)HttpContext.Session.GetInt32("Userid")!;
                 var tempname = HttpContext.Session.GetString("Username");
                 //IEnumerable<Request> data = _context.Requests.Where(u => u.Userid == temp);
                 //return View(data);
-                return View(dashboard.PatientDashboard(temp, tempname));
+                return View(dashboard.PatientDashboard(temp, tempname!));
             }
             else
             {
@@ -42,17 +42,17 @@ namespace HalloDoc.Controllers
         }
         public IActionResult editUser(PatientDashboardedit dashedit)
         {
-            int id = (int)HttpContext.Session.GetInt32("Userid");
-            int aspid = (int)HttpContext.Session.GetInt32("AspUserid");
+            int id = (int)HttpContext.Session.GetInt32("Userid")!;
+            int aspid = (int)HttpContext.Session.GetInt32("AspUserid")!;
             HttpContext.Session.SetString("Username", dashboard.editUser(dashedit, id, aspid));
             return RedirectToAction("PatientDashboard", "Dashboard");
         }
         public IActionResult ViewDocument(int id)
         {
             int temp = id;
-            int uid = (int)HttpContext.Session.GetInt32("Userid");
+            int uid = (int)HttpContext.Session.GetInt32("Userid")!;
             var tempname = HttpContext.Session.GetString("Username");
-            return View(dashboard.ViewDocument(temp, uid, tempname));
+            return View(dashboard.ViewDocument(temp, uid, tempname!));
         }
         [HttpPost]
         public IActionResult DocUpload(PatientDashboardedit dashedit)
@@ -67,18 +67,18 @@ namespace HalloDoc.Controllers
 
         [HttpPost]
         [Route("DownloadFile")]
-        public async Task<IActionResult> DownloadFile(PatientDashboardedit dashedit)
+        public IActionResult DownloadFile(PatientDashboardedit dashedit)
         {
             var chk = Request.Form["checklist"].ToList();
             if (chk.Count == 0)
             {
                 return NoContent();
             }
-            return File(dashboard.DownloadFile(dashedit, chk).Item1, dashboard.DownloadFile(dashedit, chk).Item2, dashboard.DownloadFile(dashedit, chk).Item3, enableRangeProcessing: true);
+            return File(dashboard.DownloadFile(dashedit, chk!).Item1, dashboard.DownloadFile(dashedit, chk!).Item2, dashboard.DownloadFile(dashedit, chk!).Item3, enableRangeProcessing: true);
         }
 
         [Route("SingleDownload")]
-        public async Task<IActionResult> SingleDownload(int id)
+        public IActionResult SingleDownload(int id)
         {
             return File(dashboard.FileDownload(id).Item1, dashboard.FileDownload(id).Item2, dashboard.FileDownload(id).Item2);
         }
@@ -122,20 +122,20 @@ namespace HalloDoc.Controllers
         public IActionResult send_mail()
         {
             var email = Request.Form["email"].ElementAt(0);
-            sendEmail(email, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id=" + email + "");
+            sendEmail(email!, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id=" + email + "");
             return RedirectToAction("patientlogin", "Home");
         }
 
         [HttpPost]
         public IActionResult SendAgreement(NewStateData modal)
         {
-            sendEmail(modal.emaill, "Link for Agreement", "https://localhost:44325/admin/ReviewAgreement/" + modal.reqid + "");
+            sendEmail(modal.emaill!, "Link for Agreement", "https://localhost:44325/admin/ReviewAgreement/" + modal.reqid + "");
             return NoContent();
         }
         public IActionResult SendLink(NewStateData modal)
         {
             string message = "Hello " + modal.firstname + modal.lastname;
-            sendEmail(modal.emaill, " Link for Submit Request Screen", message + " https://localhost:44325/Home/Submitreqscreen");
+            sendEmail(modal.emaill!, " Link for Submit Request Screen", message + " https://localhost:44325/Home/Submitreqscreen");
             return RedirectToAction("AdminDashboard","Admin");
         }
     }

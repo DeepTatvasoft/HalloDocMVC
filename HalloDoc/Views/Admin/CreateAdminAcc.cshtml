@@ -35,7 +35,7 @@
                         <div class="form-floating">
                             <select asp-for="roleid" class="form-select" aria-label="Floating label select example">
                                 <option selected>Select Role</option>
-                                @foreach (var obj in Model.roles)
+                                @foreach (var obj in Model.roles!)
                                 {
                                     <option value="@obj.Roleid">@obj.Name</option>
                                 }
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="col d-flex flex-wrap">
-                        @foreach (var obj in Model.regions)
+                        @foreach (var obj in Model.regions!)
                         {
                             <div class="form-check me-2">
                                 <input class="form-check-input " name="AdminRegion" type="checkbox" value="@obj.Regionid" id="flexCheckChecked-@obj.Regionid">

@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "User Access";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.UserAccessModal
+
+<div class="container-fluid mt-5 useraccess shadow bg-body-secondory rounded p-3" style="width: 80%;">
+    <h4 class="fw-bold">User Access</h4>
+    <div class="bg-white lightmode p-3">
+        <select id="suggestions" class="region ps-1">
+            <option value="0">All</option>
+            @foreach (var obj in Model.aspnetroles!)
+            {
+                <option value="@obj.Id">@obj.Name</option>
+            }
+        </select>
+    </div>
+    <div class="useraccesstable mt-3">
+        <div class="table-responsive">
+            <partial name="AdminLayout/_UserAccessTable" />
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script>
+    document.getElementById('accesstab').classList.add('active');
+    document.getElementById('useraccess').classList.add('active');
+    $(document).ready(function () {
+        $('.region').on('change',function(){
+            var roleid = $(this).val();
+            $.ajax({
+                url: '/Admin/UserAccessTable',
+                data: { "roleid": roleid },
+                success: function (response) {
+                    $('.useraccesstable').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

@@ -14,7 +14,7 @@
     <tbody id="myTable">
         @foreach (var obj in Model.healthprofessionals)
         {
-            var professiontype = Model.healthprofessionaltypes.FirstOrDefault(u => u.Healthprofessionalid == obj.Profession).Professionname;
+            var professiontype = Model.healthprofessionaltypes.FirstOrDefault(u => u.Healthprofessionalid == obj.Profession)!.Professionname;
             <tr>
                 <td>@professiontype</td>
                 <td>@obj.Vendorname</td>

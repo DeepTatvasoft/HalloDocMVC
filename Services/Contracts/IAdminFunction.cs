@@ -100,5 +100,6 @@ namespace Services.Contracts
         ExploreModal ExplorePatient(int id);
         SearchRecordModal ExportSearchRecordData(SearchRecordModal modal);
         void DeleteSearchRecord(int id);
+        UserAccessModal UserAccess();
     }
 }

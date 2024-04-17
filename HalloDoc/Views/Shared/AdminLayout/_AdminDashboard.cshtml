@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/css/SubmitReqScreen.css">
     <link rel="stylesheet" href="~/css/patientreq.css">
     <link rel="stylesheet" href="~/css/AdminDashboard.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
     <title>Document</title>
 </head>
 <Partial name="_Notification" />
@@ -27,7 +28,7 @@
             </p>
             </a>
             <div class="navbar-brand ms-2 d-flex" href="#">
-                <span class="me-2 d-none d-md-block">Welcome @HttpContextAccessor.HttpContext.Session.GetString("Adminname")</span>
+                <span class="me-2 d-none d-md-block">Welcome @HttpContextAccessor.HttpContext!.Session.GetString("Adminname")</span>
                 <a asp-controller="Admin" asp-action="adminlogout" style="display:contents">
                     <button type="button" class="btn btn-outline-info logouttext boxshadowbtn">Log Out</button>
                     <button type="button" class="btn btn-outline-info logouticon boxshadowbtn"><i class="bi bi-box-arrow-right"></i></button>
@@ -75,9 +76,13 @@
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="accesstab" asp-action="AccessTab" asp-controller="Admin">
+                        <a class="nav-link dropdown-toggle" id="accesstab" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Access
                         </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item nav-link" id="accesstabDrop" asp-action="AccessTab" asp-controller="Admin">Acsess</a></li>
+                            <li><a class="dropdown-item nav-link" id="useraccess" asp-action="UserAccess" asp-controller="Admin">User Acsess</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link dropdown-toggle" id="Records-tab" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -114,6 +119,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -178,14 +178,14 @@ namespace HalloDoc.Controllers
                 LoggedInPersonViewModel model = new LoggedInPersonViewModel();
                 model.aspuserid = id;
                 model.username = adminname;
-                model.role = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == id.ToString()).Roleid;
+                model.role = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == id.ToString())!.Roleid;
                 //model.userid = _context.Users.FirstOrDefault(u => u.Aspnetuserid == id).Userid;
                 Response.Cookies.Append("jwt", jwtRepository.GenerateJwtToken(model));
                 if (model.role == "1")
                 {
                     var admin = _context.Admins.FirstOrDefault(x => x.Aspnetuserid == id.ToString());
                     HttpContext.Session.SetString("Adminname", adminname);
-                    HttpContext.Session.SetInt32("Adminid", admin.Adminid);
+                    HttpContext.Session.SetInt32("Adminid", admin!.Adminid);
                     if (HttpContext.Session.GetString("Adminname") != null)
                     {
                         TempData["success"] = "Admin LogIn Successfully";
@@ -194,9 +194,9 @@ namespace HalloDoc.Controllers
                 }
                 else
                 {
-                    var physician = _context.Physicians.FirstOrDefault(u=>u.Aspnetuserid==id.ToString());
+                    var physician = _context.Physicians.FirstOrDefault(u => u.Aspnetuserid == id.ToString());
                     HttpContext.Session.SetString("physicianname", adminname);
-                    HttpContext.Session.SetInt32("physicianid", physician.Physicianid);
+                    HttpContext.Session.SetInt32("physicianid", physician!.Physicianid);
                     if (HttpContext.Session.GetString("physicianname") != null)
                     {
                         TempData["success"] = "Physician LogIn Successfully";
@@ -218,15 +218,15 @@ namespace HalloDoc.Controllers
         }
         public IActionResult cancelcase(int reqid, int casetagid, string cancelnotes)
         {
-            int id = (int)HttpContext.Session.GetInt32("Adminid");
-            string adminname = HttpContext.Session.GetString("Adminname");
+            int id = (int)HttpContext.Session.GetInt32("Adminid")!;
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.cancelcase(reqid, casetagid, cancelnotes, adminname, id);
             return RedirectToAction("AdminDashboard");
         }
         public IActionResult assigncase(int reqid, int regid, int phyid, string Assignnotes)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
-            int id = (int)HttpContext.Session.GetInt32("Adminid");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
+            int id = (int)HttpContext.Session.GetInt32("Adminid")!;
             adminFunction.assigncase(reqid, regid, phyid, Assignnotes, adminname, id);
             return RedirectToAction("AdminDashboard");
         }
@@ -238,7 +238,7 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public IActionResult AdminNotesSaveChanges(int reqid, string adminnotes)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.AdminNotesSaveChanges(reqid, adminnotes, adminname);
             return PartialView("AdminLayout/_ViewNotes", adminFunction.ViewNotes(reqid));
         }
@@ -383,7 +383,7 @@ namespace HalloDoc.Controllers
         [Authorization("1")]
         public IActionResult Profiletab()
         {
-            int adminid = (int)HttpContext.Session.GetInt32("Adminid");
+            int adminid = (int)HttpContext.Session.GetInt32("Adminid")!;
             return View(adminFunction.Profiletab(adminid));
         }
         [HttpPost]
@@ -403,7 +403,7 @@ namespace HalloDoc.Controllers
         public IActionResult AdministratorinfoEdit(AdminProfile Modal)
         {
             var chk = Request.Form["AdminRegion"].ToList();
-            var checkemail = adminFunction.AdministratorinfoEdit(Modal, chk);
+            var checkemail = adminFunction.AdministratorinfoEdit(Modal, chk!);
             if (checkemail == false)
             {
                 TempData["error"] = "Email already exist";
@@ -428,13 +428,13 @@ namespace HalloDoc.Controllers
             {
                 record = adminFunction.DownloadExcle(adminFunction.regiontable(modal.region, modal.status.ToString(), 0, modal.searchkey));
             }
-            else if (modal.reqtype != null && modal.status != null)
+            else if (modal.reqtype != null && modal?.status != null)
             {
                 record = adminFunction.DownloadExcle(adminFunction.toogletable(modal.reqtype, modal.status.ToString(), 0, modal.searchkey));
             }
             else
             {
-                record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(1, 0, modal.searchkey));
+                record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(1, 0, modal!.searchkey));
             }
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
@@ -471,13 +471,13 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public IActionResult PhysicianAccInfo(EditPhysicianModal modal)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.PhysicianAccInfo(modal, adminname);
             return RedirectToAction("EditPhysician", new { id = modal.physicianid });
         }
         public IActionResult PhysicianResetPass(EditPhysicianModal modal)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             if (modal.password != null)
             {
                 adminFunction.PhysicianResetPass(modal, adminname);
@@ -491,10 +491,10 @@ namespace HalloDoc.Controllers
         }
         public IActionResult PhysicianInfo(EditPhysicianModal modal)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
 
             var chk = Request.Form["PhysicianRegion"].ToList();
-            var checkemail = adminFunction.PhysicianInfo(modal, adminname, chk);
+            var checkemail = adminFunction.PhysicianInfo(modal, adminname, chk!);
             if (checkemail == false)
             {
                 TempData["error"] = "Email already exist";
@@ -503,13 +503,13 @@ namespace HalloDoc.Controllers
         }
         public IActionResult PhysicianMailingInfo(EditPhysicianModal modal)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.PhysicianMailingInfo(modal, adminname);
             return RedirectToAction("EditPhysician", new { id = modal.physicianid });
         }
         public IActionResult ProviderProfile(EditPhysicianModal modal)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.ProviderProfile(modal, adminname);
             return RedirectToAction("EditPhysician", new { id = modal.physicianid });
         }
@@ -527,7 +527,7 @@ namespace HalloDoc.Controllers
         public IActionResult PhyNotification()
         {
             var chk = Request.Form["chknotification"].ToList();
-            adminFunction.PhyNotification(chk);
+            adminFunction.PhyNotification(chk!);
             return RedirectToAction("Providertab");
         }
         public IActionResult DeletePhysician(EditPhysicianModal modal)
@@ -537,7 +537,7 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ContactPhysician(int phyid, string chk, string message)
         {
-            int adminid = (int)HttpContext.Session.GetInt32("Adminid");
+            int adminid = (int)HttpContext.Session.GetInt32("Adminid")!;
             adminFunction.ContactPhysician(phyid, chk, message, adminid);
             return NoContent();
         }
@@ -552,13 +552,13 @@ namespace HalloDoc.Controllers
         public IActionResult CreateRoleSubmit(AccessRoleModal modal)
         {
             var chk = Request.Form["AllMenu"].ToList();
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             if (chk.Count == 0 || modal.accountType == 3 || modal.RoleName == null)
             {
                 TempData["error"] = "Values Can't be Empty";
                 return RedirectToAction("AccessTab");
             }
-            adminFunction.CreateRoleSubmit(modal, chk, adminname);
+            adminFunction.CreateRoleSubmit(modal, chk!, adminname);
             return RedirectToAction("AccessTab");
         }
         public List<Menu> filtermenu(int acctype)
@@ -572,13 +572,13 @@ namespace HalloDoc.Controllers
         public IActionResult EditRoleSubmit(AccessRoleModal modal)
         {
             var chk = Request.Form["AllMenu"].ToList();
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             if (chk.Count == 0 || modal.accountType == 3 || modal.RoleName == null)
             {
                 TempData["error"] = "Values Can't be Empty";
                 return RedirectToAction("AccessTab");
             }
-            adminFunction.EditRoleSubmit(modal, chk, adminname);
+            adminFunction.EditRoleSubmit(modal, chk!, adminname);
             return RedirectToAction("AccessTab");
         }
         public IActionResult DeleteRole(int roleid)
@@ -593,9 +593,9 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public IActionResult CreateProviderAccBtn(EditPhysicianModal modal)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             var chk = Request.Form["PhysicianRegion"].ToList();
-            adminFunction.CreateProviderAccBtn(modal, chk, adminname);
+            adminFunction.CreateProviderAccBtn(modal, chk!, adminname);
             return RedirectToAction("Providertab");
         }
         public IActionResult CreateAdminAcc()
@@ -605,8 +605,8 @@ namespace HalloDoc.Controllers
         public IActionResult CreateAdminAccBtn(AdminProfile modal)
         {
             var chk = Request.Form["AdminRegion"].ToList();
-            string adminname = HttpContext.Session.GetString("Adminname");
-            adminFunction.CreateAdminAccBtn(modal, chk, adminname);
+            string adminname = HttpContext.Session.GetString("Adminname")!;
+            adminFunction.CreateAdminAccBtn(modal, chk!, adminname);
             return RedirectToAction("AccessTab");
         }
         public void AddPhysicianDoc(IFormFile file, int physicianid, string filename)
@@ -750,9 +750,9 @@ namespace HalloDoc.Controllers
                 TempData["error"] = "Starttime Must be Less than Endtime";
                 return RedirectToAction("Scheduling");
             }
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             var chk = Request.Form["repeatdays"].ToList();
-            bool f = adminFunction.AddShift(model, adminname, chk);
+            bool f = adminFunction.AddShift(model, adminname, chk!);
             if (f == false)
             {
                 TempData["error"] = "Shift is already assigned in this time";
@@ -767,17 +767,17 @@ namespace HalloDoc.Controllers
         }
         public void ViewShiftreturn(int shiftdetailid)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.ViewShiftreturn(shiftdetailid, adminname);
         }
         public bool ViewShiftedit(Scheduling modal)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             return adminFunction.ViewShiftedit(modal, adminname);
         }
         public void DeleteShift(int shiftdetailid)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.DeleteShift(shiftdetailid, adminname);
         }
         public IActionResult ProvidersOnCall(Scheduling modal)
@@ -800,7 +800,7 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ApproveSelected(int[] shiftchk)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             if (shiftchk.Length == 0)
             {
                 TempData["error"] = "Please select atleast 1 shift";
@@ -814,7 +814,7 @@ namespace HalloDoc.Controllers
         }
         public IActionResult DeleteSelected(int[] shiftchk)
         {
-            string adminname = HttpContext.Session.GetString("Adminname");
+            string adminname = HttpContext.Session.GetString("Adminname")!;
             if (shiftchk.Length == 0)
             {
                 TempData["error"] = "Please select atleast 1 shift";
@@ -913,17 +913,43 @@ namespace HalloDoc.Controllers
             string filename = $"{modal.reqstatus}_{strDate}.xlsx";
             return File(record, contentType, filename);
         }
-        public IActionResult DeleteSearchRecord(int id)
+        public void DeleteSearchRecord(int id)
         {
             adminFunction.DeleteSearchRecord(id);
             TempData["success"] = "Request Deleted Successfuly";
-            return RedirectToAction("SearchRecords");
         }
         public IActionResult LocationTab()
         {
             LocationtabModal modal = new LocationtabModal();
             modal.physicianlocations = JsonConvert.SerializeObject(_context.Physicianlocations.ToList());
             return View(modal);
+        }
+        public IActionResult UserAccess()
+        {
+            return View(adminFunction.UserAccess());
+        }
+        public IActionResult UserAccessTable(string roleid)
+        {
+            if (roleid == "0")
+            {
+                return PartialView("AdminLayout/_UserAccessTable", adminFunction.UserAccess());
+            }
+            UserAccessModal modal = new UserAccessModal();
+            var aspnetusers = _context.Aspnetusers.ToList();
+            List<Aspnetuser> newaspuser = new List<Aspnetuser>();
+            foreach (var obj in aspnetusers)
+            {
+                if(_context.Aspnetuserroles.FirstOrDefault(u=>u.Userid == obj.Id.ToString())!.Roleid == roleid)
+                {
+                    newaspuser.Add(obj);
+                }
+            }
+            modal.aspnetusers = newaspuser;
+            modal.aspnetroles = _context.Aspnetroles.ToList();
+            modal.aspnetuserroles = _context.Aspnetuserroles.ToList();
+            modal.admincount = _context.Requests.ToList().Count();
+            modal.req = _context.Requests.Include(u => u.Physician).Include(u=>u.User).ToList();
+            return PartialView("AdminLayout/_UserAccessTable", modal);
         }
     }
 

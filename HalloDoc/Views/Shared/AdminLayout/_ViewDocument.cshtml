@@ -7,14 +7,14 @@
 <Partial name="_Notification" />
 <div class="container-fluid mt-5 dashboard" style="width: 90%;">
     <div class="d-flex justify-content-between">
-        <h4>Documents</h4>
+        <h4 class="mt-3 fw-bold">Documents</h4>
         <div class="backbtn" style="cursor:pointer">
             <button type="button" class="btn btn-outline-info text-center backimg"><img style="margin-bottom : 2px" src="~/images/image_2024_01_17T04_17_17_757Z.png" height="12px" width="10px">Back</button>
         </div>
     </div>
     <div class="documenthead mt-4 bg-white lightmode p-3 rounded">
-        <span class="text-body-secondary">Patient Name</span>
-        <h5 class="text-info">@Model.Username (@Model.ConfirmationNum)</h5>
+        <span class="text-body-secondary fw-bold">Patient Name</span>
+        <h5 class="text-info fw-bold">@Model.Username (@Model.ConfirmationNum)</h5>
         <span class="text-body-secondary">Check here for any files that you and doctors of your subsequents requestors have attached for you to review</span>
         <form enctype="multipart/form-data">
             <input type="hidden" name="@Model.reqid" id="docid">
@@ -53,13 +53,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model.reqfile.Count() == 0)
+                        @if (Model.reqfile!.Count() == 0)
                         {
                             <tr>
-                                <td colspan="2" class="text-center text-secondary">No Documents Found</td>
+                                <td colspan="4" class="text-center text-secondary">No Documents Found</td>
                             </tr>
                         }
-                        @foreach (var obj in Model.reqfile)
+                        @foreach (var obj in Model.reqfile!)
                         {
                             <tr>
                                 <td>
@@ -123,7 +123,6 @@
             var myfile = $('#actual-btn')[0].files;
             var formData = new FormData();
             var reqid = $('#docid').attr('name');
-            console.log(myfile);
             if (myfile.length > 0) {
                 for (var i = 0; i < files.length; i++) {
                     formData.append('myfile', myfile[i]);

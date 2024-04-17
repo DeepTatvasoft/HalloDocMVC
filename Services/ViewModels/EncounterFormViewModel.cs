@@ -10,7 +10,7 @@ namespace Services.ViewModels
     public class EncounterFormViewModel
     {
         public int RequestId { get; set; }
-        public string role { get; set; }
+        public string? role { get; set; }
 
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Use letters only please")]
         public string? Firstname { get; set; }

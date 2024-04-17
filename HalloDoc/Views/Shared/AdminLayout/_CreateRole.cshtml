@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="mt-2 d-flex flex-wrap menuchk">
-            @foreach (var obj in Model.menu)
+            @foreach (var obj in Model.menu!)
             {
                 <span class="me-3">
                     <input type="checkbox" value="@obj.Menuid" name="AllMenu" /> @obj.Name

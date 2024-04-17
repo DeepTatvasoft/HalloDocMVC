@@ -25,28 +25,28 @@ namespace Services.Implementation
             var obj = _context.Aspnetusers.FirstOrDefault(u => u.Email == aspNetUser.Email && u.Passwordhash == aspNetUser.Passwordhash);
             if (obj == null)
             {
-                return (null,null);
+                return (null!,null!);
             }
             var user = _context.Users.FirstOrDefault(u => u.Aspnetuserid == obj.Id);
-            return (obj,user);
+            return (obj!,user!);
         }
         public (bool,string) changepassword(ResetPasswordVM vm, string id)
         {
             var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == id);
             if (vm.Password == vm.ConfirmPassword)
             {
-                aspuser.Passwordhash = vm.Password;
+                aspuser!.Passwordhash = vm.Password;
                 _context.Aspnetusers.Update(aspuser);
                 _context.SaveChanges();
-                return (true,vm.Email);
+                return (true!, vm.Email!);
             }
             else
             {
-                return (false,vm.Email);
+                return (false!, vm.Email!);
             }
         }
         public Aspnetuser getaspuser(PatientReqSubmit model) {
-            return _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email);
+            return _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email)!;
         }
 
         public void newaccount (PatientReqSubmit model, string id)
@@ -56,7 +56,7 @@ namespace Services.Implementation
             var reqc = _context.Requestclients.FirstOrDefault(u => u.Requestclientid == id2);
             aspnetuser.Email = model.Email;
             aspnetuser.Passwordhash = model.ConfirmPassword;
-            aspnetuser.Username = reqc.Firstname + reqc.Lastname;
+            aspnetuser.Username = reqc!.Firstname + reqc.Lastname;
             aspnetuser.Phonenumber = reqc.Phonenumber;
             aspnetuser.Modifieddate = DateTime.Now;
             _context.Aspnetusers.Add(aspnetuser);
@@ -64,7 +64,7 @@ namespace Services.Implementation
             {
                 Firstname = reqc.Firstname,
                 Lastname = reqc.Lastname,
-                Email = model.Email,
+                Email = model.Email!,
                 Aspnetuser = aspnetuser,
                 Createdby = reqc.Firstname,
                 Intdate = reqc.Intdate,
@@ -74,15 +74,15 @@ namespace Services.Implementation
             _context.Users.Add(user);
             Aspnetuserrole aspnetuserrole = new Aspnetuserrole
             {
-                Userid = user.Aspnetuserid.ToString(),
+                Userid = user.Aspnetuserid.ToString()!,
                 Roleid = "3"
             };
             _context.Aspnetuserroles.Add(aspnetuserrole);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == reqc.Regionid);
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqc.Requestid);
-            req.User = user;
-            req.Confirmationnumber = (region.Abbreviation.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + reqc.Firstname.Substring(0, 2) + req.Lastname.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper();
+            req!.User = user;
+            req.Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + reqc.Firstname.Substring(0, 2) + req.Lastname!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper();
             _context.Requests.Update(req);
             _context.SaveChanges();
         }

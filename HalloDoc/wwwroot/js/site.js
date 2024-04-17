@@ -12,6 +12,21 @@ function showSessionExpiryPopup() {
                 title: "Session Expire!",
                 text: "Your Session is Expired",
                 icon: "warning"
+            }).then(function (result) {
+                if (result.value) {
+                    console.log("Yes Btn");
+                    $.ajax({
+                        success: function (response) {
+                            window.location.href = "/Admin/Adminlogin";
+                        },
+                        error: function (xhr, status, error) {
+                            alert("Error in _PartnerTable page");
+                        }
+                    })
+                }
+                else {
+                    console.log('Cancelled!');
+                }
             });
         },
         error: function (xhr, status, error) {
@@ -21,7 +36,7 @@ function showSessionExpiryPopup() {
 }
 // Start a timer to show the popup before session expiration
 function startSessionExpiryTimer() {
-    const sessionTimeoutMinutes = 60; // Set this to match your session timeout
+    const sessionTimeoutMinutes = 15; // Set this to match your session timeout
     const millisecondsBeforeExpiry = (sessionTimeoutMinutes - 1) * 60 * 1000;
 
     setTimeout(showSessionExpiryPopup, millisecondsBeforeExpiry);

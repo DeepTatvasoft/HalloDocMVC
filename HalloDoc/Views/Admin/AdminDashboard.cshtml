@@ -7,45 +7,45 @@
 <Partial name="_Notification" />
 
 
-<div class="tab-content mt-4" id="home-tab-pane">
+<div class="tab-content mt-3" id="home-tab-pane">
     <ul class="nav nav-tabs d-flex justify-content-around" id="ViewcaseRemove" role="tablist">
         <li class="nav-item card bg-body-secondary" role="presentation">
-            <button class="nav-link active state New boxshadow" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
+            <button class="nav-link active state New boxshadow activenone" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
                     type="button" role="tab" aria-controls="New-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person-plus me-3 icon"></i>NEW</div>
                 <h5>@Model.newcount</h5>
             </button>
         </li>
         <li class="nav-item card bg-body-secondary" role="presentation">
-            <button class="nav-link state Pending boxshadow" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
+            <button class="nav-link state Pending boxshadow activenone" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
                     type="button" role="tab" aria-controls="Pending-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person me-3 icon"></i>PENDING</div>
                 <h5>@Model.pendingcount</h5>
             </button>
         </li>
         <li class="nav-item card bg-body-secondary" role="presentation">
-            <button class="nav-link state Active boxshadow" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
+            <button class="nav-link state Active boxshadow activenone" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
                     type="button" role="tab" aria-controls="Active-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-check2-circle me-3 icon"></i>ACTIVE</div>
                 <h5>@Model.activecount</h5>
             </button>
         </li>
         <li class="nav-item card bg-body-secondary" role="presentation">
-            <button class="nav-link state Conclude boxshadow" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
+            <button class="nav-link state Conclude boxshadow activenone" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
                     type="button" role="tab" aria-controls="Conclude-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-clock-history me-3 icon"></i>CONCLUDE</div>
                 <h5>@Model.concludecount</h5>
             </button>
         </li>
         <li class="nav-item card bg-body-secondary" role="presentation">
-            <button class="nav-link state Toclose boxshadow" id="ToClose-tab" data-bs-toggle="tab" data-bs-target="#ToClose-tab-pane"
+            <button class="nav-link state Toclose boxshadow activenone" id="ToClose-tab" data-bs-toggle="tab" data-bs-target="#ToClose-tab-pane"
                     type="button" role="tab" aria-controls="ToClose-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person-x me-3 icon"></i>TO CLOSE</div>
                 <h5>@Model.Toclosecount</h5>
             </button>
         </li>
         <li class="nav-item card bg-body-secondary" role="presentation">
-            <button class="nav-link state Unpaid boxshadow" id="Unpaid-tab" data-bs-toggle="tab" data-bs-target="#Unpaid-tab-pane"
+            <button class="nav-link state Unpaid boxshadow activenone" id="Unpaid-tab" data-bs-toggle="tab" data-bs-target="#Unpaid-tab-pane"
                     type="button" role="tab" aria-controls="Unpaid-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-currency-dollar me-3 icon"></i>UNPAID</div>
                 <h5>@Model.Unpaidcount</h5>
@@ -106,7 +106,7 @@
                 <div class="ms-2">
                     <select id="suggestions" class="region">
                         <option>All Region</option>
-                        @foreach (var obj in Model.regions)
+                        @foreach (var obj in Model.regions!)
                         {
                             <option value="@obj.Regionid">@obj.Name</option>
                         }
@@ -120,11 +120,11 @@
                     All
                 </div>
                 <div class="d-flex flex-wrap">
-                    <div class="ms-3 me-3 requestby" id="1" style="cursor : pointer"><span class="dot" style="Background-color : green;"></span> Patient</div>
-                    <div class="ms-3 me-3 requestby" id="2" style="cursor : pointer"><span class="dot" style="Background-color : darkorange;"></span> Family/Friend</div>
-                    <div class="ms-3 me-3 requestby" id="3" style="cursor : pointer"><span class="dot" style="Background-color : hotpink;"></span> Business</div>
-                    <div class="ms-3 me-3 requestby" id="4" style="cursor : pointer"><span class="dot" style="Background-color : dodgerblue;"></span> Concierge</div>
-                    <div class="ms-3 me-3 requestby" id="5" style="cursor : pointer"><span class="dot" style="Background-color : mediumpurple;"></span> Vip</div>
+                    <div class="ms-sm-3 me-sm-3 ms-1 requestby" id="1" style="cursor : pointer"><span class="dot" style="Background-color : green;"></span> Patient</div>
+                    <div class="ms-sm-3 me-sm-3 ms-1 requestby" id="2" style="cursor : pointer"><span class="dot" style="Background-color : darkorange;"></span> Family/Friend</div>
+                    <div class="ms-sm-3 me-sm-3 ms-1 requestby" id="3" style="cursor : pointer"><span class="dot" style="Background-color : hotpink;"></span> Business</div>
+                    <div class="ms-sm-3 me-sm-3 ms-1 requestby" id="4" style="cursor : pointer"><span class="dot" style="Background-color : dodgerblue;"></span> Concierge</div>
+                    <div class="ms-sm-3 me-sm-3 ms-1 requestby" id="5" style="cursor : pointer"><span class="dot" style="Background-color : mediumpurple;"></span> Vip</div>
                 </div>
             </div>
         </div>
@@ -418,7 +418,6 @@
         $('.region').on('change', function (e) {
             var regionid = $('.region').val();
             var curstatus = status;
-            console.log($('.region'));
             //console.log("hii" + curstatus);
             globalregion = regionid;
             switch (curstatus) {

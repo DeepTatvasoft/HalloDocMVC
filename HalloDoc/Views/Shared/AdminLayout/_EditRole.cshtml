@@ -37,10 +37,10 @@
             @{
                 var f = "";
             }
-            @foreach (var obj in Model.menu)
+            @foreach (var obj in Model.menu!)
             {
                 f = "";
-                if(Model.selectedmenuid.Contains(obj.Menuid))
+                if(Model.selectedmenuid!.Contains(obj.Menuid))
                 {
                     f = "checked";
                 }

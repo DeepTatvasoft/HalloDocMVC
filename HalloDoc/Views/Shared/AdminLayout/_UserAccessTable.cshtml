@@ -1,0 +1,70 @@
+﻿@model Services.ViewModels.UserAccessModal
+
+<table class="table">
+    <thead class="table-secondary">
+        <tr>
+            <th scope="col">Account type</th>
+            <th scope="col">Account POC</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Status</th>
+            <th scope="col">Open Requests</th>
+            <th scope="col">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model.aspnetusers!)
+        {
+            var rolechk = Model.aspnetuserroles!.FirstOrDefault(u => u.Userid == obj.Id.ToString());
+            var role = "0";
+            if (rolechk != null)
+            {
+                role = rolechk.Roleid;
+            }
+            <tr>
+                <td>
+                    @if (role == "1")
+                    {
+                        <span>Admin</span>
+                    }
+                    else if (role == "2")
+                    {
+                        <span>Physician</span>
+                    }
+                    else
+                    {
+                        <span>User</span>
+                    }
+                </td>
+                <td>@obj.Username</td>
+                <td>@obj.Phonenumber</td>
+                <td>Status</td>
+                <td>
+                    @if (role == "1")
+                    {
+                        <span>@Model.admincount</span>
+                    }
+                    else if (role == "2")
+                    {
+                        var phy = Model.req!.Where(u => u.Physician != null && (u.Physician!.Aspnetuserid == obj.Id.ToString()));
+                        <span>@phy.Count()</span>
+                    }
+                    else
+                    {
+                        var reqcount = Model.req!.Where(u => u.User != null && u.User!.Aspnetuserid == obj.Id);
+                        @if (reqcount != null)
+                        {
+                            <span>@reqcount.Count()</span>
+                        }
+                        else
+                        {
+                            <span>0</span>
+                        }
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-outline-info">Edit</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

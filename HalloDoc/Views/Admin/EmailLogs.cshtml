@@ -14,7 +14,7 @@
                     <div class="form-floating mb-3">
                         <select asp-for="roleid" class="form-select" aria-label="Floating label select example">
                             <option value="0">All</option>
-                            @foreach (var obj in Model.aspnetrole)
+                            @foreach (var obj in Model.aspnetrole!)
                             {
                                 <option value="@obj.Id">@obj.Name</option>
                             }

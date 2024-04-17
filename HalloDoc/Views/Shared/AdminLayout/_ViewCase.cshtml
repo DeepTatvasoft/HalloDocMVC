@@ -3,7 +3,7 @@
 }
 @model Services.ViewModels.NewStateData1
 @{
-    var reqclient = Model.req.Requestclients.ElementAt(0);
+    var reqclient = Model.req!.Requestclients.ElementAt(0);
     var type = "";
     var color = "mediumpurple";
     @if (Model.req.Requesttypeid == 1)
@@ -74,9 +74,7 @@
                             <input type="tel" class="form-control output" id="floatingInput" placeholder="Mobile Number" value="@reqclient.Phonenumber" readonly>
                             <label for="floatingInput">Mobile Number</label>
                         </div>
-                        <a>
-                            <button style="height:56px" type="button" class="btn btn-outline-primary"><i class="fa-solid fa-phone"></i></button>
-                        </a>
+                        <button style="height:56px" type="button" class="btn btn-outline-primary"><i class="fa-solid fa-phone"></i></button>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
@@ -100,9 +98,7 @@
                             <input type="text" class="form-control" id="floatingInput" placeholder="Address" value="@reqclient.Address" readonly>
                             <label for="floatingInput">Business Name/Address</label>
                         </div>
-                        <a>
-                            <button style="height:56px" type="button" class="btn btn-outline-primary"><i class="bi bi-geo-alt"></i></button>
-                        </a>
+                        <button style="height:56px" type="button" class="btn btn-outline-primary"><i class="bi bi-geo-alt"></i></button>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
@@ -210,8 +206,7 @@
             }
         });
 
-        if(localStorage.getItem('state') == "conclude")
-        {
+        if (localStorage.getItem('state') == "conclude") {
             $('.assignnone').addClass('d-none');
         }
         $('.viewnotes').on('click', function (e) {

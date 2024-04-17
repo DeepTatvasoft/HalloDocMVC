@@ -13,7 +13,7 @@
         <div>
             <select id="suggestions" class="region ms-2 boxshadowbtn">
                 <option>All Region</option>
-                @foreach (var obj in Model.regions)
+                @foreach (var obj in Model.regions!)
                 {
                     <option value="@obj.Regionid">@obj.Name</option>
                 }
