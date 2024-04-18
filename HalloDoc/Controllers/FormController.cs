@@ -6,6 +6,7 @@ using System.Net.Mail;
 using System.Net;
 using Data.DataContext;
 using System.Collections;
+using Common.Helper;
 
 namespace HalloDoc.Controllers
 {
@@ -23,30 +24,43 @@ namespace HalloDoc.Controllers
         public IActionResult patientinfo(PatientReqSubmit model)
         {
             int adminid = (int)HttpContext.Session.GetInt32("Adminid");
-            formSubmit.patientinfo(model,adminid);
+            formSubmit.patientinfo(model, adminid);
             return RedirectToAction("patientlogin", "Home");
         }
         public IActionResult familyinfo(FamilyFriendReqSubmit model)
         {
-            (bool f,int id) = formSubmit.familyinfo(model);
+            (bool f, int id) = formSubmit.familyinfo(model);
             if (f == false)
             {
-                int adminid = (int)HttpContext.Session.GetInt32("Adminid");
                 var email = model.PatEmail;
                 //int id = formSubmit.familyinfo(model).Item2;
-                sendEmail(email, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id="+id+"");
-                formSubmit.Emailentry(email, adminid, id);
+                sendEmail(email, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
+                formSubmit.Emailentry(email, id);
             }
             return RedirectToAction("patientlogin", "Home");
         }
         public IActionResult conciergeinfo(ConciergeSubmit model)
         {
-            formSubmit.ConciergeInfo(model);
+            (bool f, int id) = formSubmit.ConciergeInfo(model);
+            if (f == false)
+            {
+                var email = model.PatEmail;
+                //int id = formSubmit.familyinfo(model).Item2;
+                sendEmail(email, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
+                formSubmit.Emailentry(email, id);
+            }
             return RedirectToAction("patientlogin", "Home");
         }
         public IActionResult businessinfo(BusinessSubmit model)
         {
-            formSubmit.BusinessInfo(model);
+            (bool f, int id) = formSubmit.BusinessInfo(model);
+            if (f == false)
+            {
+                var email = model.PatEmail;
+                //int id = formSubmit.familyinfo(model).Item2;
+                sendEmail(email, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
+                formSubmit.Emailentry(email, id);
+            }
             return RedirectToAction("patientlogin", "Home");
         }
         [Route("/Form/patientreq/checkemail/{email}")]

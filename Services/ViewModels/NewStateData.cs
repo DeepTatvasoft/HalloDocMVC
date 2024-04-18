@@ -43,7 +43,7 @@ namespace Services.ViewModels
     }
     public class ViewNotesModel
     {
-        public Requeststatuslog? requeststatuslogs { get; set; }
+        public List<Requeststatuslog>? requeststatuslogs { get; set; }
         public string? adminname { get; set; }
         public string? phyname { get; set; }
         public string? adminnotes { get; set; }

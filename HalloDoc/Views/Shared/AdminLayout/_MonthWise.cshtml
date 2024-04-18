@@ -21,6 +21,10 @@
         {
             x = 6;
         }
+        if (firstDay.ToString() == "Friday" && daysInMonth == 31)
+        {
+            x = 6;
+        }
         if (daysInMonth == 28 && firstDay.ToString() == "Sunday")
         {
             x = 4;
@@ -50,7 +54,7 @@
                                 <td class="p-0">
                                     <table class="w-100">
                                         <tr>
-                                            @if ((i == 0 && j < (int)firstDay) || date >= daysInMonth)
+                                            @if ((i == 0 && j < (int)firstDay) || date > daysInMonth)
                                             {
                                                 <td></td>
                                             }

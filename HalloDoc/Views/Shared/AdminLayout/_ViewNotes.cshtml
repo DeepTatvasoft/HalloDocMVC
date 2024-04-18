@@ -16,12 +16,22 @@
                             <i class="fa-solid fa-right-left me-2"></i> Transfer Notes
                         </div>
                         <div style="margin-left : 27px">
-                            @if (@Model.requeststatuslogs != null)
+                            @if (@Model.requeststatuslogs!.Count() > 0)
                             {
-                                <span>
-                                    @Model.adminname
-                                    transferred to @Model.phyname on @Model.requeststatuslogs.Createddate.Date at @Model.requeststatuslogs.Createddate.TimeOfDay : @Model.requeststatuslogs.Notes
-                                </span>
+                                var notes = @Model.requeststatuslogs!.Where(u => u.Transtophysicianid != null);
+                                if (notes.Count() > 0)
+                                {
+                                    int i = 1;
+                                    foreach (var obj in notes)
+                                    {
+                                        <span>(@(i++)) @obj.Notes</span>
+                                        <br/>
+                                    }
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
                             }
                             else
                             {
@@ -50,6 +60,39 @@
                         </div>
                     </div>
                 </div>
+                @{
+                    var admincancel = Model.requeststatuslogs!.FirstOrDefault(u => u.Status == 3);
+                }
+                @if (admincancel != null)
+                {
+                    <div class="col mt-2">
+                        <div class=" bg-white lightmode p-2 border border-black rounded" style="min-height:80px">
+                            <div class="fw-semibold">
+                                <i class="fa-solid fa-user-tie me-2"></i>Admin Cancelation
+                            </div>
+                            <div style="margin-left : 25px">
+                                @admincancel.Notes
+                            </div>
+                        </div>
+                    </div>
+                }
+                @{
+                    var physiciancancel = Model.requeststatuslogs!.FirstOrDefault(u => u.Status == 7);
+                }
+                @if (physiciancancel != null)
+                {
+                    <div class="col mt-2">
+                        <div class=" bg-white lightmode p-2 border border-black rounded" style="min-height:80px">
+                            <div class="fw-semibold">
+                                <i class="fa-solid fa-user-tie me-2"></i>Patient Cancelation 7
+                            </div>
+                            <div style="margin-left : 25px">
+                                @physiciancancel.Notes
+                            </div>
+                        </div>
+                    </div>
+                }
+
             </div>
         </div>
         <form>

@@ -1,4 +1,5 @@
-﻿using Data.DataContext;
+﻿using Common.Helper;
+using Data.DataContext;
 using Data.DataModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,38 +52,39 @@ namespace Services.Implementation
 
         public void newaccount (PatientReqSubmit model, string id)
         {
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
             Aspnetuser aspnetuser = new Aspnetuser();
-            int id2 = id.ElementAt(3);
-            var reqc = _context.Requestclients.FirstOrDefault(u => u.Requestclientid == id2);
+            var req = _context.Requests.Include(u=>u.Requestclients).FirstOrDefault(u => u.Requestid == id2);
             aspnetuser.Email = model.Email;
             aspnetuser.Passwordhash = model.ConfirmPassword;
-            aspnetuser.Username = reqc!.Firstname + reqc.Lastname;
-            aspnetuser.Phonenumber = reqc.Phonenumber;
+            aspnetuser.Username = req!.Firstname + req.Lastname;
+            aspnetuser.Phonenumber = req.Phonenumber;
             aspnetuser.Modifieddate = DateTime.Now;
             _context.Aspnetusers.Add(aspnetuser);
             User user = new User
             {
-                Firstname = reqc.Firstname,
-                Lastname = reqc.Lastname,
+                Firstname = req.Firstname!,
+                Lastname = req.Lastname,
                 Email = model.Email!,
                 Aspnetuser = aspnetuser,
-                Createdby = reqc.Firstname,
-                Intdate = reqc.Intdate,
-                Intyear = reqc.Intyear,
-                Strmonth = reqc.Strmonth,
+                Createdby = req.Firstname!,
+                Intdate = req.Requestclients.ElementAt(0).Intdate,
+                Intyear = req.Requestclients.ElementAt(0).Intyear,
+                Strmonth = req.Requestclients.ElementAt(0).Strmonth,
             };
             _context.Users.Add(user);
+            _context.SaveChanges();
             Aspnetuserrole aspnetuserrole = new Aspnetuserrole
             {
                 Userid = user.Aspnetuserid.ToString()!,
                 Roleid = "3"
             };
             _context.Aspnetuserroles.Add(aspnetuserrole);
+            _context.SaveChanges();
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == reqc.Regionid);
-            var req = _context.Requests.FirstOrDefault(u => u.Requestid == reqc.Requestid);
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == req.Requestclients.ElementAt(0).Regionid);
             req!.User = user;
-            req.Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + reqc.Firstname.Substring(0, 2) + req.Lastname!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper();
+            req.Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + req.Firstname!.Substring(0, 2) + req.Lastname!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper();
             _context.Requests.Update(req);
             _context.SaveChanges();
         }

@@ -33,7 +33,6 @@ namespace Services.ViewModels
         public string? confirmemail { get; set; }
 
         [RegularExpression(@"^([0|\+[0-9]{1,5})?([0-9][0-9]{9})$", ErrorMessage = "Enter a valid 10-digit mobile number")]
-        [Required(ErrorMessage = "Plese enter your Phone Number")]
         public string? phonenumber { get; set; }
         public string? address1 { get; set; }
         public string? address2 { get; set; }

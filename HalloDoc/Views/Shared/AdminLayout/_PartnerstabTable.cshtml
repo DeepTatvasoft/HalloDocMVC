@@ -1,4 +1,5 @@
-﻿@model Services.ViewModels.PartnersModal
+﻿@using Common.Helper;
+@model Services.ViewModels.PartnersModal
 <table class="table p-2">
     <thead class="table-secondary">
         <tr>
@@ -32,7 +33,7 @@
                     }
                 </td>
                 <td>
-                    <a asp-action="EditBusiness" asp-controller="Admin" asp-route-id="@obj.Vendorid" class="btn btn-outline-info me-1 boxshadowbtn">Edit</a>
+                    <a asp-action="EditBusiness" asp-controller="Admin" asp-route-id="@EncryptDecryptHelper.Encrypt(@obj.Vendorid.ToString())" class="btn btn-outline-info me-1 boxshadowbtn">Edit</a>
                     <a value="@obj.Vendorid" class="btn btn-outline-info boxshadowbtn deletebtn">Delete</a>
                 </td>
             </tr>

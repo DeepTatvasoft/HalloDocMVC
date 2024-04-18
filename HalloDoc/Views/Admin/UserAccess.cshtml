@@ -4,20 +4,22 @@
 }
 @model Services.ViewModels.UserAccessModal
 
-<div class="container-fluid mt-5 useraccess shadow bg-body-secondory rounded p-3" style="width: 80%;">
-    <h4 class="fw-bold">User Access</h4>
-    <div class="bg-white lightmode p-3">
-        <select id="suggestions" class="region ps-1">
-            <option value="0">All</option>
-            @foreach (var obj in Model.aspnetroles!)
-            {
-                <option value="@obj.Id">@obj.Name</option>
-            }
-        </select>
-    </div>
-    <div class="useraccesstable mt-3">
-        <div class="table-responsive">
-            <partial name="AdminLayout/_UserAccessTable" />
+<div class="useracces">
+    <div class="container-fluid mt-5 useraccess shadow bg-body-secondory rounded p-3" style="width: 80%;">
+        <h4 class="fw-bold">User Access</h4>
+        <div class="bg-white lightmode p-3">
+            <select id="suggestions" class="region ps-1">
+                <option value="0">All</option>
+                @foreach (var obj in Model.aspnetroles!)
+                {
+                    <option value="@obj.Id">@obj.Name</option>
+                }
+            </select>
+        </div>
+        <div class="useraccesstable mt-3">
+            <div class="table-responsive">
+                <partial name="AdminLayout/_UserAccessTable" />
+            </div>
         </div>
     </div>
 </div>
@@ -31,7 +33,7 @@
     document.getElementById('accesstab').classList.add('active');
     document.getElementById('useraccess').classList.add('active');
     $(document).ready(function () {
-        $('.region').on('change',function(){
+        $('.region').on('change', function () {
             var roleid = $(this).val();
             $.ajax({
                 url: '/Admin/UserAccessTable',

@@ -12,6 +12,7 @@ using System.IO.Compression;
 using System.Net.Mail;
 using System.Net;
 using Data.DataContext;
+using Common.Helper;
 
 namespace HalloDoc.Controllers
 {
@@ -30,10 +31,7 @@ namespace HalloDoc.Controllers
             if (HttpContext.Session.GetInt32("Userid") != null)
             {
                 int temp = (int)HttpContext.Session.GetInt32("Userid")!;
-                var tempname = HttpContext.Session.GetString("Username");
-                //IEnumerable<Request> data = _context.Requests.Where(u => u.Userid == temp);
-                //return View(data);
-                return View(dashboard.PatientDashboard(temp, tempname!));
+                return View(dashboard.PatientDashboard(temp));
             }
             else
             {
@@ -43,8 +41,7 @@ namespace HalloDoc.Controllers
         public IActionResult editUser(PatientDashboardedit dashedit)
         {
             int id = (int)HttpContext.Session.GetInt32("Userid")!;
-            int aspid = (int)HttpContext.Session.GetInt32("AspUserid")!;
-            HttpContext.Session.SetString("Username", dashboard.editUser(dashedit, id, aspid));
+            HttpContext.Session.SetString("Username", dashboard.editUser(dashedit, id));
             return RedirectToAction("PatientDashboard", "Dashboard");
         }
         public IActionResult ViewDocument(int id)
@@ -122,14 +119,14 @@ namespace HalloDoc.Controllers
         public IActionResult send_mail()
         {
             var email = Request.Form["email"].ElementAt(0);
-            sendEmail(email!, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id=" + email + "");
+            sendEmail(email!, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id=" + EncryptDecryptHelper.Encrypt(email!) + "");
             return RedirectToAction("patientlogin", "Home");
         }
 
         [HttpPost]
         public IActionResult SendAgreement(NewStateData modal)
         {
-            sendEmail(modal.emaill!, "Link for Agreement", "https://localhost:44325/admin/ReviewAgreement/" + modal.reqid + "");
+            sendEmail(modal.emaill!, "Link for Agreement", "https://localhost:44325/admin/ReviewAgreement/" + EncryptDecryptHelper.Encrypt(modal.reqid.ToString()) + "");
             return NoContent();
         }
         public IActionResult SendLink(NewStateData modal)

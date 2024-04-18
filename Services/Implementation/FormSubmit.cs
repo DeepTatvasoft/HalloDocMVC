@@ -7,6 +7,7 @@ using Services.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -46,7 +47,7 @@ namespace Services.Implementation
         }
 
 
-        public void patientinfo(PatientReqSubmit model,int adminid)
+        public void patientinfo(PatientReqSubmit model, int adminid)
         {
 
             Aspnetuser aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email)!;
@@ -83,6 +84,7 @@ namespace Services.Implementation
                     Regionid = 1
                 };
                 _context.Users.Add(user1);
+                _context.SaveChanges();
                 user = user1;
                 Aspnetuserrole aspnetuserrole = new Aspnetuserrole
                 {
@@ -90,6 +92,7 @@ namespace Services.Implementation
                     Roleid = "3"
                 };
                 _context.Aspnetuserroles.Add(aspnetuserrole);
+                _context.SaveChanges();
             }
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == 3);
             Request req = new Request
@@ -107,6 +110,7 @@ namespace Services.Implementation
             };
 
             _context.Requests.Add(req);
+            _context.SaveChanges();
 
             Requestclient reqclient = new Requestclient
             {
@@ -128,11 +132,12 @@ namespace Services.Implementation
                 Address = model.Room + model.Street + model.City + model.State,
             };
             _context.Requestclients.Add(reqclient);
+            _context.SaveChanges();
             if (model.Upload != null)
             {
                 AddPatientRequestWiseFile(model.Upload, req.Requestid);
             }
-            if(model.AdminNotes != null)
+            if (model.AdminNotes != null)
             {
                 Requestnote reqnotes = new Requestnote
                 {
@@ -142,116 +147,77 @@ namespace Services.Implementation
                     Createddate = DateTime.Now,
                 };
                 _context.Requestnotes.Add(reqnotes);
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
         }
 
         public (bool, int) familyinfo(FamilyFriendReqSubmit model)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == 1);
+            var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
+            Request req = new Request()
+            {
+                Firstname = model.FamFirstName,
+                Lastname = model.FamLastName,
+                Phonenumber = model.FamMobile,
+                Email = model.FamEmail,
+                Requesttypeid = 2,
+                Relationname = model.FamRelation,
+                Createddate = DateTime.Now,
+                Status = 1,
+                Isdeleted = new BitArray(new[] { false }),
+            };
+
+            _context.Requests.Add(req);
+            _context.SaveChanges();
+            Requestclient reqclient = new Requestclient
+            {
+                Notes = model.PatSymptoms,
+                Firstname = model.PatFirstName!,
+                Lastname = model.PatLastName,
+                Intdate = model.PatDOB.Day,
+                Intyear = model.PatDOB.Year,
+                Strmonth = model.PatDOB.Month.ToString(),
+                Phonenumber = model.PatPhoneNumber,
+                Street = model.PatStreet,
+                City = model.PatCity,
+                State = model.PatState,
+                Zipcode = model.PatZipcode,
+                Regionid = 1,
+                Location = model.PatRoom,
+                Email = model.PatEmail,
+                Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
+                Request = req
+            };
+            _context.Requestclients.Add(reqclient);
+            _context.SaveChanges();
+            if (model.Upload != null)
+            {
+                AddPatientRequestWiseFile(model.Upload, req.Requestid);
+            }
             if (user != null)
             {
-                var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
-                var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
-                Request req = new Request
-                {
-                    Firstname = model.FamFirstName,
-                    Lastname = model.FamLastName,
-                    Phonenumber = model.FamMobile,
-                    Email = model.FamEmail,
-                    Requesttypeid = 2,
-                    Relationname = model.FamRelation,
-                    Createddate = DateTime.Now,
-                    Status = 1,
-                    Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-                    Isdeleted = new BitArray(new[] { false }),
-                    User = user,
-                };
-
-                _context.Requests.Add(req);
+                req.User = user;
+                req.Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper();
+                _context.Requests.Update(req);
                 _context.SaveChanges();
-                Requestclient reqclient = new Requestclient
-                {
-                    Notes = model.PatSymptoms,
-                    Firstname = model.PatFirstName,
-                    Lastname = model.PatLastName,
-                    Intdate = model.PatDOB.Day,
-                    Intyear = model.PatDOB.Year,
-                    Strmonth = model.PatDOB.Month.ToString(),
-                    Phonenumber = model.PatPhoneNumber,
-                    Street = model.PatStreet,
-                    City = model.PatCity,
-                    State = model.PatState,
-                    Zipcode = model.PatZipcode,
-                    Regionid = 1,
-                    Location = model.PatRoom,
-                    Email = model.PatEmail,
-                    Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
-                    Request = req
-                };
                 Aspnetuserrole aspnetuserrole = new Aspnetuserrole
                 {
                     Userid = user.Aspnetuserid.ToString()!,
                     Roleid = "3"
                 };
                 _context.Aspnetuserroles.Add(aspnetuserrole);
-                _context.Requestclients.Add(reqclient);
-                _context.SaveChanges();
-                if (model.Upload != null)
-                {
-                    AddPatientRequestWiseFile(model.Upload, req.Requestid);
-                }
-                return (true, reqclient.Requestclientid);
+                return (true, req.Requestid);
             }
-            else
-            {
-                Request req = new Request
-                {
-                    Firstname = model.FamFirstName,
-                    Lastname = model.FamLastName,
-                    Phonenumber = model.FamMobile,
-                    Email = model.FamEmail,
-                    Requesttypeid = 2,
-                    Relationname = model.FamRelation,
-                    Createddate = DateTime.Now,
-                    Status = 1,
-                    Isdeleted = new BitArray(new[] { false }),
-                };
-                _context.Requests.Add(req);
-                _context.SaveChanges();
-                Requestclient reqclient = new Requestclient
-                {
-                    Notes = model.PatSymptoms,
-                    Firstname = model.PatFirstName!,
-                    Lastname = model.PatLastName,
-                    Intdate = model.PatDOB.Day,
-                    Intyear = model.PatDOB.Year,
-                    Strmonth = model.PatDOB.Month.ToString(),
-                    Phonenumber = model.PatPhoneNumber,
-                    Street = model.PatStreet,
-                    City = model.PatCity,
-                    State = model.PatState,
-                    Zipcode = model.PatZipcode,
-                    Location = model.PatRoom,
-                    Email = model.PatEmail,
-                    Regionid = 1,
-                    Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
-                    Request = req
-                };
-                _context.Requestclients.Add(reqclient);
-                _context.SaveChanges();
-                if (model.Upload != null)
-                {
-                    AddPatientRequestWiseFile(model.Upload, req.Requestid);
-                }
-                return (false, reqclient.Requestclientid);
-            }
+            return (false, req.Requestid);
+
         }
 
-        public void ConciergeInfo(ConciergeSubmit model)
+        public (bool, int) ConciergeInfo(ConciergeSubmit model)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == 3);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             string name = model.ConFirstName + model.ConLastName;
             Concierge concierge = new Concierge
@@ -266,6 +232,8 @@ namespace Services.Implementation
                 Regionid = 1
             };
             _context.Concierges.Add(concierge);
+            _context.SaveChanges();
+
             Request req = new Request
             {
                 Firstname = model.ConFirstName,
@@ -274,8 +242,6 @@ namespace Services.Implementation
                 Email = model.ConEmail,
                 Createddate = DateTime.Now,
                 Requesttypeid = 3,
-                Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
-                User = user,
                 Isdeleted = new BitArray(new[] { false }),
             };
             _context.Requests.Add(req);
@@ -284,7 +250,7 @@ namespace Services.Implementation
             Requestclient reqclient = new Requestclient
             {
                 Notes = model.PatSymptoms,
-                Firstname = model.PatFirstName,
+                Firstname = model.PatFirstName!,
                 Lastname = model.PatLastName,
                 Email = model.PatEmail,
                 Intdate = model.PatDOB.Day,
@@ -300,19 +266,28 @@ namespace Services.Implementation
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
-            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
-            {
-                Userid = user.Aspnetuserid.ToString()!,
-                Roleid = "3"
-            };
-            _context.Aspnetuserroles.Add(aspnetuserrole);
             _context.SaveChanges();
+            if (user != null)
+            {
+                req.User = user;
+                req.Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper();
+                _context.Requests.Update(req);
+                _context.SaveChanges();
+                Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+                {
+                    Userid = user.Aspnetuserid.ToString()!,
+                    Roleid = "3"
+                };
+                _context.Aspnetuserroles.Add(aspnetuserrole);
+                return (true, req.Requestid);
+            }
+            return (false, req.Requestid);
         }
 
-        public void BusinessInfo(BusinessSubmit model)
+        public (bool, int) BusinessInfo(BusinessSubmit model)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
-            var region = _context.Regions.FirstOrDefault(x => x.Regionid == user.Regionid);
+            var region = _context.Regions.FirstOrDefault(x => x.Regionid == 2);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             Request req = new Request
             {
@@ -323,9 +298,7 @@ namespace Services.Implementation
                 Requesttypeid = 4,
                 Status = 1,
                 Createddate = DateTime.Now,
-                Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper(),
                 Isdeleted = new BitArray(new[] { false }),
-                User = user,
             };
             _context.Requests.Add(req);
             _context.SaveChanges();
@@ -333,7 +306,7 @@ namespace Services.Implementation
             Requestclient reqclient = new Requestclient
             {
                 Notes = model.PatSymptoms,
-                Firstname = model.PatFirstName,
+                Firstname = model.PatFirstName!,
                 Lastname = model.PatLastName,
                 Email = model.PatEmail,
                 Intdate = model.PatDOB.Day,
@@ -362,15 +335,25 @@ namespace Services.Implementation
                 Businesstypeid = 1
             };
             _context.Businesses.Add(bus);
-            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
-            {
-                Userid = user.Aspnetuserid.ToString()!,
-                Roleid = "3"
-            };
-            _context.Aspnetuserroles.Add(aspnetuserrole);
             _context.SaveChanges();
+
+            if (user != null)
+            {
+                req.User = user;
+                req.Confirmationnumber = (region!.Abbreviation!.Substring(0, 2) + DateTime.Now.Day.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + model.PatLastName!.Substring(0, 2) + model.PatFirstName!.Substring(0, 2) + requestcount.Count().ToString().PadLeft(4, '0')).ToUpper();
+                _context.Requests.Update(req);
+                _context.SaveChanges();
+                Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+                {
+                    Userid = user.Aspnetuserid.ToString()!,
+                    Roleid = "3"
+                };
+                _context.Aspnetuserroles.Add(aspnetuserrole);
+                return (true, req.Requestid);
+            }
+            return (false, req.Requestid);
         }
-        public void Emailentry(string email,int adminid,int id)
+        public void Emailentry(string email, int id)
         {
             Emaillog emaillog = new Emaillog
             {
@@ -379,7 +362,6 @@ namespace Services.Implementation
                 Emailtemplate = "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + id + "",
                 Roleid = 3,
                 Requestid = id,
-                Adminid = adminid,
                 Createdate = DateTime.Now,
                 Sentdate = DateTime.Now,
                 Isemailsent = new BitArray(new[] { true }),

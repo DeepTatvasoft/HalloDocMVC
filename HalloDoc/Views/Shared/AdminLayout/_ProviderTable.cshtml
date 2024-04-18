@@ -1,4 +1,5 @@
-﻿@model Services.ViewModels.ProviderModal
+﻿@using Common.Helper;
+@model Services.ViewModels.ProviderModal
 <form method="post" asp-action="PhyNotification" asp-controller="Admin">
     <table class="table">
         <thead class="table-secondary">
@@ -48,7 +49,7 @@
                     }
                     <td class="text-center">
                         <button type="button" class="btn btn-outline-info boxshadowbtn" onclick="ContactBtn(@obj.Physicianid)" data-bs-toggle="modal" data-bs-target="#ContactModal">Contact</button>
-                        <a asp-controller="Admin" asp-action="EditPhysician" asp-route-id="@obj.Physicianid" type="button" class="btn btn-outline-info boxshadowbtn">Edit</a>
+                        <a asp-controller="Admin" asp-action="EditPhysician" asp-route-id="@EncryptDecryptHelper.Encrypt(obj.Physicianid.ToString()!)" type="button" class="btn btn-outline-info boxshadowbtn">Edit</a>
                     </td>
                 </tr>
             }

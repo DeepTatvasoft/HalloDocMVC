@@ -49,14 +49,15 @@ namespace Services.Implementation
             }
             _context.SaveChanges();
         }
-        public PatientDashboardedit PatientDashboard(int temp, string tempname)
+        public PatientDashboardedit PatientDashboard(int temp)
         {
             PatientDashboardedit dashedit = new PatientDashboardedit();
+            dashedit.userid = temp;
             var data = _context.Users.FirstOrDefault(u => u.Userid == temp);
             if (data != null)
             {
                 dashedit.User = data;
-                DateTime tempDateTime = new DateTime(Convert.ToInt32(data.Intyear), Convert.ToInt32(data.Strmonth), (int)data.Intdate);
+                DateTime tempDateTime = new DateTime(Convert.ToInt32(data.Intyear), Convert.ToInt32(data.Strmonth), (int)data.Intdate!);
                 dashedit.tempdate = tempDateTime;
             }
             List<Requestwisefile> reqfile = (from m in _context.Requestwisefiles select m).ToList();
@@ -65,7 +66,7 @@ namespace Services.Implementation
             dashedit.requests = requestdata.ToList();
             return dashedit;
         }
-        public string editUser(PatientDashboardedit dashedit, int id, int aspid)
+        public string editUser(PatientDashboardedit dashedit, int id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Userid == id);
             string str = "";
@@ -87,7 +88,7 @@ namespace Services.Implementation
                 _context.SaveChanges();
             }
 
-            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == aspid);
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == user.Aspnetuserid);
             if (aspuser != null)
             {
                 aspuser.Username = str;

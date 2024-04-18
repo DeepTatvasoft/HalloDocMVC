@@ -41,12 +41,12 @@ namespace Services.Implementation
                 }
                 else
                 {
-                    return (false, null!, id);
+                    return (false, null, id);
                 }
             }
             else
             {
-                return (false, null!, 0);
+                return (false, null, 0);
             }
         }
         public NewStateData AdminDashboarddata(int status, int currentPage, string searchkey = "")
@@ -344,22 +344,10 @@ namespace Services.Implementation
         public ViewNotesModel ViewNotes(int reqid)
         {
             ViewNotesModel viewNotesModel = new ViewNotesModel();
-            var reqstatuslog = _context.Requeststatuslogs.FirstOrDefault(u => u.Requestid == reqid && u.Status == 2);
+            var reqstatuslog = _context.Requeststatuslogs.Where(u => u.Requestid == reqid).ToList();
             var requestnotes = _context.Requestnotes.FirstOrDefault(u => u.Requestid == reqid);
             if (reqstatuslog != null)
             {
-                var admin = _context.Admins.FirstOrDefault(u => u.Adminid == reqstatuslog.Adminid);
-                if (admin != null)
-                {
-                    viewNotesModel.adminname = admin.Firstname;
-                }
-                string phyname;
-                if (reqstatuslog.Transtophysicianid != null)
-                {
-                    phyname = _context.Physicians.FirstOrDefault(u => u.Physicianid == reqstatuslog.Transtophysicianid)!.Firstname;
-                    viewNotesModel.phyname = phyname;
-
-                }
                 viewNotesModel.requeststatuslogs = reqstatuslog;
             }
             if (requestnotes != null)
@@ -2155,11 +2143,38 @@ namespace Services.Implementation
         {
             UserAccessModal modal = new UserAccessModal();
             modal.aspnetroles = _context.Aspnetroles.ToList();
-            modal.aspnetusers = _context.Aspnetusers.ToList();
+            modal.aspnetusers = _context.Aspnetusers.Include(u=>u.Users).ToList();
             modal.aspnetuserroles = _context.Aspnetuserroles.ToList();
             modal.admincount = _context.Requests.ToList().Count();
             modal.req = _context.Requests.Include(u => u.Physician).Include(u=>u.User).ToList();
             return modal;
+        }
+        public UserAccessModal UserAccessTable(string roleid)
+        {
+            UserAccessModal modal = new UserAccessModal();
+            var aspnetusers = _context.Aspnetusers.Include(u=>u.Users).ToList();
+            List<Aspnetuser> newaspuser = new List<Aspnetuser>();
+            foreach (var obj in aspnetusers)
+            {
+                if (_context.Aspnetuserroles.FirstOrDefault(u => u.Userid == obj.Id.ToString())!.Roleid == roleid)
+                {
+                    newaspuser.Add(obj);
+                }
+            }
+            modal.aspnetusers = newaspuser;
+            modal.aspnetroles = _context.Aspnetroles.ToList();
+            modal.aspnetuserroles = _context.Aspnetuserroles.ToList();
+            modal.admincount = _context.Requests.ToList().Count();
+            modal.req = _context.Requests.Include(u => u.Physician).Include(u => u.User).ToList();
+            return modal;
+        }
+        public string getAsdId(int adminid)
+        {
+            return _context.Admins.FirstOrDefault(u => u.Adminid == adminid)!.Aspnetuserid;
+        }
+        public int getAdminId(int aspid)
+        {
+            return _context.Admins.FirstOrDefault(u => u.Aspnetuserid == aspid.ToString())!.Adminid;
         }
     }
 }

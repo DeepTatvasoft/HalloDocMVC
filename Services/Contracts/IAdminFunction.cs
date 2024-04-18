@@ -101,5 +101,8 @@ namespace Services.Contracts
         SearchRecordModal ExportSearchRecordData(SearchRecordModal modal);
         void DeleteSearchRecord(int id);
         UserAccessModal UserAccess();
+        UserAccessModal UserAccessTable(string roleid);
+        string getAsdId(int adminid);
+        int getAdminId(int aspid);
     }
 }

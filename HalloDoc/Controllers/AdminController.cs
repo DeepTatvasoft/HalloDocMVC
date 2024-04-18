@@ -23,6 +23,8 @@ using static NPOI.HSSF.Util.HSSFColor;
 using Syncfusion.EJ2.Charts;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Common.Helper;
+using iTextSharp.xmp.options;
 
 namespace HalloDoc.Controllers
 {
@@ -146,10 +148,12 @@ namespace HalloDoc.Controllers
             }
             return View(adminFunction.AdminDashboarddata(6, currentPage, searchkey));
         }
+        [Authorization("1,2")]
         public IActionResult ViewCase(int id)
         {
             return PartialView("AdminLayout/_ViewCase", adminFunction.ViewCase(id));
         }
+        [Authorization("1,2")]
         public IActionResult ViewNotes(int reqid)
         {
             return PartialView("AdminLayout/_ViewNotes", adminFunction.ViewNotes(reqid));
@@ -205,6 +209,7 @@ namespace HalloDoc.Controllers
                 }
             }
         }
+        [Authorization("1")]
         public List<Physician> filterregion(string regionid)
         {
             return adminFunction.filterregion(regionid);
@@ -216,6 +221,7 @@ namespace HalloDoc.Controllers
             Response.Cookies.Delete("jwt");
             return RedirectToAction("adminlogin", "Admin");
         }
+        [Authorization("1")]
         public IActionResult cancelcase(int reqid, int casetagid, string cancelnotes)
         {
             int id = (int)HttpContext.Session.GetInt32("Adminid")!;
@@ -223,6 +229,7 @@ namespace HalloDoc.Controllers
             adminFunction.cancelcase(reqid, casetagid, cancelnotes, adminname, id);
             return RedirectToAction("AdminDashboard");
         }
+        [Authorization("1")]
         public IActionResult assigncase(int reqid, int regid, int phyid, string Assignnotes)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
@@ -230,11 +237,13 @@ namespace HalloDoc.Controllers
             adminFunction.assigncase(reqid, regid, phyid, Assignnotes, adminname, id);
             return RedirectToAction("AdminDashboard");
         }
+        [Authorization("1")]
         public IActionResult blockcase(int reqid, string Blocknotes)
         {
             adminFunction.blockcase(reqid, Blocknotes);
             return RedirectToAction("AdminDashboard");
         }
+        [Authorization("1")]
         [HttpPost]
         public IActionResult AdminNotesSaveChanges(int reqid, string adminnotes)
         {
@@ -242,11 +251,12 @@ namespace HalloDoc.Controllers
             adminFunction.AdminNotesSaveChanges(reqid, adminnotes, adminname);
             return PartialView("AdminLayout/_ViewNotes", adminFunction.ViewNotes(reqid));
         }
-
+        [Authorization("1,2")]
         public IActionResult AdminuploadDoc(int reqid)
         {
             return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
         }
+        [Authorization("1,2")]
         [HttpPost]
         public IActionResult DocUpload(List<IFormFile> myfile, int reqid)
         {
@@ -257,13 +267,13 @@ namespace HalloDoc.Controllers
             _context.SaveChanges();
             return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
         }
-
+        [Authorization("1,2")]
         public IActionResult SingleDelete(int reqfileid)
         {
             int reqid = adminFunction.SingleDelete(reqfileid);
             return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
         }
-
+        [Authorization("1,2")]
         public IActionResult DeleteAll(List<int> reqwiseid, int reqid)
         {
             foreach (var obj in reqwiseid)
@@ -272,7 +282,7 @@ namespace HalloDoc.Controllers
             }
             return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
         }
-
+        [Authorization("1,2")]
         public IActionResult SendMail(List<int> reqwiseid, int reqid)
         {
 
@@ -321,6 +331,7 @@ namespace HalloDoc.Controllers
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
         }
+        [Authorization("1,2")]
         public IActionResult Orders(int reqid)
         {
             SendOrders modal = new SendOrders();
@@ -340,19 +351,23 @@ namespace HalloDoc.Controllers
         {
             return adminFunction.filterbusiness(vendorid);
         }
+        [Authorization("1")]
         [HttpPost]
         public IActionResult OrderSubmit(SendOrders sendorder)
         {
             adminFunction.OrderSubmit(sendorder);
             return RedirectToAction("AdminDashboard");
         }
+        [Authorization("1")]
         public IActionResult clearcase(int reqid)
         {
             return RedirectToAction("AdminDashboard");
         }
-        public IActionResult ReviewAgreement(int id)
+
+        public IActionResult ReviewAgreement(string id)
         {
-            return View(adminFunction.ReviewAgreement(id));
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
+            return View(adminFunction.ReviewAgreement(id2));
         }
         public IActionResult AcceptAgreement(int id)
         {
@@ -364,15 +379,18 @@ namespace HalloDoc.Controllers
             adminFunction.CancelAgreement(modal);
             return RedirectToAction("patientlogin", "Home");
         }
+        [Authorization("1")]
         public IActionResult CloseCase(int reqid)
         {
             return PartialView("AdminLayout/_CloseCase", adminFunction.AdminuploadDoc(reqid));
         }
+        [Authorization("1")]
         public IActionResult CloseCasebtn(int id)
         {
             adminFunction.CloseCasebtn(id);
             return RedirectToAction("AdminDashboard");
         }
+        [Authorization("1")]
         [HttpPost]
         public IActionResult Closecaseedit([FromForm] AdminviewDoc formData)
         {
@@ -380,14 +398,14 @@ namespace HalloDoc.Controllers
             return PartialView("AdminLayout/_CloseCase", adminFunction.AdminuploadDoc(formData.reqid));
         }
 
-        [Authorization("1")]
+        [Authorization("1,2")]
         public IActionResult Profiletab()
         {
             int adminid = (int)HttpContext.Session.GetInt32("Adminid")!;
             return View(adminFunction.Profiletab(adminid));
         }
         [HttpPost]
-        public IActionResult AdminResetPassword(AdminProfile modal)
+        public IActionResult AdminResetPassword(AdminProfile modal, string useaccess)
         {
             if (modal.ResetPassword == null)
             {
@@ -398,9 +416,15 @@ namespace HalloDoc.Controllers
                 TempData["success"] = "Your Password is changed Successfuly";
                 adminFunction.AdminResetPassword(modal);
             }
+            if (useaccess == "1")
+            {
+                string aspid = adminFunction.getAsdId(modal.adminid);
+                return RedirectToAction("EditAdmin", new { id = EncryptDecryptHelper.Encrypt(aspid) });
+            }
             return RedirectToAction("Profiletab", "Admin");
         }
-        public IActionResult AdministratorinfoEdit(AdminProfile Modal)
+        [Authorization("1")]
+        public IActionResult AdministratorinfoEdit(AdminProfile Modal, string useaccess)
         {
             var chk = Request.Form["AdminRegion"].ToList();
             var checkemail = adminFunction.AdministratorinfoEdit(Modal, chk!);
@@ -408,13 +432,25 @@ namespace HalloDoc.Controllers
             {
                 TempData["error"] = "Email already exist";
             }
+            if (useaccess == "1")
+            {
+                string aspid = adminFunction.getAsdId(Modal.adminid);
+                return RedirectToAction("EditAdmin", new { id = EncryptDecryptHelper.Encrypt(aspid) });
+            }
             return RedirectToAction("Profiletab", "Admin");
         }
-        public IActionResult MailinginfoEdit(AdminProfile modal)
+        [Authorization("1")]
+        public IActionResult MailinginfoEdit(AdminProfile modal, string useaccess)
         {
             adminFunction.MailinginfoEdit(modal);
+            if (useaccess == "1")
+            {
+                string aspid = adminFunction.getAsdId(modal.adminid);
+                return RedirectToAction("EditAdmin", new { id = EncryptDecryptHelper.Encrypt(aspid) });
+            }
             return RedirectToAction("Profiletab", "Admin");
         }
+        [Authorization("1")]
         [HttpPost]
         public IActionResult Export(NewStateData modal)
         {
@@ -441,6 +477,7 @@ namespace HalloDoc.Controllers
             string filename = $"{modal.region}_{strDate}.xlsx";
             return File(record, contentType, filename);
         }
+        [Authorization("1")]
         public IActionResult ExportAll(NewStateData modal)
         {
             var record = adminFunction.DownloadExcle(adminFunction.AdminDashboarddata(modal.status, 0, ""));
@@ -454,6 +491,7 @@ namespace HalloDoc.Controllers
         {
             return View(adminFunction.Providertab(0));
         }
+        [Authorization("1")]
         public IActionResult ProvidertabbyRegion(int regionid)
         {
             return PartialView("AdminLayout/_ProviderTable", adminFunction.Providertab(regionid));
@@ -464,17 +502,20 @@ namespace HalloDoc.Controllers
             return View();
         }
         [Authorization("1")]
-        public IActionResult EditPhysician(int id)
+        public IActionResult EditPhysician(string id)
         {
-            return View(adminFunction.EditPhysician(id));
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
+            return View(adminFunction.EditPhysician(id2));
         }
+        [Authorization("1")]
         [HttpPost]
         public IActionResult PhysicianAccInfo(EditPhysicianModal modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.PhysicianAccInfo(modal, adminname);
-            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
+            return RedirectToAction("EditPhysician", new { id = EncryptDecryptHelper.Encrypt(modal.physicianid.ToString()) });
         }
+        [Authorization("1")]
         public IActionResult PhysicianResetPass(EditPhysicianModal modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
@@ -487,8 +528,9 @@ namespace HalloDoc.Controllers
             {
                 TempData["error"] = "Please enter valid password";
             }
-            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
+            return RedirectToAction("EditPhysician", new { id = EncryptDecryptHelper.Encrypt(modal.physicianid.ToString()) });
         }
+        [Authorization("1")]
         public IActionResult PhysicianInfo(EditPhysicianModal modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
@@ -499,30 +541,35 @@ namespace HalloDoc.Controllers
             {
                 TempData["error"] = "Email already exist";
             }
-            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
+            return RedirectToAction("EditPhysician", new { id = EncryptDecryptHelper.Encrypt(modal.physicianid.ToString()) });
         }
+        [Authorization("1")]
         public IActionResult PhysicianMailingInfo(EditPhysicianModal modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.PhysicianMailingInfo(modal, adminname);
-            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
+            return RedirectToAction("EditPhysician", new { id = EncryptDecryptHelper.Encrypt(modal.physicianid.ToString()) });
         }
+        [Authorization("1")]
         public IActionResult ProviderProfile(EditPhysicianModal modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.ProviderProfile(modal, adminname);
-            return RedirectToAction("EditPhysician", new { id = modal.physicianid });
+            return RedirectToAction("EditPhysician", new { id = EncryptDecryptHelper.Encrypt(modal.physicianid.ToString()) });
         }
+        [Authorization("1")]
         public IActionResult EditProviderSign(int physicianid, string base64string)
         {
             adminFunction.EditProviderSign(physicianid, base64string);
-            return RedirectToAction("EditPhysician", new { id = physicianid });
+            return RedirectToAction("EditPhysician", new { id = EncryptDecryptHelper.Encrypt(physicianid.ToString()) });
         }
+        [Authorization("1")]
         public IActionResult EditProviderPhoto(int physicianid, string base64string)
         {
             adminFunction.EditProviderPhoto(physicianid, base64string);
-            return RedirectToAction("EditPhysician", new { id = physicianid });
+            return RedirectToAction("EditPhysician", new { id = EncryptDecryptHelper.Encrypt(physicianid.ToString()) });
         }
+        [Authorization("1")]
         [HttpPost]
         public IActionResult PhyNotification()
         {
@@ -530,25 +577,30 @@ namespace HalloDoc.Controllers
             adminFunction.PhyNotification(chk!);
             return RedirectToAction("Providertab");
         }
+        [Authorization("1")]
         public IActionResult DeletePhysician(EditPhysicianModal modal)
         {
             adminFunction.DeletePhysician(modal);
             return RedirectToAction("Providertab");
         }
+        [Authorization("1")]
         public IActionResult ContactPhysician(int phyid, string chk, string message)
         {
             int adminid = (int)HttpContext.Session.GetInt32("Adminid")!;
             adminFunction.ContactPhysician(phyid, chk, message, adminid);
             return NoContent();
         }
+        [Authorization("1")]
         public IActionResult AccessTab()
         {
             return View(adminFunction.AccessTab());
         }
+        [Authorization("1")]
         public IActionResult CreateRole()
         {
             return PartialView("AdminLayout/_CreateRole", adminFunction.CreateRole());
         }
+        [Authorization("1")]
         public IActionResult CreateRoleSubmit(AccessRoleModal modal)
         {
             var chk = Request.Form["AllMenu"].ToList();
@@ -565,10 +617,12 @@ namespace HalloDoc.Controllers
         {
             return adminFunction.filtermenu(acctype);
         }
+        [Authorization("1")]
         public IActionResult EditRole(int roleid)
         {
             return PartialView("AdminLayout/_EditRole", adminFunction.EditRole(roleid));
         }
+        [Authorization("1")]
         public IActionResult EditRoleSubmit(AccessRoleModal modal)
         {
             var chk = Request.Form["AllMenu"].ToList();
@@ -581,15 +635,18 @@ namespace HalloDoc.Controllers
             adminFunction.EditRoleSubmit(modal, chk!, adminname);
             return RedirectToAction("AccessTab");
         }
+        [Authorization("1")]
         public IActionResult DeleteRole(int roleid)
         {
             adminFunction.DeleteRole(roleid);
             return RedirectToAction("AccessTab");
         }
+        [Authorization("1")]
         public IActionResult CreateProviderAcc()
         {
             return View(adminFunction.CreateProviderAcc());
         }
+        [Authorization("1")]
         [HttpPost]
         public IActionResult CreateProviderAccBtn(EditPhysicianModal modal)
         {
@@ -609,6 +666,7 @@ namespace HalloDoc.Controllers
             adminFunction.CreateAdminAccBtn(modal, chk!, adminname);
             return RedirectToAction("AccessTab");
         }
+        [Authorization("1")]
         public void AddPhysicianDoc(IFormFile file, int physicianid, string filename)
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "PhysicianDocuments", physicianid.ToString());
@@ -622,6 +680,7 @@ namespace HalloDoc.Controllers
                 file.CopyTo(fileStream);
             }
         }
+        [Authorization("1")]
         [HttpPost]
         public bool UploadICAdoc(int physicianid, IFormFile file)
         {
@@ -638,6 +697,7 @@ namespace HalloDoc.Controllers
             TempData["success"] = "Document uploaded successfuly";
             return true;
         }
+        [Authorization("1")]
         [HttpPost]
         public bool UploadHIPAAdoc(int physicianid, IFormFile file)
         {
@@ -654,6 +714,7 @@ namespace HalloDoc.Controllers
             TempData["success"] = "Document uploaded successfuly";
             return true;
         }
+        [Authorization("1")]
         [HttpPost]
         public bool UploadBGcheckdoc(int physicianid, IFormFile file)
         {
@@ -670,6 +731,7 @@ namespace HalloDoc.Controllers
             TempData["success"] = "Document uploaded successfuly";
             return true;
         }
+        [Authorization("1")]
         [HttpPost]
         public bool UploadNDdoc(int physicianid, IFormFile file)
         {
@@ -686,6 +748,7 @@ namespace HalloDoc.Controllers
             TempData["success"] = "Document uploaded successfuly";
             return true;
         }
+        [Authorization("1")]
         [HttpPost]
         public bool UploadLDdoc(int physicianid, IFormFile file)
         {
@@ -702,6 +765,7 @@ namespace HalloDoc.Controllers
             TempData["success"] = "Document uploaded successfuly";
             return true;
         }
+        [Authorization("1,2")]
         public IActionResult OpenFile(string fileName, int physicianid)
         {
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "PhysicianDocuments", physicianid.ToString(), fileName);
@@ -718,11 +782,13 @@ namespace HalloDoc.Controllers
             }
             return true;
         }
+        [Authorization("1,2")]
         public IActionResult Scheduling()
         {
             return View(adminFunction.Scheduling());
         }
 
+        [Authorization("1,2")]
         public IActionResult LoadSchedulingPartial(string PartialName, string date, int regionid)
         {
             var currentDate = DateTime.Parse(date);
@@ -743,6 +809,7 @@ namespace HalloDoc.Controllers
                     return PartialView("AdminLayout/_DayWise");
             }
         }
+        [Authorization("1,2")]
         public IActionResult AddShift(Scheduling model)
         {
             if (model.starttime > model.endtime)
@@ -760,44 +827,52 @@ namespace HalloDoc.Controllers
             return RedirectToAction("Scheduling");
         }
 
-
+        [Authorization("1,2")]
         public Scheduling viewshift(int shiftdetailid)
         {
             return adminFunction.viewshift(shiftdetailid);
         }
+        [Authorization("1,2")]
         public void ViewShiftreturn(int shiftdetailid)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.ViewShiftreturn(shiftdetailid, adminname);
         }
+        [Authorization("1,2")]
         public bool ViewShiftedit(Scheduling modal)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
             return adminFunction.ViewShiftedit(modal, adminname);
         }
+        [Authorization("1,2")]
         public void DeleteShift(int shiftdetailid)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
             adminFunction.DeleteShift(shiftdetailid, adminname);
         }
+        [Authorization("1")]
         public IActionResult ProvidersOnCall(Scheduling modal)
         {
             return View(adminFunction.ProvidersOnCall(modal));
         }
+        [Authorization("1")]
         [HttpPost]
         public IActionResult ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
         {
             return PartialView("AdminLayout/_ProviderOnCallData", adminFunction.ProvidersOnCallbyRegion(regionid, oncall, offcall));
         }
 
+        [Authorization("1")]
         public IActionResult ShiftForReview()
         {
             return View(adminFunction.ShiftForReview());
         }
+        [Authorization("1")]
         public IActionResult ShiftReviewTable(int currentPage, int regionid)
         {
             return PartialView("AdminLayout/_ShiftForReviewTable", adminFunction.ShiftReviewTable(currentPage, regionid));
         }
+        [Authorization("1")]
         public IActionResult ApproveSelected(int[] shiftchk)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
@@ -812,6 +887,7 @@ namespace HalloDoc.Controllers
             }
             return RedirectToAction("ShiftForReview");
         }
+        [Authorization("1")]
         public IActionResult DeleteSelected(int[] shiftchk)
         {
             string adminname = HttpContext.Session.GetString("Adminname")!;
@@ -826,10 +902,12 @@ namespace HalloDoc.Controllers
             }
             return RedirectToAction("ShiftForReview");
         }
+        [Authorization("1")]
         public IActionResult PartnersTab()
         {
             return View(adminFunction.PartnersTab());
         }
+        [Authorization("1")]
         public IActionResult PartenersbyType(int profftype)
         {
             PartnersModal modal = new PartnersModal();
@@ -841,70 +919,87 @@ namespace HalloDoc.Controllers
             modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
             return PartialView("AdminLayout/_PartnerstabTable", modal);
         }
+        [Authorization("1")]
         public IActionResult AddBusiness()
         {
             AddBusinessModal modal = new AddBusinessModal();
             modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
             return View(modal);
         }
+        [Authorization("1")]
         public IActionResult AddBusinessSubmit(AddBusinessModal modal)
         {
             adminFunction.AddBusinessSubmit(modal);
             TempData["success"] = "Business Added Successfuly";
             return RedirectToAction("PartnersTab");
         }
-        public IActionResult EditBusiness(int id)
+        [Authorization("1")]
+        public IActionResult EditBusiness(string id)
         {
-            return View(adminFunction.EditBusiness(id));
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
+            return View(adminFunction.EditBusiness(id2));
         }
+        [Authorization("1")]
         public IActionResult EditBusinessSubmit(AddBusinessModal modal)
         {
             adminFunction.EditBusinessSubmit(modal);
             TempData["success"] = "Information updated successfuly";
             return RedirectToAction("PartnersTab");
         }
+        [Authorization("1")]
         public void DeleteBusiness(int id)
         {
             adminFunction.DeleteBusiness(id);
             TempData["success"] = "Business Deleted Successfuly";
         }
+        [Authorization("1")]
         public IActionResult Recordstab()
         {
             return View(adminFunction.Recordstab());
         }
+        [Authorization("1")]
         public IActionResult RecordsTable(RecordstabModal modal)
         {
             return PartialView("AdminLayout/_RecordstabTable", adminFunction.RecordsTable(modal));
         }
+        [Authorization("1")]
         public IActionResult BlockHistory()
         {
             return View(adminFunction.BlockHistory());
         }
+        [Authorization("1")]
         public IActionResult BlockHistoryTable(BlockHistoryModal modal)
         {
             return PartialView("AdminLayout/_BlockHistoryTable", adminFunction.BlockHistoryTable(modal));
         }
+        [Authorization("1")]
         public IActionResult EmailLogs()
         {
             return View(adminFunction.EmailLogs());
         }
 
+        [Authorization("1")]
         public IActionResult EmailLogTable(EmailLogsModal modal)
         {
             return PartialView("AdminLayout/_EMaillogsTable", adminFunction.EmailLogTable(modal));
         }
+        [Authorization("1")]
         public IActionResult SearchRecords()
         {
             return View(adminFunction.SearchRecords());
         }
+        [Authorization("1")]
         public IActionResult SearchRecordTable(SearchRecordModal modal)
         {
             return PartialView("AdminLayout/_SearchrecordTable", adminFunction.SearchRecordTable(modal));
         }
-        public IActionResult ExplorePatient(int id)
+        [Authorization("1")]
+        public IActionResult ExplorePatient(string id)
         {
-            return View(adminFunction.ExplorePatient(id));
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
+            return View(adminFunction.ExplorePatient(id2));
         }
+        [Authorization("1")]
         public IActionResult ExportSearchRecord(SearchRecordModal modal)
         {
             var record = adminFunction.ExportSearchRecord(adminFunction.ExportSearchRecordData(modal));
@@ -913,43 +1008,47 @@ namespace HalloDoc.Controllers
             string filename = $"{modal.reqstatus}_{strDate}.xlsx";
             return File(record, contentType, filename);
         }
+        [Authorization("1")]
         public void DeleteSearchRecord(int id)
         {
             adminFunction.DeleteSearchRecord(id);
             TempData["success"] = "Request Deleted Successfuly";
         }
+        [Authorization("1")]
         public IActionResult LocationTab()
         {
             LocationtabModal modal = new LocationtabModal();
             modal.physicianlocations = JsonConvert.SerializeObject(_context.Physicianlocations.ToList());
             return View(modal);
         }
+        [Authorization("1")]
         public IActionResult UserAccess()
         {
             return View(adminFunction.UserAccess());
         }
+        [Authorization("1")]
         public IActionResult UserAccessTable(string roleid)
         {
             if (roleid == "0")
             {
                 return PartialView("AdminLayout/_UserAccessTable", adminFunction.UserAccess());
             }
-            UserAccessModal modal = new UserAccessModal();
-            var aspnetusers = _context.Aspnetusers.ToList();
-            List<Aspnetuser> newaspuser = new List<Aspnetuser>();
-            foreach (var obj in aspnetusers)
-            {
-                if(_context.Aspnetuserroles.FirstOrDefault(u=>u.Userid == obj.Id.ToString())!.Roleid == roleid)
-                {
-                    newaspuser.Add(obj);
-                }
-            }
-            modal.aspnetusers = newaspuser;
-            modal.aspnetroles = _context.Aspnetroles.ToList();
-            modal.aspnetuserroles = _context.Aspnetuserroles.ToList();
-            modal.admincount = _context.Requests.ToList().Count();
-            modal.req = _context.Requests.Include(u => u.Physician).Include(u=>u.User).ToList();
-            return PartialView("AdminLayout/_UserAccessTable", modal);
+            return PartialView("AdminLayout/_UserAccessTable", adminFunction.UserAccessTable(roleid));
+        }
+        public IActionResult editUser(int id)
+        {
+            return PartialView("_PatientProfile", dashboard.PatientDashboard(id));
+        }
+        public IActionResult editUserByAdmin(PatientDashboardedit dashedit)
+        {
+            HttpContext.Session.SetString("Username", dashboard.editUser(dashedit, dashedit.userid));
+            return RedirectToAction("UserAccess", adminFunction.UserAccess());
+        }
+        public IActionResult EditAdmin(string id)
+        {
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
+            int adminid = adminFunction.getAdminId(id2);
+            return View(adminFunction.Profiletab(adminid));
         }
     }
 

@@ -13,6 +13,6 @@ namespace Services.ViewModels
         public int reqid { get; set; }
         public string? filename { get; set; }
         public List<string>? allfile { get; set; } 
-        
+        public int userid { get; set; }
     }
 }

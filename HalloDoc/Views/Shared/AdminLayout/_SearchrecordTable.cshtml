@@ -1,7 +1,7 @@
 ﻿@model Services.ViewModels.SearchRecordModal
 
 
-<table class="table">
+<table class="table" id="maintable">
     <thead class="table-secondary">
         <tr>
             <th scope="col">Patient Name</th>
@@ -224,6 +224,7 @@
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
     var num = document.getElementById("curpageinput");
     if (@Model.currentpage == 1) {
@@ -261,4 +262,14 @@
             }
         });
     });
+    var chk = $('#maintable');
+    console.log(chk);
+    if (@Model.req.Count()> 0) {
+        $('#maintable').DataTable({
+            info: false,
+            ordering: true,
+            paging: false,
+            searching: false,
+        });
+    }
 </script>

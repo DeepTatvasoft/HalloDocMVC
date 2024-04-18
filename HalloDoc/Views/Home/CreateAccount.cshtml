@@ -22,7 +22,7 @@
             <h2 class="text-center">Create Account</h2>
             <form asp-action="newaccount" asp-controller="Home" asp-route-id="@Model.reqclientid">
                 <div class="form-floating mb-3 mt-4">
-                    <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" readonly>
                     <label for="floatingInput">Email address</label>
                     <i class="fa-regular fa-user icon"></i>
                 </div>

@@ -1,15 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Admin Profile";
+    ViewData["Title"] = "Edit Admin";
     Layout = "AdminLayout/_AdminDashboard";
 }
+
 @model Services.ViewModels.AdminProfile
 <partial name="_Notification" />
 
 <div class="container-fluid mt-5 dashboard" style="width: 80%;">
     <div class="d-flex justify-content-between">
-        <h4 class="mt-1 fw-bold">My Profile</h4>
+        <h4 class="mt-1 fw-bold">Admin Profile</h4>
         <div class="backbtn">
-            <a asp-controller="Admin" asp-action="AdminDashboard" class="btn btn-outline-info text-center boxshadowbtn">&lt; Back</a>
+            <a asp-controller="Admin" asp-action="UserAccess" class="btn btn-outline-info text-center boxshadowbtn">&lt; Back</a>
         </div>
     </div>
     <div class="bg-white p-4 mt-2 rounded shadow lightmode">
@@ -59,7 +60,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="submit" class="btn btn-outline-info boxshadowbtn">Reset Password</button>
+                    <button type="submit" name="useaccess" value="1" class="btn btn-outline-info boxshadowbtn">Reset Password</button>
                 </div>
             </form>
         </div>
@@ -129,7 +130,7 @@
                 </div>
                 <div class="d-flex justify-content-end mt-4">
                     <button type="button" onclick="editoneclick()" class="btn btn-info text-white editf boxshadowbtn">Edit</button>
-                    <button type="submit" class="btn btn-info text-white d-none savef boxshadowbtn">Save</button>
+                    <button type="submit" name="useaccess" value="1" class="btn btn-info text-white d-none savef boxshadowbtn">Save</button>
                     <button type="reset" onclick="canceloneclick()" class="btn btn-outline-info ms-1 d-none cancelf boxshadowbtn">Cancel</button>
                 </div>
             </form>
@@ -192,7 +193,7 @@
                 </div>
                 <div class="d-flex justify-content-end mt-4">
                     <button type="button" onclick="editsecondclick()" class="btn btn-info text-white edits boxshadowbtn">Edit</button>
-                    <button type="submit" class="btn btn-info text-white d-none saves boxshadowbtn">Save</button>
+                    <button type="submit" name="useaccess" value="1" class="btn btn-info text-white d-none saves boxshadowbtn">Save</button>
                     <button type="reset" onclick="cancelsecondclick()" class="btn btn-outline-info ms-1 d-none cancels boxshadowbtn">Cancel</button>
                 </div>
             </form>
@@ -200,7 +201,8 @@
     </div>
 </div>
 <script>
-    document.getElementById('profiletab').classList.add('active');
+    document.getElementById('accesstab').classList.add('active');
+    document.getElementById('useraccess').classList.add('active');
     function editoneclick() {
         $('.savef').removeClass('d-none').addClass('d-inline-block');
         $('.cancelf').removeClass('d-none').addClass('d-inline-block');

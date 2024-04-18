@@ -1,4 +1,5 @@
-﻿using Data.DataContext;
+﻿using Common.Helper;
+using Data.DataContext;
 using Data.DataModels;
 using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -57,14 +58,19 @@ namespace HalloDoc.Controllers
         }
         public IActionResult ResetPassword(string id)
         {
+            id = id.Substring(3);
+            id = EncryptDecryptHelper.Decrypt(id);
             ResetPasswordVM vm = new ResetPasswordVM();
             vm.Email = id;
             return View(vm);
         }
         public IActionResult CreateAccount(string id)
         {
+            id = id.Substring(3);
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
             PatientReqSubmit patientReqSubmit = new PatientReqSubmit();
             patientReqSubmit.reqclientid = id;
+            patientReqSubmit.Email = _context.Requests.FirstOrDefault(u => u.Requestid == id2)!.Email;
             return View(patientReqSubmit);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -110,7 +116,7 @@ namespace HalloDoc.Controllers
                 TempData["success"] = "User LogIn Successfully";
                 HttpContext.Session.SetString("Username", obj.Username);
                 HttpContext.Session.SetInt32("Userid", user.Userid);
-                HttpContext.Session.SetInt32("AspUserid", (int)user.Aspnetuserid);
+                HttpContext.Session.SetInt32("AspUserid", (int)user.Aspnetuserid!);
                 return RedirectToAction("PatientDashboard", "Dashboard");
             }
             else
