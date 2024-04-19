@@ -23,7 +23,7 @@ namespace HalloDoc.Controllers
         }
         public IActionResult patientinfo(PatientReqSubmit model)
         {
-            int adminid = (int)HttpContext.Session.GetInt32("Adminid");
+            int adminid = (int)HttpContext.Session.GetInt32("Adminid")!;
             formSubmit.patientinfo(model, adminid);
             return RedirectToAction("patientlogin", "Home");
         }
@@ -32,10 +32,10 @@ namespace HalloDoc.Controllers
             (bool f, int id) = formSubmit.familyinfo(model);
             if (f == false)
             {
-                var email = model.PatEmail;
+                var email = model.FamEmail;
                 //int id = formSubmit.familyinfo(model).Item2;
-                sendEmail(email, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
-                formSubmit.Emailentry(email, id);
+                sendEmail(email!, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
+                formSubmit.Emailentry(email!, id);
             }
             return RedirectToAction("patientlogin", "Home");
         }
@@ -44,10 +44,10 @@ namespace HalloDoc.Controllers
             (bool f, int id) = formSubmit.ConciergeInfo(model);
             if (f == false)
             {
-                var email = model.PatEmail;
+                var email = model.ConEmail;
                 //int id = formSubmit.familyinfo(model).Item2;
-                sendEmail(email, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
-                formSubmit.Emailentry(email, id);
+                sendEmail(email!, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
+                formSubmit.Emailentry(email!, id);
             }
             return RedirectToAction("patientlogin", "Home");
         }
@@ -56,10 +56,10 @@ namespace HalloDoc.Controllers
             (bool f, int id) = formSubmit.BusinessInfo(model);
             if (f == false)
             {
-                var email = model.PatEmail;
+                var email = model.BusEmail;
                 //int id = formSubmit.familyinfo(model).Item2;
-                sendEmail(email, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
-                formSubmit.Emailentry(email, id);
+                sendEmail(email!, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
+                formSubmit.Emailentry(email!, id);
             }
             return RedirectToAction("patientlogin", "Home");
         }

@@ -91,8 +91,8 @@ namespace HalloDoc.Controllers
                 var aspuser = homefunction.getaspuser(model);
                 if (aspuser != null)
                 {
-                    TempData["error"] = "Email Already Exist";
-                    return RedirectToAction("CreateAccount", "Home", new { id = id });
+                    TempData["error"] = "Acount Already Exist";
+                    return RedirectToAction("CreateAccount", "Home", new { id = "id=" + id });
                 }
                 homefunction.newaccount(model, id);
                 TempData["success"] = "Your Account Created Sucessfuly";
@@ -101,7 +101,7 @@ namespace HalloDoc.Controllers
             else
             {
                 TempData["error"] = "Both passwords are different";
-                return RedirectToAction("CreateAccount", "Home", new { id = id });
+                return RedirectToAction("CreateAccount", "Home", new { id = "id=" + id });
 
             }
         }
@@ -136,7 +136,7 @@ namespace HalloDoc.Controllers
             else
             {
                 TempData["error"] = "Both passwords are different";
-                return RedirectToAction("ResetPassword", "Home", new { id = id });
+                return RedirectToAction("ResetPassword", "Home", new { id = "id=" + EncryptDecryptHelper.Encrypt(id) });
             }
         }
 

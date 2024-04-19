@@ -21,17 +21,17 @@ namespace Services.Implementation
         {
             _context = context;
         }
-        public (Aspnetuser,User) ValidateUser([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
+        public (Aspnetuser, User) ValidateUser([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
             var obj = _context.Aspnetusers.FirstOrDefault(u => u.Email == aspNetUser.Email && u.Passwordhash == aspNetUser.Passwordhash);
             if (obj == null)
             {
-                return (null!,null!);
+                return (null!, null!);
             }
             var user = _context.Users.FirstOrDefault(u => u.Aspnetuserid == obj.Id);
-            return (obj!,user!);
+            return (obj!, user!);
         }
-        public (bool,string) changepassword(ResetPasswordVM vm, string id)
+        public (bool, string) changepassword(ResetPasswordVM vm, string id)
         {
             var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == id);
             if (vm.Password == vm.ConfirmPassword)
@@ -46,18 +46,19 @@ namespace Services.Implementation
                 return (false!, vm.Email!);
             }
         }
-        public Aspnetuser getaspuser(PatientReqSubmit model) {
+        public Aspnetuser getaspuser(PatientReqSubmit model)
+        {
             return _context.Aspnetusers.FirstOrDefault(u => u.Email == model.Email)!;
         }
 
-        public void newaccount (PatientReqSubmit model, string id)
+        public void newaccount(PatientReqSubmit model, string id)
         {
             int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
             Aspnetuser aspnetuser = new Aspnetuser();
-            var req = _context.Requests.Include(u=>u.Requestclients).FirstOrDefault(u => u.Requestid == id2);
+            var req = _context.Requests.Include(u => u.Requestclients).FirstOrDefault(u => u.Requestid == id2);
             aspnetuser.Email = model.Email;
             aspnetuser.Passwordhash = model.ConfirmPassword;
-            aspnetuser.Username = req!.Firstname + req.Lastname;
+            aspnetuser.Username = req!.Firstname + " " + req.Lastname;
             aspnetuser.Phonenumber = req.Phonenumber;
             aspnetuser.Modifieddate = DateTime.Now;
             _context.Aspnetusers.Add(aspnetuser);

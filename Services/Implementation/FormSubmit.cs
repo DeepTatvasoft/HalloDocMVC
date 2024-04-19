@@ -129,7 +129,7 @@ namespace Services.Implementation
                 Strmonth = model.DOB.Month.ToString(),
                 Location = model.Room,
                 Regionid = 2,
-                Address = model.Room + model.Street + model.City + model.State,
+                Address = model.Room + ", " + model.Street + " ," + model.City,
             };
             _context.Requestclients.Add(reqclient);
             _context.SaveChanges();
@@ -153,7 +153,7 @@ namespace Services.Implementation
 
         public (bool, int) familyinfo(FamilyFriendReqSubmit model)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.FamEmail)!;
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == 1);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             Request req = new Request()
@@ -187,7 +187,7 @@ namespace Services.Implementation
                 Regionid = 1,
                 Location = model.PatRoom,
                 Email = model.PatEmail,
-                Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
+                Address = model.PatRoom + ", " + model.PatStreet + " ," + model.PatCity,
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
@@ -216,7 +216,7 @@ namespace Services.Implementation
 
         public (bool, int) ConciergeInfo(ConciergeSubmit model)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.ConEmail)!;
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == 3);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             string name = model.ConFirstName + model.ConLastName;
@@ -262,7 +262,8 @@ namespace Services.Implementation
                 State = model.PatState,
                 Zipcode = model.PatZipcode,
                 Location = model.PatRoom,
-                Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
+                Address = model.PatRoom + ", " + model.PatStreet + " ," + model.PatCity,
+                Regionid = 2,
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
@@ -286,7 +287,7 @@ namespace Services.Implementation
 
         public (bool, int) BusinessInfo(BusinessSubmit model)
         {
-            User user = _context.Users.FirstOrDefault(u => u.Email == model.PatEmail)!;
+            User user = _context.Users.FirstOrDefault(u => u.Email == model.BusEmail)!;
             var region = _context.Regions.FirstOrDefault(x => x.Regionid == 2);
             var requestcount = (from m in _context.Requests where m.Createddate.Date == DateTime.Now.Date select m).ToList();
             Request req = new Request
@@ -318,7 +319,8 @@ namespace Services.Implementation
                 State = model.PatState,
                 Zipcode = model.PatZipcode,
                 Location = model.PatRoom,
-                Address = model.PatRoom + model.PatStreet + model.PatCity + model.PatState,
+                Address = model.PatRoom + ", " + model.PatStreet + " ," + model.PatCity,
+                Regionid = 3,
                 Request = req
             };
             _context.Requestclients.Add(reqclient);
