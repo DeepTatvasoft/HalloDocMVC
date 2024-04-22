@@ -9,28 +9,28 @@
 
 <div class="tab-content mt-3" id="alldata">
     <ul class="nav nav-tabs d-flex" id="ViewcaseRemove" role="tablist">
-        <li class="nav-item card bg-body-secondary ms-2" role="presentation">
+        <li class="nav-item card bg-body-secondary ms-2 mb-2" role="presentation">
             <button class="nav-link active state New boxshadow" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
                     type="button" role="tab" aria-controls="New-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person-plus me-3 icon"></i>NEW</div>
                 <h5>@Model.newcount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary ms-2" role="presentation">
+        <li class="nav-item card bg-body-secondary ms-2 mb-2" role="presentation">
             <button class="nav-link state Pending boxshadow" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
                     type="button" role="tab" aria-controls="Pending-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person me-3 icon"></i>PENDING</div>
                 <h5>@Model.pendingcount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary ms-2" role="presentation">
+        <li class="nav-item card bg-body-secondary ms-2 mb-2" role="presentation">
             <button class="nav-link state Active boxshadow" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
                     type="button" role="tab" aria-controls="Active-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-check2-circle me-3 icon"></i>ACTIVE</div>
                 <h5>@Model.activecount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary ms-2" role="presentation">
+        <li class="nav-item card bg-body-secondary ms-2 mb-2" role="presentation">
             <button class="nav-link state Conclude boxshadow" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
                     type="button" role="tab" aria-controls="Conclude-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-clock-history me-3 icon"></i>CONCLUDE</div>
@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="d-flex flex-wrap mt-3">
-                <div type="radio" class="ms-3 mb-3 me-3 requestby d-none d-md-inline-block" id="requestbyAll" style="cursor : pointer">
+                <div type="radio" class="ms-3 mb-3 me-3 requestby d-none d-md-inline-block border-bottom border-info" id="requestbyAll" style="cursor : pointer">
                     All
                 </div>
                 <div class="d-flex flex-wrap">
@@ -180,6 +180,7 @@
                 if (page != null) {
                     page.style.backgroundColor = "lightblue";
                 }
+                dark();
             },
             error: function (xhr, status, error) {
                 console.error(error);
@@ -237,6 +238,7 @@
 
                     $('#exportreqtype').val("");
                     $('#exportregion').val("Select Region");
+                    dark();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
@@ -303,6 +305,7 @@
                     if (page != null) {
                         page.style.backgroundColor = "lightblue";
                     }
+                    dark();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
@@ -321,6 +324,7 @@
                     if (page != null) {
                         page.style.backgroundColor = "lightblue";
                     }
+                    dark();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

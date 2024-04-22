@@ -9,46 +9,46 @@
 
 <div class="tab-content mt-3" id="home-tab-pane">
     <ul class="nav nav-tabs d-flex justify-content-around" id="ViewcaseRemove" role="tablist">
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary mb-2" role="presentation">
             <button class="nav-link active state New boxshadow activenone" id="New-tab" data-bs-toggle="tab" data-bs-target="#New-tab-pane"
                     type="button" role="tab" aria-controls="New-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person-plus me-3 icon"></i>NEW</div>
-                <h5>@Model.newcount</h5>
+                <h5 class="fw-bold">@Model.newcount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary mb-2" role="presentation">
             <button class="nav-link state Pending boxshadow activenone" id="Pending-tab" data-bs-toggle="tab" data-bs-target="#Pending-tab-pane"
                     type="button" role="tab" aria-controls="Pending-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person me-3 icon"></i>PENDING</div>
-                <h5>@Model.pendingcount</h5>
+                <h5 class="fw-bold">@Model.pendingcount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary mb-2" role="presentation">
             <button class="nav-link state Active boxshadow activenone" id="Active-tab" data-bs-toggle="tab" data-bs-target="#Active-tab-pane"
                     type="button" role="tab" aria-controls="Active-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-check2-circle me-3 icon"></i>ACTIVE</div>
-                <h5>@Model.activecount</h5>
+                <h5 class="fw-bold">@Model.activecount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary mb-2" role="presentation">
             <button class="nav-link state Conclude boxshadow activenone" id="Conclude-tab" data-bs-toggle="tab" data-bs-target="#Conclude-tab-pane"
                     type="button" role="tab" aria-controls="Conclude-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-clock-history me-3 icon"></i>CONCLUDE</div>
-                <h5>@Model.concludecount</h5>
+                <h5 class="fw-bold">@Model.concludecount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary mb-2" role="presentation">
             <button class="nav-link state Toclose boxshadow activenone" id="ToClose-tab" data-bs-toggle="tab" data-bs-target="#ToClose-tab-pane"
                     type="button" role="tab" aria-controls="ToClose-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-person-x me-3 icon"></i>TO CLOSE</div>
-                <h5>@Model.Toclosecount</h5>
+                <h5 class="fw-bold">@Model.Toclosecount</h5>
             </button>
         </li>
-        <li class="nav-item card bg-body-secondary" role="presentation">
+        <li class="nav-item card bg-body-secondary mb-2" role="presentation">
             <button class="nav-link state Unpaid boxshadow activenone" id="Unpaid-tab" data-bs-toggle="tab" data-bs-target="#Unpaid-tab-pane"
                     type="button" role="tab" aria-controls="Unpaid-tab-pane" aria-selected="false">
                 <div class="h5"><i class="bi bi-currency-dollar me-3 icon"></i>UNPAID</div>
-                <h5>@Model.Unpaidcount</h5>
+                <h5 class="fw-bold">@Model.Unpaidcount</h5>
             </button>
         </li>
     </ul>
@@ -116,7 +116,7 @@
                 </div>
             </div>
             <div class="d-flex flex-wrap mt-3">
-                <div type="radio" class="ms-3 mb-3 me-3 requestby d-none d-md-inline-block" id="requestbyAll" style="cursor : pointer">
+                <div type="radio" class="ms-3 mb-3 me-3 requestby d-none d-md-inline-block border-bottom border-info" id="requestbyAll" style="cursor : pointer">
                     All
                 </div>
                 <div class="d-flex flex-wrap">
@@ -203,6 +203,7 @@
 <script>
     document.getElementById('home-tab').classList.add('active');
     $(document).ready(function () {
+        dark();
         var backbtntarget = localStorage.getItem('state');
         var url = "";
         var status;

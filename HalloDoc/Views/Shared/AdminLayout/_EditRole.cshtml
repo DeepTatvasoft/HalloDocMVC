@@ -23,13 +23,12 @@
             </div>
             <div class="col">
                 <div class="form-floating">
-                    <select asp-for="accountType" id="acctype" class="form-select" aria-label="Floating label select example">
-                        <option value="3" selected>All</option>
+                    <select asp-for="@Model.accountType" id="acctype" class="form-select" aria-label="Floating label select example" disabled>
+                        <option value="3">All</option>
                         <option value="1">Admin</option>
                         <option value="2">Physician</option>
                     </select>
                     <label for="floatingSelect">Account Type</label>
-                    <span asp-validation-for="accountType" class="text-danger"></span>
                 </div>
             </div>
         </div>

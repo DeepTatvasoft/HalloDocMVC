@@ -1,18 +1,11 @@
-﻿using Data.DataModels;
-using HalloDoc.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
-using Services.Implementation;
 using Services.ViewModels;
-using System.IO;
-using System.IO.Compression;
 using System.Net.Mail;
 using System.Net;
 using Data.DataContext;
 using Common.Helper;
+using Authorization = Services.Implementation.Authorization;
 
 namespace HalloDoc.Controllers
 {
@@ -38,12 +31,14 @@ namespace HalloDoc.Controllers
                 return RedirectToAction("patientlogin", "Home");
             }
         }
+        [Authorization("3")]
         public IActionResult editUser(PatientDashboardedit dashedit)
         {
             int id = (int)HttpContext.Session.GetInt32("Userid")!;
             HttpContext.Session.SetString("Username", dashboard.editUser(dashedit, id));
             return RedirectToAction("PatientDashboard", "Dashboard");
         }
+        [Authorization("3")]
         public IActionResult ViewDocument(int id)
         {
             int temp = id;
@@ -51,6 +46,7 @@ namespace HalloDoc.Controllers
             var tempname = HttpContext.Session.GetString("Username");
             return View(dashboard.ViewDocument(temp, uid, tempname!));
         }
+        [Authorization("3")]
         [HttpPost]
         public IActionResult DocUpload(PatientDashboardedit dashedit)
         {
@@ -61,7 +57,7 @@ namespace HalloDoc.Controllers
             _context.SaveChanges();
             return RedirectToAction("ViewDocument", "Dashboard", new { id = dashedit.reqid });
         }
-
+        [Authorization("3")]
         [HttpPost]
         [Route("DownloadFile")]
         public IActionResult DownloadFile(PatientDashboardedit dashedit)
@@ -73,27 +69,30 @@ namespace HalloDoc.Controllers
             }
             return File(dashboard.DownloadFile(dashedit, chk!).Item1, dashboard.DownloadFile(dashedit, chk!).Item2, dashboard.DownloadFile(dashedit, chk!).Item3, enableRangeProcessing: true);
         }
-
+        [Authorization("3")]
         [Route("SingleDownload")]
         public IActionResult SingleDownload(int id)
         {
             return File(dashboard.FileDownload(id).Item1, dashboard.FileDownload(id).Item2, dashboard.FileDownload(id).Item2);
         }
-
-        public IActionResult SubmitForMe()
+        [Authorization("3")]
+        public IActionResult SubmitForMe(int id)
         {
-            return View();
+            return View(dashboard.SubmitForMe(id));
         }
+        [Authorization("3")]
         public IActionResult SubmitForElse()
         {
             return View();
         }
+        [Authorization("3")]
         public IActionResult MeElse()
         {
             var chk = Request.Form["options-outlined"].ToList();
             if (chk.ElementAt(0) == "me")
             {
-                return RedirectToAction("SubmitForMe", "Dashboard");
+                int uid = (int)HttpContext.Session.GetInt32("Userid")!;
+                return RedirectToAction("SubmitForMe", new {id = uid});
             }
             else if (chk.ElementAt(0) == "else")
             {
@@ -102,6 +101,7 @@ namespace HalloDoc.Controllers
             }
             return NoContent();
         }
+        [Authorization("3")]
         public Task sendEmail(string email, string subject, string message)
         {
             var mail = "tatva.dotnet.deeppatel@outlook.com";

@@ -159,13 +159,13 @@
                 <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="Address1" type="text" class="form-control thirdedit" placeholder="Adress1" disabled>
+                            <input asp-for="Address1" id="Address1" type="text" class="form-control thirdedit" placeholder="Adress1" disabled>
                             <label for="floatingInput">Address 1</label>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="Address2" type="text" class="form-control thirdedit" placeholder="Address2" disabled>
+                            <input asp-for="Address2" id="Address2" type="text" class="form-control thirdedit" placeholder="Address2" disabled>
                             <label for="floatingInput">Address 2</label>
                         </div>
                     </div>
@@ -175,6 +175,8 @@
                             <label for="floatingInput">City</label>
                         </div>
                     </div>
+                    <input asp-for="lattitude" type="hidden" id="lat" />
+                    <input asp-for=longitude type="hidden" id="long" />
                     <div class="col">
                         <div class="form-floating mb-3 mb-md-0">
                             <select asp-for="regionid" class="form-select thirdedit" aria-label="Floating label select example" disabled>
@@ -462,8 +464,9 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/gh/somanchiu/Keyless-Google-Maps-API@v6.6/mapsJavaScriptAPI.js"
+        async defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 <script>
     document.getElementById('providertab').classList.add('active');
     document.getElementById('providerdrop').classList.add('active');
@@ -535,6 +538,31 @@
             $(this).prop('disabled', true);
         });
     }
+
+    try {
+        document.getElementById('City').addEventListener('focusout', getCoordinates);
+        document.getElementById('Address1').addEventListener('focusout', getCoordinates);
+        document.getElementById('Address2').addEventListener('focusout', getCoordinates);
+        function getCoordinates() {
+            console.log("in");
+            var address = document.getElementById('Address1').value + " " + document.getElementById('Address2').value + " " + document.getElementById('City').value;
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ address: address }, function (results, status) {
+                if (status == "OK") {
+                    var latitude = results[0].geometry.location.lat();
+                    var longitude = results[0].geometry.location.lng();
+                    document.getElementById('lat').value = latitude;
+                    document.getElementById('long').value = longitude;
+                    //return true;
+                } else {
+                    console.log("Geocoding failed: " + status);
+                    //return false;
+                }
+            });
+            //return true;
+        }
+    }
+    catch (err) { };
 
     var signurl = "";
     (function () {

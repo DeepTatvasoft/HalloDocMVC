@@ -8,7 +8,7 @@
 <div class="tab-content mt-4" id="myTabContent">
     <div class="tab-pane fade show active activenone" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
          tabindex="0">
-        <div class="container-fluid mt-5 dashboard" style="width: 90%;">
+        <div class="container-fluid mt-5 dashboard p-0 p-sm-3" style="width: 90%;">
             <div class="d-flex justify-content-between">
                 <h4>Documents</h4>
                 <div class="backbtn">
@@ -19,12 +19,7 @@
             </div>
             <div class="documenthead mt-4 bg-white lightmode p-3 rounded">
                 <span class="text-body-secondary">Patient Name</span>
-                <h5 class="text-info">@HttpContextAccessor.HttpContext.Session.GetString("Username") (@Model.requests.FirstOrDefault(u => u.Requestid == (Model.requests.FirstOrDefault(m => m.Userid == Model.User.Userid).Requestid)).Confirmationnumber)</h5>
-                @{
-                    int id = (Model.requests.FirstOrDefault(u => u.Userid == Model.User.Userid).Requestid);
-                    Model.reqid = id;
-                    Model.filename = (Model.requestwisefiles.FirstOrDefault(u => u.Requestid == Model.reqid)).Filename;
-                }
+                <h5 class="text-info">@HttpContextAccessor.HttpContext!.Session.GetString("Username") (@Model.requests!.FirstOrDefault(u => u.Requestid == (Model.requests.FirstOrDefault(m => m.Userid == Model.User.Userid)!.Requestid))!.Confirmationnumber)</h5>
                 <span class="text-body-secondary">Check here for any files that you and doctors of your subsequents requestors have attached for you to review</span>
                 <form asp-controller="Dashboard" asp-action="DocUpload" enctype="multipart/form-data" method="post">
                     <input type="hidden" asp-for="reqid">

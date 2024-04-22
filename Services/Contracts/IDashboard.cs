@@ -11,5 +11,6 @@ namespace Services.Contracts
         public (byte[], string, string) FileDownload(int id);
         public (byte[], string, string) DownloadFile(PatientDashboardedit dashedit, List<string> chk);
         public void AddPatientRequestWiseFile(List<IFormFile> formFile, int reqid);
+        PatientReqSubmit SubmitForMe(int id);
     }
 }

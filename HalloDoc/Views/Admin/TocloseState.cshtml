@@ -70,10 +70,10 @@
                         color = "dodgerblue";
                         type = "Concierge";
                     }
-                    <tr style="--bs-table-bg:@color">
+                    <tr style="--bs-table-bg:@color " class="@type">
                         <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
                         <td scope="row">
-                            <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                            <a href="mailto:@reqclient.Email" type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></a>
                         </td>
                         <td scope="row">@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
                         <td scope="row">@Model.regions!.FirstOrDefault(u=>u.Regionid == reqclient.Regionid)!.Name</td>
@@ -127,7 +127,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="EncounterModalOpen(@obj.Requestid)">
                                             <i class="fa-solid fa-file me-2"></i>Encounter
                                         </a>
                                     </li>
@@ -215,7 +215,7 @@
                         </div>
                         <div class="row mx-3">
                             <div class="col-6 mb-2">
-                                <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm" style="font-size:13px">Close Case</a>
+                                <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm closecase" name="@item.Requestid" style="font-size:13px">Close Case</a>
                             </div>
                             <div class="col-6 mb-2">
                                 <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid" style="background-color:green;font-size:13px">View Notes</a>
@@ -227,13 +227,13 @@
                                 <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid" style="background-color:green;font-size:13px">View Uploads</a>
                             </div>
                             <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Encounter</a>
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="EncounterModalOpen(@item.Requestid)">Encounter</a>
                             </div>
                             <div class="col-6 mb-2">
                                 <a class="btn w-100 text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#ClearCase" onclick="ClearCaseName(this.name)" name="@item.Requestid" style="background-color:orangered;font-size:13px">Clear Case</a>
                             </div>
                             <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
+                                <a href="mailto:@reqclient.Email" class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
                             </div>
                         </div>
                         <div class="mt-2 me-sm-4 d-flex justify-content-end align-items-center">
@@ -447,10 +447,33 @@
         </div>
     </div>
 </div>
+
+@*Encounter Modal*@
+<div class="modal fade" id="encounterModal" tabindex="-1" aria-labelledby="encounterModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form asp-action="DownloadEncounter" asp-controller="Physician">
+            <input type="hidden" asp-for="reqid" id="reqidhidden" />
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h1 class="modal-title fs-5" id="encounterModal">Encounter Form</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Encounter form is finalized successfully!
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-info text-white">Download</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
+        dark();
         $('.viewcase').on('click', function (e) {
             e.preventDefault();
             localStorage.setItem('state', 'toclose');

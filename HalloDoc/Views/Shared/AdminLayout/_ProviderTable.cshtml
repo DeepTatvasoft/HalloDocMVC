@@ -13,19 +13,25 @@
             </tr>
         </thead>
         <tbody>
+            @if (Model.physicians!.Count() == 0)
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-secondary">No Data Found</td>
+                </tr>
+            }
             @foreach (var obj in Model.physicians!)
             {
                 var notificationchk = "";
-                if(Model.physiciannotificationid.Contains(obj.Physicianid))
+                if (Model.physiciannotificationid.Contains(obj.Physicianid))
                 {
                     notificationchk = "checked";
                 }
                 <tr>
                     <td class="text-center">
-                        <input name="chknotification" type="checkbox" class="Notification" value="@obj.Physicianid" @notificationchk/>
+                        <input name="chknotification" type="checkbox" class="Notification" value="@obj.Physicianid" @notificationchk />
                     </td>
                     <td class="text-center">@obj.Firstname, @obj.Lastname</td>
-                    @if(obj.Role != null)
+                    @if (obj.Role != null)
                     {
                         <td class="text-center">@obj.Role.Name</td>
                     }
@@ -70,7 +76,7 @@
                 $('.cancelbtn').removeClass('d-none');
             });
         });
-        $('.cancelbtn').on('click',function(){
+        $('.cancelbtn').on('click', function () {
             $('.savebtn').addClass('d-none');
             $('.cancelbtn').addClass('d-none');
         });

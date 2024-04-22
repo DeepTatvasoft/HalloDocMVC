@@ -44,8 +44,8 @@
     box-shadow: 0px 0px 2px #00ccff;
 }
 
-.requestby{
-    height:33px;
+.requestby {
+    height: 33px;
 }
 
 .region {
@@ -87,7 +87,6 @@
 
 div.phone {
     border: 2px solid white;
-    height: 32px;
     width: 150px;
     text-align: center;
     border-radius: 8px;
@@ -173,6 +172,10 @@ div.phone {
     transform: translateX(-50%);
 }
 
+.active.state.New.dark::after {
+    border-top: 10px solid #006789;
+}
+
 .active.state.Pending::after {
     content: "";
     width: 0;
@@ -184,6 +187,10 @@ div.phone {
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.active.state.Pending.dark::after {
+    border-top: 10px solid #005081;
 }
 
 .active.state.Active::after {
@@ -199,6 +206,10 @@ div.phone {
     transform: translateX(-50%);
 }
 
+.active.state.Active.dark::after {
+    border-top: 10px solid #004900;
+}
+
 .active.state.Conclude::after {
     content: "";
     width: 0;
@@ -210,6 +221,10 @@ div.phone {
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.active.state.Conclude.dark::after {
+    border-top: 10px solid #4b000b;
 }
 
 .active.state.Toclose::after {
@@ -225,6 +240,10 @@ div.phone {
     transform: translateX(-50%);
 }
 
+.active.state.Toclose.dark::after {
+    border-top: 10px solid #000347;
+}
+
 .active.state.Unpaid::after {
     content: "";
     width: 0;
@@ -238,6 +257,10 @@ div.phone {
     transform: translateX(-50%);
 }
 
+.active.state.Unpaid.dark::after {
+    border-top: 10px solid #6b006b;
+}
+
 input#dt-search-0.dt-input {
     display: none;
 }
@@ -245,9 +268,11 @@ input#dt-search-0.dt-input {
 li {
     cursor: pointer;
 }
+
 .activenone {
     border-bottom: none !important;
 }
+
 @media only screen and (max-width:767px) {
     .state {
         width: 100px;
@@ -326,4 +351,16 @@ li {
 
 td {
     vertical-align: top;
+}
+
+@media only screen and (max-width:564px) {
+    .requestby {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 4px !important;
+        margin-right: 0px !important;
+        font-size:14px;
+    }
+
 }

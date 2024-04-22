@@ -71,21 +71,25 @@
                         color = "dodgerblue";
                         type = "Concierge";
                     }
-                    <tr style="--bs-table-bg:@color">
+                    <tr style="--bs-table-bg:@color " class="@type">
                         <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
                         <td scope="row">
-                            <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                            <a href="mailto:@reqclient.Email" type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></a>
                         </td>
                         <td scope="row">@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
                         <td scope="row">@obj.Firstname , @obj.Lastname</td>
                         <td scope="row">@obj.Physician!.Firstname</td>
                         <td scope="row">@obj.Modifieddate</td>
                         <td scope="row">
-                            <div class="phone">@reqclient.Phonenumber</div>
+                            <div class="phone p-1">
+                                <a class="text-decoration-none text-white" href="tel:@obj.Phonenumber">@obj.Phonenumber</a>
+                            </div>
                             (Patient)
                             @if (type != "Patient")
                             {
-                                <div class="phone">@obj.Phonenumber</div>
+                                <div class="phone p-1">
+                                    <a href="tel:@reqclient.Phonenumber" class="text-decoration-none text-white">@reqclient.Phonenumber</a>
+                                </div>
                                 <span>(@type)</span>
                             }
                         </td>
@@ -119,9 +123,12 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fa-solid fa-file me-2"></i>Encounter
-                                        </a>
+                                        @if (obj.Calltype == null)
+                                        {
+                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="EncounterModalOpen(@obj.Requestid)">
+                                                <i class="fa-solid fa-file me-2"></i>Encounter
+                                            </a>
+                                        }
                                     </li>
                                 </ul>
                             </div>
@@ -210,7 +217,7 @@
                                 <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid" style="background-color:green;font-size:13px">View Uploads</a>
                             </div>
                             <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Encounter</a>
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="EncounterModalOpen(@item.Requestid)" style="background-color:green;font-size:13px">Encounter</a>
                             </div>
                             <div class="col-6 mb-2">
                                 <a class="btn w-100 text-white rounded-pill p-1 btn-sm sendorder" name="@item.Requestid" style="background-color:orangered;font-size:13px">Orders</a>
@@ -317,10 +324,39 @@
     </div>
 </div>
 
+@*Encounter Modal*@
+<div class="modal fade" id="encounterModal" tabindex="-1" aria-labelledby="encounterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h1 class="modal-title fs-5 text-white" id="encounterModalLabel">Select Type Of Care</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Admin" asp-action="EncounterBtn">
+                <input type="hidden" asp-for="reqid" id="reqidhidden" />
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center">
+                        <input value="housecall" type="radio" class="btn-check" name="encounterchk" id="success-outlined" autocomplete="off" checked>
+                        <label class="btn btn-outline-info me-2" for="success-outlined">Housecall</label>
+
+                        <input value="consult" type="radio" class="btn-check" name="encounterchk" id="danger-outlined" autocomplete="off">
+                        <label class="btn btn-outline-info" for="danger-outlined">Consult</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info text-white" data-bs-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
+        dark();
         $('.viewcase').on('click', function (e) {
             e.preventDefault();
             localStorage.setItem('state', 'active');

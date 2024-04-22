@@ -37,13 +37,13 @@
                 </tr>
             </thead>
             <tbody style="--bs-table-color: white;" id="myTable">
-                @if (Model.req.Count() == 0)
+                @if (Model.req!.Count() == 0)
                 {
                     <tr>
                         <td colspan="9" class="text-center text-secondary">No Data Found</td>
                     </tr>
                 }
-                @foreach (var obj in Model.req)
+                @foreach (var obj in Model.req!)
                 {
                     var reqclient = obj.Requestclients.ElementAt(0);
                     var reqstatuslog = obj.Requeststatuslogs.ElementAt(0);
@@ -69,20 +69,24 @@
                         color = "dodgerblue";
                         type = "Concierge";
                     }
-                    <tr style="--bs-table-bg:@color">
+                    <tr style="--bs-table-bg:@color " class="@type">
                         <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
                         <td scope="row">
-                            <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                            <a href="mailto:@reqclient.Email" type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></a>
                         </td>
                         <td scope="row">@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
                         <td scope="row">@obj.Physician!.Firstname</td>
                         <td scope="row">@obj.Modifieddate</td>
                         <td scope="row">
-                            <div class="phone">@reqclient.Phonenumber</div>
+                            <div class="phone p-1">
+                                <a class="text-decoration-none text-white" href="tel:@obj.Phonenumber">@obj.Phonenumber</a>
+                            </div>
                             (Patient)
                             @if (type != "Patient")
                             {
-                                <div class="phone">@obj.Phonenumber</div>
+                                <div class="phone p-1">
+                                    <a href="tel:@reqclient.Phonenumber" class="text-decoration-none text-white">@reqclient.Phonenumber</a>
+                                </div>
                                 <span>(@type)</span>
                             }
                         </td>
@@ -115,9 +119,21 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fa-solid fa-file me-2"></i>Encounter
-                                        </a>
+                                        @{
+                                            Model.encounters = Model.encounters.Where(u => u.RequestId == obj.Requestid).ToList();
+                                        }
+                                        @if (Model.encounters.Count() > 0 && Model.encounters.ElementAt(0).IsFinalized![0] == true)
+                                        {
+                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="EncounterModalOpen(@obj.Requestid)">
+                                                <i class="fa-solid fa-file me-2"></i>Encounter
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="dropdown-item" asp-action="EncounterFormAdmin" asp-controller="Admin" asp-route-id="@obj.Requestid">
+                                                <i class="fa-solid fa-file me-2"></i>Encounter
+                                            </a>
+                                        }
                                     </li>
                                 </ul>
                             </div>
@@ -189,7 +205,7 @@
                                 <i class="fa-regular fa-calendar-days icn me-1"></i>Date Of Services: @item.Modifieddate
                             </div>
                             <div>
-                                <i class="fa-solid fa-user-doctor me-1 icn"></i>Physician: @item.Physician.Firstname
+                                <i class="fa-solid fa-user-doctor me-1 icn"></i>Physician: @item.Physician!.Firstname
                             </div>
                         </div>
                         <div class="row mx-3">
@@ -203,13 +219,20 @@
                                 <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid" style="background-color:green;font-size:13px">View Uploads</a>
                             </div>
                             <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Encounter</a>
+                                @if (Model.encounters.Count() > 0 && Model.encounters.ElementAt(0).IsFinalized![0] == true)
+                                {
+                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="EncounterModalOpen(@item.Requestid)">Encounter</a>
+                                }
+                                else
+                                {
+                                    <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px" asp-action="EncounterFormAdmin" asp-controller="Admin" asp-route-id="@item.Requestid">Encounter</a>
+                                }
                             </div>
                             <div class="col-6 mb-2">
                                 <a class="btn w-100 text-white rounded-pill p-1 btn-sm sendorder" name="@item.Requestid" style="background-color:orangered;font-size:13px">Orders</a>
                             </div>
                             <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
+                                <a href="mailto:@reqclient.Email" class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
                             </div>
                         </div>
                         <div class="mt-2 me-sm-4 d-flex justify-content-end align-items-center">
@@ -364,7 +387,7 @@
                 <span id="reqidCancelModel" hidden></span>
                 <select class="form-select mt-4 reason" aria-label="Floating label select example" style="height:58px">
                     <option selected>Reason For Cancellation</option>
-                    @foreach (var obj in Model.casetags)
+                    @foreach (var obj in Model.casetags!)
                     {
                         <option value="@obj.Casetagid">@obj.Name</option>
                     }
@@ -406,10 +429,32 @@
     </div>
 </div>
 
+@*Encounter Modal*@
+<div class="modal fade" id="encounterModal" tabindex="-1" aria-labelledby="encounterModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form asp-action="DownloadEncounter" asp-controller="Physician">
+            <input type="hidden" asp-for="reqid" id="reqidhidden" />
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h1 class="modal-title fs-5" id="encounterModal">Encounter Form</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Encounter form is finalized successfully!
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-info text-white">Download</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
+        dark();
         $('.viewcase').on('click', function (e) {
             e.preventDefault();
             localStorage.setItem('state', 'conclude');

@@ -42,7 +42,7 @@
                         <td colspan="8" class="text-center text-secondary">No Data Found</td>
                     </tr>
                 }
-                @foreach (var obj in Model.req)
+                @foreach (var obj in Model.req!)
                 {
                     var reqclient = obj.Requestclients.ElementAt(0);
                     var reqstatuslog = obj.Requeststatuslogs.ElementAt(0);
@@ -68,10 +68,10 @@
                         color = "dodgerblue";
                         type = "Concierge";
                     }
-                    <tr style="--bs-table-bg:@color">
+                    <tr style="--bs-table-bg:@color " class="@type">
                         <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
                         <td scope="row">
-                            <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                            <a href="mailto:@reqclient.Email" type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></a>
                         </td>
                         <td scope="row">
                             @if (@reqstatuslog.Transtophysician == null)
@@ -85,11 +85,15 @@
                         </td>
                         <td scope="row">@obj.Modifieddate</td>
                         <td scope="row">
-                            <div class="phone">@reqclient.Phonenumber</div>
+                            <div class="phone p-1">
+                                <a class="text-decoration-none text-white" href="tel:@obj.Phonenumber">@obj.Phonenumber</a>
+                            </div>
                             (Patient)
                             @if (type != "Patient")
                             {
-                                <div class="phone">@obj.Phonenumber</div>
+                                <div class="phone p-1">
+                                    <a href="tel:@reqclient.Phonenumber" class="text-decoration-none text-white">@reqclient.Phonenumber</a>
+                                </div>
                                 <span>(@type)</span>
                             }
                         </td>
@@ -105,7 +109,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li style="cursor : pointer"><a class="dropdown-item viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
-                                    <li style="cursor : pointer"><a class="dropdown-item"><i class="fa-regular fa-file me-2"></i>View Uploads</a></li>
+                                    <li style="cursor : pointer"><a class="dropdown-item viewuploads" name="@obj.Requestid"><i class="fa-regular fa-file me-2"></i>View Uploads</a></li>
                                     <li>
                                         <a class="dropdown-item viewnotes" name="@obj.Requestid">
                                             <i class="fa-solid fa-book-journal-whills me-2"></i>View Notes
@@ -193,13 +197,13 @@
                         </div>
                         <div class="row mx-3">
                             <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">View Notes</a>
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid" style="background-color:green;font-size:13px">View Notes</a>
                             </div>
                             <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">View Uploads</a>
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid" style="background-color:green;font-size:13px">View Uploads</a>
                             </div>
                             <div class="col-6">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
+                                <a href="mailto:@reqclient.Email" class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
                             </div>
                         </div>
                         <div class="mt-2 me-sm-4 d-flex justify-content-end align-items-center">
@@ -305,6 +309,7 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
+        dark();
         $('.viewcase').on('click', function (e) {
             localStorage.setItem('state', 'unpaid');
             e.preventDefault();
@@ -343,6 +348,29 @@
                 data: { "reqid": reqid },
                 success: function (response) {
                     $('#alldata').html(response);
+                    console.log("Fetch success");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.viewuploads').on('click', function (e) {
+            e.preventDefault();
+            localStorage.setItem('state', 'unpaid');
+            //$('.dashboardtab').removeClass('active');
+            //$(this).addClass('active');
+            var reqid = $(this).attr('name');
+            //console.log(reqid);
+            console.log($('#ViewcaseRemove').attr('id'));
+            $('#ViewcaseRemove').removeClass("d-flex").addClass("d-none");
+            //$('#myTab').remove();
+
+            $.ajax({
+                url: '/Admin/AdminuploadDoc',
+                data: { "reqid": reqid },
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
                     console.log("Fetch success");
                 },
                 error: function (xhr, status, error) {

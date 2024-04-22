@@ -75,5 +75,7 @@ namespace Services.ViewModels
         public IFormFile HIPAAdoc { get; set; }
         public IFormFile NDdoc { get; set; }
         public IFormFile LDdoc { get; set; }
+        public decimal lattitude { get; set; }
+        public decimal longitude { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Common.Helper;
 using Data.DataContext;
 using Data.DataModels;
+using DataAccess.ServiceRepository.IServiceRepository;
 using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,13 @@ namespace HalloDoc.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IHomeFunction homefunction;
-        public HomeController(ILogger<HomeController> logger, IHomeFunction homeFunction, ApplicationDbContext context)
+        private readonly IJwtRepository jwtRepository;
+        public HomeController(ILogger<HomeController> logger, IHomeFunction homeFunction, ApplicationDbContext context, IJwtRepository jwtRepository)
         {
             _logger = logger;
             this.homefunction = homeFunction;
             _context = context;
+            this.jwtRepository = jwtRepository;
         }
 
         public IActionResult patientsite()
@@ -67,11 +70,18 @@ namespace HalloDoc.Controllers
         public IActionResult CreateAccount(string id)
         {
             id = id.Substring(3);
-            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
             PatientReqSubmit patientReqSubmit = new PatientReqSubmit();
-            patientReqSubmit.reqclientid = id;
-            patientReqSubmit.Email = _context.Requests.FirstOrDefault(u => u.Requestid == id2)!.Email;
-            return View(patientReqSubmit);
+            try
+            {
+                int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
+                patientReqSubmit.reqclientid = id;
+                patientReqSubmit.Email = _context.Requests.FirstOrDefault(u => u.Requestid == id2)!.Email;
+                return View(patientReqSubmit);
+            }
+            catch
+            {
+                return RedirectToAction("Patientlogin","Home");
+            }
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -117,6 +127,12 @@ namespace HalloDoc.Controllers
                 HttpContext.Session.SetString("Username", obj.Username);
                 HttpContext.Session.SetInt32("Userid", user.Userid);
                 HttpContext.Session.SetInt32("AspUserid", (int)user.Aspnetuserid!);
+                LoggedInPersonViewModel model = new LoggedInPersonViewModel();
+                model.aspuserid = (int)user.Aspnetuserid;
+                model.username = user.Firstname;
+                model.role = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == user.Aspnetuserid.ToString())!.Roleid;
+                //model.userid = _context.Users.FirstOrDefault(u => u.Aspnetuserid == id).Userid;
+                Response.Cookies.Append("jwt", jwtRepository.GenerateJwtToken(model));
                 return RedirectToAction("PatientDashboard", "Dashboard");
             }
             else

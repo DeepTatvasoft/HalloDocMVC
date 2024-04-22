@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="documenthead mt-4 bg-white p-3 rounded">
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-between flex-wrap">
             <div>
                 <span class="text-body-secondary">Patient Name</span>
                 <h5><span class="text-info me-2">@Model.Username</span>(@Model.ConfirmationNum)</h5>
@@ -34,6 +34,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if(Model.reqfile!.Count() == 0)
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-secondary">No Data Found</td>
+                        </tr>
+                    }
                     @foreach (var obj in Model.reqfile!)
                     {
                         <tr>

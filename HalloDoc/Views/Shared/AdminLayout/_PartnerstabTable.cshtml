@@ -13,6 +13,12 @@
         </tr>
     </thead>
     <tbody id="myTable">
+        @if (Model.healthprofessionals!.Count() == 0)
+        {
+            <tr>
+                <td colspan="7" class="text-center text-secondary">No Data Found</td>
+            </tr>
+        }
         @foreach (var obj in Model.healthprofessionals)
         {
             var professiontype = Model.healthprofessionaltypes.FirstOrDefault(u => u.Healthprofessionalid == obj.Profession)!.Professionname;

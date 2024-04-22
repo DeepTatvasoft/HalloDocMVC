@@ -48,7 +48,7 @@
                 @foreach (var obj in Model.req!)
                 {
                     var reqclient = obj.Requestclients.ElementAt(0);
-                    var reqstatuslog = obj.Requeststatuslogs.LastOrDefault();
+                    var reqstatuslog = obj.Requeststatuslogs.FirstOrDefault(u=>u.Status == 1);
                     var color = "mediumpurple";
                     var type = "";
                     @if (obj.Requesttypeid == 1)
@@ -71,21 +71,25 @@
                         color = "dodgerblue";
                         type = "Concierge";
                     }
-                    <tr style="--bs-table-bg:@color ">
+                    <tr style="--bs-table-bg:@color" class="@type">
                         <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
                         <td scope="row">
-                            <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                            <a href="mailto:@reqclient.Email" type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></a>
                         </td>
                         <td scope="row">@reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</td>
                         <td scope="row">@obj.Firstname , @obj.Lastname</td>
                         <td scope="row">@obj.Physician!.Firstname</td>
                         <td scope="row">@obj.Modifieddate</td>
                         <td scope="row">
-                            <div class="phone">@reqclient.Phonenumber</div>
+                            <div class="phone p-1">
+                                <a class="text-decoration-none text-white" href="tel:@obj.Phonenumber">@obj.Phonenumber</a>
+                            </div>
                             (Patient)
                             @if (type != "Patient")
                             {
-                                <div class="phone">@obj.Phonenumber</div>
+                                <div class="phone p-1">
+                                    <a href="tel:@reqclient.Phonenumber" class="text-decoration-none text-white">@reqclient.Phonenumber</a>
+                                </div>
                                 <span>(@type)</span>
                             }
                         </td>
@@ -420,6 +424,7 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
+        dark();
         $('.transfer').on('click', function (e) {
             var reqid = $('#reqidAssignModel').text();
             var regid = $('.physiciandata').val();

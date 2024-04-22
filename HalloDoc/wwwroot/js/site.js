@@ -36,7 +36,7 @@ function showSessionExpiryPopup() {
 }
 // Start a timer to show the popup before session expiration
 function startSessionExpiryTimer() {
-    const sessionTimeoutMinutes = 15; // Set this to match your session timeout
+    const sessionTimeoutMinutes = 30; // Set this to match your session timeout
     const millisecondsBeforeExpiry = (sessionTimeoutMinutes - 1) * 60 * 1000;
 
     setTimeout(showSessionExpiryPopup, millisecondsBeforeExpiry);
@@ -114,6 +114,45 @@ function dark() {
         if (activeState.length > 0) {
             activeState[0].classList.remove('text-info');
         }
+        $('.Patient').each(function () {
+            $(this).css("--bs-table-bg", "rgb(2 77 0)");
+        });
+        $('.Family').each(function () {
+            $(this).css("--bs-table-bg", "#693a00");
+        });
+        $('.Business').each(function () {
+            $(this).css("--bs-table-bg", "#670033");
+        });
+        $('.Concierge').each(function () {
+            $(this).css("--bs-table-bg", "#002345");
+        });
+        $('.New').css("background-color", "rgb(37 114 139)");
+        $('.Pending').css("background-color", "rgb(42 107 147)");
+        $('.Active').css("background-color", "rgb(15 81 15)");
+        $('.Conclude').css("background-color", " rgb(93 15 27)");
+        $('.Toclose').css("background-color", "rgb(21 24 97)");
+        $('.Unpaid').css("background-color", "rgb(111 22 111)");
+
+        $('.active.New').css("background-color", "#006789");
+        $('.active.Pending').css("background-color", "#005081");
+        $('.active.Active').css("background-color", "#004900");
+        $('.active.Conclude').css("background-color", "#4b000b");
+        $('.active.Toclose').css("background-color", "#000347");
+        $('.active.Unpaid').css("background-color", "#6b006b");
+
+
+        $('.active.state.New').addClass("dark");
+        $('.active.state.Pending').addClass("dark");
+        $('.active.state.Active').addClass("dark");
+        $('.active.state.Conclude').addClass("dark");
+        $('.active.state.Toclose').addClass("dark");
+        $('.active.state.Unpaid').addClass("dark");
+
+
+        $('.btn-info').each(function () {
+            $(this).css("--bs-btn-bg", "#004857");
+        });
+        
         try {
             maincontent.classList.replace('bg-white', 'bg-dark');
             darkmode.classList.replace('bg-white', 'bg-dark');
@@ -132,6 +171,43 @@ function dark() {
         for (var i = 0; i < active.length; i++) {
             active[i].classList.remove('text-info');
         }
+        $('.Patient').each(function () {
+            $(this).css("--bs-table-bg", "rgb(72 169 70)");
+        });
+        $('.Family').each(function () {
+            $(this).css("--bs-table-bg", "#f5a33e");
+        });
+        $('.Business').each(function () {
+            $(this).css("--bs-table-bg", "hotpink");
+        });
+        $('.Concierge').each(function () {
+            $(this).css("--bs-table-bg", "dodgerblue");
+        });
+        $('.New').css("background-color", "lightblue");
+        $('.Pending').css("background-color", "lightskyblue");
+        $('.Active').css("background-color", "lightgreen");
+        $('.Conclude').css("background-color", "lightpink");
+        $('.Toclose').css("background-color", "cornflowerblue");
+        $('.Unpaid').css("background-color", "violet");
+
+
+        $('.active.New').css("background-color", "darkblue");
+        $('.active.Pending').css("background-color", "deepskyblue");
+        $('.active.Active').css("background-color", "darkgreen");
+        $('.active.Conclude').css("background-color", "deeppink");
+        $('.active.Toclose').css("background-color", "blue");
+        $('.active.Unpaid').css("background-color", "darkviolet");
+
+        $('.active.state.New').removeClass("dark");
+        $('.active.state.Pending').removeClass("dark");
+        $('.active.state.Active').removeClass("dark");
+        $('.active.state.Conclude').removeClass("dark");
+        $('.active.state.Toclose').removeClass("dark");
+        $('.active.state.Unpaid').removeClass("dark");
+
+        $('.btn-info').each(function () {
+            $(this).css("--bs-btn-bg", "#0dcaf0");
+        });
         try {
             maincontent.classList.replace('bg-dark', 'bg-white');
             darkmode.classList.replace('bg-dark', 'bg-white');

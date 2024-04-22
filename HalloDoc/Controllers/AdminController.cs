@@ -1,30 +1,15 @@
 ﻿using Data.DataModels;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
-using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
-using Services.Implementation;
 using Services.ViewModels;
 using System.Collections;
-using System.Drawing;
 using System.Net.Mail;
 using System.Net;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Authorization = Services.Implementation.Authorization;
 using DataAccess.ServiceRepository.IServiceRepository;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Data.DataContext;
-using NPOI.HPSF;
-using NPOI.SS.Formula.Functions;
-using Syncfusion.EJ2.Spreadsheet;
-using Org.BouncyCastle.Ocsp;
-using static NPOI.HSSF.Util.HSSFColor;
-using Syncfusion.EJ2.Charts;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using Common.Helper;
-using iTextSharp.xmp.options;
 
 namespace HalloDoc.Controllers
 {
@@ -35,12 +20,14 @@ namespace HalloDoc.Controllers
         private readonly IAdminFunction adminFunction;
         private readonly IDashboard dashboard;
         private readonly IJwtRepository jwtRepository;
-        public AdminController(ApplicationDbContext context, IAdminFunction adminFunction, IDashboard dashboard, IJwtRepository jwtRepository)
+        private readonly IPhysicianFunction physicianFunction;
+        public AdminController(ApplicationDbContext context, IAdminFunction adminFunction, IDashboard dashboard, IJwtRepository jwtRepository, IPhysicianFunction physicianFunction)
         {
             _context = context;
             this.adminFunction = adminFunction;
             this.dashboard = dashboard;
             this.jwtRepository = jwtRepository;
+            this.physicianFunction = physicianFunction;
         }
         public IActionResult adminlogin()
         {
@@ -216,8 +203,16 @@ namespace HalloDoc.Controllers
         }
         public IActionResult adminlogout()
         {
-            HttpContext.Session.Remove("Adminname");
-            TempData["Error"] = "Admin Logged Out Successfuly";
+            if (HttpContext.Session.GetString("Adminname") != null)
+            {
+                HttpContext.Session.Remove("Adminname");
+                TempData["success"] = "Admin Logged Out Successfuly";
+            }
+            else
+            {
+                HttpContext.Session.Remove("physicianname");
+                TempData["success"] = "Physician Logged Out Successfuly";
+            }
             Response.Cookies.Delete("jwt");
             return RedirectToAction("adminlogin", "Admin");
         }
@@ -496,7 +491,7 @@ namespace HalloDoc.Controllers
         {
             return PartialView("AdminLayout/_ProviderTable", adminFunction.Providertab(regionid));
         }
-        [Authorization("1")]
+        [Authorization("1,2")]
         public IActionResult AdminCreateReq()
         {
             return View();
@@ -627,7 +622,7 @@ namespace HalloDoc.Controllers
         {
             var chk = Request.Form["AllMenu"].ToList();
             string adminname = HttpContext.Session.GetString("Adminname")!;
-            if (chk.Count == 0 || modal.accountType == 3 || modal.RoleName == null)
+            if (chk.Count == 0 || modal.RoleName == null)
             {
                 TempData["error"] = "Values Can't be Empty";
                 return RedirectToAction("AccessTab");
@@ -1035,20 +1030,46 @@ namespace HalloDoc.Controllers
             }
             return PartialView("AdminLayout/_UserAccessTable", adminFunction.UserAccessTable(roleid));
         }
+        [Authorization("1")]
         public IActionResult editUser(int id)
         {
             return PartialView("_PatientProfile", dashboard.PatientDashboard(id));
         }
+        [Authorization("1")]
         public IActionResult editUserByAdmin(PatientDashboardedit dashedit)
         {
             HttpContext.Session.SetString("Username", dashboard.editUser(dashedit, dashedit.userid));
             return RedirectToAction("UserAccess", adminFunction.UserAccess());
         }
+        [Authorization("1")]
         public IActionResult EditAdmin(string id)
         {
             int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
             int adminid = adminFunction.getAdminId(id2);
             return View(adminFunction.Profiletab(adminid));
+        }
+        [Authorization("1")]
+        public IActionResult EncounterBtn(NewStateData modal, string[] encounterchk)
+        {
+            int adminid = (int)HttpContext.Session.GetInt32("Adminid")!;
+            adminFunction.EncounterBtn(modal, encounterchk, adminid);
+            return RedirectToAction("PhysicianDashboard", "Physician");
+        }
+        [Authorization("1")]
+        public IActionResult EncounterFormAdmin(int id)
+        {
+            return View(physicianFunction.EncounterForm(id));
+        }
+        [Authorization("1")]
+        public IActionResult EncounterFormSubmit(EncounterFormViewModel model)
+        {
+            physicianFunction.EncounterFormSubmit(model);
+            TempData["success"] = "Data Saved Successfuly";
+            return RedirectToAction("EncounterFormAdmin", new { id = model.RequestId });
+        }
+        public void UnblockReq(int id)
+        {
+            adminFunction.UnblockReq(id);
         }
     }
 

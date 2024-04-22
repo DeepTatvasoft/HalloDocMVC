@@ -25,6 +25,7 @@ namespace HalloDoc.Controllers
         {
             int adminid = (int)HttpContext.Session.GetInt32("Adminid")!;
             formSubmit.patientinfo(model, adminid);
+            TempData["success"] = "Your Request Is Submitted Successfully";
             return RedirectToAction("patientlogin", "Home");
         }
         public IActionResult familyinfo(FamilyFriendReqSubmit model)
@@ -36,6 +37,11 @@ namespace HalloDoc.Controllers
                 //int id = formSubmit.familyinfo(model).Item2;
                 sendEmail(email!, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
                 formSubmit.Emailentry(email!, id);
+                TempData["success"] = "Mail is Sent to your email id";
+            }
+            else
+            {
+                TempData["success"] = "Your Request Is Submitted Successfully";
             }
             return RedirectToAction("patientlogin", "Home");
         }
@@ -48,6 +54,11 @@ namespace HalloDoc.Controllers
                 //int id = formSubmit.familyinfo(model).Item2;
                 sendEmail(email!, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
                 formSubmit.Emailentry(email!, id);
+                TempData["success"] = "Mail is Sent to your email id";
+            }
+            else
+            {
+                TempData["success"] = "Your Request Is Submitted Successfully";
             }
             return RedirectToAction("patientlogin", "Home");
         }
@@ -60,6 +71,11 @@ namespace HalloDoc.Controllers
                 //int id = formSubmit.familyinfo(model).Item2;
                 sendEmail(email!, "hello", "hello Create Account https://localhost:44325/Home/CreateAccount/id=" + EncryptDecryptHelper.Encrypt(id.ToString()) + "");
                 formSubmit.Emailentry(email!, id);
+                TempData["success"] = "Mail is Sent to your email id";
+            }
+            else
+            {
+                TempData["success"] = "Your Request Is Submitted Successfully";
             }
             return RedirectToAction("patientlogin", "Home");
         }

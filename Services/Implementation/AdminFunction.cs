@@ -87,6 +87,7 @@ namespace Services.Implementation
             data.currentpage = currentPage;
             data.searchkey = searchkey;
             data.status = Convert.ToInt32(status);
+            data.encounters = _context.Encounters.ToList();
             data.req = req;
             return data;
         }
@@ -108,7 +109,7 @@ namespace Services.Implementation
             List<Request> req;
             if (status == "4")
             {
-                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(u=>u.Physician).Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 4 || u.Status == 5) && u.Isdeleted == new BitArray(new[] { false })).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(u => u.Physician).Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 4 || u.Status == 5) && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
             else if (status == "3")
             {
@@ -116,7 +117,7 @@ namespace Services.Implementation
             }
             else
             {
-                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(u=>u.Physician).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status && u.Isdeleted == new BitArray(new[] { false })).ToList();
+                req = _context.Requests.Include(r => r.Requestclients).Include(m => m.Requeststatuslogs).Include(u => u.Physician).Where(u => u.Requesttypeid.ToString() == reqtypeid && u.Status.ToString() == status && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
             var regions = _context.Regions.ToList();
             newStateData.regions = regions;
@@ -136,13 +137,14 @@ namespace Services.Implementation
             newStateData.req = req;
             newStateData.searchkey = searchkey;
             newStateData.status = Convert.ToInt32(status);
+            newStateData.encounters = _context.Encounters.ToList();
             return newStateData;
         }
         public NewStateData RegionReqtype(int regionid, string reqtypeid, string status, int currentPage, string searchkey = "")
         {
             NewStateData newStateData = new NewStateData();
             newStateData.region = regionid;
-            var req = _context.Requests.Include(m => m.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Where(u => u.Requestclients.First().Regionid == regionid && u.Isdeleted == new BitArray(new[] {false})).ToList();
+            var req = _context.Requests.Include(m => m.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Where(u => u.Requestclients.First().Regionid == regionid && u.Isdeleted == new BitArray(new[] { false })).ToList();
             if (status == "4")
             {
                 req = req.Where(u => u.Requesttypeid.ToString() == reqtypeid && (u.Status == 4 || u.Status == 5)).ToList();
@@ -173,6 +175,7 @@ namespace Services.Implementation
             newStateData.req = req;
             newStateData.searchkey = searchkey;
             newStateData.status = Convert.ToInt32(status);
+            newStateData.encounters = _context.Encounters.ToList();
             return newStateData;
         }
         public NewStateData1 ViewCase(int id)
@@ -200,7 +203,7 @@ namespace Services.Implementation
         {
             NewStateData newStateData = new NewStateData();
             newStateData.region = regionid;
-            var req = _context.Requests.Include(m => m.Requestclients).Include(u=>u.Physician).Include(u=>u.Requeststatuslogs).Where(u => u.Requestclients.First().Regionid == regionid).ToList();
+            var req = _context.Requests.Include(m => m.Requestclients).Include(u => u.Physician).Include(u => u.Requeststatuslogs).Where(u => u.Requestclients.First().Regionid == regionid).ToList();
             if (status == "4")
             {
                 req = req.Where(u => u.Status == 4 || u.Status == 5 && u.Isdeleted![0] == false).ToList();
@@ -230,6 +233,7 @@ namespace Services.Implementation
             newStateData.req = req;
             newStateData.searchkey = searchkey;
             newStateData.status = Convert.ToInt32(status);
+            newStateData.encounters = _context.Encounters.ToList();
             return newStateData;
         }
         public int getToCloseRequestCount()
@@ -663,7 +667,7 @@ namespace Services.Implementation
                     row.CreateCell(4).SetCellValue(model.req.ElementAt(i).Firstname);
                     row.CreateCell(5).SetCellValue(model.req.ElementAt(i).Createddate);
                     row.CreateCell(6).SetCellValue(model.req.ElementAt(i).Requestclients.ElementAt(0).Phonenumber);
-                    if (model.requeststatuslogs!.Count == 0)
+                    if (model.requeststatuslogs == null)
                     {
                         row.CreateCell(7).SetCellValue("");
                     }
@@ -762,6 +766,10 @@ namespace Services.Implementation
             modal.regions = _context.Regions.ToList();
             modal.physicianregions = _context.Physicianregions.Include(u => u.Region).Where(u => u.Physicianid == id).Select(u => u.Region).ToHashSet();
             modal.roles = _context.Roles.Where(u => u.Accounttype == 2).ToList();
+
+            var phylocation = _context.Physicianlocations.FirstOrDefault(u => u.Physicianid == physician.Physicianid);
+            modal.longitude = (decimal)phylocation!.Longitude!;
+            modal.lattitude = (decimal)phylocation.Latitude!;
             return modal;
         }
         public void PhysicianAccInfo(EditPhysicianModal modal, string adminname)
@@ -844,6 +852,15 @@ namespace Services.Implementation
             physician.Modifieddate = DateTime.Now;
             physician.Modifiedby = adminname;
             _context.Physicians.Update(physician);
+            _context.SaveChanges();
+            Physicianlocation phylocation = _context.Physicianlocations.FirstOrDefault(u => u.Physicianid == modal.physicianid)!;
+            phylocation!.Physicianid = modal.physicianid;
+            phylocation.Latitude = modal.lattitude;
+            phylocation.Longitude = modal.longitude;
+            phylocation.Createddate = DateTime.Now;
+            phylocation.Physicianname = physician.Firstname;
+            phylocation.Address = modal.Address1;
+            _context.Physicianlocations.Update(phylocation);
             _context.SaveChanges();
         }
         public void ProviderProfile(EditPhysicianModal modal, string adminname)
@@ -994,7 +1011,6 @@ namespace Services.Implementation
         {
             Role role = _context.Roles.FirstOrDefault(u => u.Roleid == modal.roleid)!;
             role.Name = modal.RoleName!;
-            role.Accounttype = (short)modal.accountType;
             role.Modifieddate = DateTime.Now;
             role.Modifiedby = adminname;
             _context.Roles.Update(role);
@@ -1171,6 +1187,17 @@ namespace Services.Implementation
                 Roleid = "2"
             };
             _context.Aspnetuserroles.Add(asprole);
+            _context.SaveChanges();
+            Physicianlocation phylocation = new Physicianlocation
+            {
+                Physicianid = modal.physicianid,
+                Latitude = modal.lattitude,
+                Longitude = modal.longitude,
+                Createddate = DateTime.Now,
+                Physicianname = modal.Firstname,
+                Address = modal.Address1
+            };
+            _context.Physicianlocations.Add(phylocation);
             _context.SaveChanges();
         }
         public AdminProfile CreateAdminAcc()
@@ -2088,7 +2115,7 @@ namespace Services.Implementation
         public ExploreModal ExplorePatient(int id)
         {
             ExploreModal modal = new ExploreModal();
-            modal.reqclient = _context.Requestclients.Include(u => u.Request).ThenInclude(u => u.Physician).Include(u=>u.Request.Requestwisefiles).Where(u => u.Request.Userid == id && u.Request.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.reqclient = _context.Requestclients.Include(u => u.Request).ThenInclude(u => u.Physician).Include(u => u.Request.Requestwisefiles).Where(u => u.Request.Userid == id && u.Request.Isdeleted == new BitArray(new[] { false })).ToList();
             return modal;
         }
         public SearchRecordModal ExportSearchRecordData(SearchRecordModal modal)
@@ -2143,16 +2170,16 @@ namespace Services.Implementation
         {
             UserAccessModal modal = new UserAccessModal();
             modal.aspnetroles = _context.Aspnetroles.ToList();
-            modal.aspnetusers = _context.Aspnetusers.Include(u=>u.Users).ToList();
+            modal.aspnetusers = _context.Aspnetusers.Include(u => u.Users).ToList();
             modal.aspnetuserroles = _context.Aspnetuserroles.ToList();
             modal.admincount = _context.Requests.ToList().Count();
-            modal.req = _context.Requests.Include(u => u.Physician).Include(u=>u.User).ToList();
+            modal.req = _context.Requests.Include(u => u.Physician).Include(u => u.User).ToList();
             return modal;
         }
         public UserAccessModal UserAccessTable(string roleid)
         {
             UserAccessModal modal = new UserAccessModal();
-            var aspnetusers = _context.Aspnetusers.Include(u=>u.Users).ToList();
+            var aspnetusers = _context.Aspnetusers.Include(u => u.Users).ToList();
             List<Aspnetuser> newaspuser = new List<Aspnetuser>();
             foreach (var obj in aspnetusers)
             {
@@ -2175,6 +2202,43 @@ namespace Services.Implementation
         public int getAdminId(int aspid)
         {
             return _context.Admins.FirstOrDefault(u => u.Aspnetuserid == aspid.ToString())!.Adminid;
+        }
+        public void EncounterBtn(NewStateData modal, string[] encounterchk, int adminid)
+        {
+            var req = _context.Requests.FirstOrDefault(u => u.Requestid == modal.reqid);
+            if (encounterchk[0] == "housecall")
+            {
+                req!.Status = 5;
+                req.Calltype = 1;
+            }
+            else
+            {
+                req!.Status = 6;
+                req.Calltype = 2;
+            }
+            _context.Requests.Update(req);
+            _context.SaveChanges();
+            Requeststatuslog requeststatuslog = new Requeststatuslog
+            {
+                Requestid = req.Requestid,
+                Status = req.Status,
+                Adminid = adminid,
+                Notes = "Encounter Form",
+                Createddate = DateTime.Now,
+                Transtoadmin = new BitArray(new[] { false })
+            };
+            _context.Requeststatuslogs.Add(requeststatuslog);
+            _context.SaveChanges();
+        }
+        public void UnblockReq(int id)
+        {
+            var req = _context.Requests.FirstOrDefault(u => u.Requestid == id);
+            req!.Status = 1;
+            _context.Requests.Update(req);
+            _context.SaveChanges();
+            var blockreq = _context.Blockrequests.FirstOrDefault(u => u.Requestid == id.ToString());
+            _context.Blockrequests.Remove(blockreq!);
+            _context.SaveChanges();
         }
     }
 }

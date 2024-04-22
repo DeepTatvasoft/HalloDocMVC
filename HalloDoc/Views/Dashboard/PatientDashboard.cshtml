@@ -21,7 +21,7 @@
 <div class="tab-content mt-4" id="myTabContent">
     <div class="tab-pane fade show active activenone" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
          tabindex="0">
-        <div class="container-fluid mt-5 dashboard" style="width: 90%;">
+        <div class="container-fluid mt-5 dashboard p-0 p-sm-3" style="width: 90%;">
             <h4>
                 Medical History
             </h4>
@@ -81,31 +81,20 @@
                                     }
                                 </td>
                                 <td>
-                                    @if (obj.Requestwisefiles.Count() != 0)
-                                    {
-                                        <a asp-controller="Dashboard" asp-action="ViewDocument">
-                                            <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton">
-                                                <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
-                                                    <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
-                                                </a>
-                                                <div class="nonedocument">
-                                                    <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
-                                                        <span>(@obj.Requestwisefiles.Count()) Documnets</span>
-                                                    </a>
-                                                </div>
-                                            </button>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span>No Document</span>
-                                    }
+                                    <a class="text-decoration-none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
+                                        <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton justify-content-center">
+                                            <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
+                                            <div class="nonedocument">
+                                                <span>(@obj.Requestwisefiles.Count()) Documents</span>
+                                            </div>
+                                        </button>
+                                    </a>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
-                <div class="accordion d-md-none d-block" id="accordionExample">
+                <div class="accordion accordion-flush d-md-none d-block" id="accordionExample">
                     <div class="accordion-item">
                         @foreach (var obj in Model.requests)
                         {
@@ -131,25 +120,14 @@
                                         }
                                     </div>
                                     <br>
-                                    @if (obj.Requestwisefiles.Count() != 0)
-                                    {
-                                        <a asp-controller="Dashboard" asp-action="ViewDocument">
-                                            <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton w-100 justify-content-center">
-                                                <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
-                                                    <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
-                                                </a>
-                                                <div class="nonedocument">
-                                                    <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
-                                                        <span>(@obj.Requestwisefiles.Count()) Documnets</span>
-                                                    </a>
-                                                </div>
-                                            </button>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span>No Document</span>
-                                    }
+                                    <a class="text-decoration-none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
+                                        <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton w-100 justify-content-center">
+                                            <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
+                                            <div class="nonedocument">
+                                                <span>(@obj.Requestwisefiles.Count()) Documents</span>
+                                            </div>
+                                        </button>
+                                    </a>
                                 </div>
                             </div>
                         }
@@ -159,7 +137,7 @@
         </div>
     </div>
     <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-        <partial name="_PatientProfile"/>
+        <partial name="_PatientProfile" />
     </div>
 </div>
 <script>

@@ -39,7 +39,7 @@
                         <td colspan="5" class="text-center text-secondary">No Data Found</td>
                     </tr>
                 }
-                @foreach (var obj in Model.req)
+                @foreach (var obj in Model.req!)
                 {
                     var reqclient = obj.Requestclients.ElementAt(0);
                     var color = "mediumpurple";
@@ -64,17 +64,21 @@
                         color = "dodgerblue";
                         type = "Concierge";
                     }
-                    <tr style="--bs-table-bg:@color">
+                    <tr style="--bs-table-bg:@color " class="@type">
                         <td scope="row">@reqclient.Firstname , @reqclient.Lastname</td>
                         <td scope="row">
-                            <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                            <a href="mailto:@reqclient.Email" type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></a>
                         </td>
                         <td>
-                            <div class="phone">@obj.Phonenumber</div>
+                            <div class="phone p-1">
+                                <a class="text-decoration-none text-white" href="tel:@obj.Phonenumber">@obj.Phonenumber</a>
+                            </div>
                             (Patient)
                             @if (type != "Patient")
                             {
-                                <div class="phone">@reqclient.Phonenumber</div>
+                                <div class="phone p-1">
+                                    <a href="tel:@reqclient.Phonenumber" class="text-decoration-none text-white">@reqclient.Phonenumber</a>
+                                </div>
                                 <span>(@type)</span>
                             }
                         </td>
@@ -85,7 +89,7 @@
                                     Actions
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a asp-action="PhysicianAccept" asp-controller="Physician" asp-route-id="@obj.Requestid" class="dropdown-item"><i class="fa-solid fa-square-check me-2"></i>Accept</a></li>
+                                    <li><a value="@obj.Requestid" class="dropdown-item acceptbtn"><i class="fa-solid fa-square-check me-2"></i>Accept</a></li>
                                     <li style="cursor : pointer"><a class="dropdown-item viewcase" id="@obj.Requestid"><i class="bi bi-view-list me-2"></i>View case</a></li>
                                     <li>
                                         <a class="dropdown-item viewnotes" name="@obj.Requestid">
@@ -103,71 +107,80 @@
         <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
 
             <div class="accordion-item">
-                @foreach (var item in Model.req)
+                @foreach (var item in Model.req!)
                 {
                     var reqclient = item.Requestclients.ElementAt(0);
-                    var type = "";
                     var color = "mediumpurple";
+                    var type = "";
                     @if (item.Requesttypeid == 1)
                     {
-                        color = "rgb(72 169 70)";
+                        color = "rgb(117,201,115)";
                         type = "Patient";
                     }
                     else if (item.Requesttypeid == 2)
                     {
-                        color = "#f5a33e";
+                        color = "rgb(219,161,36)";
                         type = "Family";
-                    }
-                    else if (item.Requesttypeid == 4)
-                    {
-                        color = "hotpink";
-                        type = "Business";
                     }
                     else if (item.Requesttypeid == 3)
                     {
-                        color = "dodgerblue";
+                        color = "rgb(230, 0 , 115)";
                         type = "Concierge";
+                    }
+                    else if (item.Requesttypeid == 4)
+                    {
+                        color = "rgb(0,172,230)";
+                        type = "Business";
                     }
                     <h2 class="accordion-header" id="flush-headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.Requestid" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
 
                             <div class="col d-flex flex-column">
                                 <span class="">@reqclient.Firstname, @reqclient.Lastname</span>
-                                <span class=" mt-4">@reqclient.Address</span>
-                                <span class="mt-3"><i class="bi bi-clock text-info h6 me-2 icns"></i>Wait Time: DEC5, 2023</span>
+                                <span class=" mt-4">@reqclient.Street @reqclient.City @reqclient.State</span>
                             </div>
+
                             <div class="col d-flex flex-column text-end mt-2 p-0">
                                 <div>
                                     <div>
-                                        <div class="ms-3" id="1">@type<span class="dot ms-2" style="Background-color :@color; "></span></div>
+                                        <span>@type</span>
+                                        <i class="bi bi-circle-fill" style="color :@color"></i>
                                     </div>
-                                    <div class=" btn rounded-pill text-info border-info float-end p-1 mt-3" style="width:120px">
+                                    <div class=" btn rounded-pill text-info border-info float-end p-1 my-3" style="width:150px">
                                         Map Location
                                     </div>
+
                                 </div>
+
                             </div>
                         </button>
                         <hr class="m-0">
                     </h2>
-                    <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
-                        <button type="button" class="btn btn-outline-light text-black float-end viewcase bg-white rounded-5 border border-black mt-1" id="@item.Requestid">View Case</button>
-                        <div class="accordion-body d-flex flex-column gap-1">
-                            <div><i class="bi bi-calendar2-minus me-1 icn"></i>Date of birth: @reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</div>
-                            <div><i class="bi bi-envelope me-1 icn"></i>Email: @reqclient.Email</div>
-                            <div>
-                                <i class="bi bi-telephone me-1 icn"></i>Patient: @reqclient.Phonenumber
+
+                    <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse p-2" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black; border-bottom : 2px solid black;">
+                        <div class="d-flex justify-content-end">
+                            <div class="rounded-pill me-3 viewCaseBtn p-2 bg-white viewcase" id="@item.Requestid" style="cursor : pointer">
+                                View Case
                             </div>
-                            <div><i class="bi bi-person me-1 icn"></i>Requestor: @item.Firstname, @item.Lastname</div>
                         </div>
-                        <div class="row mx-3">
-                            <div class="col-6 mb-2">
-                                <a class="btn w-100  text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal1" style="background:#c40eff; onclick="AssignModelName(this.name)" name="@item.Requestid">Assign Case</a>
+
+                        <div class="accordion-body d-flex flex-column gap-1 p-0">
+                            <div><i class="bi bi-calendar2-minus me-2 icn"></i>Date of birth: @reqclient.Strmonth @reqclient.Intdate, @reqclient.Intyear</div>
+                            <div><i class="bi bi-envelope me-2 icn"></i>Email: @reqclient.Email</div>
+                            <div><i class="bi bi-telephone me-2 icn"></i>Patient: @reqclient.Phonenumber</div>
+                        </div>
+
+                        <div class="row my-2 mx-0">
+                            <div class="col-6 p-2">
+                                <a value="@item.Requestid" class="btn w-100 text-white rounded-pill p-1 btn-sm acceptbtn" style="background:#c40eff;">Accept</a>
                             </div>
-                            <div class="col-6 mb-2">
+
+                            <div class="col-6 p-2">
                                 <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid">View Notes</a>
                             </div>
-                            <div class="col-6">
-                                <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
+
+                            <div class="col-6 p-2">
+                                <a href="mailto:@reqclient.Email" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
                             </div>
                         </div>
                     </div>
@@ -268,9 +281,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
-    var page = document.getElementById("page-1");
+    var page = document.getElementById("page-@Model.currentpage");
     if (page != null) {
         page.style.backgroundColor = "lightblue";
     }
@@ -416,13 +428,32 @@
                 }
             });
         });
-        if (@Model.req.Count()> 0) {
-            $('#maintable').DataTable({
-                info: false,
-                ordering: true,
-                paging: false,
-                searching: false,
+        $('.acceptbtn').on('click', function (e) {
+            var id = $(this).attr("value");
+            swal.fire({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes",
+                closeOnConfirm: false
+            }).then(function (result) {
+                if (result.value) {
+                    $.ajax({
+                        url: '/Physician/PhysicianAccept',
+                        data: { "id": id },
+                        success: function (response) {
+                            window.location.reload();
+                            toastr.success("Accepted");
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                } else {
+                    console.log('Cancelled!');
+                }
             });
-        }
+        });
     });
 </script>

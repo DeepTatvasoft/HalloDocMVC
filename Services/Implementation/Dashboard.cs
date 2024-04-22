@@ -166,6 +166,16 @@ namespace Services.Implementation
                 return (memorystream.ToArray(), "application/zip", "file.zip");
             }
         }
+        public PatientReqSubmit SubmitForMe(int id)
+        {
+            PatientReqSubmit modal = new PatientReqSubmit();
+            var user = _context.Users.FirstOrDefault(x => x.Userid == id);
+            modal.FirstName = user!.Firstname;
+            modal.LastName = user.Lastname;
+            modal.PhoneNumber = user.Mobile;
+            modal.Email = user.Email;          
+            return modal;
+        }
     }
 }
 

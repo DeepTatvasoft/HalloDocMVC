@@ -104,5 +104,7 @@ namespace Services.Contracts
         UserAccessModal UserAccessTable(string roleid);
         string getAsdId(int adminid);
         int getAdminId(int aspid);
+        void EncounterBtn(NewStateData modal, string[] encounterchk, int adminid);
+        void UnblockReq(int id);
     }
 }

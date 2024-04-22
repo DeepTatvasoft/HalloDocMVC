@@ -33,7 +33,7 @@
                         <input type="checkbox" @chk />
                     </td>
                     <td>
-                        <button class="btn btn-outline-info boxshadowbtn">Unblock</button>
+                        <button value="@obj.Requestid" class="btn btn-outline-info boxshadowbtn unblockbtn">Unblock</button>
                     </td>
                 </tr>
             }
@@ -132,6 +132,7 @@
     }
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     var num = document.getElementById("curpageinput");
     if (@Model.currentpage == 1) {
@@ -141,4 +142,32 @@
     if (page != null) {
         page.style.backgroundColor = "lightblue";
     }
+    $('.unblockbtn').on('click', function (e) {
+        var id = $(this).attr("value");
+        swal.fire({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: '/Admin/UnblockReq',
+                    data: { "id": id },
+                    success: function (response) {
+                        var link = document.createElement('a');
+                        link.href = "/Admin/BlockHistory";
+                        link.click();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            } else {
+                console.log('Cancelled!');
+            }
+        });
+    });
 </script>

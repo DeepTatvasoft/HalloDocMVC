@@ -450,6 +450,7 @@ namespace Services.Implementationy
             }
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == modal.reqid);
             req!.Status = 8;
+            req.Completedbyphysician = new BitArray(new[] { true }); 
             req.Modifieddate = DateTime.Now;
             _context.Requests.Update(req);
             _context.SaveChanges();

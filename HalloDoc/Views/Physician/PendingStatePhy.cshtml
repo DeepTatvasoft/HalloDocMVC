@@ -65,17 +65,21 @@
                         color = "dodgerblue";
                         type = "Concierge";
                     }
-                    <tr style="--bs-table-bg:@color">
+                    <tr style="--bs-table-bg:@color " class="@type">
                         <td scope="row">@reqclient.Firstname, @reqclient.Lastname</td>
                         <td scope="row">
-                            <button type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></button>
+                            <a href="mailto:@reqclient.Email" type="button" class="btn btn-outline-light"><i class="fa-regular fa-envelope"></i></a>
                         </td>
                         <td scope="row">
-                            <div class="phone">@reqclient.Phonenumber</div>
+                            <div class="phone p-1">
+                                <a class="text-decoration-none text-white" href="tel:@obj.Phonenumber">@obj.Phonenumber</a>
+                            </div>
                             (Patient)
                             @if (type != "Patient")
                             {
-                                <div class="phone">@obj.Phonenumber</div>
+                                <div class="phone p-1">
+                                    <a href="tel:@reqclient.Phonenumber" class="text-decoration-none text-white">@reqclient.Phonenumber</a>
+                                </div>
                                 <span>(@type)</span>
                             }
                         </td>
@@ -110,98 +114,99 @@
                 }
             </tbody>
         </table>
-
         <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
 
             <div class="accordion-item">
-                @foreach (var item in Model.req)
+                @foreach (var item in Model.req!)
                 {
                     var reqclient = item.Requestclients.ElementAt(0);
-                    var type = "";
                     var color = "mediumpurple";
+                    var type = "";
                     @if (item.Requesttypeid == 1)
                     {
-                        color = "rgb(72 169 70)";
+                        color = "rgb(117,201,115)";
                         type = "Patient";
                     }
                     else if (item.Requesttypeid == 2)
                     {
-                        color = "#f5a33e";
+                        color = "rgb(219,161,36)";
                         type = "Family";
-                    }
-                    else if (item.Requesttypeid == 4)
-                    {
-                        color = "hotpink";
-                        type = "Business";
                     }
                     else if (item.Requesttypeid == 3)
                     {
-                        color = "dodgerblue";
+                        color = "rgb(230, 0 , 115)";
                         type = "Concierge";
+                    }
+                    else if (item.Requesttypeid == 4)
+                    {
+                        color = "rgb(0,172,230)";
+                        type = "Business";
                     }
                     <h2 class="accordion-header" id="flush-headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.Requestid" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
 
                             <div class="col d-flex flex-column">
                                 <span class="">@reqclient.Firstname, @reqclient.Lastname</span>
-                                <span class=" mt-4">@reqclient.Address</span>
-                                <span class="mt-3"><i class="bi bi-clock text-info h6 me-2 icns"></i>Wait Time: DEC5, 2023</span>
+                                <span class=" mt-4">@reqclient.Street @reqclient.City @reqclient.State</span>
                             </div>
+
                             <div class="col d-flex flex-column text-end mt-2 p-0">
                                 <div>
                                     <div>
-                                        <div class="ms-3" id="1">@type<span class="dot ms-2" style="Background-color :@color; "></span></div>
+                                        <span>@type</span>
+                                        <i class="bi bi-circle-fill" style="color :@color"></i>
                                     </div>
-                                    <div class=" btn rounded-pill text-info border-info float-end p-1 mt-3" style="width:120px">
+                                    <div class=" btn rounded-pill text-info border-info float-end p-1 my-3" style="width:150px">
                                         Map Location
                                     </div>
+
                                 </div>
+
                             </div>
                         </button>
                         <hr class="m-0">
                     </h2>
-                    <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
-                        <button type="button" class="btn btn-outline-light text-black float-end viewcase bg-white rounded-5 border border-black mt-1" id="@item.Requestid">View Case</button>
-                        <div class="accordion-body d-flex flex-column gap-1 w-100">
-                            <div><i class="bi bi-calendar2-minus me-1 icn"></i>Date of birth: @reqclient.Strmonth-@reqclient.Intdate-@reqclient.Intyear</div>
-                            <div><i class="bi bi-envelope me-1 icn"></i>Email: @reqclient.Email</div>
-                            <div>
-                                <i class="bi bi-telephone me-1 icn"></i>Patient: @reqclient.Phonenumber
-                            </div>
-                            <div>
-                                <i class="fa-regular fa-calendar-days icn me-1"></i>Date Of Services: @item.Modifieddate
-                            </div>
-                            <div><i class="bi bi-person me-1 icn"></i>Requestor: @item.Firstname, @item.Lastname</div>
-                        </div>
-                        <div class="row mx-3">
-                            <div class="col-6 mb-2">
-                                <a class="btn w-100  text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#SendAgreement" onclick="SendAgreement(this.name,@item.Requesttypeid,'@item.Phonenumber','@item.Email')" name="@item.Requestid" style="background-color:orangered;font-size:11px;height:29.5px">Send Agreement</a>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid" style="background-color:green;font-size:13px">View Notes</a>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <a class="btn w-100 bg-info text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#transferModal" onclick="AssignModelName(this.name)" name="@item.Requestid" style="font-size:13px">Transfer</a>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid" style="background-color:green;font-size:13px">View Uploads</a>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#ClearCase" onclick="ClearCaseName(this.name)" name="@item.Requestid" style="background-color:orangered;font-size:13px">Clear Case</a>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color:green;font-size:13px">Email</a>
+
+                    <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse p-2" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black; border-bottom : 2px solid black;">
+                        <div class="d-flex justify-content-end">
+                            <div class="rounded-pill me-3 viewCaseBtn p-2 bg-white viewcase" id="@item.Requestid" style="cursor : pointer">
+                                View Case
                             </div>
                         </div>
-                        <div class="mt-2 me-sm-4 d-flex justify-content-end align-items-center">
-                            <span class="me-2">Chat With:</span>
-                            <button class="btn btn-outline-info btn-sm me-2"><i class="fa-solid fa-user-injured me-1"></i>Patient</button>
-                            <button class="btn btn-outline-info btn-sm"><i class="bi bi-person me-1"></i>Provider</button>
+
+                        <div class="accordion-body d-flex flex-column gap-1 p-0">
+                            <div><i class="bi bi-envelope me-2 icn"></i>Email: @reqclient.Email</div>
+                            <div><i class="bi bi-calendar2-minus me-2 icn"></i>Address: @reqclient.Address</div>
+                            <div><i class="bi bi-telephone me-2 icn"></i>Patient: @reqclient.Phonenumber</div>
+                        </div>
+
+                        <div class="row my-2 mx-0">
+                            <div class="col-6 p-2">
+                                <a class="btn w-100 text-white rounded-pill p-1 btn-sm bg-warning" data-bs-toggle="modal" data-bs-target="#SendAgreement" onclick="SendAgreement(this.name,@item.Requesttypeid,'@reqclient.Phonenumber','@reqclient.Email')" name="@reqclient.Requestid">Send Agreement</a>
+                            </div>
+
+                            <div class="col-6 p-2">
+                                <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm viewnotes" name="@item.Requestid">View Notes</a>
+                            </div>
+
+                            <div class="col-6 p-2">
+                                <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm viewuploads" name="@item.Requestid">View Uploads</a>
+                            </div>
+
+                            <div class="col-6 p-2">
+                                <a href="mailto:@reqclient.Email" class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
+                            </div>
+
+                            <div class="col-6 p-2">
+                                <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#transferModal" onclick="AssignModelName(this.name)" name="@item.Requestid">Transfer</a>
+                            </div>
+
                         </div>
                     </div>
                 }
             </div>
         </div>
+
     </div>
     <div class="d-flex justify-content-center gap-3 mt-3">
         @if (Model.totalpages > 0)
@@ -348,7 +353,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.transfer').on('click', function (e) {
@@ -482,13 +486,5 @@
                 }
             });
         });
-        if (@Model.req.Count()> 0) {
-            $('#maintable').DataTable({
-                info: false,
-                ordering: true,
-                paging: false,
-                searching: false,
-            });
-        }
     });
 </script>
