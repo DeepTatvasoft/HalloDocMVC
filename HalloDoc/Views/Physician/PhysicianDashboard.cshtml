@@ -128,6 +128,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     document.getElementById('Home-tab').classList.add('active');
+    var page = document.getElementById("page-@Model.currentpage");
+    if (page != null) {
+        page.style.backgroundColor = "lightblue";
+    }
     $(document).ready(function () {
         var backbtntarget = localStorage.getItem('state');
         var status;
@@ -176,10 +180,6 @@
             url: url,
             success: function (response) {
                 $('#status-tabContent').html(response);
-                var page = document.getElementById("page-1");
-                if (page != null) {
-                    page.style.backgroundColor = "lightblue";
-                }
                 dark();
             },
             error: function (xhr, status, error) {
@@ -228,14 +228,10 @@
                     $('#exportstatus').val(status);
                     $('#exportstatusall').val(status);
                     globalregion = 0;
-                    var page = document.getElementById("page-1");
-                    if (page != null) {
-                        page.style.backgroundColor = "lightblue";
-                    }
                     $('.requestby').each(function () {
                         $(this).removeClass('border-bottom border-info');
                     });
-
+                    $('#requestbyAll').addClass('border-bottom border-info');
                     $('#exportreqtype').val("");
                     $('#exportregion').val("Select Region");
                     dark();
@@ -301,10 +297,6 @@
                     $('#status-tabContent').html(response);
                     $('#exportreqtype').val(requesttype);
                     $('#exportseach').val(search);
-                    var page = document.getElementById("page-1");
-                    if (page != null) {
-                        page.style.backgroundColor = "lightblue";
-                    }
                     dark();
                 },
                 error: function (xhr, status, error) {
@@ -320,10 +312,6 @@
                     $('#status-tabContent').html(response);
                     $('#exportregion').val(globalregion);
                     $('#exportseach').val(search);
-                    var page = document.getElementById("page-1");
-                    if (page != null) {
-                        page.style.backgroundColor = "lightblue";
-                    }
                     dark();
                 },
                 error: function (xhr, status, error) {

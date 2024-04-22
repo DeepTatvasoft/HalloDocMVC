@@ -101,6 +101,7 @@ namespace Services.Implementation
             modal.Toclosecount = getToCloseRequestCount();
             modal.Unpaidcount = getUnpaidRequestCount();
             modal.regions = _context.Regions.ToList();
+            modal.currentpage = 1;
             return modal;
         }
         public NewStateData toogletable(string reqtypeid, string status, int currentPage, string searchkey = "")

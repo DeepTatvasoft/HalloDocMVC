@@ -352,7 +352,6 @@ function ChangePage(Page, status, reqtype, region, searchkey) {
         dataType: "html",
         success: function (response) {
             $('#status-tabContent').html(response);
-            document.getElementById("page-1").style.backgroundColor = "white";
             document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
             $('#exportpage').val(currentPage);
         },
@@ -486,9 +485,9 @@ function ChangePagePhy(Page, status, reqtype, region, searchkey) {
         dataType: "html",
         success: function (response) {
             $('#status-tabContent').html(response);
-            document.getElementById("page-1").style.backgroundColor = "white";
             document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
             $('#exportpage').val(currentPage);
+            dark();
         },
         error: function (xhr, status, error) {
             console.error(error);

@@ -335,6 +335,10 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+    var page = document.getElementById("page-@Model.currentpage");
+    if (page != null) {
+        page.style.backgroundColor = "lightblue";
+    }
     $(document).ready(function () {
         $('.viewcase').on('click', function (e) {
             e.preventDefault();

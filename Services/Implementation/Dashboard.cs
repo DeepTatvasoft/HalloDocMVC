@@ -88,7 +88,7 @@ namespace Services.Implementation
                 _context.SaveChanges();
             }
 
-            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == user.Aspnetuserid);
+            var aspuser = _context.Aspnetusers.FirstOrDefault(u => u.Id == user!.Aspnetuserid);
             if (aspuser != null)
             {
                 aspuser.Username = str;
@@ -115,7 +115,7 @@ namespace Services.Implementation
         {
             PatientDashboardedit dashedit = new PatientDashboardedit();
             var data = _context.Users.FirstOrDefault(u => u.Userid == uid);
-            dashedit.User = data;
+            dashedit.User = data!;
             List<Requestwisefile> reqfile = (from m in _context.Requestwisefiles where m.Requestid == temp select m).ToList();
             dashedit.requestwisefiles = reqfile;
             var requestdata = _context.Requests.Where(u => u.Requestid == temp);
@@ -155,7 +155,7 @@ namespace Services.Implementation
                             path = file.Filename;
                         }
                         var bytes = System.IO.File.ReadAllBytes(path);
-                        var zipEntry = zip.CreateEntry(file.Filename.Split("\\document\\")[1], CompressionLevel.Fastest);
+                        var zipEntry = zip.CreateEntry(file!.Filename.Split("\\document\\")[1], CompressionLevel.Fastest);
                         using (var zipStream = zipEntry.Open())
                         {
                             zipStream.WriteAsync(bytes, 0, bytes.Length);
