@@ -1,7 +1,7 @@
 ﻿@using Common.Helper;
 @model Services.ViewModels.ProviderModal
 <form method="post" asp-action="PhyNotification" asp-controller="Admin">
-    <table class="table">
+    <table class="table d-none d-md-table">
         <thead class="table-secondary">
             <tr>
                 <th scope="col" class="text-center">Stop Notification</th>
@@ -66,6 +66,79 @@
         <button type="reset" class="btn btn-outline-info ms-1 d-none cancelbtn boxshadowbtn">Cancel</button>
     </div>
 </form>
+<form method="post" asp-action="PhyNotification" asp-controller="Admin">
+    <div class="d-md-none pb-3">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            @if (Model.physicians!.Count() > 0)
+            {
+                @foreach (var provider in Model.physicians)
+                {
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <div class="accordion-button collapsed d-flex flex-column align-items-start" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse_@provider.Physicianid" aria-expanded="false" aria-controls="flush-collapseOne">
+                                <div>
+                                    @{
+                                        var flag = "";
+                                        if (Model.physiciannotificationid.Contains(provider!.Physicianid))
+                                        {
+                                            flag = "checked";
+                                        }
+                                    }
+                                    <input name="chknotification" type="checkbox" class="Notification2" value="@provider.Physicianid" @flag />
+                                    <span>@provider!.Firstname @provider!.Lastname</span>
+                                </div>
+                                <div>
+                                    <span>On Call Status: </span>
+                                    <span class="fw-bold">Un Available</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="flush-collapse_@provider!.Physicianid" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-center mt-2">
+                                    <i class="fa-solid fa-user-nurse fa-sm icn"></i>
+                                    <span class="text-secondary ms-2">Role:</span>
+                                    <span class="fw-medium ms-2">@provider?.Role?.Name</span>
+                                </div>
+                                <div class="d-flex align-items-center mt-2">
+                                    <i class="fa-solid fa-check fa-sm icn"></i>
+                                    <span class="text-secondary ms-2">Status</span>
+                                    @{
+                                        var statustext = "Active";
+                                        switch (provider?.Status)
+                                        {
+                                            case 1:
+                                                statustext = "Active";
+                                                break;
+
+                                            case 2:
+                                                statustext = "InActive";
+                                                break;
+
+                                            case 3:
+                                                statustext = "Pending";
+                                                break;
+                                        }
+                                    }
+                                    <span class="fw-medium ms-2">@statustext</span>
+                                </div>
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <button type="button" class="btn btn-outline-info boxshadowbtn" onclick="ContactBtn(provider.Physicianid)" data-bs-toggle="modal" data-bs-target="#ContactModal">Contact</button>
+                                    <a asp-controller="Admin" asp-action="EditPhysician" asp-route-id="@EncryptDecryptHelper.Encrypt(provider!.Physicianid.ToString()!)" type="button" class="btn btn-outline-info boxshadowbtn ms-1">Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="d-flex justify-content-end mt-4">
+        <button type="submit" class="btn btn-info text-white d-none savebtn2 boxshadowbtn">Save</button>
+        <button type="reset" class="btn btn-outline-info ms-1 d-none cancelbtn2 boxshadowbtn">Cancel</button>
+    </div>
+</form>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
@@ -79,6 +152,16 @@
         $('.cancelbtn').on('click', function () {
             $('.savebtn').addClass('d-none');
             $('.cancelbtn').addClass('d-none');
+        });
+        $.each($('.Notification2'), function () {
+            $(this).on('change', function () {
+                $('.savebtn2').removeClass('d-none');
+                $('.cancelbtn2').removeClass('d-none');
+            });
+        });
+        $('.cancelbtn2').on('click', function () {
+            $('.savebtn2').addClass('d-none');
+            $('.cancelbtn2').addClass('d-none');
         });
     });
 </script>

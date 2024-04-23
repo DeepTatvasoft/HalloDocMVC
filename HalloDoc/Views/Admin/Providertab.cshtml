@@ -82,20 +82,39 @@
                 }
             });
         });
-        $('.physendmail').on('click',function(){
+        $('.physendmail').on('click', function () {
             var phyid = $('#ContactphyModal').text();
             var chk = $('input[name = "modalradio"]:checked').val();
             var message = $('#contactmsg').val();
-            $.ajax({
-                url: '/Admin/ContactPhysician',
-                data: { 'phyid': phyid, 'chk': chk, 'message': message },
-                success: function (response) {
-                    $('#Cancelbutton').trigger('click');
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
+            if (chk == null) {
+                Swal.fire({
+                    title: "Please select one option",
+                    icon: "error"
+                });
+            }
+            else if(message == "")
+            {
+                Swal.fire({
+                    title: "Message should not be empty",
+                    icon: "error"
+                });
+            }
+            else {
+                $.ajax({
+                    url: '/Admin/ContactPhysician',
+                    data: { 'phyid': phyid, 'chk': chk, 'message': message },
+                    success: function (response) {
+                        $('#Cancelbutton').trigger('click');
+                        Swal.fire({
+                            title: "Email Sent",
+                            icon: "success"
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
         });
     });
 </script>

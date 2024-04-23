@@ -46,8 +46,8 @@ namespace Services.Implementation
                 };
 
                 _context.Requestwisefiles.Add(data3);
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
         }
         public PatientDashboardedit PatientDashboard(int temp)
         {
@@ -115,6 +115,7 @@ namespace Services.Implementation
         {
             PatientDashboardedit dashedit = new PatientDashboardedit();
             var data = _context.Users.FirstOrDefault(u => u.Userid == uid);
+            dashedit.reqid = temp;
             dashedit.User = data!;
             List<Requestwisefile> reqfile = (from m in _context.Requestwisefiles where m.Requestid == temp select m).ToList();
             dashedit.requestwisefiles = reqfile;
@@ -173,8 +174,26 @@ namespace Services.Implementation
             modal.FirstName = user!.Firstname;
             modal.LastName = user.Lastname;
             modal.PhoneNumber = user.Mobile;
-            modal.Email = user.Email;          
+            modal.Email = user.Email;
             return modal;
+        }
+        public bool checkmail(string email)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Email == email);
+            if(user != null)
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool checkmailAdmin(string email)
+        {
+            var user = _context.Admins.FirstOrDefault(x => x.Email == email);
+            if (user != null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

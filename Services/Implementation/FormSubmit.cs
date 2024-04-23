@@ -367,7 +367,7 @@ namespace Services.Implementation
                 Createdate = DateTime.Now,
                 Sentdate = DateTime.Now,
                 Isemailsent = new BitArray(new[] { true }),
-                Senttries = 1
+                Senttries = 1,
             };
             _context.Emaillogs.Add(emaillog);
             _context.SaveChanges();

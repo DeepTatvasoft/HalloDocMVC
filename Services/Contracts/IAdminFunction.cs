@@ -106,5 +106,6 @@ namespace Services.Contracts
         int getAdminId(int aspid);
         void EncounterBtn(NewStateData modal, string[] encounterchk, int adminid);
         void UnblockReq(int id);
+        void RequestDTY(string message);
     }
 }

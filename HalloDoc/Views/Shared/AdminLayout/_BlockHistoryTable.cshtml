@@ -1,6 +1,6 @@
 ﻿@model Services.ViewModels.BlockHistoryModal
 
-<table class="table">
+<table class="table d-md-table d-none">
     <thead class="table-secondary">
         <tr>
             <th scope="col">Patient Name</th>
@@ -40,6 +40,52 @@
         }
     </tbody>
 </table>
+<div class="d-md-none pb-3">
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        @if (Model.blockrequests != null)
+        {
+            @foreach (var req in Model.blockrequests)
+            {
+                var rc = Model.reqclient!.FirstOrDefault(u => u.Requestid.ToString() == req.Requestid);
+                <div class="accordion-item">
+                    <div class="accordion-header" id="flush-headingOne">
+                        <div class="accordion-button collapsed d-flex flex-column align-items-start" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse_@req?.Requestid" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <p>@rc?.Firstname @rc?.Lastname</p>
+                            <p class="text-secondary">@rc?.Email</p>
+                        </div>
+                    </div>
+                    <div id="flush-collapse_@req?.Requestid" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body p-2">
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-phone fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Phone number:</span>
+                                <span class="fw-medium ms-2">@(rc?.Phonenumber ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-calendar-days icn"></i>
+                                <span class="text-secondary ms-2">Created Date:</span>
+                                <span class="fw-medium ms-2">@(req?.Createddate)</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-notes-medical fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Notes:</span>
+                                <span class="fw-medium ms-2">@(req?.Reason ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-check fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Is Active:</span>
+                                <span class="fw-medium ms-2">yes</span>
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center pe-3">
+                                <button value="@req!.Requestid" class="btn btn-outline-info boxshadowbtn unblockbtn">Unblock</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
 <div class="d-flex justify-content-center gap-3 mt-3">
     <input type="hidden" id="forcurpage" value="@Model.currentpage" />
     @if (Model.totalpages > 0)

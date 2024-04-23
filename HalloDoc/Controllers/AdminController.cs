@@ -10,6 +10,7 @@ using DataAccess.ServiceRepository.IServiceRepository;
 using Data.DataContext;
 using Newtonsoft.Json;
 using Common.Helper;
+using NPOI.OpenXmlFormats.Spreadsheet;
 
 namespace HalloDoc.Controllers
 {
@@ -1071,6 +1072,23 @@ namespace HalloDoc.Controllers
         {
             adminFunction.UnblockReq(id);
         }
+        public IActionResult AdminResetPass(string id)
+        {
+            id = id.Substring(3);
+            id = EncryptDecryptHelper.Decrypt(id);
+            ResetPasswordVM vm = new ResetPasswordVM();
+            vm.Email = id;
+            return View(vm);
+        }
+        public IActionResult AdminForgetPass()
+        {
+            return View();
+        }
+        public void RequestDTY(string message)
+        {
+            adminFunction.RequestDTY(message);
+        }
+
     }
 
 }

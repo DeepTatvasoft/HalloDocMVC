@@ -17,7 +17,6 @@ namespace Services.ViewModels
         public List<Region> regions { get; set; }
         public HashSet<Region> physicianregions { get; set; }
 
-        [Required]
         public string? password { get; set; }
         public List<Role> roles { get; set; }
 

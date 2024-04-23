@@ -897,6 +897,7 @@ namespace Services.Implementation
                 obj.Isnotificationstopped = new BitArray(new[] { false });
                 _context.Physiciannotifications.Update(obj);
             }
+            _context.SaveChanges();
             foreach (var obj in chk)
             {
                 var s = Int32.Parse(obj);
@@ -2095,13 +2096,13 @@ namespace Services.Implementation
             }
             if (!string.IsNullOrWhiteSpace(modal.toDOS.ToString()))
             {
-                modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
-                modal.req = modal.req.Where(rc => rc.Modifieddate!.Value.Date <= modal.toDOS!.Value.Date).ToList();
+                modal.req = modal.req.Where(u => u.Accepteddate != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Accepteddate!.Value.Date <= modal.toDOS!.Value.Date).ToList();
             }
             if (!string.IsNullOrWhiteSpace(modal.fromDOS.ToString()))
             {
-                modal.req = modal.req.Where(u => u.Modifieddate != null).ToList();
-                modal.req = modal.req.Where(rc => rc.Modifieddate!.Value.Date >= modal.fromDOS!.Value.Date).ToList();
+                modal.req = modal.req.Where(u => u.Accepteddate != null).ToList();
+                modal.req = modal.req.Where(rc => rc.Accepteddate!.Value.Date >= modal.fromDOS!.Value.Date).ToList();
             }
 
             modal.totalpages = (int)Math.Ceiling(modal.req.Count() / 10.00);
@@ -2240,6 +2241,36 @@ namespace Services.Implementation
             var blockreq = _context.Blockrequests.FirstOrDefault(u => u.Requestid == id.ToString());
             _context.Blockrequests.Remove(blockreq!);
             _context.SaveChanges();
+        }
+        public void RequestDTY(string message)
+        {
+            List<int> OnCallIds = new List<int>();
+            List<int> OffDutyIds = new List<int>();
+
+            DateTime dateTime = DateTime.Now;
+            var timeofday = TimeOnly.FromTimeSpan(dateTime.TimeOfDay);
+            var shifts = _context.Shiftdetails.Where(u => u.Shiftdate == dateTime.Date && u.Starttime < timeofday && u.Endtime > timeofday).Select(u => u.Shiftid);
+            foreach (var shift in shifts)
+            {
+                var shiftid = _context.Shiftdetails.FirstOrDefault(x => x.Shiftdetailid == shift)!.Shiftid;
+                var physicianId = _context.Shifts.FirstOrDefault(x => x.Shiftid == shiftid)!.Physicianid;
+                if (!OnCallIds.Contains(physicianId))
+                {
+                    OnCallIds.Add(physicianId);
+                }
+            }
+            var allphyids = _context.Physicians.ToList().Select(x => x.Physicianid).ToList();
+            OffDutyIds = allphyids.Except(OnCallIds).ToList();
+            var stopnoti = _context.Physiciannotifications.Where(x => x.Isnotificationstopped == new BitArray(new[] {false})).Select(x => x.Physicianid).ToList();
+            foreach (var id in stopnoti)
+            {
+                OffDutyIds.Remove(id);
+            }
+            foreach (var id in OffDutyIds)
+            {
+                var physicianemail = _context.Physicians.FirstOrDefault(x => x.Physicianid == id)!.Email;
+                sendEmail(physicianemail, "There is an urgent need to address the shortage of physicians.", message);
+            }
         }
     }
 }

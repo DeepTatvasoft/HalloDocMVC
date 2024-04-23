@@ -148,6 +148,12 @@
                     $('#shiftmodalStart').val(response.starttime);
                     $('#shiftmodalEnd').val(response.endtime);
                     $('#shiftmodalid').val(response.shiftdetailid);
+                    if ($('#shiftmodalDate').val() < "@DateTime.Now.ToString("yyyy-MM-dd")") {
+                        $('.edit').addClass('d-none');
+                    }
+                    else {
+                        $('.edit').removeClass('d-none');
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

@@ -155,6 +155,19 @@ namespace HalloDoc.Controllers
                 return RedirectToAction("ResetPassword", "Home", new { id = "id=" + EncryptDecryptHelper.Encrypt(id) });
             }
         }
-
+        [HttpPost]
+        public IActionResult changepasswordAdmin(ResetPasswordVM vm, string id)
+        {
+            bool f = homefunction.changepassword(vm, id).Item1;
+            if (f == true)
+            {
+                return RedirectToAction("Adminlogin", "Admin");
+            }
+            else
+            {
+                TempData["error"] = "Both passwords are different";
+                return RedirectToAction("AdminResetPass", "Admin", new { id = "id=" + EncryptDecryptHelper.Encrypt(id) });
+            }
+        }
     }
 }

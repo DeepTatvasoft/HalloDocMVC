@@ -27,8 +27,9 @@
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="@Model.ResetPassword" type="password" class="form-control" placeholder="Name">
+                            <input asp-for="@Model.ResetPassword" type="password" id="togpass" class="form-control" placeholder="Name">
                             <label for="floatingInput">Password</label>
+                            <span asp-validation-for="ResetPassword" id="passwordWarning" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -60,7 +61,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-end mt-4">
-                    <button type="submit" name="useaccess" value="1" class="btn btn-outline-info boxshadowbtn">Reset Password</button>
+                    <button type="submit" name="useaccess" value="1" class="btn btn-outline-info boxshadowbtn resetpass">Reset Password</button>
                 </div>
             </form>
         </div>
@@ -200,6 +201,7 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     document.getElementById('accesstab').classList.add('active');
     document.getElementById('useraccess').classList.add('active');
@@ -237,6 +239,23 @@
             $(this).prop('disabled', true);
         });
     }
+    $('#togpass').on('input', function () {
+        if ($('#togpass').val() == "") {
+            $('#passwordWarning').html("");
+            $('.resetpass').removeClass('d-none');
+        }
+        else {
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%#*?&])[A-Za-z\d@@$!#%*?&]{8,}$/
+
+            if (!regex.test($('#togpass').val())) {
+                $('#passwordWarning').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
+                $('.resetpass').addClass('d-none');
+            } else {
+                $('#passwordWarning').html("");
+                $('.resetpass').removeClass('d-none');
+            }
+        }
+    });
 </script>
 
 

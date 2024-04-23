@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Common.Helper;
+@{
     ViewData["Title"] = "Patient Dashboard";
     Layout = "_PatientDashboard";
 }
@@ -81,7 +82,7 @@
                                     }
                                 </td>
                                 <td>
-                                    <a class="text-decoration-none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
+                                    <a class="text-decoration-none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@EncryptDecryptHelper.Encrypt(obj.Requestid.ToString())">
                                         <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton justify-content-center">
                                             <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
                                             <div class="nonedocument">
@@ -120,7 +121,7 @@
                                         }
                                     </div>
                                     <br>
-                                    <a class="text-decoration-none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
+                                    <a class="text-decoration-none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@EncryptDecryptHelper.Encrypt(obj.Requestid.ToString())">
                                         <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton w-100 justify-content-center">
                                             <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
                                             <div class="nonedocument">

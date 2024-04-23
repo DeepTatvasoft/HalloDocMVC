@@ -143,12 +143,12 @@
                 <div class="modal-body">
                     To all unscheduled Physicians: We are short on coverage and needs additional support On call to respond to Requests.
                     <div class="form-floating mt-4">
-                        <textarea class="form-control Cancelnotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                        <textarea class="form-control Cancelnotes" placeholder="Leave a comment here" id="messageforprovider" style="height:140px"></textarea>
                         <label for="floatingTextarea">Message</label>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info text-white" data-bs-dismiss="modal">Send</button>
+                    <button type="button" class="btn btn-info text-white" id="reqDtybutton" data-bs-dismiss="modal">Send</button>
                     <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -462,5 +462,33 @@
                 }
             });
         }
+        $('#reqDtybutton').on('click', function () {
+            var message = $('#messageforprovider').val();
+            var digitRegex = /^\d+$/;
+            var spaceRegex = /^\s+$/;
+            var emptyRegex = /^$/;
+            var specialCharRegex = /^[!#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
+
+            if (digitRegex.test(message) || spaceRegex.test(message) || emptyRegex.test(message) || specialCharRegex.test(message)) {
+                $(this).closest('form-group').css("border-color", "red");
+                Swal.fire("Enter Meaningful Text");
+            } else {
+                $.ajax({
+                    url: '/Admin/RequestDTY',
+                    data: { message },
+                    type: 'POST',
+                    success: function () {
+                        $('#closemodel').trigger('click');
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Message Sent",
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
+                    }
+                })
+            }
+        })
     });
 </script>

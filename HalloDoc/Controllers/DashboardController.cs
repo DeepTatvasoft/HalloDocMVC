@@ -39,9 +39,9 @@ namespace HalloDoc.Controllers
             return RedirectToAction("PatientDashboard", "Dashboard");
         }
         [Authorization("3")]
-        public IActionResult ViewDocument(int id)
+        public IActionResult ViewDocument(string id)
         {
-            int temp = id;
+            int temp = int.Parse(EncryptDecryptHelper.Decrypt(id));
             int uid = (int)HttpContext.Session.GetInt32("Userid")!;
             var tempname = HttpContext.Session.GetString("Username");
             return View(dashboard.ViewDocument(temp, uid, tempname!));
@@ -55,7 +55,7 @@ namespace HalloDoc.Controllers
                 dashboard.AddPatientRequestWiseFile(dashedit.Upload, dashedit.reqid);
             }
             _context.SaveChanges();
-            return RedirectToAction("ViewDocument", "Dashboard", new { id = dashedit.reqid });
+            return RedirectToAction("ViewDocument", "Dashboard", new { id = EncryptDecryptHelper.Encrypt(dashedit.reqid.ToString()) });
         }
         [Authorization("3")]
         [HttpPost]
@@ -92,7 +92,7 @@ namespace HalloDoc.Controllers
             if (chk.ElementAt(0) == "me")
             {
                 int uid = (int)HttpContext.Session.GetInt32("Userid")!;
-                return RedirectToAction("SubmitForMe", new {id = uid});
+                return RedirectToAction("SubmitForMe", new { id = uid });
             }
             else if (chk.ElementAt(0) == "else")
             {
@@ -119,10 +119,34 @@ namespace HalloDoc.Controllers
         public IActionResult send_mail()
         {
             var email = Request.Form["email"].ElementAt(0);
-            sendEmail(email!, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id=" + EncryptDecryptHelper.Encrypt(email!) + "");
+            var chkemail = dashboard.checkmail(email!);
+            if (chkemail == false)
+            {
+                TempData["error"] = "Email Not Exist";
+            }
+            else
+            {
+                sendEmail(email!, "hello", "hello reset password https://localhost:44325/Home/ResetPassword/id=" + EncryptDecryptHelper.Encrypt(email!) + "");
+                TempData["success"] = "Email Sent";
+            }
             return RedirectToAction("patientlogin", "Home");
         }
-
+        [HttpPost]
+        public IActionResult sendmailAdmin()
+        {
+            var email = Request.Form["email"].ElementAt(0);
+            var chkemail = dashboard.checkmailAdmin(email!);
+            if (chkemail == false)
+            {
+                TempData["error"] = "Email Not Exist";
+            }
+            else
+            {
+                sendEmail(email!, "hello", "hello reset password https://localhost:44325/Admin/AdminResetPass/id=" + EncryptDecryptHelper.Encrypt(email!) + "");
+                TempData["success"] = "Email Sent";
+            }
+            return RedirectToAction("adminlogin", "Admin");
+        }
         [HttpPost]
         public IActionResult SendAgreement(NewStateData modal)
         {
@@ -133,7 +157,8 @@ namespace HalloDoc.Controllers
         {
             string message = "Hello " + modal.firstname + modal.lastname;
             sendEmail(modal.emaill!, " Link for Submit Request Screen", message + " https://localhost:44325/Home/Submitreqscreen");
-            return RedirectToAction("AdminDashboard","Admin");
+            TempData["success"] = "Email Sent";
+            return RedirectToAction("AdminDashboard", "Admin");
         }
     }
 }

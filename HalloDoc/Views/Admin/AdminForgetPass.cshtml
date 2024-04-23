@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Admin Reset";
+    Layout = "NewLayout";
+}
+<div class="bg-img" data-bs-theme="light">
+    <img src="~/images/11116016_415.jpg" alt="">
+</div>
+<div class="container-fluid">
+    <div class="moon">
+        <button id="darkmode" onclick="dark()">
+            <img src="~/images/image_2024_01_17T04_17_17_762Z.png" alt="error">
+        </button>
+    </div>
+    <div class="hallodoc">
+        <img src="~/images/image_2024_01_17T04_17_17_750Z.png" alt="">
+    </div>
+    <div class="login">
+        <div class="back">
+            <a asp-controller="Admin" asp-action="adminlogin" style="text-decoration: none;">
+                <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+                <span>Back</span>
+            </a>
+            <form asp-controller="Dashboard" asp-action="sendmailAdmin" method="post">
+                <h2>Reset Your Password</h2>
+                <div class="form-floating mb-3 mt-4">
+                    <input name="email" type="email" class="form-control" id="floatingInput" placeholder="Email">
+                    <label for="floatingInput">Email</label>
+                </div>
+                <div class="button mt-4 resbtn">
+                    <button type="submit">Reset Password</button>
+                </div>
+            </form>
+
+            <div class="forget mt-4">
+                <a asp-controller="Admin" asp-action="adminlogin">
+                    <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+                    <span>Back To Login</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/site.js" asp-append-version="true"></script>

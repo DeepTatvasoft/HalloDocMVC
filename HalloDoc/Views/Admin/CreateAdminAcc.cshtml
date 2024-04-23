@@ -27,8 +27,9 @@
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="ResetPassword" type="password" class="form-control" placeholder="Name">
+                            <input asp-for="ResetPassword" type="text" id="togpass" class="form-control" placeholder="Name">
                             <label for="floatingInput">Password</label>
+                            <span asp-validation-for="ResetPassword" id="passwordWarning" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -41,6 +42,7 @@
                                 }
                             </select>
                             <label for="floatingSelect">Role</label>
+                            <span asp-validation-for="roleid" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -52,28 +54,32 @@
                         <div class="form-floating mb-3">
                             <input asp-for="firstname" type="text" class="form-control " placeholder="FirstName">
                             <label for="floatingInput">First Name</label>
+                            <span asp-validation-for="firstname" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="lastname" type="text" class="form-control " placeholder="Name">
                             <label for="floatingInput">Last Name</label>
+                            <span asp-validation-for="lastname" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="email" type="email" class="form-control " placeholder="name@example.com">
                             <label for="floatingInput">Email</label>
+                            <span asp-validation-for="email" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="confirmemail" type="email" class="form-control " placeholder="name@example.com">
                             <label for="floatingInput">Confirm Email</label>
+                            <span asp-validation-for="confirmemail" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country" class="country " onchange="country_code()">
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -83,6 +89,7 @@
                             </select>
                             <input asp-for="phonenumber" type="tel" class="form-control output " id="output" placeholder="Mobile Number">
                         </div>
+                        <span asp-validation-for="phonenumber" class="text-danger"></span>
                     </div>
                     <div class="col d-flex flex-wrap">
                         @foreach (var obj in Model.regions!)
@@ -104,6 +111,7 @@
                         <div class="form-floating mb-3">
                             <input asp-for="address1" type="text" class="form-control " placeholder="Adress1">
                             <label for="floatingInput">Address 1</label>
+                            <span asp-validation-for="address1" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -116,6 +124,7 @@
                         <div class="form-floating mb-3">
                             <input asp-for="city" type="text" class="form-control " placeholder="name@example.com">
                             <label for="floatingInput">City</label>
+                            <span asp-validation-for="city" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -127,16 +136,18 @@
                                 }
                             </select>
                             <label for="floatingSelect">State</label>
+                            <span asp-validation-for="regionid" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input asp-for="zipcode" type="text" class="form-control" placeholder="zip">
                             <label for="floatingInput">Zip</label>
+                            <span asp-validation-for="zipcode" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
-                        <div class="mb-3 numcountry">
+                        <div class="mb-3 mb-lg-0 numcountry">
                             <select name="country" id="country2" class="country " onchange="country_code2()">
                                 <option value="select country">select country</option>
                                 <option value="us">US</option>
@@ -146,16 +157,40 @@
                             </select>
                             <input asp-for="altphone" type="tel" class="form-control output" id="output2" placeholder="Mobile Number">
                         </div>
+                        <span asp-validation-for="altphone" class="text-danger"></span>
                     </div>
                 </div>
             </div>
             <div class="d-flex justify-content-end mt-2">
-                <button type="submit" class="btn btn-success boxshadowbtn">Create Account</button>
+                <button type="button" class="btn btn-success boxshadowbtn" id="submitbtn">Create Account</button>
             </div>
         </div>
     </form>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     document.getElementById('adminacc').classList.add('active');
     document.getElementById('accesstab').classList.add('active');
+    $('#togpass').on('input', function () {
+        if ($('#togpass').val() == "") {
+            $('#passwordWarning').html("*Please enter password")
+        }
+        else {
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%#*?&])[A-Za-z\d@@$!#%*?&]{8,}$/
+
+            if (!regex.test($('#togpass').val())) {
+                $('#passwordWarning').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
+
+            } else {
+                $('#passwordWarning').html("");
+            }
+        }
+    });
+    $('#submitbtn').on('click', function () {
+        if ($('#togpass').val() != "" && $('#passwordWarning').text() == "") {
+            $('#submitbtn').prop('type', 'submit');
+            $('#submitbtn').click();
+        }
+    });
 </script>

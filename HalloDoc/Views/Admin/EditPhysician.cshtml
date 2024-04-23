@@ -35,8 +35,9 @@
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input asp-for="password" type="password" class="form-control firstedit" placeholder="password">
+                            <input asp-for="password" type="password" id="togpass" class="form-control" placeholder="password">
                             <label for="floatingInput">Password</label>
+                            <span asp-validation-for="password" id="passwordWarning" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col">
@@ -65,7 +66,7 @@
                     <button type="button" onclick="editoneclick()" class="btn btn-info text-white editf boxshadowbtn">Edit</button>
                     <button type="submit" class="btn btn-info text-white d-none savef boxshadowbtn">Save</button>
                     <button type="reset" onclick="canceloneclick()" class="btn btn-outline-info ms-1 d-none cancelf boxshadowbtn">Cancel</button>
-                    <button asp-action="PhysicianResetPass" asp-controller="Admin" type="submit" class="btn btn-outline-info ms-1 boxshadowbtn">Reset Password</button>
+                    <button asp-action="PhysicianResetPass" asp-controller="Admin" type="submit" class="btn btn-outline-info ms-1 boxshadowbtn resetpass">Reset Password</button>
                 </div>
             </div>
         </form>
@@ -538,7 +539,23 @@
             $(this).prop('disabled', true);
         });
     }
+    $('#togpass').on('input', function () {
+        if ($('#togpass').val() == "") {
+            $('#passwordWarning').html("");
+            $('.resetpass').removeClass('d-none');
+        }
+        else {
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%#*?&])[A-Za-z\d@@$!#%*?&]{8,}$/
 
+            if (!regex.test($('#togpass').val())) {
+                $('#passwordWarning').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
+                $('.resetpass').addClass('d-none');
+            } else {
+                $('#passwordWarning').html("");
+                $('.resetpass').removeClass('d-none');
+            }
+        }
+    });
     try {
         document.getElementById('City').addEventListener('focusout', getCoordinates);
         document.getElementById('Address1').addEventListener('focusout', getCoordinates);

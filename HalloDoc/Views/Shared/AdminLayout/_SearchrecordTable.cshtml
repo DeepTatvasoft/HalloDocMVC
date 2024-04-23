@@ -1,7 +1,7 @@
 ﻿@model Services.ViewModels.SearchRecordModal
 
 
-<table class="table" id="maintable">
+<table class="table d-none d-md-table" id="maintable">
     <thead class="table-secondary">
         <tr>
             <th scope="col">Patient Name</th>
@@ -130,6 +130,155 @@
         }
     </tbody>
 </table>
+<div class="d-md-none pb-3">
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        @if (Model.req.Count() > 0)
+        {
+            @foreach (var obj in Model.req!)
+            {
+                var rc = obj.Requestclients.ElementAt(0);
+                var type = obj.Requesttypeid;
+                var typeStr = "";
+                var dos = obj?.Accepteddate?.ToString("MMM dd yyyy");
+                var closeCaseDate = obj?.Requeststatuslogs.FirstOrDefault(x => x.Status == 8 || x.Status == 3 || x.Status == 7)?.Createddate.ToString("MMM dd yyyy");
+                var requestNote = obj?.Requestnotes.FirstOrDefault(x => x.Requestid == rc.Requestid);
+                switch (type)
+                {
+                    case 1:
+                        typeStr = "Business";
+                        break;
+                    case 2:
+                        typeStr = "Patient";
+                        break;
+                    case 3:
+                        typeStr = "Family";
+                        break;
+                    case 4:
+                        typeStr = "Concierge";
+                        break;
+                }
+                var status = "";
+                @if (rc.Request.Status == 1)
+                {
+                    status = "New";
+                }
+                else if (rc.Request.Status == 2)
+                {
+                    status = "Pending";
+                }
+                else if (rc.Request.Status == 4 || rc.Request.Status == 5)
+                {
+                    status = "Active";
+                }
+                else if (rc.Request.Status == 6)
+                {
+                    status = "Conclude";
+                }
+                else if (rc.Request.Status == 3 || rc.Request.Status == 7 || rc.Request.Status == 8)
+                {
+                    status = "To-Close";
+                }
+                else if (rc.Request.Status == 9)
+                {
+                    status = "Unpaid";
+                }
+                else
+                {
+                    status = "-";
+                }
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-button collapsed d-flex flex-column align-items-start" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse_@obj?.Requestid" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <p>@rc.Firstname @rc.Lastname</p>
+                            <p class="text-secondary">@rc.Location, @rc.Address</p>
+                        </div>
+                    </div>
+                    <div id="flush-collapse_@obj?.Requestid" class="accordion-collapse collapse p-2" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body p-0">
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-user fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Requestor:</span>
+                                <span class="fw-medium ms-2">@(obj?.Firstname ?? "-") @(obj?.Lastname ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-calendar-days icn"></i>
+                                <span class="text-secondary ms-2">Date Of Service:</span>
+                                <span class="fw-medium ms-2">@(dos ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-calendar-days icn"></i>
+                                <span class="text-secondary ms-2">Case Closed Date:</span>
+                                <span class="fw-medium ms-2">@(closeCaseDate ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-envelope fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Email:</span>
+                                <span class="fw-medium ms-2">@(rc.Email ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-phone fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Phone number:</span>
+                                <span class="fw-medium ms-2">@(rc.Phonenumber ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-address-book fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Address:</span>
+                                <span class="fw-medium ms-2">@(rc.Address ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-location-dot fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Zip Code:</span>
+                                <span class="fw-medium ms-2">@(rc.Zipcode ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-check fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Request Status:</span>
+                                <span class="fw-medium ms-2">@status</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-user-doctor fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Provider:</span>
+                                <span class="fw-medium ms-2">@(obj?.Physician?.Firstname ?? "-") @(obj?.Physician?.Lastname ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-notes-medical fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Provider Note:</span>
+                                <span class="fw-medium ms-2">@(requestNote?.Physiciannotes ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-notes-medical fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Cancelled By Provider Note:</span>
+                                <span class="fw-medium ms-2">@(obj?.Requeststatuslogs?.FirstOrDefault(x => x.Status == 3)?.Notes ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-note-sticky fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Admin Note:</span>
+                                <span class="fw-medium ms-2">@(requestNote?.Adminnotes ?? "-")</span>
+                            </div>
+                            <div class="d-flex align-items-center mt-2">
+                                <i class="fa-solid fa-note-sticky fa-sm icn"></i>
+                                <span class="text-secondary ms-2">Patient Note:</span>
+                                <span class="fw-medium ms-2">@(rc.Notes ?? "-")</span>
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center p-3">
+                                <a value="@obj!.Requestid" class="btn btn-outline-info deletebtn">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="d-flex justify-content-end d-none me-3 changebtns">
+        <button class="btn btn-info text-white" type="submit" id="savebtn" asp-action="SaveNotificationStatus" asp-controller="Admin">
+            Save
+        </button>
+        <button type="reset" class="btn btn-outline-info ms-2 cancelbtn">
+            Cancel
+        </button>
+    </div>
+</div>
+
 <div class="d-flex justify-content-center gap-3 mt-3">
     <input type="hidden" id="forcurpage" value="@Model.currentpage" />
     @if (Model.totalpages > 0)

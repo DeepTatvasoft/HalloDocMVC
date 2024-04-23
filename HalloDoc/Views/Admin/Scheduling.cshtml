@@ -97,22 +97,22 @@
                         <option value="" selected>Select Physician</option>
                     </select>
                     <div class="form-floating mt-3">
-                        <input asp-for="shiftdate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" placeholder="Date">
+                        <input asp-for="shiftdate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control Shiftdate" placeholder="Date">
                         <label for="floatingInput">Shift Date</label>
                     </div>
                     <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                         <div class="col mb-3 mb-md-0">
                             <div class="form-floating">
-                                <input asp-for="starttime" min="@DateTime.Now.ToString("t")" type="time" class="form-control" placeholder="Date" />
+                                <input asp-for="starttime" type="time" class="form-control starttime" placeholder="Date" />
                                 <label for="floatingInput">Start</label>
-                                <span asp-validation-for="starttime" class="text-danger">Enter valid time for today</span>
+                                <span asp-validation-for="starttime" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-floating">
-                                <input asp-for="endtime" min="@DateTime.Now.ToString("t")" type="time" class="form-control" placeholder="Date" />
+                                <input asp-for="endtime" type="time" class="form-control endtime" placeholder="Date" />
                                 <label for="floatingInput">End</label>
-                                <span asp-validation-for="starttime" class="text-danger">Enter valid time for today</span>
+                                <span asp-validation-for="endtime" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -161,7 +161,7 @@
                 <button type="button" class="btn-close closebtn" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="viewshiftform">
-                <input asp-for="shiftdetailid" type="hidden" id="shiftmodalid"></input>
+                <input asp-for="shiftdetailid" type="hidden" id="shiftmodalid"/>
                 <div class="modal-body">
                     <div class="form-floating">
                         <select asp-for="regionid" class="form-select physiciandata2" id="shiftmodalRegion" aria-label="Floating label select example" disabled>
@@ -182,22 +182,22 @@
                         <option id="shiftmodalPhysician" selected>Select Physician</option>
                     </select>
                     <div class="form-floating mt-3">
-                        <input asp-for="shiftdate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="shiftmodalDate" class="form-control disable" placeholder="Date" disabled>
+                        <input asp-for="shiftdate" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="shiftmodalDate" class="form-control Shiftdate disable" placeholder="Date" disabled>
                         <label for="floatingInput">Shift Date</label>
                     </div>
                     <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-3">
                         <div class="col mb-3 mb-md-0">
                             <div class="form-floating">
-                                <input asp-for="starttime" min="@DateTime.Now.ToString("t")" type="time" class="form-control disable" id="shiftmodalStart" placeholder="Date" disabled />
+                                <input asp-for="starttime" type="time" class="form-control starttime disable" id="shiftmodalStart" placeholder="Date" disabled />
                                 <label for="floatingInput">Start</label>
-                                <span asp-validation-for="starttime" class="text-danger">Enter valid time for today</span>
+                                <span asp-validation-for="starttime" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-floating">
-                                <input asp-for="endtime" min="@DateTime.Now.ToString("t")" type="time" class="form-control disable" id="shiftmodalEnd" placeholder="Date" disabled />
+                                <input asp-for="endtime" type="time" class="form-control endtime disable" id="shiftmodalEnd" placeholder="Date" disabled />
                                 <label for="floatingInput">End</label>
-                                <span asp-validation-for="endtime" class="text-danger">Enter valid time for today</span>
+                                <span asp-validation-for="endtime" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -237,7 +237,9 @@
             }
         });
     }
-
+    $('.closebtn').click(function(){
+        $('.cancel').click();
+    });
     function editclick() {
         $('.cancel').removeClass('d-none').addClass('d-inline-block');
         $('.save').removeClass('d-none').addClass('d-inline-block');
@@ -418,6 +420,17 @@
                     console.error(error);
                 }
             });
+        });
+        $('.Shiftdate').on('change', function () {
+            var date = $(this).val();
+            if (date != "@DateTime.Now.ToString("yyyy-MM-dd")") {
+                $('.starttime').removeAttr("min");
+                $('.endtime').removeAttr("min");
+            }
+            else {
+                $('.starttime').attr("min", "@DateTime.Now.ToString("HH:mm")");
+                $('.endtime').attr("min", "@DateTime.Now.ToString("HH:mm")");
+            }
         });
     });
 </script>
