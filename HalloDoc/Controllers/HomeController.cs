@@ -1,14 +1,11 @@
 ﻿using Common.Helper;
-using Data.DataContext;
 using Data.DataModels;
 using DataAccess.ServiceRepository.IServiceRepository;
 using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
 using System.Diagnostics;
-using System.Drawing;
 
 namespace HalloDoc.Controllers
 {
