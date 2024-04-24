@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model Services.ViewModels.StudentFormModal
+<partial name="_Notification" />
+<div class="text-center d-flex justify-content-end align-items-center head text-white p-2">
+    <h3 class="justify-content-center SMS">Student Management System</h3>
+    <div class="btn">
+        <button class="btn btn-light bg-white fw-bold addstudent" data-bs-toggle="modal" data-bs-target="#exampleModal">ADD STUDENT</button>
+    </div>
+</div>
+
+<div class="container-fluid containerwid mt-4">
+    <div class="searchbox">
+        <input class="form-control me-2" id="myInput" type="search" placeholder="Search" aria-label="Search">
+    </div>
+    <div class="table-responsive mt-2">
+        <table class="table" id="myTable">
+            <thead class="table-secondary">
+                <tr>
+                    <th scope="col">Student Id</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Course</th>
+                    <th scope="col">Grade</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.students == null)
+                {
+                    <tr>
+                        <td colspan="9" class="text-center text-secondary">No Data Found</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var obj in Model.students)
+                    {
+                        <tr>
+                            <td>@obj.Id</td>
+                            <td>@obj.FirstName</td>
+                            <td>@obj.LastName</td>
+                            <td>@obj.Email</td>
+                            <td>@obj.Age</td>
+                            <td>@obj.Gender</td>
+                            <td>@obj.Course</td>
+                            <td>@obj.Grade</td>
+                            <td>
+                                <button class="btn btn-info editfield text-white editstudentmodal" value="@obj.Id">Edit</button>
+                                <button class="btn btn-info deletefield text-white deletebtn" value="@obj.Id">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="addmodal">
+   <partial name="_AddStudent"/>
+</div>
+<div class="editmodal">
+
+</div>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $('.editstudentmodal').on('click', function () {
+            $.ajax({
+                url: '/Home/EditStudent',
+                data : {id : $(this).val()},
+                success: function (response) {
+                    $('.addmodal').html(response);
+                    window.$('#EditModal').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        $('.deletebtn').on('click', function (e) {
+            var id = $(this).attr("value");
+            swal.fire({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes",
+                closeOnConfirm: false
+            }).then(function (result) {
+                if (result.value) {
+                    $.ajax({
+                        url: '/Home/DeleteData',
+                        data: { "id": id },
+                        success: function (response) {
+                            var link = document.createElement('a');
+                            link.href = "/Home";
+                            link.click();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                } else {
+                    console.log('Cancelled!');
+                }
+            });
+        });
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>

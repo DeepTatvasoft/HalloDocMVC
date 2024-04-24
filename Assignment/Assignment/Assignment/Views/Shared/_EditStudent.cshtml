@@ -1,0 +1,134 @@
+﻿@model Services.ViewModels.StudentFormModal
+<div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="EditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header head">
+                <h1 class="modal-title fs-5 text-white" id="EditModalLabel">Student Form</h1>
+            </div>
+            <form method="post" asp-action="EditData" asp-controller="Home">
+                <input asp-for="studentid" type="hidden"/>
+                <div class="modal-body">
+                    <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1">
+                        <div class="col">
+                            <div class="inputbox mb-3">
+                                <input asp-for="firstname" type="text" class="form-control input inputheight" required="required">
+                                <span class="marg">First Name</span>
+                                <span asp-validation-for="firstname" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="inputbox mb-3">
+                                <input asp-for="lastname" type="text" class="form-control input inputheight" required="required">
+                                <span class="marg">Last Name</span>
+                                <span asp-validation-for="lastname" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="inputbox mb-3">
+                                <input asp-for="email" type="email" class="form-control input emailinput inputheight" required="required">
+                                <span class="marg">Email</span>
+                                <span asp-validation-for="email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <input asp-for="DOB" max="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control inputheight" required="required">
+                                <span class="dob">Date Of Birth</span>
+                                <span asp-validation-for="DOB" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="radiobtn d-flex">
+                        <span class="me-2 txtbold">Gender</span>
+                        @{
+                            var malechk = "";
+                            var femalechk = "";
+                            var otherchk = "";
+                            if(Model.gender == "Male")
+                            {
+                                malechk = "checked";
+                            }
+                            else if(Model.gender == "Female")
+                            {
+                                femalechk = "checked";
+                            }
+                            else
+                            {
+                                otherchk = "checked";
+                            }
+                        }
+                        <div class="form-check me-2">
+                            <input class="form-check-input" type="radio" name="gender" value="Male" id="flexRadioDefault1" @malechk>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Male
+                            </label>
+                        </div>
+                        <div class="form-check me-2">
+                            <input class="form-check-input" type="radio" name="gender" value="Female" id="flexRadioDefault2" @femalechk>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Female
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="gender" value="Other" id="flexRadioDefault3" @otherchk>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Other
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row row-cols-md-2 row-cols-sm-1 row-cols-1 mt-2">
+                        <div class="col mb-3">
+                            <select asp-for="grade" class="form-select inputheight selectGrade" aria-label="Default select example" required="required">
+                                <option selected>Grade</option>
+                                <option value="1st-3rd">1st-3rd</option>
+                                <option value="4th-6th">4th-6th</option>
+                                <option value="7th-8th">7th-8th</option>
+                                <option value="9th-12th">9th-12th</option>
+                            </select>
+                            <span asp-validation-for="grade" class="text-danger"></span>
+                        </div>
+                        <div class="col">
+                            <div class="inputbox">
+                                <input asp-for="course" type="text" class="form-control input inputheight" required="required">
+                                <span class="marg">Course</span>
+                                <span asp-validation-for="course" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-2 mb-2">
+                    <button type="reset" class="btn btn-light widbtn editmodalcancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary widbtn savebtn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $('.input').on('keyup', function () {
+            var val = $(this).val();
+            if (val != "") {
+                $(this).next().addClass('transformclass');
+            }
+            else {
+                $(this).next().removeClass('transformclass');
+            }
+        });
+        $('.input').each(function () {
+            var val = $(this).val();
+            if (val != "") {
+                $(this).next().addClass('transformclass');
+            }
+        });
+        $('.editmodalcancel').on('click', function () {
+            console.log("hii");
+            var link = document.createElement('a');
+            link.href = "/Home/";
+            link.click();
+        });
+    });
+</script>

@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment", "Assignment\Assignment.csproj", "{A5945E99-9F8E-491F-AA0E-F2C22763E44A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{29212EF9-4FC7-41A9-B534-C8A7389A368C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{2A085A2B-1DDE-4DCA-84F2-6E35AC9113FC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5945E99-9F8E-491F-AA0E-F2C22763E44A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5945E99-9F8E-491F-AA0E-F2C22763E44A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5945E99-9F8E-491F-AA0E-F2C22763E44A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5945E99-9F8E-491F-AA0E-F2C22763E44A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29212EF9-4FC7-41A9-B534-C8A7389A368C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29212EF9-4FC7-41A9-B534-C8A7389A368C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29212EF9-4FC7-41A9-B534-C8A7389A368C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29212EF9-4FC7-41A9-B534-C8A7389A368C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A085A2B-1DDE-4DCA-84F2-6E35AC9113FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A085A2B-1DDE-4DCA-84F2-6E35AC9113FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A085A2B-1DDE-4DCA-84F2-6E35AC9113FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A085A2B-1DDE-4DCA-84F2-6E35AC9113FC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {625E6FBB-2C5E-4D09-BEFD-ABC9A7CE7B00}
+	EndGlobalSection
+EndGlobal

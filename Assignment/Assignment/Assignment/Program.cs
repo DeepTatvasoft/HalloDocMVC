@@ -1,9 +1,15 @@
+using Data.DataContext;
+using Services.Contracts;
+using Services.Implementatiin;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddDbContext<ApplicationDbContext>();
+builder.Services.AddTransient<IHomeFunction, HomeFunction>();
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

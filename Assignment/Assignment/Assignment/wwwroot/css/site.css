@@ -1,0 +1,81 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+.head {
+    background-color: #915727;
+}
+
+.SMS {
+    width: 85%;
+}
+
+.containerwid {
+    width: 85% !important;
+}
+
+.searchbox {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.widbtn {
+    width: 45%;
+}
+
+.cancelbtn {
+    box-shadow: 0px 1px 2px black;
+}
+
+.savebtn {
+    --bs-btn-bg: #3f4fb3 !important;
+}
+
+.marg {
+    position: absolute;
+    pointer-events: none;
+    transition: 0.3s;
+    margin: -36px 13px;
+    color: #3f4fb3;
+}
+
+
+.inputbox input {
+    width: 100%;
+    outline: none;
+}
+
+    .transformclass {
+        /* color: blueviolet; */
+        transform: translateX(0px) translateY(-21px);
+        background-color: white;
+    }
+
+.dob {
+    position: absolute;
+    pointer-events: none;
+    transition: 0.3s;
+    margin: -54px 7px;
+    color: #3f4fb3;
+    background-color:white;
+}
+
+.inputheight{
+    height:45px;
+}
+
+.txtbold{
+    font-weight : 600;
+}
+
+.selectGrade {
+    color: #3f4fb3 !important;
+}
+
+.editfield {
+    --bs-btn-bg: #915727 !important;
+}
+.deletefield {
+    --bs-btn-bg: black !important;
+}
