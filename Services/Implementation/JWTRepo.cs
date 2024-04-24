@@ -22,11 +22,11 @@ namespace DataAccess.ServiceRepository
             var claims = new List<Claim>
             {
                 new Claim("AspNetId" , loggedInPerson.aspuserid.ToString()),
-                new Claim("UserName" , loggedInPerson.username),
-                new Claim("Role" , loggedInPerson.role)
+                new Claim("UserName" , loggedInPerson.username!),
+                new Claim("Role" , loggedInPerson.role!)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.UtcNow.AddMinutes(30);
 
@@ -48,7 +48,7 @@ namespace DataAccess.ServiceRepository
             if (token == null) { return false; }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]!);
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters

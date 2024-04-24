@@ -11,5 +11,6 @@ namespace Services.Contracts
         (bool, int) familyinfo(FamilyFriendReqSubmit model);
         void patientinfo(PatientReqSubmit model, int adminid);
         void Emailentry(string email, int id);
+        bool CheckEmail(string email);
     }
 }

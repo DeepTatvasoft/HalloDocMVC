@@ -31,7 +31,7 @@
                 @foreach (var obj in Model.req!)
                 {
                     var reqclient = obj.Requestclients.ElementAt(0);
-                    var reqstatuslog = obj.Requeststatuslogs.FirstOrDefault(u=>u.Status == 1);
+                    var reqstatuslog = obj.Requeststatuslogs.FirstOrDefault(u => u.Status == 1);
                     var color = "mediumpurple";
                     var type = "";
                     @if (obj.Requesttypeid == 1)

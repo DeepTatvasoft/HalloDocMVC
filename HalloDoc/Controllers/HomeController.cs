@@ -14,16 +14,14 @@ namespace HalloDoc.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
         private readonly IHomeFunction homefunction;
+        private readonly IAdminFunction adminfunction;
         private readonly IJwtRepository jwtRepository;
-        public HomeController(ILogger<HomeController> logger, IHomeFunction homeFunction, ApplicationDbContext context, IJwtRepository jwtRepository)
+        public HomeController(IHomeFunction homeFunction, IJwtRepository jwtRepository, IAdminFunction adminfunction)
         {
-            _logger = logger;
             this.homefunction = homeFunction;
-            _context = context;
             this.jwtRepository = jwtRepository;
+            this.adminfunction = adminfunction;
         }
 
         public IActionResult patientsite()
@@ -70,17 +68,13 @@ namespace HalloDoc.Controllers
         public IActionResult CreateAccount(string id)
         {
             id = id.Substring(3);
-            PatientReqSubmit patientReqSubmit = new PatientReqSubmit();
             try
             {
-                int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
-                patientReqSubmit.reqclientid = id;
-                patientReqSubmit.Email = _context.Requests.FirstOrDefault(u => u.Requestid == id2)!.Email;
-                return View(patientReqSubmit);
+                return View(homefunction.CreateAccount(id));
             }
             catch
             {
-                return RedirectToAction("Patientlogin","Home");
+                return RedirectToAction("Patientlogin", "Home");
             }
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -130,8 +124,7 @@ namespace HalloDoc.Controllers
                 LoggedInPersonViewModel model = new LoggedInPersonViewModel();
                 model.aspuserid = (int)user.Aspnetuserid;
                 model.username = user.Firstname;
-                model.role = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == user.Aspnetuserid.ToString())!.Roleid;
-                //model.userid = _context.Users.FirstOrDefault(u => u.Aspnetuserid == id).Userid;
+                model.role = adminfunction.getrole(model.aspuserid);
                 Response.Cookies.Append("jwt", jwtRepository.GenerateJwtToken(model));
                 return RedirectToAction("PatientDashboard", "Dashboard");
             }

@@ -2261,7 +2261,7 @@ namespace Services.Implementation
             }
             var allphyids = _context.Physicians.ToList().Select(x => x.Physicianid).ToList();
             OffDutyIds = allphyids.Except(OnCallIds).ToList();
-            var stopnoti = _context.Physiciannotifications.Where(x => x.Isnotificationstopped == new BitArray(new[] {false})).Select(x => x.Physicianid).ToList();
+            var stopnoti = _context.Physiciannotifications.Where(x => x.Isnotificationstopped == new BitArray(new[] { false })).Select(x => x.Physicianid).ToList();
             foreach (var id in stopnoti)
             {
                 OffDutyIds.Remove(id);
@@ -2271,6 +2271,48 @@ namespace Services.Implementation
                 var physicianemail = _context.Physicians.FirstOrDefault(x => x.Physicianid == id)!.Email;
                 sendEmail(physicianemail, "There is an urgent need to address the shortage of physicians.", message);
             }
+        }
+        public string getrole(int id)
+        {
+            return _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == id.ToString())!.Roleid;
+        }
+        public Admin GetAdmin(int id)
+        {
+            return _context.Admins.FirstOrDefault(x => x.Aspnetuserid == id.ToString())!;
+        }
+        public Physician GetPhysician(int id)
+        {
+            return _context.Physicians.FirstOrDefault(u => u.Aspnetuserid == id.ToString())!;
+        }
+        public bool phyemailcheck(string email)
+        {
+            var aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == email);
+            if (aspnetuser != null)
+            {
+                return false;
+            }
+            return true;
+        }
+        public PartnersModal PartenersbyType(int profftype)
+        {
+            PartnersModal modal = new PartnersModal();
+            modal.healthprofessionals = _context.Healthprofessionals.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            if (profftype != 0)
+            {
+                modal.healthprofessionals = _context.Healthprofessionals.Where(u => u.Profession == profftype && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            }
+            modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            return modal;
+        }
+        public AddBusinessModal AddBusiness()
+        {
+            AddBusinessModal modal = new AddBusinessModal();
+            modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
+            return modal;
+        }
+        public List<Physicianlocation> getPhyLocation()
+        {
+            return _context.Physicianlocations.ToList();
         }
     }
 }

@@ -11,11 +11,9 @@ namespace HalloDoc.Controllers
 {
     public class DashboardController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IDashboard dashboard;
-        public DashboardController(ApplicationDbContext context, IDashboard dashboard)
+        public DashboardController(IDashboard dashboard)
         {
-            _context = context;
             this.dashboard = dashboard;
         }
         public IActionResult PatientDashboard()
@@ -54,7 +52,6 @@ namespace HalloDoc.Controllers
             {
                 dashboard.AddPatientRequestWiseFile(dashedit.Upload, dashedit.reqid);
             }
-            _context.SaveChanges();
             return RedirectToAction("ViewDocument", "Dashboard", new { id = EncryptDecryptHelper.Encrypt(dashedit.reqid.ToString()) });
         }
         [Authorization("3")]
@@ -76,9 +73,10 @@ namespace HalloDoc.Controllers
             return File(dashboard.FileDownload(id).Item1, dashboard.FileDownload(id).Item2, dashboard.FileDownload(id).Item2);
         }
         [Authorization("3")]
-        public IActionResult SubmitForMe(int id)
+        public IActionResult SubmitForMe(string id)
         {
-            return View(dashboard.SubmitForMe(id));
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
+            return View(dashboard.SubmitForMe(id2));
         }
         [Authorization("3")]
         public IActionResult SubmitForElse()
@@ -92,7 +90,7 @@ namespace HalloDoc.Controllers
             if (chk.ElementAt(0) == "me")
             {
                 int uid = (int)HttpContext.Session.GetInt32("Userid")!;
-                return RedirectToAction("SubmitForMe", new { id = uid });
+                return RedirectToAction("SubmitForMe", new { id = EncryptDecryptHelper.Encrypt(uid.ToString()) });
             }
             else if (chk.ElementAt(0) == "else")
             {

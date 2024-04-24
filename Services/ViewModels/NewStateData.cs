@@ -1,5 +1,6 @@
 ﻿using Data.DataModels;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Services.ViewModels
 {
@@ -19,14 +20,22 @@ namespace Services.ViewModels
         public List<Requeststatuslog>? requeststatuslogs { get; set; }
         public int totalpages { get; set; }
         public int reqid { get; set; }
+        [RegularExpression(@"^([0|\+[0-9]{1,5})?([0-9][0-9]{9})$", ErrorMessage = "Enter a valid 10-digit mobile number")]
+        [Required(ErrorMessage = "Plese enter your Phone Number")]
         public string? phonenumber { get; set; }
+
+        [Required(ErrorMessage = "Please enter your Email Address")]
         public string? emaill { get; set; }
         public int region { get; set; }
         public string? reqtype { get; set; }
         public int currentpage { get; set; }
         public int status { get; set; }
         public string searchkey { get; set; }
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
+        [Required(ErrorMessage = "*First Name is required")]
         public string firstname { get; set; }
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid Last Name")]
+        [Required(ErrorMessage = "*Last Name is required")]
         public string lastname { get; set; }
         public List<Encounter> encounters { get; set; }
     }

@@ -16,10 +16,8 @@ namespace HalloDoc.Controllers
     {
         private readonly IPhysicianFunction physicianFunction;
         private readonly IAdminFunction adminFunction;
-        private readonly ApplicationDbContext _context;
-        public PhysicianController(ApplicationDbContext context, IPhysicianFunction physicianFunction, IAdminFunction adminFunction)
+        public PhysicianController(IPhysicianFunction physicianFunction, IAdminFunction adminFunction)
         {
-            _context = context;
             this.physicianFunction = physicianFunction;
             this.adminFunction = adminFunction;
         }

@@ -12,13 +12,9 @@ namespace HalloDoc.Controllers
 {
     public class FormController : Controller
     {
-        private readonly ILogger<FormController> _logger;
-        private readonly ApplicationDbContext _context;
         private readonly IFormSubmit formSubmit;
-        public FormController(ILogger<FormController> logger, ApplicationDbContext context, IFormSubmit formSubmit)
+        public FormController(IFormSubmit formSubmit)
         {
-            _logger = logger;
-            _context = context;
             this.formSubmit = formSubmit;
         }
         public IActionResult patientinfo(PatientReqSubmit model)
@@ -83,7 +79,7 @@ namespace HalloDoc.Controllers
         [HttpGet]
         public IActionResult CheckEmail(string email)
         {
-            var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
+            var emailExists = formSubmit.CheckEmail(email);
             return Json(new { exists = emailExists });
         }
         public Task sendEmail(string email, string subject, string message)

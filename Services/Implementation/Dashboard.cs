@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -175,6 +176,7 @@ namespace Services.Implementation
             modal.LastName = user.Lastname;
             modal.PhoneNumber = user.Mobile;
             modal.Email = user.Email;
+            modal.DOB = new DateOnly((int)user.Intyear!, Convert.ToInt32(user.Strmonth), (int)user.Intdate!);
             return modal;
         }
         public bool checkmail(string email)

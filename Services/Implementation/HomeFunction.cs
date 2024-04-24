@@ -89,5 +89,13 @@ namespace Services.Implementation
             _context.Requests.Update(req);
             _context.SaveChanges();
         }
+        public PatientReqSubmit CreateAccount(string id)
+        {
+            PatientReqSubmit patientReqSubmit = new PatientReqSubmit();
+            int id2 = int.Parse(EncryptDecryptHelper.Decrypt(id));
+            patientReqSubmit.reqclientid = id;
+            patientReqSubmit.Email = _context.Requests.FirstOrDefault(u => u.Requestid == id2)!.Email;
+            return patientReqSubmit;
+        }
     }
 }

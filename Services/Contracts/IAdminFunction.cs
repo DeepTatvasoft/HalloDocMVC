@@ -107,5 +107,12 @@ namespace Services.Contracts
         void EncounterBtn(NewStateData modal, string[] encounterchk, int adminid);
         void UnblockReq(int id);
         void RequestDTY(string message);
+        string getrole(int id);
+        Admin GetAdmin(int id);
+        Physician GetPhysician(int id);
+        bool phyemailcheck(string email);
+        PartnersModal PartenersbyType(int profftype);
+        AddBusinessModal AddBusiness();
+        List<Physicianlocation> getPhyLocation();
     }
 }

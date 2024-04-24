@@ -1,6 +1,7 @@
 ﻿using Data.DataContext;
 using Data.DataModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
@@ -371,6 +372,10 @@ namespace Services.Implementation
             };
             _context.Emaillogs.Add(emaillog);
             _context.SaveChanges();
+        }
+        public bool CheckEmail(string email)
+        {
+            return _context.Aspnetusers.Any(u => u.Email == email);
         }
     }
 }

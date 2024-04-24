@@ -10,5 +10,6 @@ namespace Services.Contracts
         public (bool,string) changepassword(ResetPasswordVM vm, string id);
         public Aspnetuser getaspuser(PatientReqSubmit model);
         void newaccount(PatientReqSubmit model, string id);
+        PatientReqSubmit CreateAccount(string id);
     }
 }

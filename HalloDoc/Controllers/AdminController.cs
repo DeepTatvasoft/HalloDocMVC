@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Services.ViewModels;
-using System.Collections;
 using System.Net.Mail;
 using System.Net;
 using Authorization = Services.Implementation.Authorization;
@@ -10,21 +9,18 @@ using DataAccess.ServiceRepository.IServiceRepository;
 using Data.DataContext;
 using Newtonsoft.Json;
 using Common.Helper;
-using NPOI.OpenXmlFormats.Spreadsheet;
 
 namespace HalloDoc.Controllers
 {
 
     public class AdminController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IAdminFunction adminFunction;
         private readonly IDashboard dashboard;
         private readonly IJwtRepository jwtRepository;
         private readonly IPhysicianFunction physicianFunction;
-        public AdminController(ApplicationDbContext context, IAdminFunction adminFunction, IDashboard dashboard, IJwtRepository jwtRepository, IPhysicianFunction physicianFunction)
+        public AdminController(IAdminFunction adminFunction, IDashboard dashboard, IJwtRepository jwtRepository, IPhysicianFunction physicianFunction)
         {
-            _context = context;
             this.adminFunction = adminFunction;
             this.dashboard = dashboard;
             this.jwtRepository = jwtRepository;
@@ -170,12 +166,11 @@ namespace HalloDoc.Controllers
                 LoggedInPersonViewModel model = new LoggedInPersonViewModel();
                 model.aspuserid = id;
                 model.username = adminname;
-                model.role = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == id.ToString())!.Roleid;
-                //model.userid = _context.Users.FirstOrDefault(u => u.Aspnetuserid == id).Userid;
+                model.role = adminFunction.getrole(id);
                 Response.Cookies.Append("jwt", jwtRepository.GenerateJwtToken(model));
                 if (model.role == "1")
                 {
-                    var admin = _context.Admins.FirstOrDefault(x => x.Aspnetuserid == id.ToString());
+                    var admin = adminFunction.GetAdmin(id);
                     HttpContext.Session.SetString("Adminname", adminname);
                     HttpContext.Session.SetInt32("Adminid", admin!.Adminid);
                     if (HttpContext.Session.GetString("Adminname") != null)
@@ -186,7 +181,7 @@ namespace HalloDoc.Controllers
                 }
                 else
                 {
-                    var physician = _context.Physicians.FirstOrDefault(u => u.Aspnetuserid == id.ToString());
+                    var physician = adminFunction.GetPhysician(id);
                     HttpContext.Session.SetString("physicianname", adminname);
                     HttpContext.Session.SetInt32("physicianid", physician!.Physicianid);
                     if (HttpContext.Session.GetString("physicianname") != null)
@@ -260,7 +255,6 @@ namespace HalloDoc.Controllers
             {
                 dashboard.AddPatientRequestWiseFile(myfile, reqid);
             }
-            _context.SaveChanges();
             return PartialView("AdminLayout/_ViewDocument", adminFunction.AdminuploadDoc(reqid));
         }
         [Authorization("1,2")]
@@ -771,12 +765,7 @@ namespace HalloDoc.Controllers
         }
         public bool phyemailcheck(string email)
         {
-            var aspnetuser = _context.Aspnetusers.FirstOrDefault(u => u.Email == email);
-            if (aspnetuser != null)
-            {
-                return false;
-            }
-            return true;
+            return adminFunction.phyemailcheck(email);
         }
         [Authorization("1,2")]
         public IActionResult Scheduling()
@@ -906,21 +895,12 @@ namespace HalloDoc.Controllers
         [Authorization("1")]
         public IActionResult PartenersbyType(int profftype)
         {
-            PartnersModal modal = new PartnersModal();
-            modal.healthprofessionals = _context.Healthprofessionals.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
-            if (profftype != 0)
-            {
-                modal.healthprofessionals = _context.Healthprofessionals.Where(u => u.Profession == profftype && u.Isdeleted == new BitArray(new[] { false })).ToList();
-            }
-            modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
-            return PartialView("AdminLayout/_PartnerstabTable", modal);
+            return PartialView("AdminLayout/_PartnerstabTable", adminFunction.PartenersbyType(profftype));
         }
         [Authorization("1")]
         public IActionResult AddBusiness()
         {
-            AddBusinessModal modal = new AddBusinessModal();
-            modal.healthprofessionaltypes = _context.Healthprofessionaltypes.Where(u => u.Isdeleted == new BitArray(new[] { false })).ToList();
-            return View(modal);
+            return View(adminFunction.AddBusiness());
         }
         [Authorization("1")]
         public IActionResult AddBusinessSubmit(AddBusinessModal modal)
@@ -1014,7 +994,7 @@ namespace HalloDoc.Controllers
         public IActionResult LocationTab()
         {
             LocationtabModal modal = new LocationtabModal();
-            modal.physicianlocations = JsonConvert.SerializeObject(_context.Physicianlocations.ToList());
+            modal.physicianlocations = JsonConvert.SerializeObject(adminFunction.getPhyLocation());
             return View(modal);
         }
         [Authorization("1")]
