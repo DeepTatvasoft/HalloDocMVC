@@ -72,6 +72,12 @@ namespace Services.Implementation
                 Intdate = req.Requestclients.ElementAt(0).Intdate,
                 Intyear = req.Requestclients.ElementAt(0).Intyear,
                 Strmonth = req.Requestclients.ElementAt(0).Strmonth,
+                Mobile = req.Phonenumber,
+                Street = req.Requestclients.ElementAt(0).Street,
+                City = req.Requestclients.ElementAt(0).City,
+                State = req.Requestclients.ElementAt(0).State,
+                Zipcode = req.Requestclients.ElementAt(0).Zipcode,
+                Createddate = DateTime.Now,
             };
             _context.Users.Add(user);
             _context.SaveChanges();
