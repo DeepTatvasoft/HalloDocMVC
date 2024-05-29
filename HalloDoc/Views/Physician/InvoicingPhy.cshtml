@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Physician Invoicing";
+    Layout = "PhysicianLayout/_PhysicianDashboard";
+}
+
+<partial name="_Notification" />
+@model Services.ViewModels.ProviderFinalizeTimeSheetModal
+<div class="main">
+    <div class="back container mb-3 mt-3 d-flex justify-content-between">
+        <h4 class="mt-3 fw-bold">Timesheets</h4>
+        <a asp-controller="Physician" asp-action="PhysicianDashboard" style="text-decoration: none;" class="backimg boxshadowbtn">
+            <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+            <span>Back</span>
+        </a>
+    </div>
+    <div class="container bg-white lightmode shadow" style="padding-bottom:20px" id="maincontent">
+        <form asp-action="FinalizeTimesheetPhy" asp-controller="Physician">
+            <div class="d-flex justify-content-between flex-wrap">
+                <div class="form-floating mb-3 mb-sm-0" style="width:250px">
+                    <select asp-for="DropDate" class="form-select DropDate" aria-label="Floating label select example">
+                        @{
+                            var firstDayOfMonth = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, 1);
+                            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                            <option value="@firstDayOfMonth">@firstDayOfMonth - @firstDayOfMonth.AddDays(13)</option>
+                            <option value="@firstDayOfMonth.AddDays(14)">@firstDayOfMonth.AddDays(14) - @lastDayOfMonth</option>
+                        }
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            firstDayOfMonth = firstDayOfMonth.AddMonths(-1);
+                            lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                            <option value="@firstDayOfMonth">@firstDayOfMonth - @firstDayOfMonth.AddDays(13)</option>
+                            <option value="@firstDayOfMonth.AddDays(14)">@firstDayOfMonth.AddDays(14) - @lastDayOfMonth</option>
+                        }
+                    </select>
+                    <label for="floatingSelect">Search by Timesheetperiod</label>
+                </div>
+                <div class="mt-2">
+                    <button class="btn btn-outline-info finalizebtn">
+                        Finalize Timesheet
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div class="mt-3 finalizetimesheet">
+            <partial name="PhysicianLayout/_FinalizedTimesheet" />
+        </div>
+
+    </div>
+
+    <div class="container bg-white lightmode shadow mt-3" style="padding-bottom:20px" id="maincontent">
+        <h6 class="fw-bold">TimeSheet Reimbursement</h6>
+        <div class="finalizeReimbursement mt-3">
+            <partial name="PhysicianLayout/_FinalizedReimbursement" />
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    document.getElementById('Invoicing-tab').classList.add('active');
+    var isfinalize = '@Model.isfinalized';
+    if (isfinalize == 'True') {
+        $('.finalizebtn').addClass('d-none');
+    }
+    else {
+        $('.finalizebtn').removeClass('d-none');
+    }
+    $('.DropDate').on('change', function () {
+        var day = $(this).val();
+        $.ajax({
+            url: "/Physician/FinalizeTimeSheetTable",
+            data: { date: day },
+            success: function (response) {
+                $('.finalizetimesheet').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+        $.ajax({
+            url: "/Physician/FinalizeReimbursementTable",
+            data: { date: day },
+            success: function (response) {
+                $('.finalizeReimbursement').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+</script>
+
+
+

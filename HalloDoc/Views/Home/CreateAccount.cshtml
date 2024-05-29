@@ -60,7 +60,7 @@
             $('#passwordWarning').html("*Please enter password")
         }
         else {
-            var regex = /(?=.*\d.*)(?=.*[a-zA-Z].*)(?=.*[!#\$%&\?].*).{8,20}/
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@@$!%#*?&])[A-Za-z\d@@$!#%*?&]{8,}$/
 
             if (!regex.test($('#togpass').val())) {
                 $('#passwordWarning').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");

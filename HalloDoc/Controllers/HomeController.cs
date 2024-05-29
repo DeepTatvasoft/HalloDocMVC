@@ -83,6 +83,7 @@ namespace HalloDoc.Controllers
         {
             TempData["error"] = "User logged out Sucessfully";
             HttpContext.Session.Remove("Userid");
+            Response.Cookies.Delete("jwt");
             return RedirectToAction("patientlogin", "Home");
         }
         public IActionResult newaccount(PatientReqSubmit model, string id)
@@ -158,6 +159,18 @@ namespace HalloDoc.Controllers
                 TempData["error"] = "Both passwords are different";
                 return RedirectToAction("AdminResetPass", "Admin", new { id = "id=" + EncryptDecryptHelper.Encrypt(id) });
             }
+        }
+        public IActionResult ChatwithProvider(int phyid)
+        {
+            return PartialView("_ChatBox",homefunction.ChatwithProvider(phyid));
+        }
+        public IActionResult ChatwithAdmin(int sendaerid, int receiverid)
+        {
+            return PartialView("_ChatBox",homefunction.ChatwithAdmin(sendaerid,receiverid));
+        }
+        public List<Chathistory> GetAllChat(int sendid,int thisid)
+        {
+            return homefunction.GetAllChat(sendid, thisid);
         }
     }
 }

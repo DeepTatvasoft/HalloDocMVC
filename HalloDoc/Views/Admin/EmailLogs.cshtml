@@ -5,7 +5,7 @@
 @model Services.ViewModels.EmailLogsModal
 
 <div class="container-fluid mt-3 dashboard shadow p-3 rounded">
-    <h5 class="fw-bold">Patient Histroy</h5>
+    <h5 class="fw-bold">Email Logs (Gmail)</h5>
     <form id="emaillogForm">
         <input asp-for="currentpage" id="curpageinput" type="hidden" />
         <div class="mt-3 p-2 bg-white lightmode boxshadow rounded">
@@ -67,7 +67,7 @@
     document.getElementById('Records-tab').classList.add('active');
     document.getElementById('emaillogs').classList.add('active');
     function ResetFormWithJS() {
-        document.getElementById('myForm').reset();
+        document.getElementById('emaillogForm').reset();
         document.getElementById('curpageinput').disabled = false;
     }
     $(document).ready(function () {

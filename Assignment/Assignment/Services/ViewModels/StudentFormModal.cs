@@ -22,7 +22,7 @@ namespace Services.ViewModels
         [Required]
         public string course { get; set; }
         [Required]
-        public DateOnly DOB { get; set; }
+        public DateTime DOB { get; set; }
         public List<Student> students { get; set; }
         public string gender { get; set; }
         public int studentid { get; set; }

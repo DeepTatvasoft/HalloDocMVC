@@ -1,25 +1,25 @@
 ﻿using Common.Helper;
 using Data.DataContext;
 using Data.DataModels;
+using DataAccess.ServiceRepository.IServiceRepository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Services.Contracts;
 using Services.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Services.Implementation
 {
     public class HomeFunction : IHomeFunction
     {
         private readonly ApplicationDbContext _context;
-        public HomeFunction(ApplicationDbContext context)
+        private readonly IHttpContextAccessor httpContext;
+        public HomeFunction(ApplicationDbContext context,IHttpContextAccessor _httpContext)
         {
             _context = context;
+            httpContext = _httpContext;
         }
         public (Aspnetuser, User) ValidateUser([Bind("Email,Passwordhash")] Aspnetuser aspNetUser)
         {
@@ -102,6 +102,35 @@ namespace Services.Implementation
             patientReqSubmit.reqclientid = id;
             patientReqSubmit.Email = _context.Requests.FirstOrDefault(u => u.Requestid == id2)!.Email;
             return patientReqSubmit;
+        }
+        public ChatBoxModal ChatwithProvider(int phyid)
+        {
+            ChatBoxModal modal = new ChatBoxModal();
+            var phy = _context.Physicians.FirstOrDefault(u=>u.Physicianid == phyid);
+            modal.photo = phy?.Photo??"";
+            modal.sendtoname = phy.Firstname;
+            modal.sendtoaspid = phy.Aspnetuserid!;
+            var jwtservice = httpContext.HttpContext!.RequestServices.GetService<IJwtRepository>();
+            var request = httpContext.HttpContext.Request;
+            var token = request.Cookies["jwt"];
+            jwtservice!.ValidateToken(token!, out JwtSecurityToken jwttoken);
+            var roleClaim = jwttoken.Claims.FirstOrDefault(x => x.Type == "AspNetId")!.Value;
+            modal.thisaspid = roleClaim;
+            return modal;
+        }
+        public ChatBoxModal ChatwithAdmin(int sendaerid, int receiverid)
+        {
+            ChatBoxModal modal = new ChatBoxModal();
+            var admin = _context.Admins.FirstOrDefault(u => u.Aspnetuserid == receiverid.ToString());
+            modal.sendtoname = admin.Firstname;
+            modal.sendtoaspid = receiverid.ToString();
+            modal.thisaspid = sendaerid.ToString();
+            return modal;
+        }
+        public List<Chathistory> GetAllChat(int sendid,int thisid)
+        {
+            var allchat = _context.Chathistories.Where(u => (u.Sender == sendid.ToString() && u.Reciever == thisid.ToString()) || (u.Reciever == sendid.ToString() && u.Sender == thisid.ToString())).OrderBy(u=>u.Senttime).ToList();
+            return allchat;
         }
     }
 }

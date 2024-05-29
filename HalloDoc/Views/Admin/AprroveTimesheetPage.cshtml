@@ -1,0 +1,153 @@
+﻿@{
+    ViewData["Title"] = "Approve Timesheet";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+@model Services.ViewModels.ProviderFinalizeTimeSheetModal;
+
+@{
+    var firstDayOfMonth = new DateTime(Model.DropDate.Year, Model.DropDate.Month, 1);
+    var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+    var startDate = Model.DropDate;
+    DateTime endDate;
+    if (Model.DropDate.Day == 1)
+    {
+        endDate = startDate.AddDays(13);
+    }
+    else
+    {
+        endDate = lastDayOfMonth;
+    }
+    var index = startDate;
+    int i = 0;
+}
+
+<div class="container pt-4">
+    <div class="d-flex justify-content-end align-items-center">
+        <a class="btn btn-outline-info boxshadowbtn" asp-action="InvoicingPhy" asp-controller="Physician">
+            <i class="fa-solid fa-angle-left"></i>
+            Back
+        </a>
+    </div>
+    <div class="p-3 mt-3 shadow">
+        <form asp-action="AdminFinalizeTimeSheetSubmit" asp-controller="Admin">
+            <input type="hidden" asp-for="physicianid"/>
+            <input type="hidden" asp-for="phyname"/>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead style="--bs-table-bg:#f1f1f1">
+                        <tr>
+                            <th>Date</th>
+                            <th>On-Call Hours</th>
+                            <th>Total Hours</th>
+                            <th>Weekend/Holiday</th>
+                            <th>Number Of Housecalls</th>
+                            <th>Number Of Phone Consults</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @while (index <= endDate)
+                        {
+                            <tr>
+                                <input type="hidden" asp-for="Rows![i].Date" class="form-control" value="@index" />
+                                <td>@index.ToString("d")</td>
+                                <td><input type="number" asp-for="Rows![i].OnCallHours" class="form-control" min=0 /></td>
+                                <td><input type="number" asp-for="Rows![i].TotalHours" class="form-control" min="0" /></td>
+                                <td><input type="checkbox" asp-for="Rows[i].IsHoliday" /></td>
+                                <td><input type="number" asp-for="Rows![i].NumberOfHouseCalls" class="form-control" min=0 /></td>
+                                <td><input type="number" asp-for="Rows![i].NumberOfPhoneConsults" class="form-control" min=0 /></td>
+                            </tr>
+                            index = index.AddDays(1);
+                            i++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-info text-white boxshadowbtn" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <button class="btn btn-info text-white mt-3 ms-2 boxshadowbtn addreceipt" data-bs-toggle="collapse" data-bs-target="#toggleDiv">Add Receipts</button>
+    @{
+        index = startDate;
+        i = 0;
+    }
+    <div class="content p-3 collapse shadow mb-3" id="toggleDiv">
+        <div class="table-responsive">
+            <table class="table">
+                <thead style="--bs-table-bg:#f1f1f1">
+                    <tr>
+                        <th>Date</th>
+                        <th>Item</th>
+                        <th>Amount</th>
+                        <th>Bill</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @while (index <= endDate)
+                    {
+                        if (Model.receiptsDatas != null && Model.receiptsDatas!.Count() > 0)
+                        {
+                            Model.showreceiptsdata = Model.receiptsDatas!.FirstOrDefault(u => u.Date == index)!;
+                        }
+                            <input type="hidden" asp-for="receiptsdate" value="@index" />
+                        <tr>
+                            <input type="hidden" asp-for="showreceiptsdata.Date" id="date_@i" class="form-control" value="@index" />
+                                @if (Model.showreceiptsdata == null)
+                                {
+                                <td>@index.ToString("d")</td>
+                                <td><input asp-for="showreceiptsdata.itemname" id="itemname_@i" onchange="receiptAction('saveaction_@i')" type="text" class="form-control" /></td>
+                                <td><input asp-for="showreceiptsdata.amount" id="amount_@i" onchange="receiptAction('saveaction_@i')" type="number" class="form-control" min=0 /></td>
+                                <td>
+                                    <div class="input-group mb-3">
+                                        <input asp-for="showreceiptsdata.bill" onchange="receiptAction('saveaction_@i')" type="file" class="form-control pdffile" id="inputGroupFile02_@i">
+                                        <label class="input-group-text bg-info text-white" for="inputGroupFile02">Upload</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="d-none" id="saveaction_@i">
+                                        <button type="button" class="btn btn-info text-white" onclick="savereceipt('@i')">Save</button>
+                                        <button type="reset" class="btn btn-outline-info" onclick="cancelaction('saveaction_@i')">Cancel</button>
+                                    </span>
+                                </td>
+                                }
+                                else
+                                {
+                                <td>@index.ToString("d")</td>
+                                <td>
+                                    <span class="savedname_@i">@Model.showreceiptsdata.itemname</span>
+                                    <span class="d-none savedinputname_@i"><input asp-for="showreceiptsdata.itemname" id="itemname_@i" onchange="receiptAction('saveaction_@i')" type="text" class="form-control" /></span>
+
+                                </td>
+                                <td>
+                                    <span class="savedamount_@i">@Model.showreceiptsdata.amount</span>
+                                    <span class="d-none savedamountname_@i"><input asp-for="showreceiptsdata.amount" id="amount_@i" onchange="receiptAction('saveaction_@i')" type="number" class="form-control" min=0 /></span>
+                                </td>
+                                <td>@Model.showreceiptsdata.filename</td>
+                                <td>
+                                    <span class="editaction">
+                                        <a href="/ReceiptsBill/@Model.showreceiptsdata.filename" target="_blank" class="btn btn-outline-info btn-sm">View</a>
+                                    </span>
+                                </td>
+                                }
+                        </tr>
+                        index = index.AddDays(1);
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end">
+        <a asp-action="ApproveTimesheetBtn" asp-controller="Admin" asp-route-id="@Model.biweekid" class="btn btn-info text-white">Approve</a>
+    </div>
+</div>
+
+
+
+
+<script>
+    document.getElementById('invoicingdrop').classList.add('active');
+    document.getElementById('providertab').classList.add('active');
+</script>

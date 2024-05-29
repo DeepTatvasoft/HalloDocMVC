@@ -1,0 +1,114 @@
+﻿@model Services.ViewModels.ChatBoxModal
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header bg-info">
+        <div class="d-flex gap-3">
+            <img src="@Model.photo" width="10%" />
+            <h5 class="modal-title" id="chatModalLabel">@Model.sendtoname</h5>
+            <input type="hidden" id="sendtoaspid" value="@Model.sendtoaspid" />
+            <input type="hidden" id="thisaspid" value="@Model.thisaspid" />
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="d-flex flex-column justify-content-end h-100">
+            <div class="overflow-scroll" id="printmsg">
+            </div>
+        </div>
+    </div>
+    <div class="offcanvas-footer d-flex">
+        <input type="text" class="form-control" id="sendmsg" placeholder="Type a message" />
+        <button type="button" class="btn btn-primary" id="SendBtn">Send</button>
+    </div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+
+<style>
+
+    ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* Make scrollbar transparent */
+    }
+
+    #printmsg li {
+        list-style: none;
+        margin-bottom: 6px;
+    }
+
+        #printmsg li span {
+            background-color: #00bbff;
+            padding: 5px;
+            border-radius: 5px;
+            color: white;
+        }
+</style>
+
+<script>
+    var sendid = $('#sendtoaspid').val();
+    var thisid = $('#thisaspid').val();
+
+
+    $.ajax({
+        url: '/Home/GetAllChat',
+        data: { sendid: sendid, thisid: thisid },
+        success: function (response) {
+            response.forEach(function (item, i) {
+                if (i == 0) {
+                    var li = document.createElement("li");
+                    var span = document.createElement("span");
+                    document.getElementById("printmsg").appendChild(li).appendChild(span);
+                    span.textContent = item.senttime.split('T')[0];
+                    li.classList.add('text-center');
+                    span.classList.add('bg-danger');
+                }
+                if (i > 0 && response[i].senttime.split('T')[0] != response[i - 1].senttime.split('T')[0]) {
+                    var li = document.createElement("li");
+                    var span = document.createElement("span");
+                    document.getElementById("printmsg").appendChild(li).appendChild(span);
+                    span.textContent = item.senttime.split('T')[0];
+                    li.classList.add('text-center');
+                    span.classList.add('bg-danger');
+                }
+                var li = document.createElement("li");
+                var span = document.createElement("span");
+                document.getElementById("printmsg").appendChild(li).appendChild(span)
+                span.textContent = item.msg;
+                if (item.sender == sendid) {
+                    li.classList.add('text-end');
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+
+    connection.on("ReceiveMessage", function (message) {
+        var li = document.createElement("li");
+        var span = document.createElement("span");
+        document.getElementById("printmsg").appendChild(li).appendChild(span)
+        span.textContent = `${message.msg}`;
+    });
+
+    connection.start().then(() => connection.invoke("OnConnectedAsync", sendid)).catch(function (err) {
+        return console.error(err.toString());
+    });
+    document.getElementById("SendBtn").addEventListener("click", function (event) {
+        var sendmsg = $('#sendmsg').val();
+        var li = document.createElement("li");
+        var span = document.createElement("span");
+        document.getElementById("printmsg").appendChild(li).appendChild(span)
+        span.textContent = sendmsg;
+        li.classList.add('text-end');
+        connection.invoke("SendMessage", sendid, thisid, sendmsg).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+        $('#sendmsg').val("");
+    });
+
+</script>

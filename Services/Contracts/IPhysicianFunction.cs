@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Services.ViewModels;
 
 namespace Services.Contracts
@@ -23,5 +24,12 @@ namespace Services.Contracts
         void EncounterFormFinalize(EncounterFormViewModel modal);
         bool ConcludeCareBtn(AdminviewDoc modal, int phyid);
         MonthWiseScheduling LoadSchedulingPartial(string date, int regionid, int phyid);
+        void ProviderFinalizeTimeSheetSubmit(ProviderFinalizeTimeSheetModal modal, int phyid, string phyname);
+        ProviderFinalizeTimeSheetModal FinalizeTimesheetPhy(ProviderFinalizeTimeSheetModal modal, int phyid);
+        bool ReceiptsSubmit(ReceiptsData modal, int phyid, string phyname);
+        void ReceiptsDoc(IFormFile file);
+        void ReceiptsDelete(DateTime date, int phyid);
+        bool FinalizeTimesheet(int id);
+        AdminsBoxModal AdminsBox(int aspnetUserId);
     }
 }

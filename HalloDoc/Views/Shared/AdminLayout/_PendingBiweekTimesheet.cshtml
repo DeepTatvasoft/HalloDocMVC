@@ -1,0 +1,44 @@
+﻿@model Services.ViewModels.ProviderFinalizeTimeSheetModal;
+@if (Model.isfinalized == true)
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead style="--bs-table-bg:#f1f1f1">
+                <tr>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.biweektime.Firstday</td>
+                    <td>@Model.biweektime.Lastday</td>
+                    <td>Pending</td>
+                    <td>
+                        <a asp-action="AprroveTimesheetPage" asp-controller="Admin" asp-route-id="@Model.biweektime.Biweekid" class="btn btn-outline-info">Approve</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <span class="text-secondary">@Model.phyname has not finalized the timesheet in specified time period.</span>
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    var isfinalize = '@Model.isfinalized';
+    var isapproved = '@Model.isapproved';
+    if (isapproved == 'False') {
+        $('.finalizetimesheet').addClass('d-none');
+        $('.timesheetreim').addClass('d-none');
+    }
+    else {
+        $('.finalizetimesheet').removeClass('d-none');
+        $('.timesheetreim').removeClass('d-none');
+    }
+</script>

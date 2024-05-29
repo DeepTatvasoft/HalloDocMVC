@@ -42,7 +42,7 @@ namespace Services.Implementatiin
             student.Gender = gender;
             student.Course = modal.course;
             student.Grade = modal.grade;
-            student.Dob = modal.DOB;
+            student.Dob = DateOnly.FromDateTime(modal.DOB);
             _context.Students.Add(student);
             _context.SaveChanges();
         }
@@ -68,7 +68,7 @@ namespace Services.Implementatiin
             modal.grade = student.Grade;
             modal.course = student.Course;
             modal.studentid = id;
-            modal.DOB = student.Dob;
+            modal.DOB = student.Dob.ToDateTime(TimeOnly.MinValue);
             return modal;
         }
 
@@ -95,7 +95,7 @@ namespace Services.Implementatiin
             student.Gender = gender;
             student.Course = modal.course;
             student.Grade = modal.grade;
-            student.Dob = modal.DOB;
+            student.Dob = DateOnly.FromDateTime(modal.DOB);
             _context.Students.Update(student);
             _context.SaveChanges();
         }

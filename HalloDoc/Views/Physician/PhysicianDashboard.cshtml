@@ -41,7 +41,7 @@
     <div class="container-fluid mt-4">
         <div class="d-flex flex-wrap justify-content-between">
             <h4 class="mt-2 fw-bold">Patients (<span class="headstatus"></span>)</h4>
-            <div class="allbtn d-flex">
+            <div class="d-flex">
                 <button class="btn btn-info text-white ms-1 d-flex align-items-center boxshadowbtn" data-bs-toggle="modal" data-bs-target="#SendLinkModal">
                     <i class="bi bi-send me-1"></i>
                     <span class="d-none d-md-block">
@@ -54,6 +54,7 @@
                         Create Request
                     </span>
                 </a>
+                <button class="btn btn-info text-white ms-1" type="button" onclick="AdminsBox()"><i class="fa-brands fa-rocketchat"></i></button>
             </div>
         </div>
         <div class="tablehead mt-4 d-flex flex-wrap justify-content-between bg-white lightmode boxshadow rounded">
@@ -128,8 +129,8 @@
         </div>
     </div>
 </div>
+<div class="modalContainer"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     document.getElementById('Home-tab').classList.add('active');
     var page = document.getElementById("page-@Model.currentpage");
@@ -324,4 +325,34 @@
             });
         }
     });
+    function AdminsBox() {
+        $.ajax({
+            method: "get",
+            url: '/Physician/AdminsBox',
+            success: function (response) {
+                console.log("fetch success");
+                $('.modalContainer').html(response);
+                $('#adminsBoxModal').modal('show');
+            },
+            error: function (e) {
+                console.log("error while opening adminBox!")
+                console.log(e);
+            }
+        });
+    }
+    function OpenChatAdmin(sendaerid, receiverid) {
+        var phyid = $(this).attr('name');
+        $.ajax({
+            url: '/Home/ChatwithAdmin',
+            data: { sendaerid: sendaerid, receiverid: receiverid },
+            success: function (response) {
+                $('#adminsBoxModal').modal('hide');
+                $('.modalContainer').html(response);
+                $('#offcanvasRight').offcanvas('show');
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
 </script>

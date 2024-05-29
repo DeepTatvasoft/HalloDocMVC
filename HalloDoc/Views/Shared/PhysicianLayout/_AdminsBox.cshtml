@@ -1,0 +1,22 @@
+﻿@model Services.ViewModels.AdminsBoxModal
+<div class="modal fade" id="adminsBoxModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Chat With Admin</h1>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @foreach (var admin in Model.Admins)
+                {
+                    <div style="height:50px" class="card m-2" onclick="OpenChatAdmin(@Model.sId,@admin.Aspnetuserid)">
+                        <div class="d-flex justify-content-start align-items-center h-100">
+                            <span style="cursor:pointer" class="ms-2">@admin.Firstname @admin.Lastname</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

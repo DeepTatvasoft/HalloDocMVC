@@ -450,7 +450,7 @@ namespace Services.Implementationy
             }
             var req = _context.Requests.FirstOrDefault(u => u.Requestid == modal.reqid);
             req!.Status = 8;
-            req.Completedbyphysician = new BitArray(new[] { true }); 
+            req.Completedbyphysician = new BitArray(new[] { true });
             req.Modifieddate = DateTime.Now;
             _context.Requests.Update(req);
             _context.SaveChanges();
@@ -481,6 +481,193 @@ namespace Services.Implementationy
                 month.shiftdetails = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u => u.Shift.Physicianid == phyid && u.Isdeleted == new BitArray(new[] { false })).ToList();
             }
             return month;
+        }
+
+        public ProviderFinalizeTimeSheetModal FinalizeTimesheetPhy(ProviderFinalizeTimeSheetModal modal, int phyid)
+        {
+            var firstDayOfMonth = new DateTime(modal.DropDate.Year, modal.DropDate.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            var startDate = modal.DropDate;
+            DateTime endDate;
+            if (modal.DropDate.Day == 1)
+            {
+                endDate = startDate.AddDays(13);
+            }
+            else
+            {
+                endDate = lastDayOfMonth;
+            }
+            var timesheet = _context.Timesheets.Where(u => u.Physicianid == phyid && u.Date >= startDate && u.Date <= endDate).OrderBy(u => u.Date);
+            modal.isfinalized = false;
+            modal.isapproved = false;
+            if (timesheet.Count() > 0)
+            {
+                var biweek = _context.Biweektimes.FirstOrDefault(u => u.Biweekid == timesheet.First().Biweektimeid);
+                modal.biweektime = biweek!;
+                modal.isfinalized = (bool)biweek!.Isfinalized!;
+                modal.isapproved = (bool)biweek.Isapproved!;
+                modal.biweekid = biweek.Biweekid;
+                modal.Rows = new List<TimeSheetData>();
+                foreach (var obj in timesheet)
+                {
+                    TimeSheetData timesheetData = new TimeSheetData();
+                    timesheetData.OnCallHours = (int?)(obj.Oncallhours ?? 0);
+                    timesheetData.IsHoliday = (bool)obj.Isweekend!;
+                    timesheetData.NumberOfHouseCalls = obj.Housecall ?? 0;
+                    timesheetData.NumberOfPhoneConsults = obj.Consult ?? 0;
+                    timesheetData.TotalHours = timesheetData.OnCallHours;
+                    modal.Rows.Add(timesheetData);
+                }
+            }
+            var reimbursement = _context.Reimbursements.Where(u => u.Physicianid == phyid && u.Date >= startDate && u.Date <= endDate && u.Isdeleted == false);
+            if (reimbursement.Count() > 0)
+            {
+                modal.receiptsDatas = new List<ReceiptsData>();
+                foreach (var obj in reimbursement)
+                {
+                    ReceiptsData receiptsData = new ReceiptsData();
+                    receiptsData.Date = (DateTime)obj.Date!;
+                    receiptsData.itemname = obj.Item;
+                    receiptsData.amount = (int?)obj.Amount;
+                    receiptsData.filename = obj.Bill;
+                    modal.receiptsDatas.Add(receiptsData);
+                }
+
+            }
+            modal.physicians = _context.Physicians.ToList();
+            modal.physicianid = phyid;
+            modal.phyname = modal.physicians.FirstOrDefault(u => u.Physicianid == phyid)!.Firstname;
+            return modal;
+        }
+        public void ProviderFinalizeTimeSheetSubmit(ProviderFinalizeTimeSheetModal modal, int phyid, string phyname)
+        {
+            var bikweektime = _context.Biweektimes.FirstOrDefault(u => u.Physicianid == phyid && u.Firstday == modal.Rows[0].Date);
+            if (bikweektime == null)
+            {
+                Biweektime biweektime = new Biweektime
+                {
+                    Physicianid = phyid,
+                    Isfinalized = false,
+                    Firstday = modal.Rows[0].Date,
+                    Lastday = modal.Rows[modal.Rows.Count() - 1].Date,
+                    Isapproved = false
+                };
+                _context.Biweektimes.Add(biweektime);
+                _context.SaveChanges();
+                foreach (var obj in modal.Rows)
+                {
+                    var timesheet = new Timesheet();
+                    timesheet.Physicianid = phyid;
+                    timesheet.Isweekend = obj.IsHoliday;
+                    timesheet.Oncallhours = obj.OnCallHours??0;
+                    timesheet.Housecall = obj.NumberOfHouseCalls??0;
+                    timesheet.Consult = obj.NumberOfPhoneConsults??0;
+                    timesheet.Createdby = phyname;
+                    timesheet.Biweektimeid = biweektime.Biweekid;
+                    timesheet.Date = obj.Date;
+                    timesheet.Createddate = DateTime.Now;
+                    _context.Timesheets.Add(timesheet);
+                    _context.SaveChanges();
+                }
+            }
+            else
+            {
+                foreach (var obj in modal.Rows)
+                {
+                    var timesheet = _context.Timesheets.FirstOrDefault(t => t.Physicianid == phyid && t.Date == obj.Date);
+                    timesheet!.Physicianid = phyid;
+                    timesheet.Isweekend = obj.IsHoliday;
+                    timesheet.Oncallhours = obj.OnCallHours;
+                    timesheet.Housecall = obj.NumberOfHouseCalls;
+                    timesheet.Consult = obj.NumberOfPhoneConsults;
+                    timesheet.Modifiedby = phyname;
+                    timesheet.Date = obj.Date;
+                    timesheet.Modifieddate = DateTime.Now;
+                    _context.Timesheets.Update(timesheet);
+                    _context.SaveChanges();
+                }
+            }
+        }
+        public void ReceiptsDoc(IFormFile file)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ReceiptsBill");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            string filePath = Path.Combine(path, file.FileName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+        }
+        public bool ReceiptsSubmit(ReceiptsData modal, int phyid, string phyname)
+        {
+            var biweek = _context.Biweektimes.FirstOrDefault(u => u.Physicianid == phyid && u.Firstday <= modal.Date && u.Lastday >= modal.Date);
+            if (biweek == null)
+            {
+                return false;
+            }
+            var reimbursement = _context.Reimbursements.FirstOrDefault(u => u.Physicianid == phyid && u.Date == modal.Date && u.Isdeleted == false);
+            var f = 0;
+            if (reimbursement == null)
+            {
+                reimbursement = new Reimbursement();
+                f = 1;
+            }
+            reimbursement.Physicianid = phyid;
+            reimbursement.Item = modal.itemname;
+            reimbursement.Amount = modal.amount;
+            reimbursement.Isdeleted = false;
+            reimbursement.Biweektimeid = biweek.Biweekid;
+            reimbursement.Date = modal.Date;
+            if (modal.bill != null)
+            {
+                reimbursement.Bill = modal.bill!.FileName;
+                ReceiptsDoc(modal.bill!);
+            }
+            if (f == 1)
+            {
+                reimbursement.Createdby = phyname;
+                reimbursement.Createddate = DateTime.Now;
+                _context.Reimbursements.Add(reimbursement);
+            }
+            else
+            {
+                reimbursement.Modifieddate = DateTime.Now;
+                reimbursement.Modifirdby = phyname;
+                _context.Reimbursements.Update(reimbursement);
+            }
+            _context.SaveChanges();
+            return true;
+        }
+        public void ReceiptsDelete(DateTime date, int phyid)
+        {
+            var reimbursement = _context.Reimbursements.FirstOrDefault(u => u.Physicianid == phyid && u.Date == date);
+            reimbursement!.Isdeleted = true;
+            _context.Reimbursements.Update(reimbursement);
+            _context.SaveChanges();
+        }
+        public bool FinalizeTimesheet(int id)
+        {
+            var biweek = _context.Biweektimes.FirstOrDefault(u => u.Biweekid == id);
+            if (biweek == null)
+            {
+                return false;
+            }
+            biweek!.Isfinalized = true;
+            _context.Biweektimes.Update(biweek);
+            _context.SaveChanges();
+            return true;
+        }
+        public AdminsBoxModal AdminsBox(int aspnetUserId)
+        {
+            var model = new AdminsBoxModal
+            {
+                sId = aspnetUserId,
+                Admins = _context.Admins.ToList()
+            };
+            return model;
         }
     }
 }

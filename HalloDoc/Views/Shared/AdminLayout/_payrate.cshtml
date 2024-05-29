@@ -1,0 +1,163 @@
+﻿@model Services.ViewModels.PayrateModal
+<div class="back container mb-3 mt-3 d-flex justify-content-between">
+    <h4 class="mt-3 fw-bold">Payrate</h4>
+    <a asp-controller="Admin" asp-action="Providertab" style="text-decoration: none;" class="backimg boxshadowbtn">
+        <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+        <span>Back</span>
+    </a>
+</div>
+<div class="container bg-white lightmode shadow" style="padding-bottom:20px" id="maincontent">
+    <div class="table-responsive">
+        <form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">Category</th>
+                        <th scope="col" class="text-center">Payrate</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle">NightShift_Weekend</td>
+                        <td>
+                            <div class="form-floating">
+                                <input asp-for="@Model.payrates.Nightshift" type="number" class="form-control Nightshift" placeholder="payrate" min="0" disabled>
+                                <label for="floatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td style="vertical-align:middle">
+                            <button type="button" onclick="editclick('Nightshift')" class="btn btn-info text-white editNightshift boxshadowbtn">Edit</button>
+                            <button type="button" class="btn btn-info text-white d-none saveNightshift boxshadowbtn" onclick="SavePayrate('Nightshift')" id="save">Save</button>
+                            <button type="reset" onclick="cancelclick('Nightshift')" class="btn btn-outline-info ms-1 d-none cancelNightshift boxshadowbtn">Cancel</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle">Shift</td>
+                        <td>
+                            <div class="form-floating">
+                                <input asp-for="@Model.payrates.Shift" type="number" class="form-control Shift" placeholder="payrate" min="0" disabled>
+                                <label for="floatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td style="vertical-align:middle">
+                            <button type="button" onclick="editclick('Shift')" class="btn btn-info text-white editShift boxshadowbtn">Edit</button>
+                            <button type="button" class="btn btn-info text-white d-none saveShift boxshadowbtn" onclick="SavePayrate('Shift')">Save</button>
+                            <button type="reset" onclick="cancelclick('Shift')" class="btn btn-outline-info ms-1 d-none cancelShift boxshadowbtn">Cancel</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle">HouseCalls_Nights_Weekend</td>
+                        <td>
+                            <div class="form-floating">
+                                <input asp-for="@Model.payrates.Nighthousecall" type="number" class="form-control Nighthousecall" placeholder="payrate" min="0" disabled>
+                                <label for="floatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td style="vertical-align:middle">
+                            <button type="button" onclick="editclick('Nighthousecall')" class="btn btn-info text-white editNighthousecall boxshadowbtn">Edit</button>
+                            <button type="button" class="btn btn-info text-white d-none saveNighthousecall boxshadowbtn" onclick="SavePayrate('Nighthousecall')">Save</button>
+                            <button type="reset" onclick="cancelclick('Nighthousecall')" class="btn btn-outline-info ms-1 d-none cancelNighthousecall boxshadowbtn">Cancel</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle">PhoneConsults</td>
+                        <td>
+                            <div class="form-floating">
+                                <input asp-for="@Model.payrates.Consult" type="number" class="form-control Consult" placeholder="payrate" min="0" disabled>
+                                <label for="floatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td style="vertical-align:middle">
+                            <button type="button" onclick="editclick('Consult')" class="btn btn-info text-white editConsult boxshadowbtn">Edit</button>
+                            <button type="button" class="btn btn-info text-white d-none saveConsult boxshadowbtn" onclick="SavePayrate('Consult')">Save</button>
+                            <button type="reset" onclick="cancelclick('Consult')" class="btn btn-outline-info ms-1 d-none cancelConsult boxshadowbtn">Cancel</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle">PhoneConsults_Nights_Weekend</td>
+                        <td>
+                            <div class="form-floating">
+                                <input asp-for="@Model.payrates.Nightconsult" type="number" class="form-control Nightconsult" placeholder="payrate" min="0" disabled>
+                                <label for="floatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td style="vertical-align:middle">
+                            <button type="button" onclick="editclick('Nightconsult')" class="btn btn-info text-white editNightconsult boxshadowbtn">Edit</button>
+                            <button type="submit" class="btn btn-info text-white d-none saveNightconsult boxshadowbtn" onclick="SavePayrate('Nightconsult')">Save</button>
+                            <button type="reset" onclick="cancelclick('Nightconsult')" class="btn btn-outline-info ms-1 d-none cancelNightconsult boxshadowbtn">Cancel</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle">BatchTesting</td>
+                        <td>
+                            <div class="form-floating">
+                                <input asp-for="@Model.payrates.Batchtesting" type="number" class="form-control Batchtesting" placeholder="payrate" min="0" disabled>
+                                <label for="floatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td style="vertical-align:middle">
+                            <button type="button" onclick="editclick('Batchtesting')" class="btn btn-info text-white editBatchtesting boxshadowbtn">Edit</button>
+                            <button type="button" class="btn btn-info text-white d-none saveBatchtesting boxshadowbtn" onclick="SavePayrate('Batchtesting')">Save</button>
+                            <button type="reset" onclick="cancelclick('Batchtesting')" class="btn btn-outline-info ms-1 d-none cancelBatchtesting boxshadowbtn">Cancel</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="vertical-align:middle">HouseCalls</td>
+                        <td>
+                            <div class="form-floating">
+                                <input asp-for="@Model.payrates.Housecall" type="number" class="form-control Housecall" placeholder="payrate" min="0" disabled>
+                                <label for="floatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td style="vertical-align:middle">
+                            <button type="button" onclick="editclick('Housecall')" class="btn btn-info text-white editHousecall boxshadowbtn">Edit</button>
+                            <button type="button" class="btn btn-info text-white d-none saveHousecall boxshadowbtn" onclick="SavePayrate('Housecall')">Save</button>
+                            <button type="reset" onclick="cancelclick('Housecall')" class="btn btn-outline-info ms-1 d-none cancelHousecall boxshadowbtn">Cancel</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    function editclick(name) {
+        $('.save' + name).removeClass('d-none').addClass('d-inline-block');
+        $('.cancel' + name).removeClass('d-none').addClass('d-inline-block');
+        $('.edit' + name).removeClass('d-inline-block').addClass('d-none');
+        $('.' + name).prop('disabled', false);
+    }
+    function cancelclick(name) {
+        $('.edit' + name).removeClass('d-none').addClass('d-inline-block');
+        $('.save' + name).removeClass('d-inline-block').addClass('d-none');
+        $('.cancel' + name).removeClass('d-inline-block').addClass('d-none');
+        $('.' + name).prop('disabled', true);
+    }
+    function SavePayrate(name) {
+        var val = $('.' + name).val();
+        //console.log(val);
+        $.ajax({
+            url: '/Admin/EditPayrate',
+            data: { type: name, phyid: @Model.phyid , val: val },
+            success: function (response) {
+                $('.main').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+    $('.backimg').on('click', function () {
+        $.ajax({
+            success: function (response) {
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+</script>

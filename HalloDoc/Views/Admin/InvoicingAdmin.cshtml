@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "Admin Invoicing";
+    Layout = "AdminLayout/_AdminDashboard";
+}
+<partial name="_Notification" />
+@model Services.ViewModels.ProviderFinalizeTimeSheetModal
+
+<div class="main">
+    <div class="back container mb-3 mt-3 d-flex justify-content-between">
+        <h4 class="mt-3 fw-bold">Timesheets</h4>
+        <a asp-controller="Admin" asp-action="AdminDashboard" style="text-decoration: none;" class="backimg boxshadowbtn">
+            <img src="~/images/image_2024_01_17T04_17_17_757Z.png" alt="">
+            <span>Back</span>
+        </a>
+    </div>
+    <div class="container bg-white lightmode shadow" style="padding-bottom:20px" id="maincontent">
+        <form asp-action="FinalizeTimesheetPhy" asp-controller="Physician">
+            <div class="d-flex justify-content-start flex-wrap">
+                <div class="form-floating mb-3 mb-sm-0 me-2" style="width:250px">
+                    <select asp-for="physicianid" class="form-select Physician" aria-label="Floating label select example">
+                        @foreach (var obj in Model.physicians)
+                        {
+                            <option value="@obj.Physicianid">@obj.Firstname @obj.Lastname</option>
+                        }
+                    </select>
+                    <label for="floatingSelect">Search by Physician</label>
+                </div>
+                <div class="form-floating mb-3 mb-sm-0" style="width:250px">
+                    <select asp-for="DropDate" class="form-select DropDate" aria-label="Floating label select example">
+                        @{
+                            var firstDayOfMonth = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, 1);
+                            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                            <option value="@firstDayOfMonth">@firstDayOfMonth - @firstDayOfMonth.AddDays(13)</option>
+                            <option value="@firstDayOfMonth.AddDays(14)">@firstDayOfMonth.AddDays(14) - @lastDayOfMonth</option>
+                        }
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            firstDayOfMonth = firstDayOfMonth.AddMonths(-1);
+                            lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                            <option value="@firstDayOfMonth">@firstDayOfMonth - @firstDayOfMonth.AddDays(13)</option>
+                            <option value="@firstDayOfMonth.AddDays(14)">@firstDayOfMonth.AddDays(14) - @lastDayOfMonth</option>
+                        }
+                    </select>
+                    <label for="floatingSelect">Search by Timesheetperiod</label>
+                </div>
+
+            </div>
+        </form>
+        <div class="mt-3">
+            <div class="finalizetimesheet">
+                <partial name="PhysicianLayout/_FinalizedTimesheet" />
+            </div>
+            <div class="pendingBiweek">
+                <partial name="AdminLayout/_PendingBiweekTimesheet" />
+            </div>
+        </div>
+    </div>
+
+    <div class="container bg-white lightmode timesheetreim shadow mt-3" style="padding-bottom:20px" id="maincontent">
+        <h6 class="fw-bold">TimeSheet Reimbursement</h6>
+        <div class="finalizeReimbursement mt-3">
+            <partial name="PhysicianLayout/_FinalizedReimbursement" />
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    document.getElementById('invoicingdrop').classList.add('active');
+    document.getElementById('providertab').classList.add('active');
+    var day = $('.DropDate').val();
+    var phyid = $('.Physician').val();
+    function callajax() {
+        $.ajax({
+            url: "/Admin/FinalizeTimeSheetTableAdmin",
+            data: { date: day, phyid: phyid },
+            success: function (response) {
+                $('.finalizetimesheet').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+        $.ajax({
+            url: "/Admin/PendingTimeSheet",
+            data: { date: day, phyid: phyid },
+            success: function (response) {
+                $('.pendingBiweek').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+        $.ajax({
+            url: "/Admin/FinalizeReimbursementTableAdmin",
+            data: { date: day, phyid: phyid },
+            success: function (response) {
+                $('.finalizeReimbursement').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+
+    }
+    callajax();
+    $('.DropDate').on('change', function () {
+        day = $(this).val();
+        callajax();
+    });
+    $('.Physician').on('change', function () {
+        phyid = $(this).val();
+        callajax();
+    });
+</script>

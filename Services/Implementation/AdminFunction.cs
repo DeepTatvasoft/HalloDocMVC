@@ -2314,5 +2314,91 @@ namespace Services.Implementation
         {
             return _context.Physicianlocations.ToList();
         }
+        public PayrateModal PayratePhy(int phyid)
+        {
+            PayrateModal modal = new PayrateModal();
+            modal.phyid = phyid;
+            modal.payrates = _context.Payrates.FirstOrDefault(u => u.Physicinaid == phyid);
+            return modal;
+        }
+        public void EditPayrate(string type, int phyid, int val, string adminname)
+        {
+            var payrate = _context.Payrates.FirstOrDefault(u => u.Physicinaid == phyid);
+            var f = 0;
+            if (payrate == null)
+            {
+                payrate = new Payrate();
+                f = 1;
+            }
+            switch (type)
+            {
+                case "Nightshift":
+                    payrate.Nightshift = val;
+                    break;
+                case "Shift":
+                    payrate.Shift = val;
+                    break;
+                case "Consult":
+                    payrate.Consult = val;
+                    break;
+                case "Nightconsult":
+                    payrate.Nightconsult = val;
+                    break;
+                case "Housecall":
+                    payrate.Housecall = val;
+                    break;
+                case "Nighthousecall":
+                    payrate.Nighthousecall = val;
+                    break;
+                case "Batchtesting":
+                    payrate.Batchtesting = val;
+                    break;
+                default:
+                    break;
+            }
+            if (f == 1)
+            {
+                payrate.Physicinaid = phyid;
+                _context.Payrates.Add(payrate);
+            }
+            else
+            {
+                payrate.Modifieddate = DateTime.Now;
+                _context.Payrates.Update(payrate);
+            }
+            _context.SaveChanges();
+        }
+        public int getFirstphyid()
+        {
+            return _context.Physicians.First().Physicianid;
+        }
+        public ProviderFinalizeTimeSheetModal PendingTimeSheet(DateTime date, int phyid)
+        {
+            ProviderFinalizeTimeSheetModal modal = new ProviderFinalizeTimeSheetModal();
+            Biweektime biweektime = _context.Biweektimes.FirstOrDefault(u => u.Firstday == date && u.Physicianid == phyid)!;
+            if (biweektime != null)
+            {
+                modal.biweektime = biweektime;
+                modal.isfinalized = (bool)biweektime.Isfinalized!;
+                modal.isapproved = (bool)biweektime.Isapproved!;
+            }
+            else
+            {
+                var phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == phyid);
+                modal.phyname = phy.Firstname + " " + phy.Lastname;
+            }
+            return modal;
+        }
+        public Biweektime getBiweek(int id)
+        {
+            return _context.Biweektimes.FirstOrDefault(u => u.Biweekid == id)!;
+        }
+        public void ApproveTimesheetBtn(int id)
+        {
+            var biweek = getBiweek(id);
+            biweek.Isapproved = true;
+            _context.Biweektimes.Update(biweek);
+            _context.SaveChanges();
+        }
     }
 }

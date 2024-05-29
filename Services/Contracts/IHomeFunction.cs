@@ -11,5 +11,8 @@ namespace Services.Contracts
         public Aspnetuser getaspuser(PatientReqSubmit model);
         void newaccount(PatientReqSubmit model, string id);
         PatientReqSubmit CreateAccount(string id);
+        ChatBoxModal ChatwithProvider(int phyid);
+        ChatBoxModal ChatwithAdmin(int sendaerid, int receiverid);
+        List<Chathistory> GetAllChat(int sendid,int thisid);
     }
 }

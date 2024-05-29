@@ -1,0 +1,67 @@
+﻿@model Services.ViewModels.ProviderFinalizeTimeSheetModal;
+@{
+    var firstDayOfMonth = new DateTime(Model.DropDate.Year, Model.DropDate.Month, 1);
+    var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+    var startDate = Model.DropDate;
+    DateTime endDate;
+    if (Model.DropDate.Day == 1)
+    {
+        endDate = startDate.AddDays(13);
+    }
+    else
+    {
+        endDate = lastDayOfMonth;
+    }
+    var index = startDate;
+    int i = 0;
+}
+
+@if (Model.isfinalized == false)
+{
+    <span class="text-secondary">No Record(s) Found</span>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead style="--bs-table-bg:#f1f1f1">
+                <tr>
+                    <th>Date</th>
+                    <th>On-Call Hours</th>
+                    <th>Total Hours</th>
+                    <th>Weekend/Holiday</th>
+                    <th>Number Of Housecalls</th>
+                    <th>Number Of Phone Consults</th>
+                </tr>
+            </thead>
+            <tbody>
+                @while (index <= endDate)
+                {
+                    <tr>
+                        <input type="hidden" asp-for="Rows![i].Date" class="form-control" value="@index" />
+                        <td>@index.ToString("d")</td>
+                        <td><input type="number" asp-for="Rows![i].OnCallHours" class="form-control" min=0 readonly /></td>
+                        <td><input type="number" asp-for="Rows![i].TotalHours" class="form-control" min="0" readonly /></td>
+                        <td><input type="checkbox" asp-for="Rows[i].IsHoliday" disabled/></td>
+                        <td><input type="number" asp-for="Rows![i].NumberOfHouseCalls" class="form-control" min=0 readonly /></td>
+                        <td><input type="number" asp-for="Rows![i].NumberOfPhoneConsults" class="form-control" min=0 readonly /></td>
+                    </tr>
+                    index = index.AddDays(1);
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    var isfinalize = '@Model.isfinalized';
+    if (isfinalize == 'True') {
+        $('.finalizebtn').addClass('d-none');
+    }
+    else
+    {
+        $('.finalizebtn').removeClass('d-none');
+    }
+</script>

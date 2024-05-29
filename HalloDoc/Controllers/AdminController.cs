@@ -1068,7 +1068,60 @@ namespace HalloDoc.Controllers
         {
             adminFunction.RequestDTY(message);
         }
+        public IActionResult PayratePhy(int phyid)
+        {
+            return PartialView("AdminLayout/_payrate", adminFunction.PayratePhy(phyid));
+        }
+        public IActionResult EditPayrate(string type, int phyid, int val)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname")!;
+            adminFunction.EditPayrate(type, phyid, val, adminname);
+            return PartialView("AdminLayout/_payrate", adminFunction.PayratePhy(phyid));
+        }
+        public IActionResult InvoicingAdmin()
+        {
+            var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            ProviderFinalizeTimeSheetModal modal = new ProviderFinalizeTimeSheetModal();
+            modal.DropDate = firstDayOfMonth;
+            modal.physicianid = adminFunction.getFirstphyid();
+            return View(physicianFunction.FinalizeTimesheetPhy(modal, adminFunction.getFirstphyid()));
+        }
+        public IActionResult FinalizeTimeSheetTableAdmin(DateTime date, int phyid)
+        {
 
+            ProviderFinalizeTimeSheetModal modal = new ProviderFinalizeTimeSheetModal();
+            modal.DropDate = date;
+            return PartialView("PhysicianLayout/_FinalizedTimesheet", physicianFunction.FinalizeTimesheetPhy(modal, phyid));
+        }
+        public IActionResult FinalizeReimbursementTableAdmin(DateTime date, int phyid)
+        {
+            ProviderFinalizeTimeSheetModal modal = new ProviderFinalizeTimeSheetModal();
+            modal.DropDate = date;
+            return PartialView("PhysicianLayout/_FinalizedReimbursement", physicianFunction.FinalizeTimesheetPhy(modal, phyid));
+        }
+        public IActionResult PendingTimeSheet(DateTime date, int phyid)
+        {
+            return PartialView("AdminLayout/_PendingBiweekTimesheet", adminFunction.PendingTimeSheet(date, phyid));
+        }
+        public IActionResult AprroveTimesheetPage(int id)
+        {
+            var biweek = adminFunction.getBiweek(id);
+            ProviderFinalizeTimeSheetModal modal = new ProviderFinalizeTimeSheetModal();
+            modal.DropDate = (DateTime)biweek.Firstday!;
+            return View(physicianFunction.FinalizeTimesheetPhy(modal, (int)biweek.Physicianid!));
+        }
+        public IActionResult ApproveTimesheetBtn(int id)
+        {
+            adminFunction.ApproveTimesheetBtn(id);
+            TempData["success"] = "Timesheet Approved Successfully";
+            return RedirectToAction("InvoicingAdmin");
+        }
+        public IActionResult AdminFinalizeTimeSheetSubmit(ProviderFinalizeTimeSheetModal modal)
+        {
+            physicianFunction.ProviderFinalizeTimeSheetSubmit(modal, modal.physicianid, modal.phyname);
+            TempData["success"] = "Timesheet Submit Successfully";
+            return RedirectToAction("InvoicingAdmin");
+        }
     }
 
 }

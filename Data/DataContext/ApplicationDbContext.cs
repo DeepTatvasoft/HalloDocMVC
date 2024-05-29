@@ -26,6 +26,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Aspnetuserrole> Aspnetuserroles { get; set; }
 
+    public virtual DbSet<Biweektime> Biweektimes { get; set; }
+
     public virtual DbSet<Blockrequest> Blockrequests { get; set; }
 
     public virtual DbSet<Business> Businesses { get; set; }
@@ -33,6 +35,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<Businesstype> Businesstypes { get; set; }
 
     public virtual DbSet<Casetag> Casetags { get; set; }
+
+    public virtual DbSet<Chathistory> Chathistories { get; set; }
 
     public virtual DbSet<Concierge> Concierges { get; set; }
 
@@ -48,6 +52,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Orderdetail> Orderdetails { get; set; }
 
+    public virtual DbSet<Payrate> Payrates { get; set; }
+
     public virtual DbSet<Physician> Physicians { get; set; }
 
     public virtual DbSet<Physicianlocation> Physicianlocations { get; set; }
@@ -57,6 +63,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<Physicianregion> Physicianregions { get; set; }
 
     public virtual DbSet<Region> Regions { get; set; }
+
+    public virtual DbSet<Reimbursement> Reimbursements { get; set; }
 
     public virtual DbSet<Request> Requests { get; set; }
 
@@ -88,10 +96,12 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Smslog> Smslogs { get; set; }
 
+    public virtual DbSet<Timesheet> Timesheets { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("User ID =postgres;Password=deep2292002;Server=localhost;Port=5432;Database=HalloDocMVC;Integrated Security=true;Pooling=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -258,6 +268,24 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("roleid");
         });
 
+        modelBuilder.Entity<Biweektime>(entity =>
+        {
+            entity.HasKey(e => e.Biweekid).HasName("biweektime_pkey");
+
+            entity.ToTable("biweektime");
+
+            entity.Property(e => e.Biweekid).HasColumnName("biweekid");
+            entity.Property(e => e.Firstday)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("firstday");
+            entity.Property(e => e.Isapproved).HasColumnName("isapproved");
+            entity.Property(e => e.Isfinalized).HasColumnName("isfinalized");
+            entity.Property(e => e.Lastday)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("lastday");
+            entity.Property(e => e.Physicianid).HasColumnName("physicianid");
+        });
+
         modelBuilder.Entity<Blockrequest>(entity =>
         {
             entity.HasKey(e => e.Blockrequestid).HasName("blockrequests_pkey");
@@ -377,6 +405,33 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<Chathistory>(entity =>
+        {
+            entity.HasKey(e => e.Msgid).HasName("chathistory_pkey");
+
+            entity.ToTable("chathistory");
+
+            entity.Property(e => e.Msgid).HasColumnName("msgid");
+            entity.Property(e => e.Isread).HasColumnName("isread");
+            entity.Property(e => e.Issent).HasColumnName("issent");
+            entity.Property(e => e.Msg).HasColumnName("msg");
+            entity.Property(e => e.Readtime)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("readtime");
+            entity.Property(e => e.Reciever)
+                .HasColumnType("character varying")
+                .HasColumnName("reciever");
+            entity.Property(e => e.Recievetime)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("recievetime");
+            entity.Property(e => e.Sender)
+                .HasColumnType("character varying")
+                .HasColumnName("sender");
+            entity.Property(e => e.Senttime)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("senttime");
         });
 
         modelBuilder.Entity<Concierge>(entity =>
@@ -627,6 +682,33 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Vendorid).HasColumnName("vendorid");
         });
 
+        modelBuilder.Entity<Payrate>(entity =>
+        {
+            entity.HasKey(e => e.Payrateid).HasName("payrate_pkey");
+
+            entity.ToTable("payrate");
+
+            entity.Property(e => e.Payrateid).HasColumnName("payrateid");
+            entity.Property(e => e.Batchtesting).HasColumnName("batchtesting");
+            entity.Property(e => e.Consult).HasColumnName("consult");
+            entity.Property(e => e.Housecall).HasColumnName("housecall");
+            entity.Property(e => e.Modifiedby)
+                .HasMaxLength(128)
+                .HasColumnName("modifiedby");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Nightconsult).HasColumnName("nightconsult");
+            entity.Property(e => e.Nighthousecall).HasColumnName("nighthousecall");
+            entity.Property(e => e.Nightshift).HasColumnName("nightshift");
+            entity.Property(e => e.Physicinaid).HasColumnName("physicinaid");
+            entity.Property(e => e.Shift).HasColumnName("shift");
+
+            entity.HasOne(d => d.Physicina).WithMany(p => p.Payrates)
+                .HasForeignKey(d => d.Physicinaid)
+                .HasConstraintName("physician");
+        });
+
         modelBuilder.Entity<Physician>(entity =>
         {
             entity.HasKey(e => e.Physicianid).HasName("physician_pkey");
@@ -810,6 +892,48 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<Reimbursement>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("reimbursement_pkey");
+
+            entity.ToTable("reimbursement");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Amount).HasColumnName("amount");
+            entity.Property(e => e.Bill)
+                .HasMaxLength(500)
+                .HasColumnName("bill");
+            entity.Property(e => e.Biweektimeid).HasColumnName("biweektimeid");
+            entity.Property(e => e.Createdby)
+                .HasMaxLength(128)
+                .HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Date)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date");
+            entity.Property(e => e.Isdeleted).HasColumnName("isdeleted");
+            entity.Property(e => e.Item)
+                .HasMaxLength(500)
+                .HasColumnName("item");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Modifirdby)
+                .HasMaxLength(128)
+                .HasColumnName("modifirdby");
+            entity.Property(e => e.Physicianid).HasColumnName("physicianid");
+
+            entity.HasOne(d => d.Biweektime).WithMany(p => p.Reimbursements)
+                .HasForeignKey(d => d.Biweektimeid)
+                .HasConstraintName("biweek");
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Reimbursements)
+                .HasForeignKey(d => d.Physicianid)
+                .HasConstraintName("physician");
         });
 
         modelBuilder.Entity<Request>(entity =>
@@ -1393,6 +1517,44 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Smstemplate)
                 .HasColumnType("character varying")
                 .HasColumnName("smstemplate");
+        });
+
+        modelBuilder.Entity<Timesheet>(entity =>
+        {
+            entity.HasKey(e => e.Timesheetid).HasName("timesheet_pkey");
+
+            entity.ToTable("timesheet");
+
+            entity.Property(e => e.Timesheetid).HasColumnName("timesheetid");
+            entity.Property(e => e.Biweektimeid).HasColumnName("biweektimeid");
+            entity.Property(e => e.Consult).HasColumnName("consult");
+            entity.Property(e => e.Createdby)
+                .HasColumnType("character varying")
+                .HasColumnName("createdby");
+            entity.Property(e => e.Createddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createddate");
+            entity.Property(e => e.Date)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("date");
+            entity.Property(e => e.Housecall).HasColumnName("housecall");
+            entity.Property(e => e.Isweekend).HasColumnName("isweekend");
+            entity.Property(e => e.Modifiedby)
+                .HasColumnType("character varying")
+                .HasColumnName("modifiedby");
+            entity.Property(e => e.Modifieddate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifieddate");
+            entity.Property(e => e.Oncallhours).HasColumnName("oncallhours");
+            entity.Property(e => e.Physicianid).HasColumnName("physicianid");
+
+            entity.HasOne(d => d.Biweektime).WithMany(p => p.Timesheets)
+                .HasForeignKey(d => d.Biweektimeid)
+                .HasConstraintName("biweektime");
+
+            entity.HasOne(d => d.Physician).WithMany(p => p.Timesheets)
+                .HasForeignKey(d => d.Physicianid)
+                .HasConstraintName("physiianid");
         });
 
         modelBuilder.Entity<User>(entity =>

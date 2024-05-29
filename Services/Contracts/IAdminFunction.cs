@@ -114,5 +114,11 @@ namespace Services.Contracts
         PartnersModal PartenersbyType(int profftype);
         AddBusinessModal AddBusiness();
         List<Physicianlocation> getPhyLocation();
+        PayrateModal PayratePhy(int phyid);
+        void EditPayrate(string type, int phyid, int val, string adminname);
+        int getFirstphyid();
+        ProviderFinalizeTimeSheetModal PendingTimeSheet(DateTime date, int phyid);
+        Biweektime getBiweek(int id);
+        void ApproveTimesheetBtn(int id);
     }
 }

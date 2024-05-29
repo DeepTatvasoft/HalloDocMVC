@@ -1,6 +1,7 @@
 ﻿using Data.DataContext;
 using Data.DataModels;
 using DataAccess.ServiceRepository.IServiceRepository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,9 @@ using Services.Contracts;
 using Services.Implementation;
 using Services.ViewModels;
 using System.Collections;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HalloDoc.Controllers
 {
@@ -87,7 +91,7 @@ namespace HalloDoc.Controllers
         public IActionResult EncounterBtn(NewStateData modal, string[] encounterchk)
         {
             int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
-            physicianFunction.EncounterBtn(modal,encounterchk,phyid);
+            physicianFunction.EncounterBtn(modal, encounterchk, phyid);
             return RedirectToAction("PhysicianDashboard");
         }
         [Authorization("2")]
@@ -122,7 +126,7 @@ namespace HalloDoc.Controllers
         public IActionResult ConcludeCareBtn(AdminviewDoc modal)
         {
             int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
-            var check = physicianFunction.ConcludeCareBtn(modal,phyid);
+            var check = physicianFunction.ConcludeCareBtn(modal, phyid);
             if (check == false)
             {
                 TempData["error"] = "You cannot conclude the case until encounter form is Finalized";
@@ -165,7 +169,7 @@ namespace HalloDoc.Controllers
         public IActionResult LoadSchedulingPartial(string PartialName, string date, int regionid)
         {
             int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
-            return PartialView("AdminLayout/_MonthWise", physicianFunction.LoadSchedulingPartial(date,regionid,phyid));
+            return PartialView("AdminLayout/_MonthWise", physicianFunction.LoadSchedulingPartial(date, regionid, phyid));
         }
         [Authorization("2")]
         public IActionResult AddShift(Scheduling model)
@@ -186,6 +190,75 @@ namespace HalloDoc.Controllers
                 TempData["error"] = "Shift is already assigned in this time";
             }
             return RedirectToAction("PhysicianSchedule");
+        }
+        public IActionResult InvoicingPhy()
+        {
+            int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
+            var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            ProviderFinalizeTimeSheetModal modal = new ProviderFinalizeTimeSheetModal();
+            modal.DropDate = firstDayOfMonth;
+            return View(physicianFunction.FinalizeTimesheetPhy(modal, phyid));
+        }
+        public IActionResult FinalizeTimesheetPhy(ProviderFinalizeTimeSheetModal modal)
+        {
+            int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
+            return View(physicianFunction.FinalizeTimesheetPhy(modal, phyid));
+        }
+        public IActionResult ProviderFinalizeTimeSheetSubmit(ProviderFinalizeTimeSheetModal modal)
+        {
+            int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
+            string phyname = HttpContext.Session.GetString("physicianname")!;
+            physicianFunction.ProviderFinalizeTimeSheetSubmit(modal, phyid, phyname);
+            TempData["success"] = "Timesheet Submit Successfully";
+            return RedirectToAction("InvoicingPhy");
+        }
+        [HttpPost]
+        public bool ReceiptsSubmit(ReceiptsData modal)
+        {
+            int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
+            string phyname = HttpContext.Session.GetString("physicianname")!;
+            return physicianFunction.ReceiptsSubmit(modal, phyid, phyname);
+        }
+        public void ReceiptsDelete(DateTime date)
+        {
+            int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
+            physicianFunction.ReceiptsDelete(date, phyid);
+        }
+        public IActionResult FinalizeTimeSheetTable(DateTime date)
+        {
+            int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
+            ProviderFinalizeTimeSheetModal modal = new ProviderFinalizeTimeSheetModal();
+            modal.DropDate = date;
+            return PartialView("PhysicianLayout/_FinalizedTimesheet", physicianFunction.FinalizeTimesheetPhy(modal, phyid));
+        }
+        public IActionResult FinalizeTimesheet(int id)
+        {
+            bool f = physicianFunction.FinalizeTimesheet(id);
+            if (f == true)
+            {
+                TempData["success"] = "Timesheet Finalized Successfully";
+            }
+            else
+            {
+                TempData["error"] = "First Submit The Timesheet";
+            }
+            return RedirectToAction("InvoicingPhy");
+        }
+        public IActionResult FinalizeReimbursementTable(DateTime date)
+        {
+            int phyid = (int)HttpContext.Session.GetInt32("physicianid")!;
+            ProviderFinalizeTimeSheetModal modal = new ProviderFinalizeTimeSheetModal();
+            modal.DropDate = date;
+            return PartialView("PhysicianLayout/_FinalizedReimbursement", physicianFunction.FinalizeTimesheetPhy(modal, phyid));
+        }
+        public IActionResult AdminsBox()
+        {
+            var jwtservice = HttpContext!.RequestServices.GetService<IJwtRepository>();
+            var request = HttpContext.Request;
+            var token = request.Cookies["jwt"];
+            jwtservice!.ValidateToken(token!, out JwtSecurityToken jwttoken);
+            var aspnetUserId = jwttoken.Claims.FirstOrDefault(x => x.Type == "AspNetId")!.Value;
+            return PartialView("PhysicianLayout/_AdminsBox", physicianFunction.AdminsBox(int.Parse(aspnetUserId)));
         }
     }
 }

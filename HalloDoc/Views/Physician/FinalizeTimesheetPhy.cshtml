@@ -1,0 +1,266 @@
+﻿@{
+    ViewData["Title"] = "Finalize Timesheet";
+    Layout = "PhysicianLayout/_PhysicianDashboard";
+}
+@model Services.ViewModels.ProviderFinalizeTimeSheetModal;
+@{
+    var firstDayOfMonth = new DateTime(Model.DropDate.Year, Model.DropDate.Month, 1);
+    var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+    var startDate = Model.DropDate;
+    DateTime endDate;
+    if (Model.DropDate.Day == 1)
+    {
+        endDate = startDate.AddDays(13);
+    }
+    else
+    {
+        endDate = lastDayOfMonth;
+    }
+    var index = startDate;
+    int i = 0;
+}
+
+<div class="container pt-4">
+    <div class="d-flex justify-content-end align-items-center">
+        <a class="btn btn-outline-info boxshadowbtn" asp-action="InvoicingPhy" asp-controller="Physician">
+            <i class="fa-solid fa-angle-left"></i>
+            Back
+        </a>
+    </div>
+    <div class="p-3 mt-3 shadow">
+        <form asp-action="ProviderFinalizeTimeSheetSubmit" asp-controller="Physician">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead style="--bs-table-bg:#f1f1f1">
+                        <tr>
+                            <th>Date</th>
+                            <th>On-Call Hours</th>
+                            <th>Total Hours</th>
+                            <th>Weekend/Holiday</th>
+                            <th>Number Of Housecalls</th>
+                            <th>Number Of Phone Consults</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @while (index <= endDate)
+                        {
+                            <tr>
+                                <input type="hidden" asp-for="Rows![i].Date" class="form-control" value="@index" />
+                                <td>@index.ToString("d")</td>
+                                <td><input type="number" asp-for="Rows![i].OnCallHours" class="form-control" min=0 /></td>
+                                <td><input type="number" asp-for="Rows![i].TotalHours" class="form-control" min="0" /></td>
+                                <td><input type="checkbox" asp-for="Rows[i].IsHoliday" /></td>
+                                <td><input type="number" asp-for="Rows![i].NumberOfHouseCalls" class="form-control" min=0 /></td>
+                                <td><input type="number" asp-for="Rows![i].NumberOfPhoneConsults" class="form-control" min=0 /></td>
+                            </tr>
+                            index = index.AddDays(1);
+                            i++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-info text-white boxshadowbtn" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <button class="btn btn-info text-white mt-3 ms-2 boxshadowbtn addreceipt" data-bs-toggle="collapse" data-bs-target="#toggleDiv">Add Receipts</button>
+    <div class="d-flex justify-content-end" style="margin-bottom:60px;">
+        <a asp-action="FinalizeTimesheet" asp-controller="Physician" asp-route-id="@Model.biweekid" class="btn btn-info text-white">Finalize</a>
+    </div>
+    @{
+        index = startDate;
+        i = 0;
+    }
+    <div class="content p-3 collapse shadow" id="toggleDiv" style="margin-bottom:60px;">
+        <div class="table-responsive">
+            <table class="table">
+                <thead style="--bs-table-bg:#f1f1f1">
+                    <tr>
+                        <th>Date</th>
+                        <th>Item</th>
+                        <th>Amount</th>
+                        <th>Bill</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.receiptsDatas == null || Model.receiptsDatas.Count() == 0)
+                    {
+                        Model.receiptsDatas = null;
+                    }
+                    @while (index <= endDate)
+                    {
+                        if (Model.receiptsDatas != null && Model.receiptsDatas!.Count() > 0)
+                        {
+                            Model.showreceiptsdata = Model.receiptsDatas!.FirstOrDefault(u => u.Date == index)!;
+                        }
+                        <form class="receiptForm_@i">
+                            <input type="hidden" asp-for="receiptsdate" value="@index" />
+                        <tr>
+                            <input type="hidden" asp-for="showreceiptsdata.Date" id="date_@i" class="form-control" value="@index" />
+                                @if (Model.showreceiptsdata == null)
+                                {
+                                <td>@index.ToString("d")</td>
+                                <td><input asp-for="showreceiptsdata.itemname" id="itemname_@i" onchange="receiptAction('saveaction_@i')" type="text" class="form-control" /></td>
+                                <td><input asp-for="showreceiptsdata.amount" id="amount_@i" onchange="receiptAction('saveaction_@i')" type="number" class="form-control" min=0 /></td>
+                                <td>
+                                    <div class="input-group mb-3">
+                                        <input asp-for="showreceiptsdata.bill" onchange="receiptAction('saveaction_@i')" type="file" class="form-control pdffile" id="inputGroupFile02_@i">
+                                        <label class="input-group-text bg-info text-white" for="inputGroupFile02">Upload</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="d-none" id="saveaction_@i">
+                                        <button type="button" class="btn btn-info text-white" onclick="savereceipt('@i')">Save</button>
+                                        <button type="reset" class="btn btn-outline-info" onclick="cancelaction('saveaction_@i')">Cancel</button>
+                                    </span>
+                                </td>
+                                }
+                                else
+                                {
+                                <td>@index.ToString("d")</td>
+                                <td>
+                                    <span class="savedname_@i">@Model.showreceiptsdata.itemname</span>
+                                    <span class="d-none savedinputname_@i"><input asp-for="showreceiptsdata.itemname" id="itemname_@i" onchange="receiptAction('saveaction_@i')" type="text" class="form-control" /></span>
+
+                                </td>
+                                <td>
+                                    <span class="savedamount_@i">@Model.showreceiptsdata.amount</span>
+                                    <span class="d-none savedamountname_@i"><input asp-for="showreceiptsdata.amount" id="amount_@i" onchange="receiptAction('saveaction_@i')" type="number" class="form-control" min=0 /></span>
+                                </td>
+                                <td>@Model.showreceiptsdata.filename</td>
+                                <td>
+                                    <span class="editaction">
+                                        <button type="button" class="btn btn-outline-info btn-sm edit_@i" onclick="SavedEditClick('@i')">Edit</button>
+                                        <button type="button" class="btn btn-info text-white btn-sm d-none save_@i" onclick="savereceipt('@i')">Save</button>
+                                        <button type="reset" class="btn btn-outline-info btn-sm d-none cancel_@i" onclick="SavedcancelBtn('@i')">Cancel</button>
+                                        <button type="button" class="btn btn-outline-info btn-sm" onclick="DeleteReceipt('@i')">Delete</button>
+                                        <a href="/ReceiptsBill/@Model.showreceiptsdata.filename" target="_blank" class="btn btn-outline-info btn-sm">View</a>
+                                    </span>
+                                </td>
+                                }
+                        </tr>
+                        </form>
+                        index = index.AddDays(1);
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    document.getElementById('Invoicing-tab').classList.add('active');
+    function receiptAction(id) {
+        $('#' + id).removeClass('d-none');
+    }
+    function cancelaction(id) {
+        $('#' + id).addClass('d-none');
+    }
+    function SavedEditClick(i) {
+        $('.savedname_' + i).addClass('d-none');
+        $('.savedamount_' + i).addClass('d-none');
+        $('.savedinputname_' + i).removeClass('d-none');
+        $('.savedamountname_' + i).removeClass('d-none');
+        $('.save_' + i).removeClass('d-none');
+        $('.cancel_' + i).removeClass('d-none');
+        $('.edit_' + i).addClass('d-none');
+    }
+    function SavedcancelBtn(i) {
+        $('.savedname_' + i).removeClass('d-none');
+        $('.savedamount_' + i).removeClass('d-none');
+        $('.savedinputname_' + i).addClass('d-none');
+        $('.savedamountname_' + i).addClass('d-none');
+        $('.save_' + i).addClass('d-none');
+        $('.cancel_' + i).addClass('d-none');
+        $('.edit_' + i).removeClass('d-none');
+    }
+    $('.pdffile').on('change', function () {
+        var file = this.files[0];
+        var contenttype = file.type;
+        if (contenttype != "application/pdf") {
+            toastr.error("Upload file in pdf format");
+        }
+        else {
+            toastr.success("File uploaded successfuly");
+        }
+    });
+    function savereceipt(i) {
+        var formData = new FormData();
+        formData.append("Date", $('#date_' + i).val());
+        formData.append("itemname", $('#itemname_' + i).val());
+        formData.append("amount", $('#amount_' + i).val());
+        if ($('#inputGroupFile02_' + i)[0] != null && $('#inputGroupFile02_' + i)[0].files[0] != null && $('#inputGroupFile02_' + i)[0].files[0].type == "application/pdf") {
+            formData.append("bill", $('#inputGroupFile02_' + i)[0].files[0]);
+        }
+        $.ajax({
+            type: "POST",
+            url: "/Physician/ReceiptsSubmit",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response == false) {
+                    swal.fire({
+                        title: "First Submit The TimeSheet",
+                        type: "warning",
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ok",
+                    }).then(function (result) {
+                        if (result.value) {
+                            window.location.reload();
+                        }
+                    });
+                }
+                else {
+                    Swal.fire({
+                        title: "Saved Successfully",
+                        icon: "success"
+                    }).then(function (result) {
+                        if (result.value) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+    function DeleteReceipt(i) {
+        var date = $('#date_' + i).val();
+        swal.fire({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then(function (result) {
+            if (result.value) {
+                $.ajax({
+                    url: "/Physician/ReceiptsDelete",
+                    data: { date: date },
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Deleted Successfully",
+                            icon: "success"
+                        }).then(function (result) {
+                            if (result.value) {
+                                window.location.reload();
+                            }
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    }
+</script>

@@ -1,6 +1,7 @@
 using Data.DataContext;
 using DataAccess.ServiceRepository;
 using DataAccess.ServiceRepository.IServiceRepository;
+using HalloDoc.Hubs;
 using Services.Contracts;
 using Services.Implementation;
 using Services.Implementationy;
@@ -22,7 +23,9 @@ builder.Services.AddTransient<IDashboard, Dashboard>();
 builder.Services.AddTransient<IAdminFunction, AdminFunction>();
 builder.Services.AddTransient<IAuthorization, Authorization>();
 builder.Services.AddTransient<IPhysicianFunction, PhysicianFunction>();
+builder.Services.AddTransient<IChatFunction, ChatFunction>();
 builder.Services.AddTransient<IJwtRepository, JwtRepo>();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -39,7 +42,7 @@ app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 app.UseAuthorization();
-
+app.MapHub<ChatHub>("/chatHub");
 app.MapControllerRoute(
     name: "default",
     //pattern: "{controller=Home}/{action=patientsite}/{id?}");

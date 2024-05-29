@@ -19,8 +19,7 @@ namespace HalloDoc.Controllers
         }
         public IActionResult patientinfo(PatientReqSubmit model)
         {
-            int adminid = (int)HttpContext.Session.GetInt32("Adminid")!;
-            formSubmit.patientinfo(model, adminid);
+            formSubmit.patientinfo(model, 1);
             TempData["success"] = "Your Request Is Submitted Successfully";
             return RedirectToAction("patientlogin", "Home");
         }

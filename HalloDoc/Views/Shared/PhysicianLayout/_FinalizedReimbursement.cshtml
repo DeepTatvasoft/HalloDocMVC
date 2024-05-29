@@ -1,0 +1,55 @@
+﻿@model Services.ViewModels.ProviderFinalizeTimeSheetModal;
+@{
+    var firstDayOfMonth = new DateTime(Model.DropDate.Year, Model.DropDate.Month, 1);
+    var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+    var startDate = Model.DropDate;
+    DateTime endDate;
+    if (Model.DropDate.Day == 1)
+    {
+        endDate = startDate.AddDays(13);
+    }
+    else
+    {
+        endDate = lastDayOfMonth;
+    }
+    var index = startDate;
+    int i = 0;
+}
+@if (Model.receiptsDatas == null || Model.receiptsDatas.Count() == 0)
+{
+    <span class="text-secondary">No Record(s) Found</span>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead style="--bs-table-bg:#f1f1f1">
+                <tr>
+                    <th>Date</th>
+                    <th>Item</th>
+                    <th>Amount</th>
+                    <th>Bill</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model.receiptsDatas!)
+                {
+                    <tr>
+                        <td>@obj.Date.ToString("d")</td>
+                        <td>
+                            <span class="savedname_@i">@obj.itemname</span>
+                        </td>
+                        <td>
+                            <span class="savedamount_@i">@obj.amount</span>
+                        </td>
+                        <td>@obj.filename</td>
+                        <td>
+                            <a href="/ReceiptsBill/@obj.filename" target="_blank" class="btn btn-outline-info btn-sm">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
